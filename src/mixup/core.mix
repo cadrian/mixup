@@ -1,0 +1,44 @@
+module core
+
+export const common_time = "C"
+export const alla_breve = "C/"
+
+export time = "4/4"
+
+export const ges_dur = -6
+export const des_dur = -5
+export const aes_dur = -4
+export const ees_dur = -3
+export const bes_dur = -2
+export const f_dur = -1
+export const c_dur = 0
+export const g_dur = 1
+export const d_dur = 2
+export const a_dur = 3
+export const e_dur = 4
+export const b_dur = 5
+export const fis_dur = 6
+export const cis_dur = 7
+export const gis_dur = 8
+export const dis_dur = 9
+export const ais_dur = 10
+export const eis_dur = 11
+
+export signature = c_dur
+
+export tempo.tactus = 4
+export tempo.per_minute = 90
+export tempo.print = false
+
+
+export const trebble = 1
+export const bass = 2
+
+
+instrument skeleton
+    set staves = 1
+    set staff(1).clef = trebble
+    music
+    end
+
+end

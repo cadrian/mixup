@@ -1,0 +1,49 @@
+class AUX_MIXUP_GRAMMAR_NODE_FACTORY
+
+inherit
+   MIXUP_DEFAULT_NODE_FACTORY
+      redefine
+         make, list, non_terminal, terminal
+      end
+
+create {ANY}
+   make
+
+feature {ANY}
+   created_nodes: TRAVERSABLE[MIXUP_NODE] is
+      do
+         Result := nodes
+      end
+
+feature {MIXUP_GRAMMAR}
+   list (name: FIXED_STRING): MIXUP_LIST_NODE is
+      do
+         Result := Precursor(name)
+         nodes.add_last(Result)
+      end
+
+   non_terminal (name: FIXED_STRING; names: TRAVERSABLE[FIXED_STRING]): MIXUP_NON_TERMINAL_NODE is
+      do
+         Result := Precursor(name, names)
+         nodes.add_last(Result)
+      end
+
+   terminal (name: FIXED_STRING; image: MIXUP_IMAGE): MIXUP_TERMINAL_NODE is
+      do
+         Result := Precursor(name, image)
+         nodes.add_last(Result)
+      end
+
+feature {}
+   make is
+      do
+         Precursor
+         create nodes.make(0)
+      end
+
+   nodes: FAST_ARRAY[MIXUP_NODE]
+
+invariant
+   nodes /= Void
+
+end
