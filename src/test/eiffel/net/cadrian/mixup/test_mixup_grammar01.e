@@ -29,7 +29,7 @@ feature {}
                                            set staff(1).clef = bass
                                            set staff(2).clef = trebble
                                            music
-                                              << c4 d e f | g a b c | c,1 >>
+                                              << :p,<:c4 d e f | g a b :f:c | :hidden:mp:c,1 >>
                                            end
                                         end
                                         ]")

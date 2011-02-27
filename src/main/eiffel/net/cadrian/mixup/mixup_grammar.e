@@ -34,54 +34,70 @@ feature {}
 
    the_table: PARSE_TABLE is
       once
-         Result := {PARSE_TABLE << "File", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "File_Content", "KW end", "KW end of file" >> }, Void >> };
+         Result := {PARSE_TABLE << "File", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "File_Content", "KW end", "KW end of file" >> }, Void;
+                                                                  >> };
                                    "File_Content", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Score" >> }, Void;
                                                                           {FAST_ARRAY[STRING] << "Book" >> }, Void;
                                                                           {FAST_ARRAY[STRING] << "Partitur" >> }, Void;
                                                                           {FAST_ARRAY[STRING] << "Instrument" >> }, Void;
-                                                                          {FAST_ARRAY[STRING] << "Module" >> }, Void
+                                                                          {FAST_ARRAY[STRING] << "Module" >> }, Void;
                                                                           >> };
 
-                                   "Module", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW module", "KW identifier", "Definition*", "Score_Content" >> }, Void >> };
+                                   "Module", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW module", "KW identifier", "Definition*", "Score_Content" >> }, Void;
+                                                                    >> };
 
-                                   "Score", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW score", "KW identifier", "Score_Content" >> }, Void >> };
+                                   "Score", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW score", "KW identifier", "Score_Content" >> }, Void;
+                                                                   >> };
                                    "Score_Content", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Definition*", "Book+" >> }, Void;
-                                                                           {FAST_ARRAY[STRING] << "Book_Content" >> }, Void >> };
+                                                                           {FAST_ARRAY[STRING] << "Book_Content" >> }, Void;
+                                                                           >> };
 
                                    "Definition*", list_of("Definition", True);
                                    "Definition", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Export" >> }, Void;
                                                                         {FAST_ARRAY[STRING] << "Import" >> }, Void;
-                                                                        {FAST_ARRAY[STRING] << "Set" >> }, Void >> };
+                                                                        {FAST_ARRAY[STRING] << "Set" >> }, Void;
+                                                                        >> };
 
                                    "Export", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW export", "Identifier", "KW =", "Value" >> }, Void;
-                                                                    {FAST_ARRAY[STRING] << "KW export", "KW const", "Identifier", "KW =", "Value" >> }, Void >> };
-                                   "Set", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW set", "Identifier", "KW =", "Value" >> }, Void >> };
+                                                                    {FAST_ARRAY[STRING] << "KW export", "KW const", "Identifier", "KW =", "Value" >> }, Void;
+                                                                    >> };
+                                   "Set", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW set", "Identifier", "KW =", "Value" >> }, Void;
+                                                                 >> };
                                    "Import", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW from", "Identifier", "KW import", "Symbol+" >> }, Void;
                                                                     {FAST_ARRAY[STRING] << "KW from", "Identifier", "KW import", "KW *" >> }, Void;
-                                                                    {FAST_ARRAY[STRING] << "KW import", "Identifier" >> }, Void >> };
+                                                                    {FAST_ARRAY[STRING] << "KW import", "Identifier" >> }, Void;
+                                                                    >> };
 
                                    "Symbol+", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW identifier" >> }, agent build_new_list("KW identifier", "Identifier");
-                                                                     {FAST_ARRAY[STRING] << "KW identifier", "KW ,", "Symbol+" >> }, agent build_continue_list("KW identifier", 1, "Identifier") >> };
+                                                                     {FAST_ARRAY[STRING] << "KW identifier", "KW ,", "Symbol+" >> }, agent build_continue_list("KW identifier", 1, "Identifier")
+                                                                     >> };
 
                                    "Book+", list_of("Book", False);
-                                   "Book", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW book", "KW identifier", "Book_Content" >> }, Void >> };
+                                   "Book", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW book", "KW identifier", "Book_Content" >> }, Void;
+                                                                  >> };
                                    "Book_Content", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Definition*", "Partitur+" >> }, Void;
-                                                                          {FAST_ARRAY[STRING] << "Partitur_Content" >> }, Void >> };
+                                                                          {FAST_ARRAY[STRING] << "Partitur_Content" >> }, Void;
+                                                                          >> };
 
                                    "Partitur+", list_of("Partitur", False);
-                                   "Partitur", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW partitur", "KW identifier", "Partitur_Content" >> }, Void >> };
-                                   "Partitur_Content", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Definition*", "Instrument+" >> }, Void >> };
+                                   "Partitur", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW partitur", "KW identifier", "Partitur_Content" >> }, Void;
+                                                                      >> };
+                                   "Partitur_Content", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Definition*", "Instrument+" >> }, Void;
+                                                                              >> };
 
                                    "Instrument+", list_of("Instrument", False);
-                                   "Instrument", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW instrument", "KW identifier", "Definition*", "Some_Music", "KW end" >> }, Void >> };
+                                   "Instrument", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW instrument", "KW identifier", "Definition*", "Some_Music", "KW end" >> }, Void;
+                                                                        >> };
 
                                    "Some_Music", {PARSE_NON_TERMINAL << epsilon, Void;
                                                                         {FAST_ARRAY[STRING] << "Identifier", "Some_Lyrics" >> }, Void;
-                                                                        {FAST_ARRAY[STRING] << "Music", "Some_Lyrics" >> }, Void >> };
+                                                                        {FAST_ARRAY[STRING] << "Music", "Some_Lyrics" >> }, Void;
+                                                                        >> };
 
                                    "Some_Lyrics", {PARSE_NON_TERMINAL << epsilon, Void;
                                                                          {FAST_ARRAY[STRING] << "Identifier" >> }, Void;
-                                                                         {FAST_ARRAY[STRING] << "Lyrics" >> }, Void >> };
+                                                                         {FAST_ARRAY[STRING] << "Lyrics" >> }, Void;
+                                                                         >> };
 
                                    "Value", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW string" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "KW number" >> }, Void;
@@ -89,58 +105,95 @@ feature {}
                                                                    {FAST_ARRAY[STRING] << "Identifier" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Music" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Lyrics" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "Function" >> }, Void >> };
+                                                                   {FAST_ARRAY[STRING] << "Function" >> }, Void;
+                                                                   >> };
 
                                    "Identifier", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Identifier_Part" >> }, agent build_new_list("Identifier_Part", "Identifier");
-                                                                        {FAST_ARRAY[STRING] << "Identifier_Part", "KW .", "Identifier" >> }, agent build_continue_list("Identifier_Part", 1, "Identifier") >> };
-                                   "Identifier_Part", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW identifier", "Identifier_Args" >> }, Void >> };
+                                                                        {FAST_ARRAY[STRING] << "Identifier_Part", "KW .", "Identifier" >> }, agent build_continue_list("Identifier_Part", 1, "Identifier")
+                                                                        >> };
+                                   "Identifier_Part", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW identifier", "Identifier_Args" >> }, Void;
+                                                                             >> };
                                    "Identifier_Args", {PARSE_NON_TERMINAL << epsilon, Void;
-                                                                             {FAST_ARRAY[STRING] << "KW (", "Value*", "KW )" >> }, Void >> };
+                                                                             {FAST_ARRAY[STRING] << "KW (", "Value*", "KW )" >> }, Void;
+                                                                             >> };
                                    "Value*", {PARSE_NON_TERMINAL << epsilon, agent build_empty_list("Value*");
                                                                     {FAST_ARRAY[STRING] << "Value" >> }, agent build_new_list("Value", "Value*");
-                                                                    {FAST_ARRAY[STRING] << "Value", "KW ,", "Value*" >> }, agent build_continue_list("Value", 1, "Value*") >> };
+                                                                    {FAST_ARRAY[STRING] << "Value", "KW ,", "Value*" >> }, agent build_continue_list("Value", 1, "Value*")
+                                                                    >> };
 
-                                   "Lyrics", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW lyrics", "Strophe*" >> }, Void >> };
+                                   "Lyrics", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW lyrics", "Strophe*" >> }, Void;
+                                                                    >> };
                                    "Strophe*", list_of("Strophe", True);
-                                   "Strophe", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <<", "Word*", "KW >>" >> }, Void >> };
+                                   "Strophe", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <<", "Word*", "KW >>" >> }, Void;
+                                                                     >> };
                                    "Word*", list_of("Word", True);
-                                   "Word", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Syllable+" >> }, Void >> };
+                                   "Word", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Syllable+" >> }, Void;
+                                                                  >> };
                                    "Syllable+", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Syllable" >> }, agent build_new_list("Syllable", "Syllable+");
-                                                                       {FAST_ARRAY[STRING] << "Syllable", "KW -", "Syllable+" >> }, agent build_continue_list("Syllable", 1, "Syllable+") >> };
+                                                                       {FAST_ARRAY[STRING] << "Syllable", "KW -", "Syllable+" >> }, agent build_continue_list("Syllable", 1, "Syllable+")
+                                                                       >> };
                                    "Syllable", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW string" >> }, Void;
                                                                       {FAST_ARRAY[STRING] << "KW syllable" >> }, Void;
-                                                                      {FAST_ARRAY[STRING] << "KW \", "Identifier" >> }, Void>> };
+                                                                      {FAST_ARRAY[STRING] << "KW \", "Identifier" >> }, Void;
+                                                                      >> };
 
-                                   "Music", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW music", "Notes*" >> }, Void >> };
+                                   "Music", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW music", "Notes*" >> }, Void;
+                                                                   >> };
 
                                    "Notes*", list_of("Notes", True);
                                    "Notes", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW |" >> }, Void; -- check bar
                                                                    {FAST_ARRAY[STRING] << "KW ^" >> }, Void; -- next staff (going up; each voice starts at the lowest staff of the instrument)
                                                                    {FAST_ARRAY[STRING] << "KW ." >> }, Void; -- previous staff (going back down)
                                                                    {FAST_ARRAY[STRING] << "KW \", "Identifier" >> }, Void; -- music insertion
-                                                                   {FAST_ARRAY[STRING] << "Voice" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "Chord" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "Beam" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "Slur" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "Tie" >> }, Void >> };
+                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Voice" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Chord" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Beam" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Slur" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Tie" >> }, Void;
+                                                                   >> };
 
-                                   "Chord", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <", "KW note head+", "KW >", "Chord_Description" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "KW note head+", "Chord_Description" >> }, Void >> };
+                                   "Chord", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <", "KW note head+", "KW >", "Note_Length" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "KW note head+", "Note_Length" >> }, Void;
+                                                                   >> };
 
-                                   "Chord_Description", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Length", "Dynamics" >> }, Void >> };
+                                   "Note_Length", {PARSE_NON_TERMINAL << epsilon, Void;
+                                                                         {FAST_ARRAY[STRING] << "KW number" >> }, Void;
+                                                                         {FAST_ARRAY[STRING] << "KW number", "KW ." >> }, Void;
+                                                                         {FAST_ARRAY[STRING] << "KW number", "KW .." >> }, Void;
+                                                                         >> };
 
-                                   "Length", {PARSE_NON_TERMINAL << epsilon, Void;
-                                                                    {FAST_ARRAY[STRING] << "KW number" >> }, Void;
-                                                                    {FAST_ARRAY[STRING] << "KW number", "KW ." >> }, Void;
-                                                                    {FAST_ARRAY[STRING] << "KW number", "KW .", "KW ." >> }, Void >> };
-                                   "Dynamics", {PARSE_NON_TERMINAL << epsilon, Void >> }; -- TODO
+                                   "Dynamics", {PARSE_NON_TERMINAL << epsilon, Void;
+                                                                      {FAST_ARRAY[STRING] << "KW :", "Position", "Dynamic+", "KW :" >> }, Void;
+                                                                      {FAST_ARRAY[STRING] << "KW :", "Position", "Dynamic+", "KW ...", "KW :" >> }, Void; -- dashed line along the whole dynamic section (not with hairpins!)
+                                                                      >> };
+                                   "Dynamic+", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Dynamic" >> }, agent build_new_list("Dynamic", "Dynamic+");
+                                                                      {FAST_ARRAY[STRING] << "Dynamic", "KW ,", "Dynamic+" >> }, agent build_continue_list("Dynamic", 1, "Dynamic+")
+                                                                      >> };
+                                   "Dynamic",  {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW identifier" >> }, Void;
+                                                                      {FAST_ARRAY[STRING] << "KW string" >> }, Void;
+                                                                      {FAST_ARRAY[STRING] << "KW <" >> }, Void;
+                                                                      {FAST_ARRAY[STRING] << "KW >" >> }, Void;
+                                                                      {FAST_ARRAY[STRING] << "KW end" >> }, Void; -- en of dynamic (stop hairpin, etc.)
+                                                                      >> };
+                                   "Position", {PARSE_NON_TERMINAL << epsilon, Void;
+                                                                      {FAST_ARRAY[STRING] << "KW up", "KW :" >> }, Void; -- up current staff
+                                                                      {FAST_ARRAY[STRING] << "KW down", "KW :" >> }, Void; -- down current staff
+                                                                      {FAST_ARRAY[STRING] << "KW top", "KW :" >> }, Void; -- up current instrument
+                                                                      {FAST_ARRAY[STRING] << "KW bottom", "KW :" >> }, Void; -- down current instrument
+                                                                      {FAST_ARRAY[STRING] << "KW hidden", "KW :" >> }, Void; -- don't display, for midi control only
+                                                                      >> };
 
-                                   "Voice", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <<", "Notes*", "KW >>" >> }, Void >> };
-                                   "Beam", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW [", "Notes*", "KW ]" >> }, Void >> };
-                                   "Slur", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW {", "Notes*", "KW }" >> }, Void >> };
-                                   "Tie", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW (", "Notes*", "KW )" >> }, Void >> };
+                                   "Voice", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <<", "Notes*", "KW >>" >> }, Void;
+                                                                   >> };
+                                   "Beam", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW [", "Notes*", "KW ]" >> }, Void;
+                                                                  >> };
+                                   "Slur", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW {", "Notes*", "KW }" >> }, Void;
+                                                                  >> };
+                                   "Tie", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW (", "Notes*", "KW )" >> }, Void;
+                                                                 >> };
 
-                                   "Function", {PARSE_NON_TERMINAL << epsilon, Void >> }; -- TODO: for output implementation
+                                   "Function", {PARSE_NON_TERMINAL << epsilon, Void -- TODO: for output implementation
+                                                                      >> };
 
                                    "KW note head+", list_of("KW note head", False);
 
@@ -153,7 +206,10 @@ feature {}
                                    "KW |",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "|" , ""),  Void);
                                    "KW -",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "-" , ""),  Void);
                                    "KW ,",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "," , ""),  Void);
-                                   "KW .",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "." , ""),  Void);
+                                   "KW :",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":" , ""),  Void);
+                                   "KW .",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "." , "."),  Void);
+                                   "KW ..",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ".." , "."),  Void);
+                                   "KW ...",         create {PARSE_TERMINAL}.make(agent parse_symbol(?, "..." , ""),  Void);
                                    "KW (",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "(" , ""),  Void);
                                    "KW )",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ")" , ""),  Void);
                                    "KW [",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "[" , ""),  Void);
@@ -164,10 +220,13 @@ feature {}
                                    "KW \",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "\" , ""),  Void);
 
                                    "KW book",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "book"), Void);
+                                   "KW bottom",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "bottom"), Void);
                                    "KW const",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "const"), Void);
+                                   "KW down",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "down"), Void);
                                    "KW end",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "end"), Void);
                                    "KW export",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "export"), Void);
                                    "KW from",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "from"), Void);
+                                   "KW hidden",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "hidden"), Void);
                                    "KW import",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "import"), Void);
                                    "KW instrument",  create {PARSE_TERMINAL}.make(agent parse_keyword(?, "instrument"), Void);
                                    "KW lyrics",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "lyrics"), Void);
@@ -176,6 +235,8 @@ feature {}
                                    "KW partitur",    create {PARSE_TERMINAL}.make(agent parse_keyword(?, "partitur"), Void);
                                    "KW score",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "score"), Void);
                                    "KW set",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "set"), Void);
+                                   "KW top",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "top"), Void);
+                                   "KW up",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "up"), Void);
 
                                    "KW boolean",     create {PARSE_TERMINAL}.make(agent parse_boolean, Void);
                                    "KW identifier",  create {PARSE_TERMINAL}.make(agent parse_identifier, Void);
