@@ -32,6 +32,10 @@ feature {}
                                            lyrics
                                               << doe ray me far so la tea doe, doe. >>
                                            end
+                                        instrument bass
+                                           music
+                                              << :p: c,1 | g, | c' >>
+                                           end
                                         end
                                         ]")
          grammar.reset
@@ -52,12 +56,14 @@ feature {}
 
                                         set_partitur("sample"),
                                         set_instrument("singer"),
+                                        set_instrument("bass"),
 
                                         start_bar,
                                         set_dynamics("singer", "p", Void),
                                         set_dynamics("singer", "<", Void),
                                         set_note("singer", 1, 4, "c", 3, 4),
                                         set_lyric("singer", 1, 4, "doe"),
+                                        set_note("bass", 1, 1, "c", 2, 1),
                                         set_note("singer", 2, 4, "d", 3, 4),
                                         set_lyric("singer", 2, 4, "ray"),
                                         set_note("singer", 3, 4, "e", 3, 4),
@@ -69,6 +75,7 @@ feature {}
                                         start_bar,
                                         set_note("singer", 1, 4, "g", 3, 4),
                                         set_lyric("singer", 1, 4, "so"),
+                                        set_note("bass", 1, 1, "g", 1, 1),
                                         set_note("singer", 2, 4, "a", 4, 4),
                                         set_lyric("singer", 2, 4, "la"),
                                         set_note("singer", 3, 4, "b", 4, 4),
@@ -82,6 +89,7 @@ feature {}
                                         set_dynamics("singer", "mp", "hidden"),
                                         set_note("singer", 1, 1, "c", 3, 1),
                                         set_lyric("singer", 1, 1, "doe."),
+                                        set_note("bass", 1, 1, "c", 2, 1),
                                         end_bar,
 
                                         end_piece
