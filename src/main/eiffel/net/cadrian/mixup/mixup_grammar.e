@@ -17,23 +17,53 @@ feature {ANY}
    end_reached: BOOLEAN
 
 feature {}
-   list_of (element_name: STRING; allow_empty: BOOLEAN): PARSE_ATOM is
+   list_of (element_name: STRING; allow_empty: BOOLEAN; separator: STRING): PARSE_ATOM is
       local
-         list_name: STRING
+         list_name: STRING; accumulator_rule: TRAVERSABLE[STRING]; action: PROCEDURE[TUPLE[FIXED_STRING, TRAVERSABLE[FIXED_STRING]]]
       do
          if allow_empty then
             list_name := element_name + once "*"
-            Result := {PARSE_NON_TERMINAL << epsilon, agent build_empty_list(list_name);
-                                             {FAST_ARRAY[STRING] << element_name, list_name >> }, agent build_continue_list(element_name, 0, list_name) >> }
          else
             list_name := element_name + once "+"
+         end
+
+         if separator = Void then
+            accumulator_rule := {FAST_ARRAY[STRING] << element_name, list_name >> }
+            action := agent build_continue_list(element_name, 0, list_name)
+         else
+            accumulator_rule := {FAST_ARRAY[STRING] << element_name, separator, list_name >> }
+            action := agent build_continue_list(element_name, 1, list_name)
+         end
+
+         if allow_empty then
+            if separator = Void then
+               Result := {PARSE_NON_TERMINAL << epsilon, agent build_empty_list(list_name);
+                                                accumulator_rule, action;
+                                                >> }
+            else
+               Result := {PARSE_NON_TERMINAL << epsilon, agent build_empty_list(list_name);
+                                                {FAST_ARRAY[STRING] << element_name >> }, agent build_new_list(element_name, list_name);
+                                                accumulator_rule, action;
+                                                >> }
+            end
+         else
             Result := {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << element_name >> }, agent build_new_list(element_name, list_name);
-                                             {FAST_ARRAY[STRING] << element_name, list_name >> }, agent build_continue_list(element_name, 0, list_name) >> }
+                                             accumulator_rule, action;
+                                             >> }
          end
       end
 
    the_table: PARSE_TABLE is
+      local
+         e1, e2, e3, e4, e5, e6: FIXED_STRING
       once
+         e1 := "e1".intern
+         e2 := "e2".intern
+         e3 := "e3".intern
+         e4 := "e4".intern
+         e5 := "e5".intern
+         e6 := "e6".intern
+
          Result := {PARSE_TABLE << "File", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "File_Content", "KW end", "KW end of file" >> }, Void;
                                                                   >> };
                                    "File_Content", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Score" >> }, Void;
@@ -43,7 +73,7 @@ feature {}
                                                                           {FAST_ARRAY[STRING] << "Module" >> }, Void;
                                                                           >> };
 
-                                   "Module", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW module", "KW identifier", "Definition*", "Score_Content" >> }, Void;
+                                   "Module", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW module", "KW identifier", "Definition*" >> }, Void;
                                                                     >> };
 
                                    "Score", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW score", "KW identifier", "Score_Content" >> }, Void;
@@ -52,40 +82,38 @@ feature {}
                                                                            {FAST_ARRAY[STRING] << "Book_Content" >> }, Void;
                                                                            >> };
 
-                                   "Definition*", list_of("Definition", True);
+                                   "Definition*", list_of("Definition", True, Void);
                                    "Definition", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Export" >> }, Void;
                                                                         {FAST_ARRAY[STRING] << "Import" >> }, Void;
                                                                         {FAST_ARRAY[STRING] << "Set" >> }, Void;
                                                                         >> };
 
-                                   "Export", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW export", "Identifier", "KW =", "Value" >> }, Void;
-                                                                    {FAST_ARRAY[STRING] << "KW export", "KW const", "Identifier", "KW =", "Value" >> }, Void;
+                                   "Export", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW export", "Identifier", "KW :=", "Value" >> }, Void;
+                                                                    {FAST_ARRAY[STRING] << "KW export", "KW const", "Identifier", "KW :=", "Value" >> }, Void;
                                                                     >> };
-                                   "Set", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW set", "Identifier", "KW =", "Value" >> }, Void;
+                                   "Set", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW set", "Identifier", "KW :=", "Value" >> }, Void;
                                                                  >> };
-                                   "Import", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW from", "Identifier", "KW import", "Symbol+" >> }, Void;
+                                   "Import", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW from", "Identifier", "KW import", "Identifier+" >> }, Void;
                                                                     {FAST_ARRAY[STRING] << "KW from", "Identifier", "KW import", "KW *" >> }, Void;
                                                                     {FAST_ARRAY[STRING] << "KW import", "Identifier" >> }, Void;
                                                                     >> };
 
-                                   "Symbol+", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW identifier" >> }, agent build_new_list("KW identifier", "Identifier");
-                                                                     {FAST_ARRAY[STRING] << "KW identifier", "KW ,", "Symbol+" >> }, agent build_continue_list("KW identifier", 1, "Identifier")
-                                                                     >> };
+                                   "Identifier+", list_of("Identifier", False, "KW ,");
 
-                                   "Book+", list_of("Book", False);
+                                   "Book+", list_of("Book", False, Void);
                                    "Book", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW book", "KW identifier", "Book_Content" >> }, Void;
                                                                   >> };
                                    "Book_Content", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Definition*", "Partitur+" >> }, Void;
                                                                           {FAST_ARRAY[STRING] << "Partitur_Content" >> }, Void;
                                                                           >> };
 
-                                   "Partitur+", list_of("Partitur", False);
+                                   "Partitur+", list_of("Partitur", False, Void);
                                    "Partitur", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW partitur", "KW identifier", "Partitur_Content" >> }, Void;
                                                                       >> };
                                    "Partitur_Content", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Definition*", "Instrument+" >> }, Void;
                                                                               >> };
 
-                                   "Instrument+", list_of("Instrument", False);
+                                   "Instrument+", list_of("Instrument", False, Void);
                                    "Instrument", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW instrument", "KW identifier", "Definition*", "Some_Music", "KW end" >> }, Void;
                                                                         >> };
 
@@ -116,22 +144,17 @@ feature {}
                                    "Identifier_Args", {PARSE_NON_TERMINAL << epsilon, Void;
                                                                              {FAST_ARRAY[STRING] << "KW (", "Value*", "KW )" >> }, Void;
                                                                              >> };
-                                   "Value*", {PARSE_NON_TERMINAL << epsilon, agent build_empty_list("Value*");
-                                                                    {FAST_ARRAY[STRING] << "Value" >> }, agent build_new_list("Value", "Value*");
-                                                                    {FAST_ARRAY[STRING] << "Value", "KW ,", "Value*" >> }, agent build_continue_list("Value", 1, "Value*")
-                                                                    >> };
+                                   "Value*", list_of("Value", True, "KW ,");
 
                                    "Lyrics", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW lyrics", "Strophe*" >> }, Void;
                                                                     >> };
-                                   "Strophe*", list_of("Strophe", True);
+                                   "Strophe*", list_of("Strophe", True, Void);
                                    "Strophe", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <<", "Word*", "KW >>" >> }, Void;
                                                                      >> };
-                                   "Word*", list_of("Word", True);
+                                   "Word*", list_of("Word", True, Void);
                                    "Word", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Syllable+" >> }, Void;
                                                                   >> };
-                                   "Syllable+", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Syllable" >> }, agent build_new_list("Syllable", "Syllable+");
-                                                                       {FAST_ARRAY[STRING] << "Syllable", "KW -", "Syllable+" >> }, agent build_continue_list("Syllable", 1, "Syllable+")
-                                                                       >> };
+                                   "Syllable+", list_of("Syllable", False, "KW -");
                                    "Syllable", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW string" >> }, Void;
                                                                       {FAST_ARRAY[STRING] << "KW syllable" >> }, Void;
                                                                       {FAST_ARRAY[STRING] << "KW \", "Identifier" >> }, Void;
@@ -140,7 +163,7 @@ feature {}
                                    "Music", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW music", "Notes*" >> }, Void;
                                                                    >> };
 
-                                   "Notes*", list_of("Notes", True);
+                                   "Notes*", list_of("Notes", True, Void);
                                    "Notes", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW |" >> }, Void; -- check bar
                                                                    {FAST_ARRAY[STRING] << "KW ^" >> }, Void; -- next staff (going up; each voice starts at the lowest staff of the instrument)
                                                                    {FAST_ARRAY[STRING] << "KW ." >> }, Void; -- previous staff (going back down)
@@ -166,9 +189,7 @@ feature {}
                                                                       {FAST_ARRAY[STRING] << "KW :", "Position", "Dynamic+", "KW :" >> }, Void;
                                                                       {FAST_ARRAY[STRING] << "KW :", "Position", "Dynamic+", "KW ...", "KW :" >> }, Void; -- dashed line along the whole dynamic section (not with hairpins!)
                                                                       >> };
-                                   "Dynamic+", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Dynamic" >> }, agent build_new_list("Dynamic", "Dynamic+");
-                                                                      {FAST_ARRAY[STRING] << "Dynamic", "KW ,", "Dynamic+" >> }, agent build_continue_list("Dynamic", 1, "Dynamic+")
-                                                                      >> };
+                                   "Dynamic+", list_of("Dynamic", False, "KW ,");
                                    "Dynamic",  {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW identifier" >> }, Void;
                                                                       {FAST_ARRAY[STRING] << "KW string" >> }, Void;
                                                                       {FAST_ARRAY[STRING] << "KW <" >> }, Void;
@@ -192,24 +213,134 @@ feature {}
                                    "Tie", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW (", "Notes*", "KW )" >> }, Void;
                                                                  >> };
 
-                                   "Function", {PARSE_NON_TERMINAL << epsilon, Void -- TODO: for output implementation
-                                                                      >> };
 
-                                   "KW note head+", list_of("KW note head", False);
+                                   "Function", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW function", "Signature", "Function_Body" >> }, Void;
+                                                                      >> };
+                                   "Signature", {PARSE_NON_TERMINAL << epsilon, Void;
+                                                                       {FAST_ARRAY[STRING] << "KW (", "Arg+", "KW )" >> }, Void;
+                                                                       >> };
+                                   "Arg+", list_of("Arg", False, "KW ,");
+                                   "Arg", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW identifier" >> }, Void;
+                                                                 >> };
+                                   "Function_Body", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW do", "Statement*", "KW end" >> }, Void;
+                                                                           {FAST_ARRAY[STRING] << "KW native", "KW identifier" >> }, Void;
+                                                                           >> };
+                                   "Statement*", list_of("Statement", True, Void);
+                                   "Statement", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "If_Then_Else" >> }, Void;
+                                                                       {FAST_ARRAY[STRING] << "Loop" >> }, Void;
+                                                                       {FAST_ARRAY[STRING] << "Expression_Or_Assignment" >> }, Void;
+                                                                       {FAST_ARRAY[STRING] << "Yield" >> }, Void;
+                                                                       >> };
+                                   "Yield", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW yield", "Expression" >> }, Void;
+                                                                   >> };
+                                   "Expression_Or_Assignment", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Value", "KW :=", "Expression" >> }, Void;
+                                                                                      {FAST_ARRAY[STRING] << "KW Result", "KW :=", "Expression" >> }, Void;
+                                                                                      {FAST_ARRAY[STRING] << "Expression" >> }, Void;
+                                                                                      >> };
+                                   "Loop", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW for", "KW identifier", "KW in", "Value", "KW do", "Statement*", "KW end" >> }, Void;
+                                                                  >> };
+                                   "If_Then_Else", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "If", "ElseIf*", "Else", "KW end" >> }, Void;
+                                                                >> };
+                                   "If", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW if", "Expression", "KW then", "Statement*" >> }, Void;
+                                                                >> };
+                                   "ElseIf*", list_of("ElseIf", True, Void);
+                                   "ElseIf", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW elseif", "Expression", "KW then", "Statement*" >> }, Void;
+                                                                    >> };
+                                   "Else", {PARSE_NON_TERMINAL << epsilon, Void;
+                                                                  {FAST_ARRAY[STRING] << "KW else", "Statement*" >> }, Void;
+                                                                  >> };
+
+                                   "Expression", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Collection" >> }, Void;
+                                                                        {FAST_ARRAY[STRING] << "Unary_Expression" >> }, Void >> };
+                                   "Unary_Expression", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "e1", "r1" >> }, agent build_expression_no_array(e1, ?);
+                                                                              >> };
+
+                                   "e1", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "e2", "r2" >> }, agent build_expression(e2);
+                                                                >> };
+                                   "e2", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "e3", "r3" >> }, agent build_expression(e3);
+                                                                >> };
+                                   "e3", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "e4", "r4" >> }, agent build_expression(e4);
+                                                                >> };
+                                   "e4", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "e5", "r5" >> }, agent build_expression(e5);
+                                                                >> };
+                                   "e5", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "e6", "r6" >> }, agent build_expression(e6);
+                                                                >> };
+                                   "e6", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "e7", "r7" >> }, Void;
+                                                                >> };
+                                   "e7", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW not", "e7" >> }, Void;
+                                                                {FAST_ARRAY[STRING] << "KW +", "e7" >> }, Void;
+                                                                {FAST_ARRAY[STRING] << "KW -", "e7" >> }, Void;
+                                                                {FAST_ARRAY[STRING] << "e8" >> }, Void;
+                                                                >> };
+                                   "e8", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Value" >> }, Void;
+                                                                >> };
+
+                                   "r1", {PARSE_NON_TERMINAL << epsilon, agent build_expression_epsilon(e1);
+                                                                {FAST_ARRAY[STRING] << "KW implies", "e1", "r1" >> }, agent build_expression_remainder({FAST_ARRAY[STRING] << "KW implies" >> }, e1);
+                                                                >> };
+                                   "r2", {PARSE_NON_TERMINAL << epsilon, agent build_expression_epsilon(e2);
+                                                                {FAST_ARRAY[STRING] << "KW or", "e2", "r2" >> }, agent build_expression_remainder({FAST_ARRAY[STRING] << "KW or" >> }, e2);
+                                                                {FAST_ARRAY[STRING] << "KW xor", "e2", "r2" >> }, agent build_expression_remainder({FAST_ARRAY[STRING] << "KW xor" >> }, e2);
+                                                                >> };
+                                   "r3", {PARSE_NON_TERMINAL << epsilon, agent build_expression_epsilon(e3);
+                                                                {FAST_ARRAY[STRING] << "KW and", "e3", "r3" >> }, agent build_expression_remainder({FAST_ARRAY[STRING] << "KW and" >> }, e3);
+                                                                >> };
+                                   "r4", {PARSE_NON_TERMINAL << epsilon, agent build_expression_epsilon(e4);
+                                                                {FAST_ARRAY[STRING] << "KW =", "e4", "r4" >> },  agent build_expression_remainder({FAST_ARRAY[STRING] << "KW ="  >> }, e4 );
+                                                                {FAST_ARRAY[STRING] << "KW !=", "e4", "r4" >> }, agent build_expression_remainder({FAST_ARRAY[STRING] << "KW /=" >> }, e4 );
+                                                                {FAST_ARRAY[STRING] << "KW <=", "e4", "r4" >> }, agent build_expression_remainder({FAST_ARRAY[STRING] << "KW <=" >> }, e4 );
+                                                                {FAST_ARRAY[STRING] << "KW <", "e4", "r4" >> },  agent build_expression_remainder({FAST_ARRAY[STRING] << "KW <"  >> }, e4 );
+                                                                {FAST_ARRAY[STRING] << "KW >=", "e4", "r4" >> }, agent build_expression_remainder({FAST_ARRAY[STRING] << "KW >=" >> }, e4 );
+                                                                {FAST_ARRAY[STRING] << "KW >", "e4", "r4" >> },  agent build_expression_remainder({FAST_ARRAY[STRING] << "KW >"  >> }, e4 );
+                                                                >> };
+                                   "r5", {PARSE_NON_TERMINAL << epsilon, agent build_expression_epsilon(e5);
+                                                                {FAST_ARRAY[STRING] << "KW +", "e5", "r5" >> }, agent build_expression_remainder({FAST_ARRAY[STRING] << "KW +" >> }, e5 );
+                                                                {FAST_ARRAY[STRING] << "KW -", "e5", "r5" >> }, agent build_expression_remainder({FAST_ARRAY[STRING] << "KW -" >> }, e5 );
+                                                                >> };
+                                   "r6", {PARSE_NON_TERMINAL << epsilon, agent build_expression_e6;
+                                                                {FAST_ARRAY[STRING] << "KW *", "e6", "r6" >> },  agent build_expression_remainder({FAST_ARRAY[STRING] << "KW *"  >> }, e6 );
+                                                                {FAST_ARRAY[STRING] << "KW /", "e6", "r6" >> },  agent build_expression_remainder({FAST_ARRAY[STRING] << "KW /"  >> }, e6 );
+                                                                {FAST_ARRAY[STRING] << "KW //", "e6", "r6" >> }, agent build_expression_remainder({FAST_ARRAY[STRING] << "KW //" >> }, e6 );
+                                                                {FAST_ARRAY[STRING] << "KW \\", "e6", "r6" >> }, agent build_expression_remainder({FAST_ARRAY[STRING] << "KW \\" >> }, e6 );
+                                                                >> };
+                                   "r7", {PARSE_NON_TERMINAL << epsilon, Void;
+                                                                {FAST_ARRAY[STRING] << "KW ^", "e7", "r7" >> }, Void;
+                                                                >> };
+
+                                   "Collection", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "List" >> }, Void;
+                                                                        {FAST_ARRAY[STRING] << "Dictionary" >> }, Void;
+                                                                        >> };
+                                   "List", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW [", "Expression*", "KW ]" >> }, Void;
+                                                                  >> };
+                                   "Dictionary", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW {", "Expression_Pair*", "KW }" >> }, Void;
+                                                                        >> };
+                                   "Expression*", list_of("Expression", True, "KW ,");
+                                   "Expression_Pair*", list_of("Expression_Pair", True, "KW ,");
+                                   "Expression_Pair", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Expression", "KW :", "Expression" >> }, Void;
+                                                                             >> };
+
+
+                                   "KW note head+", list_of("KW note head", False, Void);
 
                                    "KW ^",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "^" , ""),  Void);
                                    "KW <<",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<<", ""),  Void);
-                                   "KW <",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<" , "<"), Void);
+                                   "KW <=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<=", ""),  Void);
+                                   "KW <",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<" , "<="), Void);
                                    "KW =",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "=" , ""),  Void);
+                                   "KW >=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">=", ""),  Void);
                                    "KW >>",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">>", ""),  Void);
-                                   "KW >",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">" , ">"), Void);
+                                   "KW >",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">" , ">="), Void);
                                    "KW |",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "|" , ""),  Void);
                                    "KW -",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "-" , ""),  Void);
                                    "KW ,",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "," , ""),  Void);
-                                   "KW :",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":" , ""),  Void);
-                                   "KW .",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "." , "."),  Void);
-                                   "KW ..",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ".." , "."),  Void);
+                                   "KW :=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":=" , ""),  Void);
+                                   "KW :",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":" , "="),  Void);
+                                   "KW !=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "!=" , ""),  Void);
+                                   "KW //",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "//" , ""),  Void);
+                                   "KW /",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "/" , "/"),  Void);
                                    "KW ...",         create {PARSE_TERMINAL}.make(agent parse_symbol(?, "..." , ""),  Void);
+                                   "KW ..",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ".." , "."),  Void);
+                                   "KW .",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "." , "."),  Void);
                                    "KW (",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "(" , ""),  Void);
                                    "KW )",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ")" , ""),  Void);
                                    "KW [",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "[" , ""),  Void);
@@ -217,26 +348,44 @@ feature {}
                                    "KW {",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "{" , ""),  Void);
                                    "KW }",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "}" , ""),  Void);
                                    "KW *",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "*" , ""),  Void);
-                                   "KW \",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "\" , ""),  Void);
+                                   "KW \",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "\" , "\"),  Void);
+                                   "KW \\",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "\\" , ""),  Void);
+                                   "KW +",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "+" , ""),  Void);
 
+                                   "KW and",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "and"), Void);
                                    "KW book",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "book"), Void);
                                    "KW bottom",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "bottom"), Void);
                                    "KW const",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "const"), Void);
+                                   "KW do",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "do"), Void);
                                    "KW down",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "down"), Void);
+                                   "KW else",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "else"), Void);
+                                   "KW elseif",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "elseif"), Void);
                                    "KW end",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "end"), Void);
                                    "KW export",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "export"), Void);
+                                   "KW for",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "for"), Void);
                                    "KW from",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "from"), Void);
+                                   "KW function",    create {PARSE_TERMINAL}.make(agent parse_keyword(?, "function"), Void);
                                    "KW hidden",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "hidden"), Void);
+                                   "KW if",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "if"), Void);
+                                   "KW implies",     create {PARSE_TERMINAL}.make(agent parse_keyword(?, "implies"), Void);
                                    "KW import",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "import"), Void);
+                                   "KW in",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "in"), Void);
                                    "KW instrument",  create {PARSE_TERMINAL}.make(agent parse_keyword(?, "instrument"), Void);
                                    "KW lyrics",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "lyrics"), Void);
                                    "KW module",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "module"), Void);
                                    "KW music",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "music"), Void);
+                                   "KW native",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "native"), Void);
+                                   "KW not",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "not"), Void);
+                                   "KW or",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "or"), Void);
                                    "KW partitur",    create {PARSE_TERMINAL}.make(agent parse_keyword(?, "partitur"), Void);
+                                   "KW Result",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "Result"), Void);
                                    "KW score",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "score"), Void);
                                    "KW set",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "set"), Void);
+                                   "KW then",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "then"), Void);
                                    "KW top",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "top"), Void);
                                    "KW up",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "up"), Void);
+                                   "KW xor",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "xor"), Void);
+                                   "KW yield",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "yield"), Void);
 
                                    "KW boolean",     create {PARSE_TERMINAL}.make(agent parse_boolean, Void);
                                    "KW identifier",  create {PARSE_TERMINAL}.make(agent parse_identifier, Void);
@@ -981,7 +1130,47 @@ feature {}
       do
          inspect
             id
-         when "book", "const", "end", "export", "false", "from", "import", "instrument", "lyrics", "module", "music", "partitur", "score", "set", "syllable", "true" then
+         when
+            "and",
+            "book",
+            "bottom",
+            "const",
+            "do",
+            "down",
+            "else",
+            "elseif",
+            "end",
+            "export",
+            "for",
+            "from",
+            "function",
+            "hidden",
+            "if",
+            "implies",
+            "import",
+            "in",
+            "instrument",
+            "lyrics",
+            "module",
+            "music",
+            "native",
+            "not",
+            "or",
+            "partitur",
+            "score",
+            "set",
+            "then",
+            "top",
+            "up",
+            "xor",
+            "yield"
+          then
+            Result := True
+         when
+            "False",
+            "Result",
+            "True"
+          then
             Result := True
          else
             check
@@ -1069,10 +1258,10 @@ feature {}
          start_position := position
          inspect
             buffer.current_character
-         when 't' then
-            image := keyword_image(buffer, once "true", Void)
-         when 'f' then
-            image := keyword_image(buffer, once "false", Void)
+         when 'T' then
+            image := keyword_image(buffer, once "True", Void)
+         when 'F' then
+            image := keyword_image(buffer, once "False", Void)
          else
             check image = Void end
          end
@@ -1190,6 +1379,7 @@ feature {}
 
 feature {}
    stack: FAST_ARRAY[MIXUP_NODE]
+   left_assoc_stack: FAST_ARRAY[MIXUP_LEFT_ASSOCIATIVE_EXPRESSION]
 
    show_stack is
       local
@@ -1392,6 +1582,189 @@ feature {}
          stack.last = old stack.last
       end
 
+feature {} -- expressions
+   build_expression_remainder (operator_names: FAST_ARRAY[ABSTRACT_STRING]; expression_name: FIXED_STRING) is
+      local
+         tail: MIXUP_LEFT_ASSOCIATIVE_EXPRESSION
+         exp: MIXUP_NODE; operator_nodes: COLLECTION[MIXUP_NODE]
+         i: INTEGER
+      do
+         debug ("parse/mixup/build")
+            std_error.put_string(once "Building left-associative expression ")
+            std_error.put_string(expression_name)
+            std_error.put_string(once " using operator ")
+            std_error.put_line(operator_names.out)
+         end
+
+         exp := ensure_expression(stack.last, expression_name)
+         stack.remove_last
+         debug ("parse/mixup/build")
+            std_error.put_string(once "  => setting aside: ")
+            std_error.put_line(exp.name)
+         end
+         create {FAST_ARRAY[MIXUP_NODE]} operator_nodes.with_capacity(operator_names.count)
+         from
+            i := operator_names.lower
+         until
+            i > operator_names.upper
+         loop
+            operator_nodes.add_last(stack.last)
+            stack.remove_last
+            i := i + 1
+         end
+         tail.set(expression_name, operator_names, exp, operator_nodes)
+         left_assoc_stack.add_last(tail)
+
+         debug ("parse/mixup/build")
+            show_stack
+         end
+      end
+
+   ensure_expression (expression: MIXUP_NODE; expression_name: FIXED_STRING): MIXUP_NON_TERMINAL_NODE is
+      local
+         expname: STRING
+      do
+         if expression.name.is_equal(expression_name) then
+            Result ::= expression
+         else
+            expname := once "..-exp"
+            expname.make_from_string(expression_name)
+            expname.append(once "-exp")
+            if expression.name.is_equal(expname) then
+               Result ::= expression
+            else
+               left_assoc_names.clear_count
+               left_assoc_names.add_last(expression.name)
+               Result := factory.non_terminal(expression_name, left_assoc_names.twin)
+               Result.set(0, expression)
+            end
+         end
+      end
+
+   build_expression (expression_name: FIXED_STRING) is
+      local
+         tail: MIXUP_LEFT_ASSOCIATIVE_EXPRESSION
+         left, right: MIXUP_NODE; nt: MIXUP_NON_TERMINAL_NODE
+         i: INTEGER; name: STRING
+      do
+         debug ("parse/mixup/build")
+            std_error.put_string(once "Building simple expression ")
+            std_error.put_line(expression_name)
+         end
+
+         name := once "..-exp"
+         name.make_from_string(expression_name)
+         name.append(once "-exp")
+
+         from
+            left := ensure_expression(stack.last, expression_name)
+            stack.remove_last
+         invariant
+            not left_assoc_stack.is_empty implies left_assoc_stack.last.expression_name = expression_name
+         until
+            left_assoc_stack.is_empty
+         loop
+            debug ("parse/mixup/build")
+               std_error.put_string(once "  left: ")
+               std_error.put_line(left.name)
+            end
+
+            tail := left_assoc_stack.last
+            left_assoc_stack.remove_last
+
+            right := ensure_expression(tail.right_node, expression_name)
+            debug ("parse/mixup/build")
+               std_error.put_string(once "  op: ")
+               std_error.put_line(tail.operator_names_out)
+               std_error.put_string(once "  right: ")
+               std_error.put_line(right.name)
+            end
+
+            left_assoc_names.clear_count
+            left_assoc_names.add_last(left.name)
+            tail.append_operators_in(left_assoc_names)
+            left_assoc_names.add_last(expression_name)
+
+            nt := factory.non_terminal(name.intern, left_assoc_names.twin)
+            nt.set(nt.lower, left)
+            nt.set(nt.upper, right)
+            debug ("parse/mixup/build")
+               std_error.put_string(once "  => nt: ")
+               std_error.put_line(nt.name)
+            end
+            check
+               tail.operator_nodes.lower = 0
+            end
+            from
+               i := tail.operator_nodes.lower
+            until
+               i > tail.operator_nodes.upper
+            loop
+               nt.set(nt.lower + i + 1, tail.operator_nodes.item(i))
+               i := i + 1
+            end
+
+            left := nt
+         end
+
+         stack.add_last(left)
+         debug ("parse/mixup/build")
+            show_stack
+         end
+      end
+
+   build_expression_epsilon (expression_name: FIXED_STRING) is
+      do
+         debug ("parse/mixup/build")
+            std_error.put_string(once "Building epsilon expression ")
+            std_error.put_line(expression_name)
+         end
+
+         stack.put(ensure_expression(stack.last, expression_name), stack.upper)
+
+         debug ("parse/mixup/build")
+            show_stack
+         end
+      end
+
+   build_expression_e6 is
+      do
+         debug ("parse/mixup/build")
+            std_error.put_line(once "Building epsilon expression e6")
+         end
+
+         -- nothing
+
+         debug ("parse/mixup/build")
+            show_stack
+         end
+      end
+
+   build_expression_no_array (expression_name, node_name: FIXED_STRING) is
+      local
+         exp, nt: MIXUP_NON_TERMINAL_NODE
+      do
+         build_expression(expression_name)
+
+         debug ("parse/mixup/build")
+            std_error.put_line(once "Building expression no-array")
+         end
+
+         exp ::= stack.last
+         stack.remove_last
+
+         left_assoc_names.clear_count
+         left_assoc_names.add_last(exp.name)
+
+         nt := factory.non_terminal(node_name, left_assoc_names.twin)
+         nt.set(nt.lower, exp)
+
+         stack.add_last(nt)
+         debug ("parse/mixup/build")
+            show_stack
+         end
+      end
+
 feature {} -- buffer moves
    next_character (buffer: MINI_PARSER_BUFFER) is
       do
@@ -1411,9 +1784,11 @@ feature {}
       do
          factory := a_factory
          create stack.make(0)
+         create left_assoc_stack.make(0)
       ensure
          factory = a_factory
          stack.is_empty
+         left_assoc_stack.is_empty
       end
 
    default_create is
@@ -1423,7 +1798,13 @@ feature {}
 
    factory: MIXUP_NODE_FACTORY
 
+   left_assoc_names: FAST_ARRAY[FIXED_STRING] is
+      once
+         create Result.with_capacity(4)
+      end
+
 invariant
    stack /= Void
+   left_assoc_stack /= Void
 
 end

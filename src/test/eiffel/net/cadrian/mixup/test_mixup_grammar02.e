@@ -1,4 +1,4 @@
-class TEST_MIXUP_GRAMMAR01
+class TEST_MIXUP_GRAMMAR02
 
 insert
    EIFFELTEST_TOOLS
@@ -21,16 +21,10 @@ feature {}
          create parser_buffer
 
          parser_buffer.initialize_with("[
-                                        partitur sample
-                                        from mixup.core import *
-                                        set time := common_time
-                                        instrument piano
-                                           set staves = 2
-                                           set staff(1).clef = bass
-                                           set staff(2).clef = trebble
-                                           music
-                                              << :p,<:c4 d e f | g a b :f:c | :hidden:mp:c,1 >>
-                                           end
+                                        module test
+                                        set x := 4
+                                        set something := function(x) native external_fun
+                                        export foobar := function do something(x) end
                                         end
                                         ]")
          grammar.reset

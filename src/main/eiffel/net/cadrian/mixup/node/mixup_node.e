@@ -25,7 +25,7 @@ feature {ANY}
          -- the name of the node in the grammar
       deferred
       ensure
-         name /= Void
+         Result /= Void
       end
 
    source_line: INTEGER is
