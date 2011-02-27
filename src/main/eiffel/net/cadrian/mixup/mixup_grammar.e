@@ -1373,7 +1373,7 @@ feature {}
             if buffer.end_reached then
                end_reached := True
             end
-            create Result.make(image, last_blanks.twin, start_position)
+            create Result.make(image.twin, last_blanks.twin, start_position)
          end
       end
 
