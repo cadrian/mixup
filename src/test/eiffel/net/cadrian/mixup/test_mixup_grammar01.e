@@ -30,7 +30,7 @@ feature {}
                                            music
                                               << :p,<:c4 d e f | g a b :f:c | :hidden:mp:c,1 >>
                                            lyrics
-                                              << doe ray me far so la tea doe, doe. >>
+                                              << doe ray me far sew la tea doe, doe. >>
                                            end
                                         instrument bass
                                            music
@@ -74,7 +74,7 @@ feature {}
 
                                         start_bar,
                                         set_note("singer", 1, 4, "g", 3, 4),
-                                        set_lyric("singer", 1, 4, "so"),
+                                        set_lyric("singer", 1, 4, "sew"),
                                         set_note("bass", 1, 1, "g", 1, 1),
                                         set_note("singer", 2, 4, "a", 4, 4),
                                         set_lyric("singer", 2, 4, "la"),
