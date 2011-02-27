@@ -1282,7 +1282,7 @@ feature {}
          start_position := position
          inspect
             buffer.current_character
-         when '"', '\' then
+         when '"', '\', '>' then
             check Result = Void end
             restore(buffer, old_position)
          else
