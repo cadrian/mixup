@@ -22,7 +22,7 @@ feature {ANY}
 
    item (i: INTEGER): MIXUP_NODE is
       do
-         Result := children.item(children.upper - i)
+         Result := children.item(i)
       end
 
    lower: INTEGER is
@@ -42,12 +42,12 @@ feature {ANY}
 
    first: MIXUP_NODE is
       do
-         Result := children.last
+         Result := children.first
       end
 
    last: MIXUP_NODE is
       do
-         Result := children.first
+         Result := children.last
       end
 
    is_empty: BOOLEAN is
@@ -63,7 +63,7 @@ feature {ANY}
 feature {MIXUP_GRAMMAR}
    add (a_child: like item) is
       do
-         children.add_last(a_child)
+         children.add_first(a_child)
          a_child.set_parent(Current)
       end
 
@@ -89,7 +89,7 @@ feature {MIXUP_NODE_HANDLER}
             i > upper
          loop
             n.copy(once "#")
-            (upper - i + lower + 1).append_in(n)
+            (i - lower + 1).append_in(n)
             n.append(once ": ")
             item(i).display(output, indent + 1, n)
             i := i + 1
@@ -115,11 +115,11 @@ feature {}
    make (a_name: like name) is
       do
          name := a_name
-         create children.make(0)
+         create children.with_capacity(0, 0)
       ensure
          name = a_name
       end
 
-   children: FAST_ARRAY[MIXUP_NODE]
+   children: RING_ARRAY[MIXUP_NODE]
 
 end -- class MIXUP_LIST_NODE_IMPL

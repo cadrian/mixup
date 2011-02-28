@@ -33,11 +33,7 @@ feature {MIXUP_MIXER}
       deferred
       end
 
-   set_note (instrument: STRING; time_start, time_tactus: INTEGER; note: STRING; octave, duration: INTEGER) is
-      deferred
-      end
-
-   set_lyric (instrument: STRING; time_start, time_tactus: INTEGER; lyric: STRING) is
+   set_note (instrument: STRING; time_start, time_tactus: INTEGER; note: MIXUP_NOTE) is
       deferred
       end
 

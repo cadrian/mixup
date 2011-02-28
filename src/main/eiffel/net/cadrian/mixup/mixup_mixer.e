@@ -44,6 +44,8 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             play_partitur(node)
          when "Score_Content", "Book_Content", "Partitur_Content" then
             node.accept_all(Current)
+         when "Instrument" then
+            play_instrument(node)
          end
       end
 
@@ -82,6 +84,14 @@ feature {}
          fire_set_partitur(identifier)
          partitur.node_at(2).accept(Current)
          fire_end_partitur
+      end
+
+   play_instrument (instrument: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         instrument.node_at(1).accept(Current)
+         fire_set_instrument(identifier)
+         instrument.node_at(2).accept(Current)
+         music.add(instrument.node_at(3), identifier.intern)
       end
 
 feature {} -- Player events
@@ -125,14 +135,9 @@ feature {} -- Player events
          players.do_all(agent {MIXUP_PLAYER}.set_dynamics(instrument_name, dynamics, position))
       end
 
-   fire_set_note (instrument_name: STRING; time_start, time_tactus: INTEGER; note: STRING; octave, duration: INTEGER) is
+   fire_set_note (instrument_name: STRING; time_start, time_tactus: INTEGER; note: MIXUP_NOTE) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.set_note(instrument_name, time_start, time_tactus, note, octave, duration));
-      end
-
-   fire_set_lyric (instrument_name: STRING; time_start, time_tactus: INTEGER; lyric: STRING) is
-      do
-         players.do_all(agent {MIXUP_PLAYER}.set_lyric(instrument_name, time_start, time_tactus, lyric));
+         players.do_all(agent {MIXUP_PLAYER}.set_note(instrument_name, time_start, time_tactus, note));
       end
 
    fire_start_bar is
@@ -147,10 +152,12 @@ feature {} -- Player events
 
 feature {}
    players: COLLECTION[MIXUP_PLAYER]
+   music: DICTIONARY[MIXUP_NODE, FIXED_STRING]
 
    make is
       do
          create {FAST_ARRAY[MIXUP_PLAYER]} players.make(0)
+         create {HASHED_DICTIONARY[MIXUP_NODE, FIXED_STRING]} music.make
       end
 
 end

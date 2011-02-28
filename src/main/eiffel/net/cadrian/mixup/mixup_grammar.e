@@ -1308,7 +1308,7 @@ feature {}
          when 0 then
             inspect
                c
-            when 'a' .. 'h' then
+            when 'a' .. 'g' then
                Result := True
             else
                check not Result end

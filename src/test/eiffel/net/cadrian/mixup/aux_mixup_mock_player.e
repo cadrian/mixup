@@ -15,7 +15,6 @@ insert
          set_instrument as set_instrument_event,
          set_dynamics as set_dynamics_event,
          set_note as set_note_event,
-         set_lyric as set_lyric_event,
          start_bar as start_bar_event,
          end_bar as end_bar_event
       end
@@ -70,14 +69,9 @@ feature {MIXUP_MIXER}
          events_list.add_last(set_dynamics_event(instrument, dynamics, position))
       end
 
-   set_note (instrument: STRING; time_start, time_tactus: INTEGER; note: STRING; octave, duration: INTEGER) is
+   set_note (instrument: STRING; time_start, time_tactus: INTEGER; note: MIXUP_NOTE) is
       do
-         events_list.add_last(set_note_event(instrument, time_start, time_tactus, note, octave, duration))
-      end
-
-   set_lyric (instrument: STRING; time_start, time_tactus: INTEGER; lyric: STRING) is
-      do
-         events_list.add_last(set_lyric_event(instrument, time_start, time_tactus, lyric))
+         events_list.add_last(set_note_event(instrument, time_start, time_tactus, note))
       end
 
    start_bar is

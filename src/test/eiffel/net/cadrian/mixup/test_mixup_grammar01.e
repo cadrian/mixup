@@ -9,6 +9,11 @@ create {}
    make
 
 feature {}
+   note (a_note: STRING; a_octave: INTEGER): MIXUP_NOTE_HEAD is
+      do
+         Result.set(a_note, a_octave)
+      end
+
    make is
       local
          grammar: MIXUP_GRAMMAR
@@ -31,6 +36,7 @@ feature {}
                                               << :p,<:c4 d e f | g a b :f:c | :hidden:mp:c,1 >>
                                            lyrics
                                               << doe ray me far sew la tea doe, doe. >>
+                                              << do re mi fa so la ti do, do. >>
                                            end
                                         instrument bass
                                            music
@@ -52,6 +58,7 @@ feature {}
          mixer.add_player(player)
          mixer.play(grammar.root_node)
 
+         std_output.put_line("Events: " + player.events.out)
          assert(player.events.is_equal({FAST_ARRAY[AUX_MIXUP_MOCK_EVENT] <<
 
                                         set_partitur("sample"),
@@ -61,35 +68,26 @@ feature {}
                                         start_bar,
                                         set_dynamics("singer", "p", Void),
                                         set_dynamics("singer", "<", Void),
-                                        set_note("singer", 1, 4, "c", 3, 4),
-                                        set_lyric("singer", 1, 4, "doe"),
-                                        set_note("bass", 1, 1, "c", 2, 1),
-                                        set_note("singer", 2, 4, "d", 3, 4),
-                                        set_lyric("singer", 2, 4, "ray"),
-                                        set_note("singer", 3, 4, "e", 3, 4),
-                                        set_lyric("singer", 3, 4, "me"),
-                                        set_note("singer", 4, 4, "f", 3, 4),
-                                        set_lyric("singer", 4, 4, "far"),
+                                        set_note("singer", 1, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("c", 3) >> }, << "doe" , "do"  >> }), -- a deer, a female deer
+                                        set_note("bass",   1, 1,               {MIXUP_CHORD 1, << note("c", 2) >> }),
+                                        set_note("singer", 2, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("d", 3) >> }, << "ray" , "re"  >> }), -- a drop of golden sun
+                                        set_note("singer", 3, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("e", 3) >> }, << "me"  , "mi"  >> }), -- a name I call myself
+                                        set_note("singer", 4, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("f", 3) >> }, << "far" , "fa"  >> }), -- a long, long way to run
                                         end_bar,
 
                                         start_bar,
-                                        set_note("singer", 1, 4, "g", 3, 4),
-                                        set_lyric("singer", 1, 4, "sew"),
-                                        set_note("bass", 1, 1, "g", 1, 1),
-                                        set_note("singer", 2, 4, "a", 4, 4),
-                                        set_lyric("singer", 2, 4, "la"),
-                                        set_note("singer", 3, 4, "b", 4, 4),
-                                        set_lyric("singer", 3, 4, "tea"),
+                                        set_note("singer", 1, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("g", 3) >> }, << "sew" , "so"  >> }), -- a needle pulling thread
+                                        set_note("bass",   1, 1,               {MIXUP_CHORD 1, << note("g", 1) >> }),
+                                        set_note("singer", 2, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("a", 4) >> }, << "la"  , "la"  >> }), -- a note to follow so
+                                        set_note("singer", 3, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("b", 4) >> }, << "tea" , "ti"  >> }), -- a drink with jam and bread
                                         set_dynamics("singer", "f", Void),
-                                        set_note("singer", 4, 4, "c", 4, 4),
-                                        set_lyric("singer", 4, 4, "doe,"),
+                                        set_note("singer", 4, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("c", 4) >> }, << "doe,", "do," >> }),
                                         end_bar,
 
                                         start_bar,
-                                        set_dynamics("singer", "mp", "hidden"),
-                                        set_note("singer", 1, 1, "c", 3, 1),
-                                        set_lyric("singer", 1, 1, "doe."),
-                                        set_note("bass", 1, 1, "c", 2, 1),
+                                        set_dynamics("singer", "mp", "hidden"),                                                              -- that will bring us back to
+                                        set_note("singer", 1, 1, {MIXUP_LYRICS {MIXUP_CHORD 1, << note("c", 3) >> }, << "doe.", "do." >> }),
+                                        set_note("bass",   1, 1,               {MIXUP_CHORD 1, << note("c", 2) >> }),
                                         end_bar,
 
                                         end_partitur
