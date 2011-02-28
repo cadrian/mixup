@@ -52,6 +52,11 @@ feature {ANY}
          Result := nodes.is_empty
       end
 
+   accept_all (visitor: VISITOR) is
+      do
+         nodes.do_all(agent {VISITABLE}.accept(visitor))
+      end
+
 feature {MIXUP_GRAMMAR}
    set (index: INTEGER; node: MIXUP_NODE) is
       do

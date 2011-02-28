@@ -47,7 +47,7 @@ feature {}
          grammar.root_node.generate(std_output)
          std_output.put_new_line
 
-         create mixer
+         create mixer.make
          create player.make
          mixer.add_player(player)
          mixer.play(grammar.root_node)
@@ -92,7 +92,7 @@ feature {}
                                         set_note("bass", 1, 1, "c", 2, 1),
                                         end_bar,
 
-                                        end_piece
+                                        end_partitur
                                         >>}));
       end
 

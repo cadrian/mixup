@@ -1,7 +1,27 @@
 expanded class AUX_MIXUP_MOCK_PLAYER_EVENTS
 
 feature {}
+   set_score (name: STRING): AUX_MIXUP_MOCK_EVENT is
+      do
+      end
+
+   end_score: AUX_MIXUP_MOCK_EVENT is
+      do
+      end
+
+   set_book (name: STRING): AUX_MIXUP_MOCK_EVENT is
+      do
+      end
+
+   end_book: AUX_MIXUP_MOCK_EVENT is
+      do
+      end
+
    set_partitur (name: STRING): AUX_MIXUP_MOCK_EVENT is
+      do
+      end
+
+   end_partitur: AUX_MIXUP_MOCK_EVENT is
       do
       end
 
@@ -26,10 +46,6 @@ feature {}
       end
 
    end_bar: AUX_MIXUP_MOCK_EVENT is
-      do
-      end
-
-   end_piece: AUX_MIXUP_MOCK_EVENT is
       do
       end
 

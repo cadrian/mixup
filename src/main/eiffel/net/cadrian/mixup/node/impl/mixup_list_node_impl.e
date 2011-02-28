@@ -55,6 +55,11 @@ feature {ANY}
          Result := children.is_empty
       end
 
+   accept_all (visitor: VISITOR) is
+      do
+         children.do_all(agent {VISITABLE}.accept(visitor))
+      end
+
 feature {MIXUP_GRAMMAR}
    add (a_child: like item) is
       do
