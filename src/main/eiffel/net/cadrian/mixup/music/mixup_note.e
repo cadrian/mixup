@@ -8,9 +8,9 @@ feature {ANY}
       do
       end
 
-   new_note_iterator (a_instrument: FIXED_STRING): MIXUP_NOTES_ITERATOR is
+   new_note_iterator (a_instrument: FIXED_STRING; a_start_time: INTEGER_64): MIXUP_NOTES_ITERATOR is
       do
-         create {MIXUP_NOTES_ITERATOR_ON_SINGLE_NOTE} Result.make(a_instrument, Current)
+         create {MIXUP_NOTES_ITERATOR_ON_SINGLE_NOTE} Result.make(a_instrument, a_start_time, Current)
       end
 
 feature {MIXUP_VOICE}

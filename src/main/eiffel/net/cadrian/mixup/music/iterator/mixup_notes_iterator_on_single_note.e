@@ -24,19 +24,18 @@ feature {ANY}
       end
 
 feature {}
-   make (a_instrument: FIXED_STRING; a_note: MIXUP_NOTE) is
+   make (a_instrument: FIXED_STRING; time: INTEGER_64; a_note: MIXUP_NOTE) is
       require
          a_note /= Void
       do
-         item.set(a_instrument, 0, a_note)
+         item.set(a_instrument, time, a_note)
       ensure
-         item.time = 0
+         item.time = time
          item.note = a_note
          not is_off
       end
 
 invariant
-   item.time = 0
    item.note /= Void
 
 end

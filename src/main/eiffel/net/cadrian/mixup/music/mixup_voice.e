@@ -78,9 +78,9 @@ feature {ANY}
          music.do_all(agent {MIXUP_MUSIC}.commit)
       end
 
-   new_note_iterator (a_instrument: FIXED_STRING): MIXUP_NOTES_ITERATOR is
+   new_note_iterator (a_instrument: FIXED_STRING; a_start_time: INTEGER_64): MIXUP_NOTES_ITERATOR is
       do
-         create {MIXUP_NOTES_ITERATOR_ON_VOICE} Result.make(a_instrument, music)
+         create {MIXUP_NOTES_ITERATOR_ON_VOICE} Result.make(a_instrument, a_start_time, music)
       end
 
 feature {MIXUP_VOICES}

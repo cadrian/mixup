@@ -260,14 +260,14 @@ feature {}
 
    play_partitur_content (partitur_content: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
-         time: INTEGER_64
          bars: ITERATOR[INTEGER_64]
          barset: SET[INTEGER_64]
          notes: MIXUP_NOTES_ITERATOR_ON_INSTRUMENTS
       do
          create {FAST_ARRAY[MIXUP_INSTRUMENT]} instruments.make(0)
          partitur_content.accept_all(Current)
-         create {HASHED_SET[INTEGER_64]} barset.make
+
+         create {AVL_SET[INTEGER_64]} barset.make
          instruments.do_all(agent add_all_bars(?, barset))
          bars := barset.new_iterator
 
@@ -283,9 +283,8 @@ feature {}
                bars.next
             end
             fire_set_note(notes.item.instrument,
-                          time,
+                          notes.item.time,
                           notes.item.note)
-            time := time + notes.item.time
             notes.next
          end
          fire_end_bar
