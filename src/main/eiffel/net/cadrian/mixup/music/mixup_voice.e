@@ -78,6 +78,11 @@ feature {ANY}
          music.do_all(agent {MIXUP_MUSIC}.commit)
       end
 
+   new_note_iterator: MIXUP_NOTES_ITERATOR is
+      do
+         create {MIXUP_NOTES_ITERATOR_ON_VOICE} Result.make(music)
+      end
+
 feature {MIXUP_VOICES}
    consolidate_bars (barset: SET[INTEGER_64]; duration_offset: like duration) is
       local

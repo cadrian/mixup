@@ -41,9 +41,9 @@ feature {}
          create Result.make("set_dynamics", [instrument, dynamics, position])
       end
 
-   set_note (instrument: ABSTRACT_STRING; time_start, time_tactus: INTEGER; note: MIXUP_NOTE): AUX_MIXUP_MOCK_EVENT is
+   set_note (instrument: ABSTRACT_STRING; time_start: INTEGER_64; note: MIXUP_NOTE): AUX_MIXUP_MOCK_EVENT is
       do
-         create Result.make("set_note", [instrument, time_start, time_tactus, note])
+         create Result.make("set_note", [instrument, time_start, note])
       end
 
    start_bar: AUX_MIXUP_MOCK_EVENT is

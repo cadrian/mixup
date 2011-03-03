@@ -32,9 +32,4 @@ feature {ANY}
       deferred
       end
 
-   new_note_iterator: ITERATOR[TUPLE[INTEGER_64, MIXUP_NOTE]] is
-      do
-         create {MIXUP_NOTES_ITERATOR} Result.make(Current)
-      end
-
 end

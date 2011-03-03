@@ -94,6 +94,11 @@ feature {ANY}
          Result := voices.first.bars
       end
 
+   new_note_iterator: MIXUP_NOTES_ITERATOR is
+      do
+         create {MIXUP_NOTES_ITERATOR_ON_VOICES} Result.make(voices)
+      end
+
 feature {MIXUP_VOICE}
    consolidate_bars (bars_: SET[INTEGER_64]; duration_offset: like duration) is
       do

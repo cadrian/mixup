@@ -3,6 +3,7 @@ class TEST_MIXUP_GRAMMAR01
 insert
    EIFFELTEST_TOOLS
    MIXUP_NODE_HANDLER
+   MIXUP_NOTE_DURATIONS
    AUX_MIXUP_MOCK_PLAYER_EVENTS
 
 create {}
@@ -68,26 +69,26 @@ feature {}
                                         start_bar,
                                         set_dynamics("singer", "p", Void),
                                         set_dynamics("singer", "<", Void),
-                                        set_note("singer", 1, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("c", 3) >> }, << "doe" , "do"  >> }), -- a deer, a female deer
-                                        set_note("bass",   1, 1,               {MIXUP_CHORD 1, << note("c", 2) >> }),
-                                        set_note("singer", 2, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("d", 3) >> }, << "ray" , "re"  >> }), -- a drop of golden sun
-                                        set_note("singer", 3, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("e", 3) >> }, << "me"  , "mi"  >> }), -- a name I call myself
-                                        set_note("singer", 4, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("f", 3) >> }, << "far" , "fa"  >> }), -- a long, long way to run
+                                        set_note("singer",    0, {MIXUP_LYRICS {MIXUP_CHORD duration_4, << note("c", 3) >> }, << "doe" , "do"  >> }), -- a deer, a female deer
+                                        set_note("bass",      0,               {MIXUP_CHORD duration_1, << note("c", 2) >> }),
+                                        set_note("singer",   64, {MIXUP_LYRICS {MIXUP_CHORD duration_4, << note("d", 3) >> }, << "ray" , "re"  >> }), -- a drop of golden sun
+                                        set_note("singer",  128, {MIXUP_LYRICS {MIXUP_CHORD duration_4, << note("e", 3) >> }, << "me"  , "mi"  >> }), -- a name I call myself
+                                        set_note("singer",  192, {MIXUP_LYRICS {MIXUP_CHORD duration_4, << note("f", 3) >> }, << "far" , "fa"  >> }), -- a long, long way to run
                                         end_bar,
 
                                         start_bar,
-                                        set_note("singer", 1, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("g", 3) >> }, << "sew" , "so"  >> }), -- a needle pulling thread
-                                        set_note("bass",   1, 1,               {MIXUP_CHORD 1, << note("g", 1) >> }),
-                                        set_note("singer", 2, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("a", 4) >> }, << "la"  , "la"  >> }), -- a note to follow so
-                                        set_note("singer", 3, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("b", 4) >> }, << "tea" , "ti"  >> }), -- a drink with jam and bread
-                                        set_dynamics("singer", "f", Void),
-                                        set_note("singer", 4, 4, {MIXUP_LYRICS {MIXUP_CHORD 4, << note("c", 4) >> }, << "doe,", "do," >> }),
+                                        set_note("singer",  256, {MIXUP_LYRICS {MIXUP_CHORD duration_4, << note("g", 3) >> }, << "sew" , "so"  >> }), -- a needle pulling thread
+                                        set_note("bass",    256,               {MIXUP_CHORD duration_1, << note("g", 1) >> }),
+                                        set_note("singer",  320, {MIXUP_LYRICS {MIXUP_CHORD duration_4, << note("a", 4) >> }, << "la"  , "la"  >> }), -- a note to follow so
+                                        set_note("singer",  384, {MIXUP_LYRICS {MIXUP_CHORD duration_4, << note("b", 4) >> }, << "tea" , "ti"  >> }), -- a drink with jam and bread
+                                        set_dynamics("singe   r", "f", Void),
+                                        set_note("singer",  448, {MIXUP_LYRICS {MIXUP_CHORD duration_4, << note("c", 4) >> }, << "doe,", "do," >> }),
                                         end_bar,
 
                                         start_bar,
-                                        set_dynamics("singer", "mp", "hidden"),                                                              -- that will bring us back to
-                                        set_note("singer", 1, 1, {MIXUP_LYRICS {MIXUP_CHORD 1, << note("c", 3) >> }, << "doe.", "do." >> }),
-                                        set_note("bass",   1, 1,               {MIXUP_CHORD 1, << note("c", 2) >> }),
+                                        set_dynamics("singer", "mp", "hidden"),                                                                                     -- that will bring us back to
+                                        set_note("singer",  512, {MIXUP_LYRICS {MIXUP_CHORD duration_1, << note("c", 3) >> }, << "doe.", "do." >> }),
+                                        set_note("bass",    512,               {MIXUP_CHORD duration_1, << note("c", 2) >> }),
                                         end_bar,
 
                                         end_partitur

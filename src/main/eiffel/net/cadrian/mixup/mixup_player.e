@@ -43,7 +43,7 @@ feature {MIXUP_MIXER}
       deferred
       end
 
-   set_note (instrument: ABSTRACT_STRING; time_start: INTEGER_64; time_tactus: INTEGER; note: MIXUP_NOTE) is
+   set_note (instrument: ABSTRACT_STRING; time_start: INTEGER_64; note: MIXUP_NOTE) is
       require
          instrument /= Void
       deferred

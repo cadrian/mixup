@@ -13,6 +13,10 @@ feature {ANY}
       deferred
       end
 
+   new_note_iterator: MIXUP_NOTES_ITERATOR is
+      deferred
+      end
+
 feature {MIXUP_VOICE}
    consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
       require

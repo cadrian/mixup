@@ -253,51 +253,31 @@ feature {}
          fire_end_partitur
       end
 
-   add_note_iterator (instrument: MIXUP_INSTRUMENT; notes: DICTIONARY[ITERATOR[TUPLE[INTEGER_64, MIXUP_NOTE]], FIXED_STRING]) is
-      do
-         notes.put(instrument.new_note_iterator, instrument.name)
-      end
-
    play_partitur_content (partitur_content: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
-         time, duration: INTEGER_64; i, tactus: INTEGER
+         time: INTEGER_64
          bars: ITERATOR[INTEGER_64]
-         notes: LINKED_HASHED_DICTIONARY[ITERATOR[TUPLE[INTEGER_64, MIXUP_NOTE]], FIXED_STRING]
+         notes: MIXUP_NOTES_ITERATOR_ON_INSTRUMENTS
       do
          create {FAST_ARRAY[MIXUP_INSTRUMENT]} instruments.make(0)
          partitur_content.accept_all(Current)
 
-         create notes.make
-         instruments.do_all(agent add_note_iterator(?, notes))
-
-         fire_start_bar
          from
-            duration := instruments.first.duration
-            bars     := instruments.first.bars.new_iterator
-            time     := 1
+            create notes.make(instruments)
+            fire_start_bar
          until
-            time > duration
+            notes.is_off
          loop
-            from
-               i := notes.lower
-            until
-               i > notes.upper
-            loop
-               from
-               until
-                  notes.item(i).is_off or else notes.item(i).item.first > time
-               loop
-                  tactus := 256 // time
-                  fire_set_note(notes.key(i), time // tactus, tactus, notes.item(i).item.second)
-                  notes.item(i).next
-               end
-               i := i + 1
-            end
-            if not bars.is_off and then bars.item <= time then
+            if not bars.is_off and then bars.item <= notes.item.time then
                fire_end_bar
                fire_start_bar
+               bars.next
             end
-            time := time + 1
+            fire_set_note(notes.item.instrument,
+                          time,
+                          notes.item.note)
+            time := time + notes.item.time
+            notes.next
          end
          fire_end_bar
       end
@@ -465,9 +445,9 @@ feature {} -- Player events
          players.do_all(agent {MIXUP_PLAYER}.set_dynamics(instrument_name, dynamics, position))
       end
 
-   fire_set_note (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; time_tactus: INTEGER; note: MIXUP_NOTE) is
+   fire_set_note (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; note: MIXUP_NOTE) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.set_note(instrument_name, time_start, time_tactus, note));
+         players.do_all(agent {MIXUP_PLAYER}.set_note(instrument_name, time_start, note));
       end
 
    fire_start_bar is

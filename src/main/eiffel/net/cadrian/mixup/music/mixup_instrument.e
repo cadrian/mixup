@@ -28,11 +28,6 @@ feature {ANY}
          -- TODO
       end
 
-   new_note_iterator: ITERATOR[TUPLE[INTEGER_64, MIXUP_NOTE]] is
-      do
-         Result := voices.new_note_iterator
-      end
-
 feature {}
    make (a_name: ABSTRACT_STRING; a_reference: MIXUP_NOTE_HEAD) is
       require
