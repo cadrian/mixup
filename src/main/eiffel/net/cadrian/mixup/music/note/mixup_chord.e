@@ -7,7 +7,7 @@ inherit
       end
 
 create {ANY}
-   manifest_creation
+   make, manifest_creation
 
 feature {ANY}
    count: INTEGER is
@@ -16,7 +16,7 @@ feature {ANY}
       end
 
    capacity: INTEGER
-   duration: INTEGER
+   duration: INTEGER_64
 
    is_equal (other: like Current): BOOLEAN is
       local
@@ -34,8 +34,29 @@ feature {ANY}
          end
       end
 
+   put (a_index: INTEGER; a_note_head: MIXUP_NOTE_HEAD) is
+      require
+         a_index.in_range(0, capacity - 1)
+      do
+         manifest_put(a_index, a_note_head)
+      end
+
+   anchor: MIXUP_NOTE_HEAD is
+      do
+         Result := storage.item(0)
+      end
+
+feature {}
+   make (a_capacity: INTEGER; a_duration: INTEGER_64) is
+      require
+         a_duration > 0
+         a_capacity > 0
+      do
+         manifest_make(a_capacity, a_duration)
+      end
+
 feature {} -- Manifest creation:
-   manifest_make (a_capacity, a_duration: INTEGER) is
+   manifest_make (a_capacity: INTEGER; a_duration: INTEGER_64) is
       require
          a_capacity > 0
          a_duration > 0

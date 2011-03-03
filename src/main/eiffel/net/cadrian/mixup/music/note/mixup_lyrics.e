@@ -15,9 +15,14 @@ feature {ANY}
          Result := capacity
       end
 
-   duration: INTEGER is
+   duration: INTEGER_64 is
       do
          Result := note.duration
+      end
+
+   anchor: MIXUP_NOTE_HEAD is
+      do
+         Result := note.anchor
       end
 
    capacity: INTEGER

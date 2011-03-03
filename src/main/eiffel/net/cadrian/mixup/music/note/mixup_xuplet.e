@@ -17,7 +17,7 @@ feature {ANY}
 
    capacity: INTEGER
    xuplet: INTEGER
-   duration: INTEGER
+   duration: INTEGER_64
 
    is_equal (other: like Current): BOOLEAN is
       local
@@ -37,7 +37,7 @@ feature {ANY}
       end
 
 feature {} -- Manifest creation:
-   manifest_make (a_capacity, a_xuplet, a_duration: INTEGER) is
+   manifest_make (a_capacity, a_xuplet: INTEGER; a_duration: INTEGER_64) is
       require
          a_capacity > 0
          a_xuplet > 0
