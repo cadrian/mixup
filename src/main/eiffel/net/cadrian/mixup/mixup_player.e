@@ -1,7 +1,9 @@
 deferred class MIXUP_PLAYER
 
 feature {MIXUP_MIXER}
-   set_score (name: STRING) is
+   set_score (name: ABSTRACT_STRING) is
+      require
+         name /= Void
       deferred
       end
 
@@ -9,7 +11,9 @@ feature {MIXUP_MIXER}
       deferred
       end
 
-   set_book (name: STRING) is
+   set_book (name: ABSTRACT_STRING) is
+      require
+         name /= Void
       deferred
       end
 
@@ -17,7 +21,9 @@ feature {MIXUP_MIXER}
       deferred
       end
 
-   set_partitur (name: STRING) is
+   set_partitur (name: ABSTRACT_STRING) is
+      require
+         name /= Void
       deferred
       end
 
@@ -25,15 +31,21 @@ feature {MIXUP_MIXER}
       deferred
       end
 
-   set_instrument (name: STRING) is
+   set_instrument (name: ABSTRACT_STRING) is
+      require
+         name /= Void
       deferred
       end
 
-   set_dynamics (instrument, dynamics, position: STRING) is
+   set_dynamics (instrument, dynamics, position: ABSTRACT_STRING) is
+      require
+         instrument /= Void
       deferred
       end
 
-   set_note (instrument: STRING; time_start, time_tactus: INTEGER; note: MIXUP_NOTE) is
+   set_note (instrument: ABSTRACT_STRING; time_start: INTEGER_64; time_tactus: INTEGER; note: MIXUP_NOTE) is
+      require
+         instrument /= Void
       deferred
       end
 

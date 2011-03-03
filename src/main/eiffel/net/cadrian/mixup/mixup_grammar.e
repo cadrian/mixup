@@ -157,33 +157,55 @@ feature {}
                                    "Syllable+", list_of("Syllable", False, "KW -");
                                    "Syllable", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW string" >> }, Void;
                                                                       {FAST_ARRAY[STRING] << "KW syllable" >> }, Void;
-                                                                      {FAST_ARRAY[STRING] << "KW \", "Identifier" >> }, Void;
+                                                                      {FAST_ARRAY[STRING] << "Extern_Syllable" >> }, Void;
                                                                       >> };
 
-                                   "Music", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW music", "Notes*" >> }, Void;
+                                   "Extern_Syllable", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW \", "Identifier" >> }, Void;
+                                                                             >> };
+
+                                   "Music", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW music", "Voices" >> }, Void;
                                                                    >> };
 
                                    "Notes*", list_of("Notes", True, Void);
-                                   "Notes", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW |" >> }, Void; -- check bar
-                                                                   {FAST_ARRAY[STRING] << "KW ^" >> }, Void; -- next staff (going up; each voice starts at the lowest staff of the instrument)
-                                                                   {FAST_ARRAY[STRING] << "KW ." >> }, Void; -- previous staff (going back down)
-                                                                   {FAST_ARRAY[STRING] << "KW \", "Identifier" >> }, Void; -- music insertion
-                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Voice" >> }, Void;
+                                   "Notes", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Next_Bar" >> }, Void; -- check bar
+                                                                   {FAST_ARRAY[STRING] << "Up_Staff" >> }, Void; -- next staff (going up; each voice starts at the lowest staff of the instrument)
+                                                                   {FAST_ARRAY[STRING] << "Down_Staff" >> }, Void; -- previous staff (going back down)
+                                                                   {FAST_ARRAY[STRING] << "Extern_Notes" >> }, Void; -- music insertion
+                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Voices" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Chord" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Beam" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Slur" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Tie" >> }, Void;
                                                                    >> };
 
-                                   "Chord", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <", "KW note head+", "KW >", "Note_Length" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "KW note head+", "Note_Length" >> }, Void;
+                                   "Next_Bar", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW |" >> }, Void;
+                                                                      >> };
+                                   "Up_Staff", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW ^" >> }, Void;
+                                                                      >> };
+                                   "Down_Staff", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW ." >> }, Void;
+                                                                        >> };
+                                   "Extern_Notes", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW \", "Identifier" >> }, Void;
+                                                                          >> };
+
+                                   "Chord", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <", "Note_Head+", "KW >", "Note_Length" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Note_Head", "Note_Length" >> }, Void;
                                                                    >> };
+
+                                   "Note_Head+", list_of("Note_Head", False, Void);
+                                   "Note_Head",  {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW note head" >> }, Void;
+                                                                        >> };
 
                                    "Note_Length", {PARSE_NON_TERMINAL << epsilon, Void;
                                                                          {FAST_ARRAY[STRING] << "KW number" >> }, Void;
-                                                                         {FAST_ARRAY[STRING] << "KW number", "KW ." >> }, Void;
-                                                                         {FAST_ARRAY[STRING] << "KW number", "KW .." >> }, Void;
+                                                                         {FAST_ARRAY[STRING] << "KW number", "Dot" >> }, Void;
+                                                                         {FAST_ARRAY[STRING] << "KW number", "DotDot" >> }, Void;
                                                                          >> };
+
+                                   "Dot", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW ." >> }, Void;
+                                                                 >> };
+
+                                   "DotDot", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW .." >> }, Void;
+                                                                 >> };
 
                                    "Dynamics", {PARSE_NON_TERMINAL << epsilon, Void;
                                                                       {FAST_ARRAY[STRING] << "KW :", "Position", "Dynamic+", "KW :" >> }, Void;
@@ -204,7 +226,10 @@ feature {}
                                                                       {FAST_ARRAY[STRING] << "KW hidden", "KW :" >> }, Void; -- don't display, for midi control only
                                                                       >> };
 
-                                   "Voice", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <<", "Notes*", "KW >>" >> }, Void;
+                                   "Voices", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <<", "Voice+", "KW >>" >> }, Void;
+                                                                    >> };
+                                   "Voice+", list_of("Voice", False, "KW //");
+                                   "Voice", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Notes*" >> }, Void;
                                                                    >> };
                                    "Beam", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW [", "Notes*", "KW ]" >> }, Void;
                                                                   >> };
@@ -319,8 +344,6 @@ feature {}
                                    "Expression_Pair", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Expression", "KW :", "Expression" >> }, Void;
                                                                              >> };
 
-
-                                   "KW note head+", list_of("KW note head", False, Void);
 
                                    "KW ^",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "^" , ""),  Void);
                                    "KW <<",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<<", ""),  Void);
@@ -1249,9 +1272,10 @@ feature {}
          end
       end
 
-   parse_boolean (buffer: MINI_PARSER_BUFFER): UNTYPED_MIXUP_IMAGE is
+   parse_boolean (buffer: MINI_PARSER_BUFFER): TYPED_MIXUP_IMAGE[BOOLEAN] is
       local
          old_position, start_position: like position; image: STRING
+         value: BOOLEAN
       do
          old_position := position
          skip_blanks(buffer)
@@ -1260,14 +1284,16 @@ feature {}
             buffer.current_character
          when 'T' then
             image := keyword_image(buffer, once "True", Void)
+            value := True
          when 'F' then
             image := keyword_image(buffer, once "False", Void)
+            value := False
          else
             check image = Void end
          end
          if image /= Void then
             -- `image' may be shared here
-            create Result.make(image, last_blanks.twin, start_position)
+            create Result.make(image, value, last_blanks.twin, start_position)
          else
             restore(buffer, old_position)
          end
@@ -1308,7 +1334,7 @@ feature {}
          when 0 then
             inspect
                c
-            when 'a' .. 'g' then
+            when 'a' .. 'g', 'r', 'R' then
                Result := True
             else
                check not Result end
@@ -1317,7 +1343,7 @@ feature {}
             inspect
                c
             when 'e', 'i', '%'', ',' then
-               Result := True
+               Result := not (once "rR").has(string.first)
             else
                check not Result end
             end

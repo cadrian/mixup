@@ -1,4 +1,4 @@
 ./
-node/
-node/impl/
-note/
+music/loadpath.se
+node/loadpath.se
+value/
