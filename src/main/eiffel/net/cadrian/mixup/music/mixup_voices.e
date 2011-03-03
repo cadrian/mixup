@@ -94,9 +94,9 @@ feature {ANY}
          Result := voices.first.bars
       end
 
-   new_note_iterator: MIXUP_NOTES_ITERATOR is
+   new_note_iterator (a_instrument: FIXED_STRING): MIXUP_NOTES_ITERATOR is
       do
-         create {MIXUP_NOTES_ITERATOR_ON_VOICES} Result.make(voices)
+         create {MIXUP_NOTES_ITERATOR_ON_VOICES} Result.make(a_instrument, voices)
       end
 
 feature {MIXUP_VOICE}

@@ -253,14 +253,23 @@ feature {}
          fire_end_partitur
       end
 
+   add_all_bars (instrument: MIXUP_INSTRUMENT; barset: SET[INTEGER_64]) is
+      do
+         instrument.voices.bars.do_all(agent (bar: INTEGER_64; barset: SET[INTEGER_64]) is do barset.add(bar) end (?, barset))
+      end
+
    play_partitur_content (partitur_content: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
          time: INTEGER_64
          bars: ITERATOR[INTEGER_64]
+         barset: SET[INTEGER_64]
          notes: MIXUP_NOTES_ITERATOR_ON_INSTRUMENTS
       do
          create {FAST_ARRAY[MIXUP_INSTRUMENT]} instruments.make(0)
          partitur_content.accept_all(Current)
+         create {HASHED_SET[INTEGER_64]} barset.make
+         instruments.do_all(agent add_all_bars(?, barset))
+         bars := barset.new_iterator
 
          from
             create notes.make(instruments)

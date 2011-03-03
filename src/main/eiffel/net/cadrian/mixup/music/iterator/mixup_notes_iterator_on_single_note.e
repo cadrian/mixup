@@ -24,11 +24,11 @@ feature {ANY}
       end
 
 feature {}
-   make (a_note: MIXUP_NOTE) is
+   make (a_instrument: FIXED_STRING; a_note: MIXUP_NOTE) is
       require
          a_note /= Void
       do
-         item.set(0, a_note)
+         item.set(a_instrument, 0, a_note)
       ensure
          item.time = 0
          item.note = a_note

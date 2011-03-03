@@ -3,7 +3,7 @@ class MIXUP_CHORD
 inherit
    MIXUP_NOTE
       redefine
-         is_equal
+         is_equal, out_in_tagged_out_memory
       end
 
 create {ANY}
@@ -44,6 +44,27 @@ feature {ANY}
    anchor: MIXUP_NOTE_HEAD is
       do
          Result := storage.item(0)
+      end
+
+   out_in_tagged_out_memory is
+      local
+         i: INTEGER
+      do
+         tagged_out_memory.append(once "{MIXUP_CHORD ")
+         duration.append_in(tagged_out_memory)
+         tagged_out_memory.append(once " << ")
+         from
+            i := 0
+         until
+            i = capacity
+         loop
+            if i > 0 then
+               tagged_out_memory.append(once ", ")
+            end
+            storage.item(i).out_in_tagged_out_memory
+            i := i + 1
+         end
+         tagged_out_memory.append(once " >> }")
       end
 
 feature {}

@@ -13,7 +13,7 @@ feature {ANY}
       deferred
       end
 
-   new_note_iterator: MIXUP_NOTES_ITERATOR is
+   new_note_iterator (a_instrument: FIXED_STRING): MIXUP_NOTES_ITERATOR is
       deferred
       end
 

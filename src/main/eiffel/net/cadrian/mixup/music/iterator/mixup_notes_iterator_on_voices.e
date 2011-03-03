@@ -10,13 +10,15 @@ create {MIXUP_VOICES}
    make
 
 feature {}
-   make (a_voices: like voices) is
+   make (a_instrument: like instrument; a_voices: like voices) is
       require
          a_voices /= Void
       do
+         instrument := a_instrument
          voices := a_voices
          start
       ensure
+         instrument = a_instrument
          voices = a_voices
       end
 
@@ -27,7 +29,7 @@ feature {}
 
    add_note_iterator (a_voice: MIXUP_VOICE) is
       do
-         notes.add_last(a_voice.new_note_iterator)
+         notes.add_last(a_voice.new_note_iterator(instrument))
       end
 
    count: INTEGER is
@@ -36,8 +38,10 @@ feature {}
       end
 
    voices: TRAVERSABLE[MIXUP_VOICE]
+   instrument: FIXED_STRING
 
 invariant
+   instrument /= Void
    voices /= Void
 
 end
