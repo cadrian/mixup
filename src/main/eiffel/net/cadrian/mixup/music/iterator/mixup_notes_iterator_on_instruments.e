@@ -5,19 +5,30 @@ class MIXUP_NOTES_ITERATOR_ON_INSTRUMENTS
 
 inherit
    MIXUP_NOTES_PARALLEL_ITERATOR
+   MIXUP_CONTEXT_VISITOR
+      undefine
+         is_equal
+      redefine
+         start_instrument
+      end
 
 create {MIXUP_MIXER}
    make
 
-feature {}
-   make (a_instruments: like instruments) is
-      require
-         a_instruments /= Void
+feature {MIXUP_INSTRUMENT}
+   start_instrument (a_instrument: MIXUP_INSTRUMENT) is
       do
-         instruments := a_instruments
+         instruments.add_last(a_instrument)
+      end
+
+feature {}
+   make (a_context: MIXUP_CONTEXT) is
+      require
+         a_context /= Void
+      do
+         create {FAST_ARRAY[MIXUP_INSTRUMENT]} instruments.make(0)
+         a_context.accept(Current)
          start
-      ensure
-         instruments = a_instruments
       end
 
    add_notes_iterator is
@@ -35,7 +46,7 @@ feature {}
          Result := instruments.count
       end
 
-   instruments: TRAVERSABLE[MIXUP_INSTRUMENT]
+   instruments: COLLECTION[MIXUP_INSTRUMENT]
 
 invariant
    instruments /= Void

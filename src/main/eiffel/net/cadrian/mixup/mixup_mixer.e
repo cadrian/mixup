@@ -142,7 +142,7 @@ feature {}
    last_note_head: STRING
    note_heads: COLLECTION[STRING]
    last_compound_music: MIXUP_COMPOUND_MUSIC
-   instruments: COLLECTION[MIXUP_INSTRUMENT]
+   current_context: MIXUP_CONTEXT
 
    build_identifier (dot_identifier: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
@@ -230,49 +230,58 @@ feature {}
 
 feature {}
    play_score (score: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         old_context: like current_context
       do
+         old_context := current_context
          score.node_at(1).accept(Current)
+         create {MIXUP_SCORE} current_context.make(name, old_context)
          fire_set_score(name)
          score.node_at(2).accept(Current)
          fire_end_score
+         current_context := old_context
       end
 
    play_book (book: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         old_context: like current_context
       do
+         old_context := current_context
          book.node_at(1).accept(Current)
+         create {MIXUP_BOOK} current_context.make(name, old_context)
          fire_set_book(name)
          book.node_at(2).accept(Current)
          fire_end_book
+         current_context := old_context
       end
 
    play_partitur (partitur: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         old_context: like current_context
       do
+         old_context := current_context
          partitur.node_at(1).accept(Current)
+         create {MIXUP_PARTITUR} current_context.make(name, old_context)
          fire_set_partitur(name)
          partitur.node_at(2).accept(Current)
          fire_end_partitur
-      end
-
-   add_all_bars (instrument: MIXUP_INSTRUMENT; barset: SET[INTEGER_64]) is
-      do
-         instrument.voices.bars.do_all(agent (bar: INTEGER_64; barset: SET[INTEGER_64]) is do barset.add(bar) end (?, barset))
+         current_context := old_context
       end
 
    play_partitur_content (partitur_content: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
          bars: ITERATOR[INTEGER_64]
-         barset: SET[INTEGER_64]
+         bars_mixer: MIXUP_BARS_MIXER
          notes: MIXUP_NOTES_ITERATOR_ON_INSTRUMENTS
       do
-         create {FAST_ARRAY[MIXUP_INSTRUMENT]} instruments.make(0)
          partitur_content.accept_all(Current)
 
-         create {AVL_SET[INTEGER_64]} barset.make
-         instruments.do_all(agent add_all_bars(?, barset))
-         bars := barset.new_iterator
+         create bars_mixer.make
+         current_context.accept(bars_mixer)
+         bars := bars_mixer.bars
 
          from
-            create notes.make(instruments)
+            create notes.make(current_context)
             fire_start_bar
          until
             notes.is_off
@@ -292,11 +301,13 @@ feature {}
 
    play_instrument (instrument: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
+         old_context: like current_context
          voices: MIXUP_VOICES
       do
+         old_context := current_context
          instrument.node_at(1).accept(Current)
-         create current_instrument.make(name, absolute_reference)
-         instruments.add_last(current_instrument)
+         create current_instrument.make(name, old_context, absolute_reference)
+         current_context := current_instrument
          fire_set_instrument(name)
          last_compound_music := Void
          instrument.node_at(2).accept(Current)
@@ -304,6 +315,7 @@ feature {}
          voices ::= last_compound_music
          current_instrument.set_voices(voices)
          current_instrument.commit_lyrics
+         current_context := old_context
       end
 
    play_next_bar (next_bar: MIXUP_NON_TERMINAL_NODE_IMPL) is

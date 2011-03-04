@@ -1,10 +1,15 @@
 class MIXUP_INSTRUMENT
 
+inherit
+   MIXUP_CONTEXT
+      rename
+         make as context_make
+      end
+
 create {ANY}
    make
 
 feature {ANY}
-   name: FIXED_STRING
    voices: MIXUP_VOICES
 
    set_voices (a_voices: like voices) is
@@ -29,21 +34,27 @@ feature {ANY}
       end
 
 feature {}
-   make (a_name: ABSTRACT_STRING; a_reference: MIXUP_NOTE_HEAD) is
-      require
-         a_name /= Void
+   accept_start (visitor: MIXUP_CONTEXT_VISITOR) is
       do
-         name := a_name.intern
+         visitor.start_instrument(Current)
+      end
+
+   accept_end (visitor: MIXUP_CONTEXT_VISITOR) is
+      do
+         visitor.end_instrument(Current)
+      end
+
+feature {}
+   make (a_name: ABSTRACT_STRING; a_parent: like parent; a_reference: MIXUP_NOTE_HEAD) is
+      do
+         context_make(a_name, a_parent)
          create {FAST_ARRAY[COLLECTION[FIXED_STRING]]} strophes.make(0)
-      ensure
-         name = a_name.intern
       end
 
    strophes: COLLECTION[COLLECTION[FIXED_STRING]]
    current_strophe: COLLECTION[FIXED_STRING]
 
 invariant
-   name /= Void
    strophes /= Void
 
 end
