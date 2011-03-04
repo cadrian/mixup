@@ -37,11 +37,8 @@ feature {}
       end
 
    add_note_iterator (a_instrument: MIXUP_INSTRUMENT) is
-      local
-         context: MIXUP_NOTES_ITERATOR_CONTEXT
       do
-         context.set_instrument(a_instrument)
-         notes.add_last(a_instrument.voices.new_note_iterator(context))
+         notes.add_last(a_instrument.new_note_iterator)
       end
 
    count: INTEGER is

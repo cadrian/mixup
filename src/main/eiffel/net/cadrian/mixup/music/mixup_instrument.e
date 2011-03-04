@@ -10,8 +10,6 @@ create {ANY}
    make
 
 feature {ANY}
-   voices: MIXUP_VOICES
-
    set_voices (a_voices: like voices) is
       require
          a_voices /= Void
@@ -28,9 +26,17 @@ feature {ANY}
          strophes.add_last(current_strophe)
       end
 
-   commit_lyrics is
+   new_note_iterator: MIXUP_NOTES_ITERATOR is
+      local
+         context: MIXUP_NOTES_ITERATOR_CONTEXT
       do
-         -- TODO
+         context.set_instrument(Current)
+         Result := voices.new_note_iterator(context)
+      end
+
+   do_all_bars (action: PROCEDURE[TUPLE[INTEGER_64]]) is
+      do
+         voices.bars.do_all(action)
       end
 
 feature {}
@@ -53,6 +59,7 @@ feature {}
 
    strophes: COLLECTION[COLLECTION[FIXED_STRING]]
    current_strophe: COLLECTION[FIXED_STRING]
+   voices: MIXUP_VOICES
 
 invariant
    strophes /= Void

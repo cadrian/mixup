@@ -323,7 +323,6 @@ feature {}
          instrument.node_at(3).accept(Current)
          voices ::= last_compound_music
          current_instrument.set_voices(voices)
-         current_instrument.commit_lyrics
          current_context := old_context
       end
 

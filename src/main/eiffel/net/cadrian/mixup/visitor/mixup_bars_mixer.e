@@ -18,7 +18,7 @@ feature {ANY}
 feature {MIXUP_INSTRUMENT}
    start_instrument (a_instrument: MIXUP_INSTRUMENT) is
       do
-         a_instrument.voices.bars.do_all(agent_add_bar)
+         a_instrument.do_all_bars(agent_add_bar)
       end
 
 feature {}
