@@ -32,7 +32,7 @@ feature {}
 
          parser_buffer.initialize_with("[
                                         partitur sample
-                                        set hook.at_end := function native "emit"
+                                        set hook.at_end := function native "print"
                                         instrument singer
                                            music
                                               << :p,<: c4 d e f | g a b :f:c | :hidden:mp: c,1 >>

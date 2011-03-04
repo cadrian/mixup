@@ -13,7 +13,7 @@ feature {ANY}
    start is
       do
          music_iterator := music.new_iterator
-         time := start_time
+         iter_context := context
          music_duration := 0
          set_note_iterator
       end
@@ -40,36 +40,33 @@ feature {ANY}
       end
 
 feature {MIXUP_VOICE}
-   time: INTEGER_64
    music_iterator: ITERATOR[MIXUP_MUSIC]
    note_iterator: MIXUP_NOTES_ITERATOR
    music_duration: INTEGER_64
 
    set_note_iterator is
       do
-         time := time + music_duration
-         note_iterator := music_iterator.item.new_note_iterator(instrument, time)
+         iter_context.add_time(music_duration)
+         note_iterator := music_iterator.item.new_note_iterator(iter_context)
          music_duration := music_iterator.item.duration
       ensure
          note_iterator /= Void
       end
 
 feature {}
-   make (a_instrument: like instrument; a_start_time: like start_time; a_music: like music) is
+   make (a_context: like context; a_music: like music) is
       require
          a_music /= Void
       do
-         start_time := a_start_time
-         instrument := a_instrument
+         context := a_context
          music := a_music
          start
       ensure
-         instrument = a_instrument
          music = a_music
       end
 
-   start_time: INTEGER_64
-   instrument: FIXED_STRING
+   context: MIXUP_NOTES_ITERATOR_CONTEXT
+   iter_context: MIXUP_NOTES_ITERATOR_CONTEXT
    music: ITERABLE[MIXUP_MUSIC]
 
 invariant

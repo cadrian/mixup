@@ -24,13 +24,13 @@ feature {ANY}
       end
 
 feature {}
-   make (a_instrument: FIXED_STRING; time: INTEGER_64; a_note: MIXUP_NOTE) is
+   make (a_context: MIXUP_NOTES_ITERATOR_CONTEXT; a_note: MIXUP_NOTE) is
       require
          a_note /= Void
       do
-         item.set(a_instrument, time, a_note)
+         item.set(a_context.instrument.name, a_context.start_time, a_note, True)
       ensure
-         item.time = time
+         item.time = a_context.start_time
          item.note = a_note
          not is_off
       end

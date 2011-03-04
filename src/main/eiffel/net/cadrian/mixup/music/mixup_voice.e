@@ -15,6 +15,7 @@ feature {ANY}
 
    duration: INTEGER_64
    reference: MIXUP_NOTE_HEAD
+   allow_lyrics: BOOLEAN is True
 
    next_bar is
       do
@@ -78,9 +79,9 @@ feature {ANY}
          music.do_all(agent {MIXUP_MUSIC}.commit)
       end
 
-   new_note_iterator (a_instrument: FIXED_STRING; a_start_time: INTEGER_64): MIXUP_NOTES_ITERATOR is
+   new_note_iterator (a_context: MIXUP_NOTES_ITERATOR_CONTEXT): MIXUP_NOTES_ITERATOR is
       do
-         create {MIXUP_NOTES_ITERATOR_ON_VOICE} Result.make(a_instrument, a_start_time, music)
+         create {MIXUP_NOTES_ITERATOR_ON_VOICE} Result.make(a_context, music)
       end
 
 feature {MIXUP_VOICES}

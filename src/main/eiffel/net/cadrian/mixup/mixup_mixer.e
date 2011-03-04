@@ -131,8 +131,8 @@ feature {MIXUP_NATIVE_FUNCTION}
       do
          inspect
             a_function.name
-         when "emit" then
-            emit
+         when "print" then
+            native_print
          else
             not_yet_implemented -- error: unknown native function
          end
@@ -144,7 +144,7 @@ feature {MIXUP_USER_FUNCTION}
       end
 
 feature {}
-   emit is
+   native_print is
       local
          bars: ITERATOR[INTEGER_64]
          bars_mixer: MIXUP_BARS_MIXER
