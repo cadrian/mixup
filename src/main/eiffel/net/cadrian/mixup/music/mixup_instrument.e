@@ -26,12 +26,25 @@ feature {ANY}
          strophes.add_last(current_strophe)
       end
 
+   add_syllable (a_syllable: ABSTRACT_STRING) is
+      require
+         a_syllable /= Void
+      do
+         current_strophe.add_last(a_syllable.intern)
+      ensure
+         current_strophe.count = old current_strophe.count + 1
+         current_strophe.last = a_syllable.intern
+      end
+
    new_note_iterator: MIXUP_NOTES_ITERATOR is
       local
          context: MIXUP_NOTES_ITERATOR_CONTEXT
       do
          context.set_instrument(Current)
          Result := voices.new_note_iterator(context)
+         if not strophes.is_empty then
+            create {MIXUP_NOTES_ITERATOR_ON_INSTRUMENT} Result.make(Result, strophes)
+         end
       end
 
    do_all_bars (action: PROCEDURE[TUPLE[INTEGER_64]]) is

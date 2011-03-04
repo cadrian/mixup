@@ -82,6 +82,8 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             play_slur(node)
          when "Tie" then
             play_tie(node)
+         when "Strophe" then
+            play_strophe(node)
          when "Syllable" then
             play_syllable(node)
          when "Identifier_Part" then
@@ -111,9 +113,12 @@ feature {MIXUP_TERMINAL_NODE_IMPL}
             node.name
          when "KW identifier" then
             name := node.image.image.intern
+         when "KW syllable" then
+            last_string := node.image.image
          when "KW string" then
             string_image ::= node.image
-            create {MIXUP_STRING} last_value.make(string_image.decoded, string_image.image)
+            last_string := string_image.image
+            create {MIXUP_STRING} last_value.make(string_image.decoded, last_string)
          when "KW number" then
             if integer_image ?:= node.image then
                integer_image ::= node.image
@@ -145,6 +150,7 @@ feature {}
    note_heads: COLLECTION[STRING]
    last_compound_music: MIXUP_COMPOUND_MUSIC
    current_context: MIXUP_CONTEXT
+   last_string: STRING
 
    build_identifier (dot_identifier: MIXUP_LIST_NODE_IMPL) is
       do
@@ -427,9 +433,16 @@ feature {} -- Building music
          notes.accept_all(Current)
       end
 
+   play_strophe (strophe: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         current_instrument.next_strophe
+         strophe.node_at(1).accept(Current)
+      end
+
    play_syllable (syllable: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          syllable.accept_all(Current)
+         current_instrument.add_syllable(last_string)
       end
 
 feature {}
