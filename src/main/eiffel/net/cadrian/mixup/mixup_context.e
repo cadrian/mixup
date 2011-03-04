@@ -30,13 +30,13 @@ feature {ANY}
          debug
             debug_values := values.out
          end
-         hook := lookup(full_hook_name.intern)
+         hook := lookup(full_hook_name.intern, False)
          if hook /= Void then
             hook.accept(visitor)
          end
       end
 
-   lookup (identifier: FIXED_STRING): MIXUP_VALUE is
+   lookup (identifier: FIXED_STRING; search_parent: BOOLEAN): MIXUP_VALUE is
       require
          identifier /= Void
       local
@@ -50,11 +50,11 @@ feature {ANY}
                id_prefix := identifier.substring(identifier.lower, i - 1)
                child := children.reference_at(id_prefix)
                if child /= Void then
-                  Result := child.lookup(identifier.substring(i + 1, identifier.upper))
+                  Result := child.lookup(identifier.substring(i + 1, identifier.upper), False)
                end
             end
-            if Result = Void and then parent /= Void then
-               Result := parent.lookup(identifier)
+            if Result = Void and then search_parent and then parent /= Void then
+               Result := parent.lookup(identifier, True)
             end
          end
       end

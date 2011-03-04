@@ -86,7 +86,6 @@ feature {MIXUP_PARTITUR}
 
    end_partitur (a_partitur: MIXUP_PARTITUR) is
       do
-sedb_breakpoint
          a_partitur.run_hook(once "at_end", Current)
          fire_end_partitur
       end
