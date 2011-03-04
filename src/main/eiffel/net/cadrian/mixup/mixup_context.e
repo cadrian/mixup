@@ -6,6 +6,36 @@ inherit
 feature {ANY}
    name: FIXED_STRING
 
+   add_value (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
+      require
+         a_name /= Void
+         a_value /= Void
+      do
+         if values.has(a_name) then
+            not_yet_implemented -- error: duplicate value in the same context
+         else
+            values.add(a_value, a_name)
+         end
+      end
+
+   run_hook (hook_name: ABSTRACT_STRING; visitor: MIXUP_VALUE_VISITOR) is
+      local
+         full_hook_name, debug_values: STRING
+         hook: MIXUP_VALUE
+      do
+         full_hook_name := once ""
+         full_hook_name.clear_count
+         full_hook_name.append(once "hook.")
+         full_hook_name.append(hook_name)
+         debug
+            debug_values := values.out
+         end
+         hook := lookup(full_hook_name.intern)
+         if hook /= Void then
+            hook.accept(visitor)
+         end
+      end
+
    lookup (identifier: FIXED_STRING): MIXUP_VALUE is
       require
          identifier /= Void

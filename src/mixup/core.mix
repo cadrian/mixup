@@ -35,10 +35,5 @@ export const trebble = 1
 export const bass = 2
 
 
-instrument skeleton
-    set staves = 1
-    set staff(1).clef = trebble
-    music
-    end
 
 end

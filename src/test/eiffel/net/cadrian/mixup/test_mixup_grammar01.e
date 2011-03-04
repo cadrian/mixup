@@ -32,6 +32,7 @@ feature {}
 
          parser_buffer.initialize_with("[
                                         partitur sample
+                                        set hook.at_end := function native "emit"
                                         instrument singer
                                            music
                                               << :p,<: c4 d e f | g a b :f:c | :hidden:mp: c,1 >>
@@ -57,7 +58,8 @@ feature {}
          create mixer.make
          create player.make
          mixer.add_player(player)
-         mixer.play(grammar.root_node)
+         mixer.add_piece(grammar.root_node)
+         mixer.play
 
          std_output.put_line("Events: " + player.events.out)
          assert(player.events.is_equal({FAST_ARRAY[AUX_MIXUP_MOCK_EVENT] <<

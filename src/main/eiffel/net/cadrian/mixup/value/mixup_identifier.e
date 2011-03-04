@@ -7,18 +7,52 @@ create {ANY}
    make
 
 feature {ANY}
-   with_prefix (name: ABSTRACT_STRING) is
+   add_identifier_part (name: ABSTRACT_STRING) is
       require
          name /= Void
       do
-         parts.add_first(create {MIXUP_IDENTIFIER_PART}.make(name))
+         parts.add_last(create {MIXUP_IDENTIFIER_PART}.make(name))
       end
 
    set_args (args: COLLECTION[MIXUP_VALUE]) is
       require
          args /= Void
       do
-         parts.first.set_args(args)
+         parts.last.set_args(args)
+      end
+
+   accept (visitor: VISITOR) is
+      local
+         v: MIXUP_VALUE_VISITOR
+      do
+         v ::= visitor
+         v.visit_identifier(Current)
+      end
+
+   as_name: STRING is
+      do
+         Result := ""
+         as_name_in(Result)
+      ensure
+         Result /= Void
+      end
+
+feature {MIXUP_IDENTIFIER_PART}
+   as_name_in (a_name: STRING) is
+      local
+         i: INTEGER
+      do
+         from
+            i := parts.lower
+         until
+            i > parts.upper
+         loop
+            if i > parts.lower then
+               a_name.extend('.')
+            end
+            parts.item(i).as_name_in(a_name)
+            i := i + 1
+         end
       end
 
 feature {}

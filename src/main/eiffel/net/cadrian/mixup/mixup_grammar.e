@@ -247,8 +247,12 @@ feature {}
                                    "Arg+", list_of("Arg", False, "KW ,");
                                    "Arg", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW identifier" >> }, Void;
                                                                  >> };
-                                   "Function_Body", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW do", "Statement*", "KW end" >> }, Void;
-                                                                           {FAST_ARRAY[STRING] << "KW native", "KW identifier" >> }, Void;
+                                   "Function_Body", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Function_Native" >> }, Void;
+                                                                           {FAST_ARRAY[STRING] << "Function_User" >> }, Void;
+                                                                           >> };
+                                   "Function_Native", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW native", "KW string" >> }, Void;
+                                                                             >> };
+                                   "Function_User", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW do", "Statement*", "KW end" >> }, Void;
                                                                            >> };
                                    "Statement*", list_of("Statement", True, Void);
                                    "Statement", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "If_Then_Else" >> }, Void;
@@ -258,7 +262,7 @@ feature {}
                                                                        >> };
                                    "Yield", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW yield", "Expression" >> }, Void;
                                                                    >> };
-                                   "Expression_Or_Assignment", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Value", "KW :=", "Expression" >> }, Void;
+                                   "Expression_Or_Assignment", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Identifier", "KW :=", "Expression" >> }, Void;
                                                                                       {FAST_ARRAY[STRING] << "KW Result", "KW :=", "Expression" >> }, Void;
                                                                                       {FAST_ARRAY[STRING] << "Expression" >> }, Void;
                                                                                       >> };
@@ -298,6 +302,7 @@ feature {}
                                                                 {FAST_ARRAY[STRING] << "e8" >> }, Void;
                                                                 >> };
                                    "e8", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Value" >> }, Void;
+                                                                {FAST_ARRAY[STRING] << "KW (", "Unary_Expression", "KW )" >> }, Void;
                                                                 >> };
 
                                    "r1", {PARSE_NON_TERMINAL << epsilon, agent build_expression_epsilon(e1);
