@@ -38,6 +38,8 @@ feature {ANY}
                octave_shift := 0
             elseif n_index < 4 then
                octave_shift := -1
+            elseif n_index < a_index then
+               octave_shift := 0
             else
                octave_shift := 1
             end
