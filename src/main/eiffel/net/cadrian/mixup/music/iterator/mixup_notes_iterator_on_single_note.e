@@ -4,7 +4,7 @@ class MIXUP_NOTES_ITERATOR_ON_SINGLE_NOTE
 --
 
 inherit
-   MIXUP_NOTES_ITERATOR
+   MIXUP_EVENTS_ITERATOR
 
 create {MIXUP_NOTE}
    make
@@ -16,7 +16,7 @@ feature {ANY}
 
    is_off: BOOLEAN
 
-   item: MIXUP_NOTES_ITERATOR_ITEM
+   item: MIXUP_EVENTS_ITERATOR_ITEM
 
    next is
       do
@@ -24,15 +24,30 @@ feature {ANY}
       end
 
 feature {}
-   make (a_context: MIXUP_NOTES_ITERATOR_CONTEXT; a_note: MIXUP_NOTE) is
+   make (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT; a_note: MIXUP_NOTE) is
       require
          a_note /= Void
       do
-         item.set(a_context.instrument.name, a_context.start_time, a_note, True)
+         item.set(event_set_note, a_context.instrument.name, a_context.start_time, a_note, True)
       ensure
          item.time = a_context.start_time
-         item.note = a_note
+         item.music = a_note
          not is_off
+      end
+
+   event_set_note: PROCEDURE[TUPLE[MIXUP_EVENTS, MIXUP_EVENTS_ITERATOR_ITEM]] is
+      once
+         Result := agent set_note
+      end
+
+   set_note (a_events: MIXUP_EVENTS; a_item: MIXUP_EVENTS_ITERATOR_ITEM) is
+      require
+         a_events /= Void
+      local
+         note: MIXUP_NOTE
+      do
+         note ::= a_item.music
+         a_events.fire_set_note(a_item.instrument, a_item.time, note)
       end
 
 invariant

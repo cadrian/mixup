@@ -36,12 +36,12 @@ feature {ANY}
          current_strophe.last = a_syllable.intern
       end
 
-   new_note_iterator: MIXUP_NOTES_ITERATOR is
+   new_events_iterator: MIXUP_EVENTS_ITERATOR is
       local
-         context: MIXUP_NOTES_ITERATOR_CONTEXT
+         context: MIXUP_EVENTS_ITERATOR_CONTEXT
       do
          context.set_instrument(Current)
-         Result := voices.new_note_iterator(context)
+         Result := voices.new_events_iterator(context)
          if not strophes.is_empty then
             create {MIXUP_NOTES_ITERATOR_ON_INSTRUMENT} Result.make(Result, strophes)
          end

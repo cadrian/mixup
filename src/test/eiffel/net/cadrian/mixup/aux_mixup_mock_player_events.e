@@ -36,9 +36,9 @@ feature {}
          create Result.make("set_instrument", [name])
       end
 
-   set_dynamics (instrument, dynamics, position: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+   set_dynamics (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; dynamics, position: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
       do
-         create Result.make("set_dynamics", [instrument, dynamics, position])
+         create Result.make("set_dynamics", [instrument_name, time_start, dynamics, position])
       end
 
    set_note (instrument: ABSTRACT_STRING; time_start: INTEGER_64; note: MIXUP_NOTE): AUX_MIXUP_MOCK_EVENT is

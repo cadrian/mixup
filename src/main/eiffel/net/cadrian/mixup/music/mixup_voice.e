@@ -52,7 +52,7 @@ feature {ANY}
          music.last = a_music
       end
 
-   add_chord (note_heads: COLLECTION[STRING]; note_length: INTEGER_64) is
+   add_chord (note_heads: COLLECTION[FIXED_STRING]; note_length: INTEGER_64) is
       local
          i: INTEGER
          ref: like reference
@@ -79,7 +79,7 @@ feature {ANY}
          music.do_all(agent {MIXUP_MUSIC}.commit)
       end
 
-   new_note_iterator (a_context: MIXUP_NOTES_ITERATOR_CONTEXT): MIXUP_NOTES_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
          create {MIXUP_NOTES_ITERATOR_ON_VOICE} Result.make(a_context, music)
       end

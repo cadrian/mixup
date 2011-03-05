@@ -11,23 +11,21 @@ feature {ANY}
    octave: INTEGER
 
    set (a_note: ABSTRACT_STRING; a_octave: INTEGER) is
-      require
-         (once "abcdefgrR").has(a_note.first)
-         a_note.count /= 1 implies (a_note.count = 3 and then a_note.last = 's' and then (once "ei").has(a_note.item(2)) and then not (once "rR").has(a_note.first))
       do
          note := a_note.intern
          octave := a_octave
       end
 
-   relative (desc: STRING): MIXUP_NOTE_HEAD is
+   relative (desc: FIXED_STRING): MIXUP_NOTE_HEAD is
       require
          desc /= Void
       local
-         n_index, a_index, octave_shift: INTEGER
+         i, n_index, a_index, octave_shift: INTEGER
          note_: STRING
       do
          note_ := once ""
-         note_.copy(desc)
+         note_.clear_count
+         note_.append(desc)
          inspect
             note_.first
          when 'r', 'R' then
@@ -44,15 +42,23 @@ feature {ANY}
                octave_shift := 1
             end
 
-            inspect
-               note_.last
-            when '%'' then
-               octave_shift := octave_shift + 1
-               note_.remove_last
-            when ',' then
-               octave_shift := octave_shift - 1
-               note_.remove_last
-            else
+            from
+               i := note_.upper
+            until
+               i < note_.lower
+            loop
+               inspect
+                  note_.item(i)
+               when '%'' then
+                  octave_shift := octave_shift + 1
+                  note_.remove_last
+               when ',' then
+                  octave_shift := octave_shift - 1
+                  note_.remove_last
+               else
+                  i := note_.lower
+               end
+               i := i - 1
             end
             Result.set(note_, octave + octave_shift)
          end

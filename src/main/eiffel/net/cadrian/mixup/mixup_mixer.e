@@ -9,6 +9,7 @@ inherit
          start_instrument, end_instrument
       end
    MIXUP_VALUE_VISITOR
+   MIXUP_EVENTS
 
 create {ANY}
    make
@@ -94,6 +95,7 @@ feature {MIXUP_INSTRUMENT}
    start_instrument (a_instrument: MIXUP_INSTRUMENT) is
       do
          a_instrument.run_hook(once "at_start", Current)
+         fire_set_instrument(a_instrument.name)
       end
 
    end_instrument (a_instrument: MIXUP_INSTRUMENT) is
@@ -165,15 +167,13 @@ feature {}
                fire_start_bar
                bars.next
             end
-            fire_set_note(notes.item.instrument,
-                          notes.item.time,
-                          notes.item.note)
+            notes.item.fire_event(Current)
             notes.next
          end
          fire_end_bar
       end
 
-feature {} -- Player events
+feature {ANY}
    fire_set_book (book_name: ABSTRACT_STRING) is
       do
          players.do_all(agent {MIXUP_PLAYER}.set_book(book_name))
@@ -209,9 +209,9 @@ feature {} -- Player events
          players.do_all(agent {MIXUP_PLAYER}.set_instrument(instrument_name))
       end
 
-   fire_set_dynamics (instrument_name, dynamics, position: ABSTRACT_STRING) is
+   fire_set_dynamics (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; dynamics, position: ABSTRACT_STRING) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.set_dynamics(instrument_name, dynamics, position))
+         players.do_all(agent {MIXUP_PLAYER}.set_dynamics(instrument_name, time_start, dynamics, position))
       end
 
    fire_set_note (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; note: MIXUP_NOTE) is

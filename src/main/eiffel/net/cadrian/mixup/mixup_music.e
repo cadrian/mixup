@@ -13,7 +13,11 @@ feature {ANY}
       deferred
       end
 
-   new_note_iterator (a_context: MIXUP_NOTES_ITERATOR_CONTEXT): MIXUP_NOTES_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+      deferred
+      end
+
+   has_lyrics: BOOLEAN is
       deferred
       end
 

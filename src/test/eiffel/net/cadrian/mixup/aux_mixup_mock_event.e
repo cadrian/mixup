@@ -20,6 +20,7 @@ feature {ANY}
 
    out_in_tagged_out_memory is
       do
+         tagged_out_memory.extend('%N')
          tagged_out_memory.extend('{')
          tagged_out_memory.append(name)
          tagged_out_memory.extend(':')

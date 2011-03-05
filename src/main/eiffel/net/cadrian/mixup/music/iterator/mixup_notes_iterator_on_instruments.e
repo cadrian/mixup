@@ -38,7 +38,7 @@ feature {}
 
    add_note_iterator (a_instrument: MIXUP_INSTRUMENT) is
       do
-         notes.add_last(a_instrument.new_note_iterator)
+         notes.add_last(a_instrument.new_events_iterator)
       end
 
    count: INTEGER is

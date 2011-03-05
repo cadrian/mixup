@@ -23,12 +23,12 @@ feature {}
 
    add_notes_iterator is
       do
-         voices.do_all(agent add_note_iterator)
+         voices.do_all(agent add_events_iterator)
       end
 
-   add_note_iterator (a_voice: MIXUP_VOICE) is
+   add_events_iterator (a_voice: MIXUP_VOICE) is
       do
-         notes.add_last(a_voice.new_note_iterator(context))
+         notes.add_last(a_voice.new_events_iterator(context))
       end
 
    count: INTEGER is
@@ -37,7 +37,7 @@ feature {}
       end
 
    voices: TRAVERSABLE[MIXUP_VOICE]
-   context: MIXUP_NOTES_ITERATOR_CONTEXT
+   context: MIXUP_EVENTS_ITERATOR_CONTEXT
    start_time: INTEGER_64
 
 invariant

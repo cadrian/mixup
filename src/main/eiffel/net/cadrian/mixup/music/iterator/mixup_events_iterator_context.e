@@ -1,4 +1,4 @@
-expanded class MIXUP_NOTES_ITERATOR_CONTEXT
+expanded class MIXUP_EVENTS_ITERATOR_CONTEXT
 
 insert
    ANY

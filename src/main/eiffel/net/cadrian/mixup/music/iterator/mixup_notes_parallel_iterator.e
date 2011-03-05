@@ -4,12 +4,12 @@ deferred class MIXUP_NOTES_PARALLEL_ITERATOR
 --
 
 inherit
-   MIXUP_NOTES_ITERATOR
+   MIXUP_EVENTS_ITERATOR
 
 feature {ANY}
    start is
       do
-         create {RING_ARRAY[MIXUP_NOTES_ITERATOR]} notes.with_capacity(0, count)
+         create {RING_ARRAY[MIXUP_EVENTS_ITERATOR]} notes.with_capacity(0, count)
          add_notes_iterator
          sorter.sort(notes)
       end
@@ -19,7 +19,7 @@ feature {ANY}
          Result := notes.is_empty
       end
 
-   item: MIXUP_NOTES_ITERATOR_ITEM is
+   item: MIXUP_EVENTS_ITERATOR_ITEM is
       do
          Result := notes.first.item
       end
@@ -34,8 +34,8 @@ feature {ANY}
       end
 
 feature {}
-   notes:  COLLECTION[MIXUP_NOTES_ITERATOR]
-   sorter: COLLECTION_SORTER[MIXUP_NOTES_ITERATOR]
+   notes:  COLLECTION[MIXUP_EVENTS_ITERATOR]
+   sorter: COLLECTION_SORTER[MIXUP_EVENTS_ITERATOR]
 
    add_notes_iterator is
       require

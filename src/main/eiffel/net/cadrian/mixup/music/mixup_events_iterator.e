@@ -1,14 +1,14 @@
-deferred class MIXUP_NOTES_ITERATOR
+deferred class MIXUP_EVENTS_ITERATOR
 
 inherit
-   ITERATOR[MIXUP_NOTES_ITERATOR_ITEM]
+   ITERATOR[MIXUP_EVENTS_ITERATOR_ITEM]
       undefine
          is_equal
       end
    COMPARABLE
 
 feature {ANY}
-   infix "<" (other: MIXUP_NOTES_ITERATOR): BOOLEAN is
+   infix "<" (other: MIXUP_EVENTS_ITERATOR): BOOLEAN is
       do
          if is_off then
             Result := not other.is_off

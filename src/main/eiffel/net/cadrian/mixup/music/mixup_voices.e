@@ -33,7 +33,7 @@ feature {ANY}
          voices.last.add_music(a_music)
       end
 
-   add_chord (note_heads: COLLECTION[STRING]; note_length: INTEGER_64) is
+   add_chord (note_heads: COLLECTION[FIXED_STRING]; note_length: INTEGER_64) is
       do
          voices.last.add_chord(note_heads, note_length)
       end
@@ -94,7 +94,7 @@ feature {ANY}
          Result := voices.first.bars
       end
 
-   new_note_iterator (a_context: MIXUP_NOTES_ITERATOR_CONTEXT): MIXUP_NOTES_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
          create {MIXUP_NOTES_ITERATOR_ON_VOICES} Result.make(a_context, voices)
       end

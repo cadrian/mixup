@@ -8,7 +8,7 @@ feature {ANY}
       deferred
       end
 
-   add_chord (note_heads: COLLECTION[STRING]; note_length: INTEGER_64) is
+   add_chord (note_heads: COLLECTION[FIXED_STRING]; note_length: INTEGER_64) is
       deferred
       end
 
@@ -31,5 +31,7 @@ feature {ANY}
    down_staff is
       deferred
       end
+
+   has_lyrics: BOOLEAN is True
 
 end

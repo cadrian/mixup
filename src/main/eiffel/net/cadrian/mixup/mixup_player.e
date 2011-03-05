@@ -37,9 +37,9 @@ feature {MIXUP_MIXER}
       deferred
       end
 
-   set_dynamics (instrument, dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; dynamics, position: ABSTRACT_STRING) is
       require
-         instrument /= Void
+         instrument_name /= Void
       deferred
       end
 

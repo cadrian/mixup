@@ -64,8 +64,18 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             play_down_staff(node)
          when "Extern_Notes", "Extern_Syllable" then
             not_yet_implemented
-         when "Dynamics" then
-            play_dynamics(node)
+         when "Position" then
+            build_dynamics_position(node)
+         when "Dynamic_Identifier" then
+            build_dynamic_identifier(node)
+         when "Dynamic_String" then
+            build_dynamic_string(node)
+         when "Dynamic_Hairpin_Crescendo" then
+            build_dynamic_hairpin_crescendo(node)
+         when "Dynamic_Hairpin_Decrescendo" then
+            build_dynamic_hairpin_decrescendo(node)
+         when "Dynamic_End" then
+            build_dynamic_end(node)
          when "Chord" then
             play_chord(node)
          when "Note_Head" then
@@ -133,7 +143,7 @@ feature {MIXUP_TERMINAL_NODE_IMPL}
             boolean_image ::= node.image
             create {MIXUP_BOOLEAN} last_value.make(boolean_image.decoded)
          when "KW note head" then
-            last_note_head := node.image.image
+            last_note_head.copy(node.image.image)
          else
             -- skipped
          end
@@ -146,8 +156,8 @@ feature {}
    last_value: MIXUP_VALUE
    last_values: COLLECTION[MIXUP_VALUE]
    last_note_length: INTEGER_64
-   last_note_head: STRING
-   note_heads: COLLECTION[STRING]
+   last_note_head: STRING is ""
+   note_heads: COLLECTION[FIXED_STRING]
    last_compound_music: MIXUP_COMPOUND_MUSIC
    current_context: MIXUP_CONTEXT
    last_string: STRING
@@ -347,11 +357,6 @@ feature {}
          last_compound_music.down_staff
       end
 
-   play_dynamics (dynamics: MIXUP_NON_TERMINAL_NODE_IMPL) is
-      do
-         -- TODO
-      end
-
    play_group (group: MIXUP_NON_TERMINAL_NODE_IMPL; grouped_music: MIXUP_GROUPED_MUSIC) is
       local
          old_compound_music: like last_compound_music
@@ -380,7 +385,7 @@ feature {}
 
    play_chord (chord: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         create {FAST_ARRAY[STRING]} note_heads.make(0)
+         create {FAST_ARRAY[FIXED_STRING]} note_heads.make(0)
          if chord.count = 2 then
             chord.node_at(0).accept(Current)
             chord.node_at(1).accept(Current)
@@ -392,9 +397,25 @@ feature {}
       end
 
    build_note_head (note_head: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         token: MIXUP_TERMINAL_NODE_IMPL
       do
          note_head.node_at(0).accept(Current)
-         note_heads.add_last(last_note_head)
+         if note_head.count > 1 then
+            inspect
+               last_note_head.first
+            when 'r', 'R' then
+               not_yet_implemented -- error: unexpected octave change for rest
+            else
+               token ::= note_head.node_at(1)
+               last_note_head.append(token.image.image)
+               if note_head.count = 3 then
+                  token ::= note_head.node_at(2)
+                  last_note_head.append(token.image.image)
+               end
+            end
+         end
+         note_heads.add_last(last_note_head.intern)
       end
 
    build_note_length (note_length: MIXUP_NON_TERMINAL_NODE_IMPL) is
@@ -425,7 +446,55 @@ feature {}
          end
       end
 
-feature {} -- Building music
+feature {} -- Dynamics
+   last_position: FIXED_STRING
+   last_dynamics: MIXUP_DYNAMICS
+
+   build_dynamics_position (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         position: MIXUP_TERMINAL_NODE_IMPL
+      do
+         if dynamic.is_empty then
+            last_position := Void
+         else
+            position ::= dynamic.node_at(0)
+            last_position := position.image.image.intern
+         end
+      end
+
+   build_dynamic_identifier (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         dynamic.node_at(0).accept(Current)
+         create last_dynamics.make(last_compound_music.reference, name.intern, last_position)
+         last_compound_music.add_music(last_dynamics)
+      end
+
+   build_dynamic_string (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         dynamic.node_at(0).accept(Current)
+         create last_dynamics.make(last_compound_music.reference, last_string.intern, last_position)
+         last_compound_music.add_music(last_dynamics)
+      end
+
+   build_dynamic_hairpin_crescendo (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         create last_dynamics.make(last_compound_music.reference, (once "<").intern, last_position)
+         last_compound_music.add_music(last_dynamics)
+      end
+
+   build_dynamic_hairpin_decrescendo (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         create last_dynamics.make(last_compound_music.reference, (once ">").intern, last_position)
+         last_compound_music.add_music(last_dynamics)
+      end
+
+   build_dynamic_end (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         create last_dynamics.make(last_compound_music.reference, (once "end").intern, last_position)
+         last_compound_music.add_music(last_dynamics)
+      end
+
+feature {}
    current_instrument: MIXUP_INSTRUMENT
 
    play_notes (notes: MIXUP_NON_TERMINAL_NODE_IMPL) is

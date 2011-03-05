@@ -193,6 +193,10 @@ feature {}
 
                                    "Note_Head+", list_of("Note_Head", False, Void);
                                    "Note_Head",  {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW note head" >> }, Void;
+                                                                        {FAST_ARRAY[STRING] << "KW note head", "KW '" >> }, Void;
+                                                                        {FAST_ARRAY[STRING] << "KW note head", "KW '", "KW '" >> }, Void;
+                                                                        {FAST_ARRAY[STRING] << "KW note head", "KW ," >> }, Void;
+                                                                        {FAST_ARRAY[STRING] << "KW note head", "KW ,", "KW ," >> }, Void;
                                                                         >> };
 
                                    "Note_Length", {PARSE_NON_TERMINAL << epsilon, Void;
@@ -212,12 +216,23 @@ feature {}
                                                                       {FAST_ARRAY[STRING] << "KW :", "Position", "Dynamic+", "KW ...", "KW :" >> }, Void; -- dashed line along the whole dynamic section (not with hairpins!)
                                                                       >> };
                                    "Dynamic+", list_of("Dynamic", False, "KW ,");
-                                   "Dynamic",  {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW identifier" >> }, Void;
-                                                                      {FAST_ARRAY[STRING] << "KW string" >> }, Void;
-                                                                      {FAST_ARRAY[STRING] << "KW <" >> }, Void;
-                                                                      {FAST_ARRAY[STRING] << "KW >" >> }, Void;
-                                                                      {FAST_ARRAY[STRING] << "KW end" >> }, Void; -- en of dynamic (stop hairpin, etc.)
+                                   "Dynamic",  {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Dynamic_Identifier" >> }, Void;
+                                                                      {FAST_ARRAY[STRING] << "Dynamic_String" >> }, Void;
+                                                                      {FAST_ARRAY[STRING] << "Dynamic_Hairpin_Crescendo" >> }, Void;
+                                                                      {FAST_ARRAY[STRING] << "Dynamic_Hairpin_Decrescendo" >> }, Void;
+                                                                      {FAST_ARRAY[STRING] << "Dynamic_End" >> }, Void; -- end of dynamic (stop hairpin, etc.)
                                                                       >> };
+                                   "Dynamic_Identifier",  {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW identifier" >> }, Void;
+                                                                      >> };
+                                   "Dynamic_String",  {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW string" >> }, Void;
+                                                                      >> };
+                                   "Dynamic_Hairpin_Crescendo",  {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <" >> }, Void;
+                                                                      >> };
+                                   "Dynamic_Hairpin_Decrescendo",  {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW >" >> }, Void;
+                                                                      >> };
+                                   "Dynamic_End",  {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW end" >> }, Void; -- en of dynamic (stop hairpin, etc.)
+                                                                      >> };
+
                                    "Position", {PARSE_NON_TERMINAL << epsilon, Void;
                                                                       {FAST_ARRAY[STRING] << "KW up", "KW :" >> }, Void; -- up current staff
                                                                       {FAST_ARRAY[STRING] << "KW down", "KW :" >> }, Void; -- down current staff
@@ -350,35 +365,36 @@ feature {}
                                                                              >> };
 
 
-                                   "KW ^",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "^" , ""),  Void);
-                                   "KW <<",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<<", ""),  Void);
-                                   "KW <=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<=", ""),  Void);
-                                   "KW <",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<" , "<="), Void);
-                                   "KW =",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "=" , ""),  Void);
-                                   "KW >=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">=", ""),  Void);
-                                   "KW >>",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">>", ""),  Void);
-                                   "KW >",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">" , ">="), Void);
-                                   "KW |",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "|" , ""),  Void);
-                                   "KW -",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "-" , ""),  Void);
-                                   "KW ,",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "," , ""),  Void);
-                                   "KW :=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":=" , ""),  Void);
-                                   "KW :",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":" , "="),  Void);
-                                   "KW !=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "!=" , ""),  Void);
-                                   "KW //",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "//" , ""),  Void);
-                                   "KW /",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "/" , "/"),  Void);
+                                   "KW ^",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "^" , ""),    Void);
+                                   "KW <<",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<<", ""),    Void);
+                                   "KW <=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<=", ""),    Void);
+                                   "KW <",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<" , "<="),  Void);
+                                   "KW =",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "=" , ""),    Void);
+                                   "KW >=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">=", ""),    Void);
+                                   "KW >>",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">>", ""),    Void);
+                                   "KW >",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">" , ">="),  Void);
+                                   "KW |",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "|" , ""),    Void);
+                                   "KW -",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "-" , ""),    Void);
+                                   "KW ,",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "," , ""),    Void);
+                                   "KW :=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":=" , ""),   Void);
+                                   "KW :",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":" , "="),   Void);
+                                   "KW !=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "!=" , ""),   Void);
+                                   "KW //",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "//" , ""),   Void);
+                                   "KW /",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "/" , "/"),   Void);
                                    "KW ...",         create {PARSE_TERMINAL}.make(agent parse_symbol(?, "..." , ""),  Void);
                                    "KW ..",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ".." , "."),  Void);
-                                   "KW .",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "." , "."),  Void);
-                                   "KW (",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "(" , ""),  Void);
-                                   "KW )",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ")" , ""),  Void);
-                                   "KW [",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "[" , ""),  Void);
-                                   "KW ]",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "]" , ""),  Void);
-                                   "KW {",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "{" , ""),  Void);
-                                   "KW }",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "}" , ""),  Void);
-                                   "KW *",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "*" , ""),  Void);
-                                   "KW \",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "\" , "\"),  Void);
-                                   "KW \\",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "\\" , ""),  Void);
-                                   "KW +",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "+" , ""),  Void);
+                                   "KW .",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "." , "."),   Void);
+                                   "KW '",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "'" , ""),    Void);
+                                   "KW (",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "(" , ""),    Void);
+                                   "KW )",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ")" , ""),    Void);
+                                   "KW [",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "[" , ""),    Void);
+                                   "KW ]",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "]" , ""),    Void);
+                                   "KW {",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "{" , ""),    Void);
+                                   "KW }",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "}" , ""),    Void);
+                                   "KW *",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "*" , ""),    Void);
+                                   "KW \",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "\" , "\"),   Void);
+                                   "KW \\",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "\\" , ""),   Void);
+                                   "KW +",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "+" , ""),    Void);
 
                                    "KW and",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "and"), Void);
                                    "KW book",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "book"), Void);
@@ -1347,7 +1363,7 @@ feature {}
          when 1 then
             inspect
                c
-            when 'e', 'i', '%'', ',' then
+            when 'e', 'i' then
                Result := not (once "rR").has(string.first)
             else
                check not Result end
@@ -1357,14 +1373,6 @@ feature {}
                string.last
             when 'e', 'i' then
                Result := c = 's'
-            else
-               check not Result end
-            end
-         when 3 then
-            inspect
-               c
-            when '%'', ',' then
-               Result := True
             else
                check not Result end
             end
@@ -1386,15 +1394,6 @@ feature {}
          skip_blanks(buffer)
          start_position := position
          image := identifier_image(buffer, note_head_filter)
-         if image /= Void and then image.count = 2 then
-            inspect
-               image.last
-            when '%'', ',' then
-               -- ok
-            else
-               image := Void
-            end
-         end
          if image /= Void and then not buffer.end_reached and then is_identifier_part(buffer.current_character, once "") then
             image := Void
          end

@@ -64,9 +64,9 @@ feature {MIXUP_MIXER}
          events_list.add_last(set_instrument_event(name))
       end
 
-   set_dynamics (instrument, dynamics, position: STRING) is
+   set_dynamics (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; dynamics, position: ABSTRACT_STRING) is
       do
-         events_list.add_last(set_dynamics_event(instrument, dynamics, position))
+         events_list.add_last(set_dynamics_event(instrument_name, time_start, dynamics, position))
       end
 
    set_note (instrument: STRING; time_start: INTEGER_64; note: MIXUP_NOTE) is
