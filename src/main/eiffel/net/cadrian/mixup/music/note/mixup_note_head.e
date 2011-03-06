@@ -97,18 +97,4 @@ feature {}
          Result := j - i
       end
 
-   note_in_octave: DICTIONARY[INTEGER, CHARACTER] is
-      once
-         Result := {HASHED_DICTIONARY[INTEGER, CHARACTER]
-         <<
-           8, 'c';
-           9, 'd';
-           10, 'e';
-           11, 'f';
-           12, 'g';
-           6, 'a';
-           7, 'b';
-           >>};
-      end
-
 end
