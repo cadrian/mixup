@@ -10,7 +10,7 @@ create {AUX_MIXUP_MOCK_PLAYER_EVENTS}
    make
 
 feature {ANY}
-   name: STRING
+   name: FIXED_STRING
    values: TUPLE
 
    is_equal (other: like Current): BOOLEAN is
@@ -20,7 +20,6 @@ feature {ANY}
 
    out_in_tagged_out_memory is
       do
-         tagged_out_memory.extend('%N')
          tagged_out_memory.extend('{')
          tagged_out_memory.append(name)
          tagged_out_memory.extend(':')
