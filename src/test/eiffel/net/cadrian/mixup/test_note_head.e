@@ -50,6 +50,10 @@ feature {}
          note.set("f", 4)
          next := note.relative((once "g").intern)
          assert(next.octave = 4)
+
+         note.set("g", 4)
+         next := note.relative((once "a").intern)
+         assert(next.octave = 5)
       end
 
 end

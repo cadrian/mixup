@@ -20,7 +20,7 @@ feature {ANY}
       require
          desc /= Void
       local
-         i, n_index, a_index, octave_shift: INTEGER
+         i, octave_shift, up_steps, down_steps, steps, a_steps: INTEGER
          note_: STRING
       do
          note_ := once ""
@@ -31,17 +31,23 @@ feature {ANY}
          when 'r', 'R' then
             Result.set(note_, 0)
          else
-            n_index := relative_positions.reference_at(note.first).first_index_of(note_.first)
-            a_index := relative_positions.reference_at(note.first).first_index_of('a')
+            if note_.first /= note.first then
+               up_steps   := steps_to(note_.first, up_scale, 0)
+               down_steps := steps_to(note_.first, down_scale, 0)
 
-            if n_index = 4 or else n_index >= a_index then
-               octave_shift := 0
-            elseif n_index < 4 then
-               octave_shift := -1
-            elseif n_index < a_index then
-               octave_shift := 0
-            else
-               octave_shift := 1
+               if up_steps < down_steps then
+                  steps := up_steps
+                  a_steps := steps_to('a', up_scale, 1)
+                  if a_steps <= steps then
+                     octave_shift := octave_shift + 1
+                  end
+               else
+                  steps := down_steps
+                  a_steps := steps_to('a', down_scale, 0)
+                  if a_steps < steps then
+                     octave_shift := octave_shift - 1
+                  end
+               end
             end
 
             from
@@ -62,6 +68,7 @@ feature {ANY}
                end
                i := i - 1
             end
+
             Result.set(note_, octave + octave_shift)
          end
       end
@@ -78,17 +85,29 @@ feature {ANY}
       end
 
 feature {}
-   relative_positions: DICTIONARY[FIXED_STRING, CHARACTER] is
+   up_scale:   STRING is "abcdefgabcdefg"
+   down_scale: STRING is "gfedcbagfedcba"
+
+   steps_to (char: CHARACTER; scale: STRING; delta: INTEGER): INTEGER is
+      local
+         i, j: INTEGER
+      do
+         i := scale.first_index_of(note.first)
+         j := scale.index_of(char, i + delta)
+         Result := j - i
+      end
+
+   note_in_octave: DICTIONARY[INTEGER, CHARACTER] is
       once
-         Result := {HASHED_DICTIONARY[FIXED_STRING, CHARACTER]
+         Result := {HASHED_DICTIONARY[INTEGER, CHARACTER]
          <<
-           "efgabcd".intern, 'a';
-           "fgabcde".intern, 'b';
-           "gabcdef".intern, 'c';
-           "abcdefg".intern, 'd';
-           "bcdefga".intern, 'e';
-           "cdefgab".intern, 'f';
-           "defgabc".intern, 'g';
+           8, 'c';
+           9, 'd';
+           10, 'e';
+           11, 'f';
+           12, 'g';
+           6, 'a';
+           7, 'b';
            >>};
       end
 
