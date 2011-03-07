@@ -23,7 +23,7 @@ feature {}
          parser_buffer.initialize_with("[
                                         module test
                                         set x := 4
-                                        set something := function(x) native external_fun
+                                        set something := function(x) native "external_fun"
                                         export foobar := function do something(x) end
                                         end
                                         ]")
@@ -31,6 +31,7 @@ feature {}
          evaled := parser.eval(parser_buffer, grammar.table, once "File")
 
          assert(evaled)
+         assert(parser_buffer.last_error = Void)
       end
 
 end
