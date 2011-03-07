@@ -45,4 +45,40 @@ feature {ANY}
       deferred
       end
 
+   fire_start_beam (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      require
+         instrument /= Void
+      deferred
+      end
+
+   fire_end_beam (instrument: ABSTRACT_STRING) is
+      require
+         instrument /= Void
+      deferred
+      end
+
+   fire_start_slur (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      require
+         instrument /= Void
+      deferred
+      end
+
+   fire_end_slur (instrument: ABSTRACT_STRING) is
+      require
+         instrument /= Void
+      deferred
+      end
+
+   fire_start_tie (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      require
+         instrument /= Void
+      deferred
+      end
+
+   fire_end_tie (instrument: ABSTRACT_STRING) is
+      require
+         instrument /= Void
+      deferred
+      end
+
 end

@@ -246,13 +246,16 @@ feature {}
                                    "Voice+", list_of("Voice", False, "KW //");
                                    "Voice", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Notes*" >> }, Void;
                                                                    >> };
-                                   "Beam", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW [", "Notes*", "KW ]" >> }, Void;
+                                   "Beam", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW [", "Xuplet_Spec", "Notes*", "KW ]" >> }, Void;
                                                                   >> };
-                                   "Slur", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW {", "Notes*", "KW }" >> }, Void;
+                                   "Slur", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW {", "Xuplet_Spec", "Notes*", "KW }" >> }, Void;
                                                                   >> };
-                                   "Tie", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW (", "Notes*", "KW )" >> }, Void;
+                                   "Tie", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW (", "Xuplet_Spec", "Notes*", "KW )" >> }, Void;
                                                                  >> };
-
+                                   "Xuplet_Spec", {PARSE_NON_TERMINAL << epsilon, Void;
+                                                                         {FAST_ARRAY[STRING] << "KW number", "KW /", "KW number" >> }, Void;
+                                                                         {FAST_ARRAY[STRING] << "KW number", "KW /", "KW number", "KW string" >> }, Void;
+                                                                         >> };
 
                                    "Function", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW function", "Signature", "Function_Body" >> }, Void;
                                                                       >> };

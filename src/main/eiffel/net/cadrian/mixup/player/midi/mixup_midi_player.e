@@ -1,4 +1,4 @@
-class MIXUP_MUSIXTEX_MIDI
+class MIXUP_MIDI_PLAYER
 
 inherit
    MIXUP_PLAYER

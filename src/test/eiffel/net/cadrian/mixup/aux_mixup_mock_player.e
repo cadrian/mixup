@@ -16,7 +16,13 @@ insert
          set_dynamics as set_dynamics_event,
          set_note as set_note_event,
          start_bar as start_bar_event,
-         end_bar as end_bar_event
+         end_bar as end_bar_event,
+         start_beam as start_beam_event,
+         end_beam as end_beam_event,
+         start_slur as start_slur_event,
+         end_slur as end_slur_event,
+         start_tie as start_tie_event,
+         end_tie as end_tie_event,
       end
 
 create {ANY}
@@ -82,6 +88,36 @@ feature {MIXUP_MIXER}
    end_bar is
       do
          events_list.add_last(end_bar_event)
+      end
+
+   start_beam (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      do
+         events_list.add_last(start_beam_event(instrument, text))
+      end
+
+   end_beam (instrument: ABSTRACT_STRING) is
+      do
+         events_list.add_last(end_beam_event(instrument))
+      end
+
+   start_slur (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      do
+         events_list.add_last(start_slur_event(instrument, text))
+      end
+
+   end_slur (instrument: ABSTRACT_STRING) is
+      do
+         events_list.add_last(end_slur_event(instrument))
+      end
+
+   start_tie (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      do
+         events_list.add_last(start_tie_event(instrument, text))
+      end
+
+   end_tie (instrument: ABSTRACT_STRING) is
+      do
+         events_list.add_last(end_tie_event(instrument))
       end
 
 feature {}

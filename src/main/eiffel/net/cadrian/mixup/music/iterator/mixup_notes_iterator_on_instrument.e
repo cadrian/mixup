@@ -23,17 +23,13 @@ feature {ANY}
 
    item: MIXUP_EVENTS_ITERATOR_ITEM is
       local
-         lyrics: MIXUP_LYRICS
+         lyrics: FAST_ARRAY[FIXED_STRING]
          strophe: COLLECTION[FIXED_STRING]
          i: INTEGER
-         note: MIXUP_NOTE
       do
          Result := voices_iterator.item
-         if Result.music.has_lyrics then
-            note ::= Result.music
-            create lyrics.make(strophes.count, note)
-            Result.set_music(lyrics)
-
+         if Result.has_lyrics then
+            create lyrics.with_capacity(strophes.count)
             from
                i := strophes.lower
             until
@@ -41,13 +37,13 @@ feature {ANY}
             loop
                strophe := strophes.item(i)
                if index < strophe.count then
-                  lyrics.put(i - strophes.lower, strophe.item(index + strophe.lower))
+                  lyrics.add_last(strophe.item(index + strophe.lower))
                else
-                  lyrics.put(i - strophes.lower, once "")
+                  lyrics.add_last((once "").intern)
                end
                i := i + 1
             end
-
+            Result := Result.with_lyrics(lyrics)
             used := True
          end
       end

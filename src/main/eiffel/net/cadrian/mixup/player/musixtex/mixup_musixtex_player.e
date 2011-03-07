@@ -4,7 +4,7 @@ inherit
    MIXUP_PLAYER
 
 create {ANY}
-   connect_to
+   make, connect_to
 
 feature {MIXUP_MIXER}
    set_score (name: ABSTRACT_STRING) is
@@ -62,6 +62,30 @@ feature {MIXUP_MIXER}
       do
       end
 
+   start_beam (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      do
+      end
+
+   end_beam (instrument: ABSTRACT_STRING) is
+      do
+      end
+
+   start_slur (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      do
+      end
+
+   end_slur (instrument: ABSTRACT_STRING) is
+      do
+      end
+
+   start_tie (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      do
+      end
+
+   end_tie (instrument: ABSTRACT_STRING) is
+      do
+      end
+
 feature {}
    put_header is
       do
@@ -87,6 +111,12 @@ feature {}
          name /= Void
       do
          if section_stack.is_empty then
+            if output = Void then
+               check
+                  local_output
+               end
+               create {TEXT_FILE_WRITE} output.connect_to(name + ".tex")
+            end
             put_header
          end
          section_stack.push(name.intern)
@@ -100,6 +130,10 @@ feature {}
          section_stack.pop
          if section_stack.is_empty then
             put_footer
+            if local_output then
+               output.disconnect
+               output := Void
+            end
          end
       end
 
@@ -142,19 +176,27 @@ feature {}
       require
          a_output.is_connected
       do
+         make
+         local_output := False
          output := a_output
-         create section_stack.make
-         create instruments.make
       ensure
          output = a_output
+         not local_output
+      end
+
+   make is
+      do
+         local_output := True
+         create section_stack.make
+         create instruments.make
       end
 
    output: OUTPUT_STREAM
+   local_output: BOOLEAN
    section_stack: STACK[FIXED_STRING]
    instruments: HASHED_DICTIONARY[MIXUP_MUSIXTEX_INSTRUMENT, FIXED_STRING]
 
 invariant
-   output /= Void
    section_stack /= Void
    instruments /= Void
 

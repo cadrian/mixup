@@ -7,6 +7,8 @@ insert
    MIXUP_VOICE
       export
          {MIXUP_VOICE} consolidate_bars
+      redefine
+         new_events_iterator
       end
 
 create {ANY}
@@ -15,48 +17,83 @@ create {ANY}
 feature {ANY}
    is_beam: BOOLEAN is
       do
-         Result := kind = kind_beam
+         Result := start_event = start_beam
       end
 
    is_slur: BOOLEAN is
       do
-         Result := kind = kind_slur
+         Result := start_event = start_slur
       end
 
    is_tie: BOOLEAN is
       do
-         Result := kind = kind_tie
+         Result := start_event = start_tie
+      end
+
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+      do
+         create {MIXUP_NOTES_ITERATOR_ON_GROUP} Result.make(a_context, duration, start_event, end_event, Precursor(a_context))
       end
 
 feature {}
    as_beam (a_reference: like reference) is
       do
          make(a_reference)
-         kind := kind_beam
+         start_event := start_beam
+         end_event := end_beam
       ensure
-         kind = kind_beam
+         is_beam
       end
 
    as_slur (a_reference: like reference) is
       do
          make(a_reference)
-         kind := kind_slur
+         start_event := start_slur
+         end_event := end_slur
       ensure
-         kind = kind_slur
+         is_slur
       end
 
    as_tie (a_reference: like reference) is
       do
          make(a_reference)
-         kind := kind_tie
+         start_event := start_tie
+         end_event := end_tie
       ensure
-         kind = kind_tie
+         is_tie
       end
 
-   kind: INTEGER_8
+   start_event: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING, FIXED_STRING]]
+   end_event: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING]]
 
-   kind_beam: INTEGER_8 is 1
-   kind_slur: INTEGER_8 is 2
-   kind_tie:  INTEGER_8 is 3
+   start_beam: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING, FIXED_STRING]] is
+      once
+         Result := agent {MIXUP_EVENTS}.fire_start_beam
+      end
+
+   end_beam: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING]] is
+      once
+         Result := agent {MIXUP_EVENTS}.fire_end_beam
+      end
+
+   start_slur: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING, FIXED_STRING]] is
+      once
+         Result := agent {MIXUP_EVENTS}.fire_start_slur
+      end
+
+   end_slur: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING]] is
+      once
+         Result := agent {MIXUP_EVENTS}.fire_end_slur
+      end
+
+   start_tie: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING, FIXED_STRING]] is
+      once
+         Result := agent {MIXUP_EVENTS}.fire_start_tie
+      end
+
+   end_tie: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING]] is
+      once
+         Result := agent {MIXUP_EVENTS}.fire_end_tie
+      end
 
 end

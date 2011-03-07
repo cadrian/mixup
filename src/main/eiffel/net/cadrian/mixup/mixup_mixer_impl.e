@@ -158,7 +158,7 @@ feature {}
 
    native_play_midi is
       once
-         add_player(create {MIXUP_MIDI_PLAYER}.make)
+         --add_player(create {MIXUP_MIDI_PLAYER}.make)
       end
 
    native_print is
@@ -242,6 +242,36 @@ feature {ANY}
    fire_end_bar is
       do
          players.do_all(agent {MIXUP_PLAYER}.end_bar);
+      end
+
+   fire_start_beam (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      do
+         players.do_all(agent {MIXUP_PLAYER}.start_beam(instrument, text));
+      end
+
+   fire_end_beam (instrument: ABSTRACT_STRING) is
+      do
+         players.do_all(agent {MIXUP_PLAYER}.end_beam(instrument));
+      end
+
+   fire_start_slur (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      do
+         players.do_all(agent {MIXUP_PLAYER}.start_slur(instrument, text));
+      end
+
+   fire_end_slur (instrument: ABSTRACT_STRING) is
+      do
+         players.do_all(agent {MIXUP_PLAYER}.end_slur(instrument));
+      end
+
+   fire_start_tie (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      do
+         players.do_all(agent {MIXUP_PLAYER}.start_tie(instrument, text));
+      end
+
+   fire_end_tie (instrument: ABSTRACT_STRING) is
+      do
+         players.do_all(agent {MIXUP_PLAYER}.end_tie(instrument));
       end
 
 feature {}

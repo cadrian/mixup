@@ -92,6 +92,8 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             play_slur(node)
          when "Tie" then
             play_tie(node)
+         when "Xuplet_Spec" then
+            read_xuplet_spec(node)
          when "Strophe" then
             play_strophe(node)
          when "Syllable" then
@@ -161,6 +163,9 @@ feature {}
    last_compound_music: MIXUP_COMPOUND_MUSIC
    current_context: MIXUP_CONTEXT
    last_string: STRING
+   last_xuplet_numerator: INTEGER_64
+   last_xuplet_denominator: INTEGER_64
+   last_xuplet_text: FIXED_STRING
 
    build_identifier (dot_identifier: MIXUP_LIST_NODE_IMPL) is
       do
@@ -241,6 +246,33 @@ feature {}
    absolute_reference: MIXUP_NOTE_HEAD is
       once
          Result.set("a", 4)
+      end
+
+   read_xuplet_spec (spec: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         int: MIXUP_INTEGER; str: MIXUP_STRING; string: STRING
+      do
+         if spec.is_empty then
+            last_xuplet_numerator := 0
+            last_xuplet_denominator := 0
+            last_xuplet_text := Void
+         else
+            spec.node_at(0).accept(Current)
+            int ::= last_value
+            last_xuplet_numerator := int.value
+            spec.node_at(2).accept(Current)
+            last_xuplet_denominator := int.value
+            if spec.count = 3 then
+               string := once ""
+               string.clear_count
+               last_xuplet_numerator.append_in(string)
+               last_xuplet_text := string.intern
+            else
+               spec.node_at(3).accept(Current)
+               str ::= last_value
+               last_xuplet_text := str.value
+            end
+         end
       end
 
 feature {} -- Functions
@@ -360,11 +392,22 @@ feature {}
    play_group (group: MIXUP_NON_TERMINAL_NODE_IMPL; grouped_music: MIXUP_GROUPED_MUSIC) is
       local
          old_compound_music: like last_compound_music
+         xnumerator, xdenominator: INTEGER_64; xtext: FIXED_STRING
       do
          old_compound_music := last_compound_music
-         last_compound_music := grouped_music
+
          group.node_at(1).accept(Current)
+         xnumerator := last_xuplet_numerator
+         xdenominator := last_xuplet_denominator
+         xtext := last_xuplet_text
+
+         last_compound_music := grouped_music
+         group.node_at(2).accept(Current)
          old_compound_music.add_music(grouped_music)
+
+         if xtext /= Void then
+            grouped_music.set_xuplet(xnumerator, xdenominator, xtext)
+         end
          last_compound_music := old_compound_music
       end
 
@@ -428,15 +471,11 @@ feature {}
             note_length.node_at(0).accept(Current)
             if number ?:= last_value then
                number ::= last_value
-               if number.value.fit_integer_32 then
-                  last_note_length := number.value
-                  inspect
-                     last_note_length
-                  when 1, 2, 4, 8, 16, 32, 64 then
-                     last_note_length := {INTEGER_64 256} // last_note_length -- make it divisible by 4 (because of dots), and restore a correct order in lengths
-                  else
-                     not_yet_implemented -- error: invalid note length
-                  end
+               last_note_length := number.value
+               inspect
+                  last_note_length
+               when 1, 2, 4, 8, 16, 32, 64 then
+                  last_note_length := {INTEGER_64 256} // last_note_length -- make it divisible by 4 (because of dots), and restore a correct order in lengths
                else
                   not_yet_implemented -- error: invalid note length
                end

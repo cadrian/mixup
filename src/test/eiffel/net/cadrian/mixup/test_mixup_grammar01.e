@@ -39,7 +39,7 @@ feature {}
                                         set hook.at_end := function native "print"
                                         instrument singer
                                            music
-                                              << :p,<: c,4 d e f | g a b :f: c | :hidden:mp: c,1 >>
+                                              << :p,<: { c,4 d e f | g a b :f: c } | :hidden:mp: c,1 >>
                                            lyrics
                                               << doe ray me far sew la tea doe, doe. >>
                                               << do re mi fa so la ti do, do. >>
@@ -74,6 +74,7 @@ feature {}
                                                          start_bar,
                                                          set_dynamics   ("singer",   0, "p", Void                                                                         ),
                                                          set_dynamics   ("singer",   0, "<", Void                                                                         ),
+                                                         start_slur     ("singer", Void                                                                                   ),
                                                          set_note       ("singer",   0, {MIXUP_LYRICS {MIXUP_CHORD duration_4, << note("c", 3) >> }, << "doe" , "do"  >> }), -- a deer, a female deer
                                                          set_dynamics   ("bass",     0, "p", Void                                                                         ),
                                                          set_note       ("bass",     0,               {MIXUP_CHORD duration_1, << note("c", 2) >> }                       ),
@@ -89,6 +90,7 @@ feature {}
                                                          set_note       ("singer", 384, {MIXUP_LYRICS {MIXUP_CHORD duration_4, << note("b", 4) >> }, << "tea" , "ti"  >> }), -- a drink with jam and bread
                                                          set_dynamics   ("singer", 448, "f", Void                                                                         ),
                                                          set_note       ("singer", 448, {MIXUP_LYRICS {MIXUP_CHORD duration_4, << note("c", 4) >> }, << "doe,", "do," >> }),
+                                                         end_slur       ("singer"                                                                                         ),
                                                          end_bar,
 
                                                          start_bar,
@@ -108,7 +110,7 @@ feature {}
          loop
             expected_event := expected.item(i)
             played_event := player.events.item(i + player.events.lower - expected.lower)
-            --std_output.put_line(i.out + "%T" + played_event.out + "%N vs.%T" + expected_event.out)
+            std_output.put_line(i.out + "%T" + played_event.out + "%N vs.%T" + expected_event.out)
             assert(played_event.is_equal(expected_event))
             i := i + 1
          end

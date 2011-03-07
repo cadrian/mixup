@@ -28,29 +28,25 @@ feature {}
       require
          a_dynamics /= Void
       do
-         item.set(event_set_dynamics, a_context.instrument.name, a_context.start_time, a_dynamics, True)
+         create {MIXUP_EVENTS_ITERATOR_ITEM_DYNAMICS} item.set(event_set_dynamics, a_context.instrument.name, a_context.start_time, a_dynamics)
       ensure
          item.time = a_context.start_time
-         item.music = a_dynamics
          not is_off
       end
 
-   event_set_dynamics: PROCEDURE[TUPLE[MIXUP_EVENTS, MIXUP_EVENTS_ITERATOR_ITEM]] is
+   event_set_dynamics: PROCEDURE[TUPLE[MIXUP_EVENTS, MIXUP_EVENTS_ITERATOR_ITEM_DYNAMICS]] is
       once
          Result := agent set_dynamics
       end
 
-   set_dynamics (a_events: MIXUP_EVENTS; a_item: MIXUP_EVENTS_ITERATOR_ITEM) is
+   set_dynamics (a_events: MIXUP_EVENTS; a_item: MIXUP_EVENTS_ITERATOR_ITEM_DYNAMICS) is
       require
          a_events /= Void
-      local
-         dynamics: MIXUP_DYNAMICS
       do
-         dynamics ::= a_item.music
-         a_events.fire_set_dynamics(a_item.instrument, a_item.time, dynamics.text, dynamics.position)
+         a_events.fire_set_dynamics(a_item.instrument, a_item.time, a_item.music.text, a_item.music.position)
       end
 
 invariant
-   item.note /= Void
+   item.music /= Void
 
 end

@@ -57,4 +57,40 @@ feature {MIXUP_MIXER}
       deferred
       end
 
+   start_beam (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      require
+         instrument /= Void
+      deferred
+      end
+
+   end_beam (instrument: ABSTRACT_STRING) is
+      require
+         instrument /= Void
+      deferred
+      end
+
+   start_slur (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      require
+         instrument /= Void
+      deferred
+      end
+
+   end_slur (instrument: ABSTRACT_STRING) is
+      require
+         instrument /= Void
+      deferred
+      end
+
+   start_tie (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+      require
+         instrument /= Void
+      deferred
+      end
+
+   end_tie (instrument: ABSTRACT_STRING) is
+      require
+         instrument /= Void
+      deferred
+      end
+
 end

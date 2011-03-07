@@ -61,4 +61,49 @@ feature {}
          create Result.make("end_bar".intern, [])
       end
 
+   start_beam (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+      local
+         t: FIXED_STRING
+      do
+         if text /= Void then
+            t := text.intern
+         end
+         create Result.make("start_beam".intern, [instrument.intern, t])
+      end
+
+   end_beam (instrument: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+      do
+         create Result.make("end_beam".intern, [instrument.intern])
+      end
+
+   start_slur (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+      local
+         t: FIXED_STRING
+      do
+         if text /= Void then
+            t := text.intern
+         end
+         create Result.make("start_slur".intern, [instrument.intern, t])
+      end
+
+   end_slur (instrument: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+      do
+         create Result.make("end_slur".intern, [instrument.intern])
+      end
+
+   start_tie (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+      local
+         t: FIXED_STRING
+      do
+         if text /= Void then
+            t := text.intern
+         end
+         create Result.make("start_tie".intern, [instrument.intern, t])
+      end
+
+   end_tie (instrument: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+      do
+         create Result.make("end_tie".intern, [instrument.intern])
+      end
+
 end

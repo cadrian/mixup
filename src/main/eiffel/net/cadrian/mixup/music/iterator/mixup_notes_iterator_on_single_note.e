@@ -28,26 +28,22 @@ feature {}
       require
          a_note /= Void
       do
-         item.set(event_set_note, a_context.instrument.name, a_context.start_time, a_note, True)
+         create {MIXUP_EVENTS_ITERATOR_ITEM_NOTE} item.set(event_set_note, a_context.instrument.name, a_context.start_time, a_note, a_context.xuplet_numerator, a_context.xuplet_denominator, True)
       ensure
          item.time = a_context.start_time
-         item.music = a_note
          not is_off
       end
 
-   event_set_note: PROCEDURE[TUPLE[MIXUP_EVENTS, MIXUP_EVENTS_ITERATOR_ITEM]] is
+   event_set_note: PROCEDURE[TUPLE[MIXUP_EVENTS, MIXUP_EVENTS_ITERATOR_ITEM_NOTE]] is
       once
          Result := agent set_note
       end
 
-   set_note (a_events: MIXUP_EVENTS; a_item: MIXUP_EVENTS_ITERATOR_ITEM) is
+   set_note (a_events: MIXUP_EVENTS; a_item: MIXUP_EVENTS_ITERATOR_ITEM_NOTE) is
       require
          a_events /= Void
-      local
-         note: MIXUP_NOTE
       do
-         note ::= a_item.music
-         a_events.fire_set_note(a_item.instrument, a_item.time, note)
+         a_events.fire_set_note(a_item.instrument, a_item.time, a_item.music)
       end
 
 invariant
