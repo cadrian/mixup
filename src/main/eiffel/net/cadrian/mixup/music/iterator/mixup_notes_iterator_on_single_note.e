@@ -51,6 +51,6 @@ feature {}
       end
 
 invariant
-   item.note /= Void
+   item.music /= Void
 
 end
