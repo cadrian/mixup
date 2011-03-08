@@ -9,7 +9,7 @@ feature {ANY}
    staffs: INTEGER
 
 feature {MIXUP_MUSIXTEX_PLAYER}
-   set_instrument (output: OUTPUT_STREAM) is
+   emit_instrument (output: OUTPUT_STREAM) is
       require
          output.is_connected
       do
@@ -25,6 +25,18 @@ feature {MIXUP_MUSIXTEX_PLAYER}
          output.put_line(once "}")
       end
 
+   emit (output: OUTPUT_STREAM) is
+      require
+         output /= Void
+      local
+         context: MIXUP_MUSIXTEX_EMIT_CONTEXT
+      do
+         create context.make(output)
+         notes.do_all(agent {MIXUP_MUSIXTEX_NOTE}.emit(context))
+         context.close
+         notes.clear_count
+      end
+
 feature {}
    make (a_index: like index; a_name: ABSTRACT_STRING) is
       require
@@ -33,10 +45,13 @@ feature {}
          name := a_name.intern
          index := a_index
          staffs := 1
+         create notes.make(0)
       ensure
          name = a_name.intern
          index = a_index
          staffs = 1
       end
+
+   notes: FAST_ARRAY[MIXUP_MUSIXTEX_NOTE]
 
 end

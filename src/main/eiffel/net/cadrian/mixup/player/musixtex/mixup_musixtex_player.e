@@ -145,7 +145,7 @@ feature {}
          output.put_string(once "\instrumentnumber{")
          output.put_integer(instruments.count)
          output.put_line(once "}")
-         instruments.do_all_items(agent {MIXUP_MUSIXTEX_INSTRUMENT}.set_instrument(output))
+         instruments.do_all_items(agent {MIXUP_MUSIXTEX_INSTRUMENT}.emit_instrument(output))
          output.put_line(once "[
                                \generalmeter{\meterC}
                                \nostartrule

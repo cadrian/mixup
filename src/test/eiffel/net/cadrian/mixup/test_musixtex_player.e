@@ -29,6 +29,8 @@ feature {}
          musixtex.end_bar
          musixtex.end_partitur
 
+         -- \relativeaccid ???
+
          assert(buffer.to_string.is_equal("[
                                            \input musixtex
                                            \input musixmad
