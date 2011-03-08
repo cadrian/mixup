@@ -43,10 +43,10 @@ feature {}
       require
          a_events /= Void
       do
-         a_events.fire_set_dynamics(a_item.instrument, a_item.time, a_item.music.text, a_item.music.position)
+         a_events.fire_set_dynamics(a_item.instrument, a_item.dynamic.text, a_item.dynamic.position)
       end
 
 invariant
-   item.music /= Void
+   item.dynamic /= Void
 
 end

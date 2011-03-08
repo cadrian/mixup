@@ -476,6 +476,9 @@ feature {}
                   last_note_length
                when 1, 2, 4, 8, 16, 32, 64 then
                   last_note_length := {INTEGER_64 256} // last_note_length -- make it divisible by 4 (because of dots), and restore a correct order in lengths
+                  if note_length.count > 1 then
+                     note_length.node_at(1).accept(Current)
+                  end
                else
                   not_yet_implemented -- error: invalid note length
                end

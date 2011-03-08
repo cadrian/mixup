@@ -37,13 +37,13 @@ feature {MIXUP_MIXER}
       deferred
       end
 
-   set_dynamics (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (instrument_name: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
       require
          instrument_name /= Void
       deferred
       end
 
-   set_note (instrument: ABSTRACT_STRING; time_start: INTEGER_64; note: MIXUP_NOTE) is
+   set_note (instrument: ABSTRACT_STRING; note: MIXUP_NOTE) is
       require
          instrument /= Void
       deferred
@@ -57,7 +57,7 @@ feature {MIXUP_MIXER}
       deferred
       end
 
-   start_beam (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+   start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       require
          instrument /= Void
       deferred
@@ -69,7 +69,7 @@ feature {MIXUP_MIXER}
       deferred
       end
 
-   start_slur (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+   start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       require
          instrument /= Void
       deferred
@@ -81,7 +81,7 @@ feature {MIXUP_MIXER}
       deferred
       end
 
-   start_tie (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+   start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       require
          instrument /= Void
       deferred

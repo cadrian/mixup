@@ -15,7 +15,7 @@ feature {ANY}
          elseif other.is_off then
             Result := False
          else
-            Result := item.time < other.item.time
+            Result := item < other.item
          end
       end
 

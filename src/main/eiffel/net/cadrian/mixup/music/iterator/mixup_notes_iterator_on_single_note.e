@@ -28,7 +28,7 @@ feature {}
       require
          a_note /= Void
       do
-         create {MIXUP_EVENTS_ITERATOR_ITEM_NOTE} item.set(event_set_note, a_context.instrument.name, a_context.start_time, a_note, a_context.xuplet_numerator, a_context.xuplet_denominator, True)
+         create {MIXUP_EVENTS_ITERATOR_ITEM_NOTE} item.set(event_set_note, a_context.instrument.name, a_context.start_time, a_note, True)
       ensure
          item.time = a_context.start_time
          not is_off
@@ -43,10 +43,10 @@ feature {}
       require
          a_events /= Void
       do
-         a_events.fire_set_note(a_item.instrument, a_item.time, a_item.music)
+         a_events.fire_set_note(a_item.instrument, a_item.note)
       end
 
 invariant
-   item.music /= Void
+   item.note /= Void
 
 end

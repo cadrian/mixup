@@ -25,7 +25,8 @@ feature {ANY}
    item: MIXUP_EVENTS_ITERATOR_ITEM is
       do
          if start_event /= Void then
-            create {MIXUP_EVENTS_ITERATOR_ITEM_START_GROUP} Result.make(start_event, context.start_time, context.instrument.name, context.xuplet_text)
+            create {MIXUP_EVENTS_ITERATOR_ITEM_START_GROUP} Result.make(start_event, context.start_time, context.instrument.name,
+                                                                        context.xuplet_numerator, context.xuplet_denominator, context.xuplet_text)
          elseif not events_iterator.is_off then
             Result := events_iterator.item
          elseif end_event /= Void then
@@ -70,7 +71,7 @@ feature {}
 
    context: MIXUP_EVENTS_ITERATOR_CONTEXT
    duration: INTEGER_64
-   start_event_: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING, FIXED_STRING]]
+   start_event_: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING]]
    end_event_: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING]]
 
 invariant

@@ -36,19 +36,19 @@ feature {}
          create Result.make("set_instrument".intern, [name.intern])
       end
 
-   set_dynamics (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; dynamics, position: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+   set_dynamics (instrument_name: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
       local
          pos: FIXED_STRING
       do
          if position /= Void then
             pos := position.intern
          end
-         create Result.make("set_dynamics".intern, [instrument_name.intern, time_start, dynamics.intern, pos])
+         create Result.make("set_dynamics".intern, [instrument_name.intern, dynamics.intern, pos])
       end
 
-   set_note (instrument: ABSTRACT_STRING; time_start: INTEGER_64; note: MIXUP_NOTE): AUX_MIXUP_MOCK_EVENT is
+   set_note (instrument: ABSTRACT_STRING; note: MIXUP_NOTE): AUX_MIXUP_MOCK_EVENT is
       do
-         create Result.make("set_note".intern, [instrument.intern, time_start, note])
+         create Result.make("set_note".intern, [instrument.intern, note])
       end
 
    start_bar: AUX_MIXUP_MOCK_EVENT is
@@ -61,14 +61,14 @@ feature {}
          create Result.make("end_bar".intern, [])
       end
 
-   start_beam (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+   start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
       local
          t: FIXED_STRING
       do
          if text /= Void then
             t := text.intern
          end
-         create Result.make("start_beam".intern, [instrument.intern, t])
+         create Result.make("start_beam".intern, [instrument.intern, xuplet_numerator, xuplet_denominator, t])
       end
 
    end_beam (instrument: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
@@ -76,14 +76,14 @@ feature {}
          create Result.make("end_beam".intern, [instrument.intern])
       end
 
-   start_slur (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+   start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
       local
          t: FIXED_STRING
       do
          if text /= Void then
             t := text.intern
          end
-         create Result.make("start_slur".intern, [instrument.intern, t])
+         create Result.make("start_slur".intern, [instrument.intern, xuplet_numerator, xuplet_denominator, t])
       end
 
    end_slur (instrument: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
@@ -91,14 +91,14 @@ feature {}
          create Result.make("end_slur".intern, [instrument.intern])
       end
 
-   start_tie (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+   start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
       local
          t: FIXED_STRING
       do
          if text /= Void then
             t := text.intern
          end
-         create Result.make("start_tie".intern, [instrument.intern, t])
+         create Result.make("start_tie".intern, [instrument.intern, xuplet_numerator, xuplet_denominator, t])
       end
 
    end_tie (instrument: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is

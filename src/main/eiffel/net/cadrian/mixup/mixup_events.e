@@ -29,11 +29,11 @@ feature {ANY}
       deferred
       end
 
-   fire_set_dynamics (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; dynamics, position: ABSTRACT_STRING) is
+   fire_set_dynamics (instrument_name: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
       deferred
       end
 
-   fire_set_note (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; note: MIXUP_NOTE) is
+   fire_set_note (instrument_name: ABSTRACT_STRING; note: MIXUP_NOTE) is
       deferred
       end
 
@@ -45,7 +45,7 @@ feature {ANY}
       deferred
       end
 
-   fire_start_beam (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+   fire_start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       require
          instrument /= Void
       deferred
@@ -57,7 +57,7 @@ feature {ANY}
       deferred
       end
 
-   fire_start_slur (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+   fire_start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       require
          instrument /= Void
       deferred
@@ -69,7 +69,7 @@ feature {ANY}
       deferred
       end
 
-   fire_start_tie (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+   fire_start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       require
          instrument /= Void
       deferred

@@ -17,10 +17,6 @@ feature {ANY}
    reference: MIXUP_NOTE_HEAD
    allow_lyrics: BOOLEAN is True
 
-   xuplet_numerator: INTEGER_64
-   xuplet_denominator: INTEGER_64
-   xuplet_text: FIXED_STRING
-
    next_bar is
       do
          bars_.add_last(duration)
@@ -86,21 +82,6 @@ feature {ANY}
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
          create {MIXUP_NOTES_ITERATOR_ON_VOICE} Result.make(a_context, music)
-      end
-
-   set_xuplet (a_numerator: like xuplet_numerator; a_denominator: like xuplet_denominator; a_text: like xuplet_text) is
-      require
-         a_numerator > 0
-         a_denominator > 0
-         a_text /= Void
-      do
-         xuplet_numerator := a_numerator
-         xuplet_denominator := a_denominator
-         xuplet_text := a_text
-
-         if (duration // a_numerator) * a_numerator /= duration then
-            not_yet_implemented -- error: invalid xuplet duration: does not divide cleanly
-         end
       end
 
 feature {MIXUP_VOICES}

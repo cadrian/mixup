@@ -23,14 +23,14 @@ feature {ANY}
 
    add_time (duration: INTEGER_64) is
       do
-         start_time := start_time + duration
+         start_time := start_time + duration * xuplet_denominator // xuplet_numerator -- yes, musical fractions are written in reverse (3/2 => three parts in two => multiply times by 2/3)
       end
 
    set_xuplet (num, den: INTEGER_64; txt: FIXED_STRING) is
       do
-         xuplet_numerator := num
-         xuplet_denominator := den
-         xuplet_text := txt
+         xuplet_numerator   := num * xuplet_numerator
+         xuplet_denominator := den * xuplet_denominator
+         xuplet_text        := txt
       end
 
 feature {}
@@ -38,6 +38,14 @@ feature {}
       do
          instrument := Void
          start_time := 0
+         xuplet_numerator := 1
+         xuplet_denominator := 1
+         xuplet_text := no_text
+      end
+
+   no_text: FIXED_STRING is
+      once
+         Result := "".intern
       end
 
 end

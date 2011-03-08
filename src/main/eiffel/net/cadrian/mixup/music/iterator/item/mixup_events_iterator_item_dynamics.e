@@ -8,8 +8,10 @@ create {ANY}
 
 feature {ANY}
    time: INTEGER_64
-   music: MIXUP_DYNAMICS
+   dynamic: MIXUP_DYNAMICS
    instrument: FIXED_STRING
+
+   before_bar: BOOLEAN is False
 
    has_lyrics: BOOLEAN is False
 
@@ -19,18 +21,18 @@ feature {ANY}
          event.call([a_events, Current])
       end
 
-   set_music (a_music: like music) is
+   set_dynamic (a_dynamic: like dynamic) is
       do
-         music := a_music
+         dynamic := a_dynamic
       end
 
 feature {}
-   set (a_event: like event; a_instrument: like instrument; a_time: like time; a_music: like music) is
+   set (a_event: like event; a_instrument: like instrument; a_time: like time; a_dynamic: like dynamic) is
       do
          event := a_event
          instrument := a_instrument
          time := a_time
-         music := a_music
+         dynamic := a_dynamic
       end
 
    event: PROCEDURE[TUPLE[MIXUP_EVENTS, MIXUP_EVENTS_ITERATOR_ITEM_DYNAMICS]]

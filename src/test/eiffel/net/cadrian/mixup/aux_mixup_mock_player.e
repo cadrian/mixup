@@ -70,14 +70,14 @@ feature {MIXUP_MIXER}
          events_list.add_last(set_instrument_event(name))
       end
 
-   set_dynamics (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (instrument_name: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
       do
-         events_list.add_last(set_dynamics_event(instrument_name, time_start, dynamics, position))
+         events_list.add_last(set_dynamics_event(instrument_name, dynamics, position))
       end
 
-   set_note (instrument: STRING; time_start: INTEGER_64; note: MIXUP_NOTE) is
+   set_note (instrument: STRING; note: MIXUP_NOTE) is
       do
-         events_list.add_last(set_note_event(instrument, time_start, note))
+         events_list.add_last(set_note_event(instrument, note))
       end
 
    start_bar is
@@ -90,9 +90,9 @@ feature {MIXUP_MIXER}
          events_list.add_last(end_bar_event)
       end
 
-   start_beam (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+   start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         events_list.add_last(start_beam_event(instrument, text))
+         events_list.add_last(start_beam_event(instrument, xuplet_numerator, xuplet_denominator, text))
       end
 
    end_beam (instrument: ABSTRACT_STRING) is
@@ -100,9 +100,9 @@ feature {MIXUP_MIXER}
          events_list.add_last(end_beam_event(instrument))
       end
 
-   start_slur (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+   start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         events_list.add_last(start_slur_event(instrument, text))
+         events_list.add_last(start_slur_event(instrument, xuplet_numerator, xuplet_denominator, text))
       end
 
    end_slur (instrument: ABSTRACT_STRING) is
@@ -110,9 +110,9 @@ feature {MIXUP_MIXER}
          events_list.add_last(end_slur_event(instrument))
       end
 
-   start_tie (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+   start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         events_list.add_last(start_tie_event(instrument, text))
+         events_list.add_last(start_tie_event(instrument, xuplet_numerator, xuplet_denominator, text))
       end
 
    end_tie (instrument: ABSTRACT_STRING) is

@@ -177,7 +177,7 @@ feature {}
          until
             notes.is_off
          loop
-            if not bars.is_off and then bars.item <= notes.item.time then
+            if not bars.is_off and then bars.item <= notes.item.time and then (bars.item < notes.item.time or else not notes.item.before_bar) then
                fire_end_bar
                fire_start_bar
                bars.next
@@ -224,14 +224,14 @@ feature {ANY}
          players.do_all(agent {MIXUP_PLAYER}.set_instrument(instrument_name))
       end
 
-   fire_set_dynamics (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; dynamics, position: ABSTRACT_STRING) is
+   fire_set_dynamics (instrument_name, dynamics, position: ABSTRACT_STRING) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.set_dynamics(instrument_name, time_start, dynamics, position))
+         players.do_all(agent {MIXUP_PLAYER}.set_dynamics(instrument_name, dynamics, position))
       end
 
-   fire_set_note (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; note: MIXUP_NOTE) is
+   fire_set_note (instrument_name: ABSTRACT_STRING; note: MIXUP_NOTE) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.set_note(instrument_name, time_start, note));
+         players.do_all(agent {MIXUP_PLAYER}.set_note(instrument_name, note));
       end
 
    fire_start_bar is
@@ -244,9 +244,9 @@ feature {ANY}
          players.do_all(agent {MIXUP_PLAYER}.end_bar);
       end
 
-   fire_start_beam (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+   fire_start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.start_beam(instrument, text));
+         players.do_all(agent {MIXUP_PLAYER}.start_beam(instrument, xuplet_numerator, xuplet_denominator, text));
       end
 
    fire_end_beam (instrument: ABSTRACT_STRING) is
@@ -254,9 +254,9 @@ feature {ANY}
          players.do_all(agent {MIXUP_PLAYER}.end_beam(instrument));
       end
 
-   fire_start_slur (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+   fire_start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.start_slur(instrument, text));
+         players.do_all(agent {MIXUP_PLAYER}.start_slur(instrument, xuplet_numerator, xuplet_denominator, text));
       end
 
    fire_end_slur (instrument: ABSTRACT_STRING) is
@@ -264,9 +264,9 @@ feature {ANY}
          players.do_all(agent {MIXUP_PLAYER}.end_slur(instrument));
       end
 
-   fire_start_tie (instrument: ABSTRACT_STRING; text: ABSTRACT_STRING) is
+   fire_start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.start_tie(instrument, text));
+         players.do_all(agent {MIXUP_PLAYER}.start_tie(instrument, xuplet_numerator, xuplet_denominator, text));
       end
 
    fire_end_tie (instrument: ABSTRACT_STRING) is

@@ -11,11 +11,10 @@ create {ANY}
 
 feature {ANY}
    time: INTEGER_64
-   xuplet_numerator  : INTEGER_64
-   xuplet_denominator: INTEGER_64
-
-   music: MIXUP_NOTE
+   note: MIXUP_NOTE
    instrument: FIXED_STRING
+
+   before_bar: BOOLEAN is False
 
    has_lyrics: BOOLEAN
 
@@ -23,7 +22,7 @@ feature {ANY}
       local
          lyrics: MIXUP_LYRICS; i: INTEGER
       do
-         create lyrics.make(a_lyrics.count, music)
+         create lyrics.make(a_lyrics.count, note)
          from
             i := 0
          until
@@ -32,7 +31,7 @@ feature {ANY}
             lyrics.put(i, a_lyrics.item(i))
             i := i + 1
          end
-         music := lyrics
+         note := lyrics
          has_lyrics := False
 
          Result := Current
@@ -44,21 +43,18 @@ feature {ANY}
          event.call([a_events, Current])
       end
 
-   set_music (a_music: like music) is
+   set_note (a_note: like note) is
       do
-         music := a_music
+         note := a_note
       end
 
 feature {}
-   set (a_event: like event; a_instrument: like instrument; a_time: like time; a_music: like music;
-        a_xuplet_numerator: like xuplet_numerator; a_xuplet_denominator: like xuplet_denominator; a_lyrics: like has_lyrics) is
+   set (a_event: like event; a_instrument: like instrument; a_time: like time; a_note: like note; a_lyrics: like has_lyrics) is
       do
          event := a_event
          instrument := a_instrument
          time := a_time
-         music := a_music
-         xuplet_numerator := a_xuplet_numerator
-         xuplet_denominator := a_xuplet_denominator
+         note := a_note
          has_lyrics := a_lyrics
       end
 
