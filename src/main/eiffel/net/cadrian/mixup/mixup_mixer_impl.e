@@ -134,11 +134,15 @@ feature {MIXUP_NATIVE_FUNCTION}
       do
          inspect
             a_function.name
-         when "print" then
-            native_print
+         when "play" then
+            native_play
+         when "play_lilypond" then
+            native_play_lilypond
          when "play_musixtex" then
+            not_yet_implemented -- error: back-end not ready to be used
             native_play_musixtex
          when "play_midi" then
+            not_yet_implemented -- error: back-end not ready to be used
             native_play_midi
          else
             not_yet_implemented -- error: unknown native function
@@ -151,9 +155,14 @@ feature {MIXUP_USER_FUNCTION}
       end
 
 feature {}
+   native_play_lilypond is
+      once
+         add_player(create {MIXUP_LILYPOND_PLAYER}.make)
+      end
+
    native_play_musixtex is
       once
-         add_player(create {MIXUP_MUSIXTEX_PLAYER}.make)
+         --add_player(create {MIXUP_MUSIXTEX_PLAYER}.make)
       end
 
    native_play_midi is
@@ -161,7 +170,7 @@ feature {}
          --add_player(create {MIXUP_MIDI_PLAYER}.make)
       end
 
-   native_print is
+   native_play is
       local
          bars: ITERATOR[INTEGER_64]
          bars_mixer: MIXUP_BARS_MIXER
