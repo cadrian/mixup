@@ -16,7 +16,7 @@ feature {ANY}
 
    is_off: BOOLEAN
 
-   item: MIXUP_EVENTS_ITERATOR_ITEM
+   item: MIXUP_EVENTS_ITERATOR_ITEM_NOTE
 
    next is
       do
