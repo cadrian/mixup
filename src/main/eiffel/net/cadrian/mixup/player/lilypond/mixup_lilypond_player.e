@@ -75,6 +75,14 @@ feature {MIXUP_MIXER}
       do
       end
 
+   start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
+      do
+      end
+
+   end_repeat (instrument: ABSTRACT_STRING) is
+      do
+      end
+
 feature {}
    connect_to (a_output: like output) is
       require

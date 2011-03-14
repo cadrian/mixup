@@ -36,6 +36,11 @@ feature {ANY}
          current_strophe.last = a_syllable.intern
       end
 
+   add_extern_syllables (a_syllables: MIXUP_IDENTIFIER) is
+      do
+         -- TODO
+      end
+
    new_events_iterator: MIXUP_EVENTS_ITERATOR is
       local
          context: MIXUP_EVENTS_ITERATOR_CONTEXT

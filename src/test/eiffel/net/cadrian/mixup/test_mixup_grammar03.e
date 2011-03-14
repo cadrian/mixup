@@ -1,4 +1,4 @@
-class TEST_MIXUP_GRAMMAR01
+class TEST_MIXUP_GRAMMAR03
 
 insert
    EIFFELTEST_TOOLS
@@ -36,14 +36,19 @@ feature {}
 
          parser_buffer.initialize_with("[
                                         partitur sample
+                                        -- all those functions will surely be defined in a core module:
                                         set hook.at_end := function native "play"
+                                        set repeat := function(volte, mus) native "repeat"
+                                        set gamme := music << { :p,<: c,4 d e f | g a b :f: c } >>
+                                        -- the singer
                                         instrument singer
                                            music
-                                              << :p,<: { c,4 d e f | g a b :f: c } | :hidden:mp: c1 >>
+                                              << \repeat(2, gamme) | :hidden:mp: c1 >>
                                            lyrics
-                                              << doe ray me far sew la tea doe, doe. >>
+                                              << doe ray me far sew la tea doe, _ >>
                                               << do re mi fa so la ti do, do. >>
                                            end
+                                        -- small compagny
                                         instrument bass
                                            music
                                               << :p: c,,1 | g | { [ 3/2 c8 e g ] c'2. } >>
@@ -69,6 +74,7 @@ feature {}
            set_instrument ("singer"                                                                                     ),
            set_instrument ("bass"                                                                                       ),
 
+           start_repeat   ("singer", 2                                                                                  ),
            set_dynamics   ("singer", "p", Void                                                                          ),
            set_dynamics   ("singer", "<", Void                                                                          ),
            start_slur     ("singer", 1, 1, ""                                                                           ),
@@ -88,6 +94,7 @@ feature {}
            set_dynamics   ("singer", "f", Void                                                                         ),
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("c", 4) >> }, << "doe,", "do," >> }),
            end_slur       ("singer"                                                                                     ),
+           end_repeat     ("singer"                                                                                     ),
            end_bar                                                                                                       ,
 
            start_bar                                                                                                     ,
@@ -101,10 +108,16 @@ feature {}
            end_beam       ("bass",                                                                                      ),
            set_note       ("bass",                 {MIXUP_CHORD duration_2p, << note("c", 3) >> }                       ),
            end_slur       ("bass",                                                                                      ),
+           end_bar                                                                                                       ,
 
            end_partitur
 
            >>}
+
+         std_output.put_line(once "----------------------------------------------------------------------")
+         std_output.put_line(once "Found events:")
+         player.events.do_all(agent (event: AUX_MIXUP_MOCK_EVENT) is do std_output.put_line(event.out) end)
+         std_output.put_line(once "----------------------------------------------------------------------")
 
          assert(player.events.count.is_equal(expected.count))
          from

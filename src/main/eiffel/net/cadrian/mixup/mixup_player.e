@@ -93,4 +93,16 @@ feature {MIXUP_MIXER}
       deferred
       end
 
+   start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
+      require
+         instrument /= Void
+      deferred
+      end
+
+   end_repeat (instrument: ABSTRACT_STRING) is
+      require
+         instrument /= Void
+      deferred
+      end
+
 end

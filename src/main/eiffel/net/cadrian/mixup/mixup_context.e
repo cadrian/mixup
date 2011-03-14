@@ -5,6 +5,7 @@ inherit
 
 feature {ANY}
    name: FIXED_STRING
+   resolver: MIXUP_RESOLVER
 
    add_value (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
       require
@@ -14,14 +15,14 @@ feature {ANY}
          if values.has(a_name) then
             not_yet_implemented -- error: duplicate value in the same context
          else
+            std_output.put_line(">>>> adding '" + a_name + "' to {" + generating_type + "}." + name )
             values.add(a_value, a_name)
          end
       end
 
-   run_hook (hook_name: ABSTRACT_STRING; visitor: MIXUP_VALUE_VISITOR) is
+   hook (hook_name: ABSTRACT_STRING; visitor: MIXUP_VALUE_VISITOR): MIXUP_VALUE is
       local
          full_hook_name, debug_values: STRING
-         hook: MIXUP_VALUE
       do
          full_hook_name := once ""
          full_hook_name.clear_count
@@ -30,10 +31,7 @@ feature {ANY}
          debug
             debug_values := values.out
          end
-         hook := lookup(full_hook_name.intern, False)
-         if hook /= Void then
-            hook.accept(visitor)
-         end
+         Result := lookup(full_hook_name.intern, False)
       end
 
    lookup (identifier: FIXED_STRING; search_parent: BOOLEAN): MIXUP_VALUE is
@@ -103,6 +101,8 @@ feature {}
          if a_parent /= Void then
             a_parent.add_child(Current)
          end
+
+         create resolver.make(Current)
       ensure
          name = a_name.intern
          parent = a_parent
@@ -112,5 +112,6 @@ invariant
    name /= Void
    values /= Void
    children /= Void
+   resolver /= Void
 
 end

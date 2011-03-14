@@ -52,4 +52,20 @@ feature {MIXUP_USER_FUNCTION}
       deferred
       end
 
+feature {MIXUP_MUSIC_VALUE}
+   visit_music (a_music: MIXUP_MUSIC_VALUE) is
+      require
+         a_music /= Void
+      deferred
+      end
+
+feature {MIXUP_NO_VALUE}
+   visit_no_value (a_no_value: MIXUP_NO_VALUE) is
+      require
+         a_no_value /= Void
+      do
+         -- default implementation does nothing because it is a very
+         -- peculiar case
+      end
+
 end

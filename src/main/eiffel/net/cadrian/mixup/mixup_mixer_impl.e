@@ -11,6 +11,7 @@ inherit
       end
    MIXUP_VALUE_VISITOR
    MIXUP_EVENTS
+   MIXUP_NATIVE_PROVIDER
 
 create {ANY}
    make
@@ -57,12 +58,12 @@ feature {MIXUP_SCORE}
    start_score (a_score: MIXUP_SCORE) is
       do
          fire_set_score(a_score.name)
-         a_score.run_hook(once "at_start", Current)
+         run_hook(a_score, once "at_start")
       end
 
    end_score (a_score: MIXUP_SCORE) is
       do
-         a_score.run_hook(once "at_end", Current)
+         run_hook(a_score, once "at_end")
          fire_end_score
       end
 
@@ -70,12 +71,12 @@ feature {MIXUP_BOOK}
    start_book (a_book: MIXUP_BOOK) is
       do
          fire_set_book(a_book.name)
-         a_book.run_hook(once "at_start", Current)
+         run_hook(a_book, once "at_start")
       end
 
    end_book (a_book: MIXUP_BOOK) is
       do
-         a_book.run_hook(once "at_end", Current)
+         run_hook(a_book, once "at_end")
          fire_end_book
       end
 
@@ -83,25 +84,43 @@ feature {MIXUP_PARTITUR}
    start_partitur (a_partitur: MIXUP_PARTITUR) is
       do
          fire_set_partitur(a_partitur.name)
-         a_partitur.run_hook(once "at_start", Current)
+         run_hook(a_partitur, once "at_start")
       end
 
    end_partitur (a_partitur: MIXUP_PARTITUR) is
       do
-         a_partitur.run_hook(once "at_end", Current)
+         run_hook(a_partitur, once "at_end")
          fire_end_partitur
       end
 
 feature {MIXUP_INSTRUMENT}
    start_instrument (a_instrument: MIXUP_INSTRUMENT) is
       do
-         a_instrument.run_hook(once "at_start", Current)
          fire_set_instrument(a_instrument.name)
+         run_hook(a_instrument, once "at_start")
       end
 
    end_instrument (a_instrument: MIXUP_INSTRUMENT) is
       do
-         a_instrument.run_hook(once "at_end", Current)
+         run_hook(a_instrument, once "at_end")
+      end
+
+feature {}
+   run_hook (a_context: MIXUP_CONTEXT; hook_name: STRING) is
+      local
+         hook, res: MIXUP_VALUE
+      do
+         hook := a_context.hook(hook_name, Current)
+         if hook = Void then
+            -- nothing to do
+         elseif hook.is_callable then
+            res := hook.call(a_context, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
+            if res /= Void then
+               not_yet_implemented -- error: lost result
+            end
+         else
+            not_yet_implemented -- error: hook not callable
+         end
       end
 
 feature {MIXUP_BOOLEAN}
@@ -132,21 +151,6 @@ feature {MIXUP_STRING}
 feature {MIXUP_NATIVE_FUNCTION}
    visit_native_function (a_function: MIXUP_NATIVE_FUNCTION) is
       do
-         inspect
-            a_function.name
-         when "play" then
-            native_play
-         when "play_lilypond" then
-            native_play_lilypond
-         when "play_musixtex" then
-            not_yet_implemented -- error: back-end not ready to be used
-            native_play_musixtex
-         when "play_midi" then
-            not_yet_implemented -- error: back-end not ready to be used
-            native_play_midi
-         else
-            not_yet_implemented -- error: unknown native function
-         end
       end
 
 feature {MIXUP_USER_FUNCTION}
@@ -154,23 +158,46 @@ feature {MIXUP_USER_FUNCTION}
       do
       end
 
+feature {MIXUP_MUSIC_VALUE}
+   visit_music (a_music: MIXUP_MUSIC_VALUE) is
+      do
+      end
+
 feature {}
-   native_play_lilypond is
+   native_play_lilypond (context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       once
          add_player(create {MIXUP_LILYPOND_PLAYER}.make)
       end
 
-   native_play_musixtex is
+   native_play_musixtex (context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       once
          --add_player(create {MIXUP_MUSIXTEX_PLAYER}.make)
       end
 
-   native_play_midi is
+   native_play_midi (context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       once
          --add_player(create {MIXUP_MIDI_PLAYER}.make)
       end
 
-   native_play is
+   native_repeat (context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      local
+         volte: MIXUP_INTEGER
+         music: MIXUP_MUSIC_VALUE
+         instr: MIXUP_INSTRUMENT
+      do
+         if args.count /= 2 then
+            not_yet_implemented -- error: bad argument count
+         else
+            volte ::= args.first
+            music ::= args.last
+            instr ::= context
+            fire_start_repeat(instr.name, volte.value)
+            Result := music
+            fire_end_repeat(instr.name)
+         end
+      end
+
+   native_play (context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       local
          bars: ITERATOR[INTEGER_64]
          bars_mixer: MIXUP_BARS_MIXER
@@ -182,7 +209,6 @@ feature {}
 
          from
             create notes.make(current_context)
-            fire_start_bar
          until
             notes.is_off
          loop
@@ -194,7 +220,6 @@ feature {}
             notes.item.fire_event(Current)
             notes.next
          end
-         fire_end_bar
       end
 
 feature {ANY}
@@ -205,7 +230,7 @@ feature {ANY}
 
    fire_end_book is
       do
-         players.do_all(agent {MIXUP_PLAYER}.end_book);
+         players.do_all(agent {MIXUP_PLAYER}.end_book)
       end
 
    fire_set_score (score_name: ABSTRACT_STRING) is
@@ -215,7 +240,7 @@ feature {ANY}
 
    fire_end_score is
       do
-         players.do_all(agent {MIXUP_PLAYER}.end_score);
+         players.do_all(agent {MIXUP_PLAYER}.end_score)
       end
 
    fire_set_partitur (partitur_name: ABSTRACT_STRING) is
@@ -225,7 +250,7 @@ feature {ANY}
 
    fire_end_partitur is
       do
-         players.do_all(agent {MIXUP_PLAYER}.end_partitur);
+         players.do_all(agent {MIXUP_PLAYER}.end_partitur)
       end
 
    fire_set_instrument (instrument_name: ABSTRACT_STRING) is
@@ -240,47 +265,79 @@ feature {ANY}
 
    fire_set_note (instrument_name: ABSTRACT_STRING; note: MIXUP_NOTE) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.set_note(instrument_name, note));
+         players.do_all(agent {MIXUP_PLAYER}.set_note(instrument_name, note))
       end
 
    fire_start_bar is
       do
-         players.do_all(agent {MIXUP_PLAYER}.start_bar);
+         players.do_all(agent {MIXUP_PLAYER}.start_bar)
       end
 
    fire_end_bar is
       do
-         players.do_all(agent {MIXUP_PLAYER}.end_bar);
+         players.do_all(agent {MIXUP_PLAYER}.end_bar)
       end
 
    fire_start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.start_beam(instrument, xuplet_numerator, xuplet_denominator, text));
+         players.do_all(agent {MIXUP_PLAYER}.start_beam(instrument, xuplet_numerator, xuplet_denominator, text))
       end
 
    fire_end_beam (instrument: ABSTRACT_STRING) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.end_beam(instrument));
+         players.do_all(agent {MIXUP_PLAYER}.end_beam(instrument))
       end
 
    fire_start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.start_slur(instrument, xuplet_numerator, xuplet_denominator, text));
+         players.do_all(agent {MIXUP_PLAYER}.start_slur(instrument, xuplet_numerator, xuplet_denominator, text))
       end
 
    fire_end_slur (instrument: ABSTRACT_STRING) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.end_slur(instrument));
+         players.do_all(agent {MIXUP_PLAYER}.end_slur(instrument))
       end
 
    fire_start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.start_tie(instrument, xuplet_numerator, xuplet_denominator, text));
+         players.do_all(agent {MIXUP_PLAYER}.start_tie(instrument, xuplet_numerator, xuplet_denominator, text))
       end
 
    fire_end_tie (instrument: ABSTRACT_STRING) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.end_tie(instrument));
+         players.do_all(agent {MIXUP_PLAYER}.end_tie(instrument))
+      end
+
+   fire_start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
+      do
+         players.do_all(agent {MIXUP_PLAYER}.start_repeat(instrument, volte))
+      end
+
+   fire_end_repeat (instrument: ABSTRACT_STRING) is
+      do
+         players.do_all(agent {MIXUP_PLAYER}.end_repeat(instrument))
+      end
+
+feature {ANY}
+   item (name: STRING): FUNCTION[TUPLE[MIXUP_CONTEXT, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE] is
+      do
+         inspect
+            name
+         when "play" then
+            Result := agent native_play
+         when "play_lilypond" then
+            Result := agent native_play_lilypond
+         when "play_musixtex" then
+            not_yet_implemented -- error: back-end not ready to be used
+            Result := agent native_play_musixtex
+         when "play_midi" then
+            not_yet_implemented -- error: back-end not ready to be used
+            Result := agent native_play_midi
+         when "repeat" then
+            Result := agent native_repeat
+         else
+            not_yet_implemented -- error: unknown native function
+         end
       end
 
 feature {}
@@ -290,7 +347,7 @@ feature {}
 
    make is
       do
-         create parser.make
+         create parser.make(Current)
          create {FAST_ARRAY[MIXUP_PLAYER]} players.make(0)
          create {HASHED_DICTIONARY[MIXUP_CONTEXT, FIXED_STRING]} contexts.make
       end

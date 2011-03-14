@@ -23,6 +23,8 @@ insert
          end_slur as end_slur_event,
          start_tie as start_tie_event,
          end_tie as end_tie_event,
+         start_repeat as start_repeat_event,
+         end_repeat as end_repeat_event
       end
 
 create {ANY}
@@ -118,6 +120,16 @@ feature {MIXUP_MIXER}
    end_tie (instrument: ABSTRACT_STRING) is
       do
          events_list.add_last(end_tie_event(instrument))
+      end
+
+   start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
+      do
+         events_list.add_last(start_repeat_event(instrument,  volte))
+      end
+
+   end_repeat (instrument: ABSTRACT_STRING) is
+      do
+         events_list.add_last(end_repeat_event(instrument))
       end
 
 feature {}

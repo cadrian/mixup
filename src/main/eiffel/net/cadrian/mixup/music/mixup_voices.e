@@ -11,11 +11,22 @@ feature {ANY}
 
 feature {ANY}
    anchor: MIXUP_NOTE_HEAD is
+      local
+         i: INTEGER; found: BOOLEAN
       do
-         if voices.is_empty then
+         from
+            i := voices.lower
+         until
+            found or else i > voices.upper
+         loop
+            if voices.item(i).valid_anchor then
+               Result := voices.item(i).anchor
+               found := True
+            end
+            i := i + 1
+         end
+         if not found then
             Result := reference_
-         else
-            Result := voices.first.anchor
          end
       end
 
@@ -63,26 +74,19 @@ feature {ANY}
          voices.count = old voices.count + 1
       end
 
-   commit is
+   commit (a_context: MIXUP_CONTEXT) is
       local
          durations: AVL_SET[INTEGER_64]
-         voice_bars: TRAVERSABLE[INTEGER_64]
-         i: INTEGER
       do
+         voices.do_all(commit_agent(a_context))
          create durations.make
-         voice_bars := bars
-         from
-            i := voices.lower
-         until
-            i > voices.upper
-         loop
-            voices.item(i).commit
-            if not voices.item(i).bars.is_equal(voice_bars) then
-               not_yet_implemented -- error: bar durations mismatch
-            end
-            durations.add(voices.item(i).duration)
-            i := i + 1
-         end
+         voices.do_all(agent (voice: MIXUP_VOICE; durations_set: SET[INTEGER_64]) is
+                          do
+                             if not voice.bars.is_equal(bars) then
+                                not_yet_implemented -- error: bar durations mismatch
+                             end
+                             durations_set.add(voice.duration)
+                          end (?, durations))
          if durations.count > 1 then
             not_yet_implemented -- error: all voices don't have the same duration
          end
@@ -99,7 +103,7 @@ feature {ANY}
          create {MIXUP_NOTES_ITERATOR_ON_VOICES} Result.make(a_context, voices)
       end
 
-feature {MIXUP_VOICE}
+feature {MIXUP_MUSIC, MIXUP_VOICE}
    consolidate_bars (bars_: SET[INTEGER_64]; duration_offset: like duration) is
       do
          voices.first.consolidate_bars(bars_, duration_offset)
@@ -116,5 +120,10 @@ feature {}
 
    voices: COLLECTION[MIXUP_VOICE]
    reference_: MIXUP_NOTE_HEAD
+
+   commit_agent (a_context: MIXUP_CONTEXT): PROCEDURE[TUPLE[MIXUP_VOICE]] is
+      do
+         Result := agent {MIXUP_VOICE}.commit(a_context)
+      end
 
 end

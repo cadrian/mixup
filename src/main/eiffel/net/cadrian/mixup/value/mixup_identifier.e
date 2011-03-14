@@ -2,6 +2,9 @@ class MIXUP_IDENTIFIER
 
 inherit
    MIXUP_VALUE
+      redefine
+         eval
+      end
 
 create {ANY}
    make
@@ -27,6 +30,51 @@ feature {ANY}
       do
          v ::= visitor
          v.visit_identifier(Current)
+      end
+
+   eval (a_context: MIXUP_CONTEXT): MIXUP_VALUE is
+      local
+         context: MIXUP_CONTEXT
+         i: INTEGER; name_buffer: STRING
+         value: MIXUP_VALUE
+         args: TRAVERSABLE[MIXUP_VALUE]
+      do
+         context := a_context
+         name_buffer := once ""
+         name_buffer.clear_count
+         from
+            i := parts.lower
+         until
+            i > parts.upper
+         loop
+            if not name_buffer.is_empty then
+               name_buffer.extend('.')
+            end
+            name_buffer.append(parts.item(i).name)
+            value := a_context.lookup(name_buffer.intern, True)
+            if value /= Void then
+               if value.is_callable then
+                  args := parts.item(i).eval_args(a_context)
+                  Result := value.call(a_context, args)
+               else
+                  Result := value
+               end
+               if Result = Void then
+                  if i < parts.upper then
+                     not_yet_implemented -- error: nothing returned
+                  end
+                  Result := no_value
+               elseif Result /= Void and then Result.is_context then
+                  context := Result.as_context
+                  name_buffer.clear_count
+               elseif i < parts.upper then
+                  not_yet_implemented -- error: not a context
+               end
+            elseif parts.item(i).args /= Void then
+               parts.item(i).append_args_in(name_buffer)
+            end
+            i := i + 1
+         end
       end
 
    as_name: STRING is
@@ -61,6 +109,12 @@ feature {}
          create {RING_ARRAY[MIXUP_IDENTIFIER_PART]} parts.with_capacity(0, 0)
       end
 
+   no_value: MIXUP_NO_VALUE is
+      once
+         create Result.make
+      end
+
+feature {MIXUP_VALUE_VISITOR}
    parts: COLLECTION[MIXUP_IDENTIFIER_PART]
 
 invariant

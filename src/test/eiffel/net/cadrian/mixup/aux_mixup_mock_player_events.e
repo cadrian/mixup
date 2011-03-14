@@ -106,4 +106,14 @@ feature {}
          create Result.make("end_tie".intern, [instrument.intern])
       end
 
+   start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64): AUX_MIXUP_MOCK_EVENT is
+      do
+         create Result.make("start_repeat".intern, [instrument.intern, volte])
+      end
+
+   end_repeat (instrument: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+      do
+         create Result.make("end_repeat".intern, [instrument.intern])
+      end
+
 end

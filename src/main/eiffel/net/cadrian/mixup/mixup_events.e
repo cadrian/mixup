@@ -81,4 +81,16 @@ feature {ANY}
       deferred
       end
 
+   fire_start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
+      require
+         instrument /= Void
+      deferred
+      end
+
+   fire_end_repeat (instrument: ABSTRACT_STRING) is
+      require
+         instrument /= Void
+      deferred
+      end
+
 end

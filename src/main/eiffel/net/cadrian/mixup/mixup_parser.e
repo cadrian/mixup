@@ -52,7 +52,11 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             play_partitur(node)
          when "Partitur_Content" then
             play_partitur_content(node)
-         when "Music", "Lyrics" then
+         when "Music" then
+            last_compound_music := Void
+            node.node_at(1).accept(Current)
+            create {MIXUP_MUSIC_VALUE} last_value.make(last_compound_music)
+         when "Lyrics" then
             node.node_at(1).accept(Current)
          when "Instrument" then
             play_instrument(node)
@@ -62,8 +66,10 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             play_up_staff(node)
          when "Down_Staff" then
             play_down_staff(node)
-         when "Extern_Notes", "Extern_Syllable" then
-            not_yet_implemented
+         when "Extern_Notes" then
+            play_extern_music(node)
+         when "Extern_Syllable" then
+            play_extern_syllables(node)
          when "Position" then
             build_dynamics_position(node)
          when "Dynamic_Identifier" then
@@ -154,7 +160,8 @@ feature {MIXUP_TERMINAL_NODE_IMPL}
 feature {}
    root_context: MIXUP_CONTEXT
    name: FIXED_STRING
-   identifier: MIXUP_IDENTIFIER
+   current_identifier: MIXUP_IDENTIFIER
+   last_identifier: MIXUP_IDENTIFIER
    last_value: MIXUP_VALUE
    last_values: COLLECTION[MIXUP_VALUE]
    last_note_length: INTEGER_64
@@ -168,23 +175,30 @@ feature {}
    last_xuplet_text: FIXED_STRING
 
    build_identifier (dot_identifier: MIXUP_LIST_NODE_IMPL) is
+      local
+         old_identifier: like current_identifier
       do
-         create identifier.make
+         old_identifier := current_identifier
+         create current_identifier.make
          dot_identifier.accept_all(Current)
+         last_value := current_identifier
+         last_identifier := current_identifier
+         current_identifier := old_identifier
       end
 
    build_identifier_part (identifier_part: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          identifier_part.node_at(0).accept(Current)
-         identifier.add_identifier_part(name)
+         current_identifier.add_identifier_part(name)
          identifier_part.node_at(1).accept(Current)
       end
 
    build_identifier_args (identifier_args: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          if not identifier_args.is_empty then
+            last_values := Void
             identifier_args.node_at(1).accept(Current)
-            identifier.set_args(last_values)
+            current_identifier.set_args(last_values)
          end
       end
 
@@ -199,18 +213,19 @@ feature {}
 
    build_value_list (value_list: MIXUP_LIST_NODE_IMPL) is
       local
-         i: INTEGER
+         i: INTEGER; values: like last_values
       do
-         create {FAST_ARRAY[MIXUP_VALUE]} last_values.with_capacity((value_list.count + 1) // 2)
+         create {FAST_ARRAY[MIXUP_VALUE]} values.with_capacity((value_list.count + 1) // 2)
          from
             i := value_list.lower
          until
             i > value_list.upper
          loop
             value_list.item(i).accept(Current)
-            last_values.add_last(last_value)
-            i := i + 2
+            values.add_last(last_value)
+            i := i + 1
          end
+         last_values := values
       end
 
    build_voices (a_voices: MIXUP_LIST_NODE_IMPL) is
@@ -236,7 +251,7 @@ feature {}
             i := i + 1
          end
 
-         voices.commit
+         voices.commit(current_context)
          if old_compound_music /= Void then
             old_compound_music.add_music(voices)
             last_compound_music := old_compound_music
@@ -280,11 +295,14 @@ feature {} -- Functions
 
    build_function_native (function_native: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
-         string: MIXUP_STRING
+         string: MIXUP_STRING; str: STRING
       do
          function_native.node_at(1).accept(Current)
          string ::= last_value
-         create {MIXUP_NATIVE_FUNCTION} last_function.make(string.value)
+         str := once ""
+         str.clear_count
+         str.append(string.value)
+         create {MIXUP_NATIVE_FUNCTION} last_function.make(string.value, native_provider.item(str))
          last_value := last_function
       end
 
@@ -301,14 +319,14 @@ feature {} -- Functions
          if definition.count = 5 then -- const
             check is_public end
             definition.node_at(2).accept(Current)
-            function_name := identifier.as_name.intern
+            function_name := last_identifier.as_name.intern
             definition.node_at(4).accept(Current)
             last_value.set_public(True)
             last_value.set_constant(True)
             current_context.add_value(function_name, last_value)
          else
             definition.node_at(1).accept(Current)
-            function_name := identifier.as_name.intern
+            function_name := last_identifier.as_name.intern
             definition.node_at(3).accept(Current)
             last_value.set_public(is_public)
             current_context.add_value(function_name, last_value)
@@ -323,8 +341,10 @@ feature {}
          old_context := current_context
          score.node_at(1).accept(Current)
          create {MIXUP_SCORE} current_context.make(name, old_context)
+         if root_context = Void then
+            root_context := current_context
+         end
          score.node_at(2).accept(Current)
-         root_context := current_context
          current_context := old_context
       end
 
@@ -335,8 +355,10 @@ feature {}
          old_context := current_context
          book.node_at(1).accept(Current)
          create {MIXUP_BOOK} current_context.make(name, old_context)
+         if root_context = Void then
+            root_context := current_context
+         end
          book.node_at(2).accept(Current)
-         root_context := current_context
          current_context := old_context
       end
 
@@ -347,8 +369,10 @@ feature {}
          old_context := current_context
          partitur.node_at(1).accept(Current)
          create {MIXUP_PARTITUR} current_context.make(name, old_context)
+         if root_context = Void then
+            root_context := current_context
+         end
          partitur.node_at(2).accept(Current)
-         root_context := current_context
          current_context := old_context
       end
 
@@ -366,6 +390,9 @@ feature {}
          instrument.node_at(1).accept(Current)
          create current_instrument.make(name, old_context, absolute_reference)
          current_context := current_instrument
+         if root_context = Void then
+            root_context := current_context
+         end
          last_compound_music := Void
          instrument.node_at(2).accept(Current)
          instrument.node_at(3).accept(Current)
@@ -387,6 +414,12 @@ feature {}
    play_down_staff (down_staff: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          last_compound_music.down_staff
+      end
+
+   play_extern_music (music: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         music.node_at(1).accept(Current)
+         last_compound_music.add_music(create {MIXUP_MUSIC_IDENTIFIER}.make(last_identifier))
       end
 
    play_group (group: MIXUP_NON_TERMINAL_NODE_IMPL; grouped_music: MIXUP_GROUPED_MUSIC) is
@@ -507,32 +540,32 @@ feature {} -- Dynamics
    build_dynamic_identifier (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          dynamic.node_at(0).accept(Current)
-         create last_dynamics.make(last_compound_music.reference, name.intern, last_position)
+         create last_dynamics.make(name.intern, last_position)
          last_compound_music.add_music(last_dynamics)
       end
 
    build_dynamic_string (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          dynamic.node_at(0).accept(Current)
-         create last_dynamics.make(last_compound_music.reference, last_string.intern, last_position)
+         create last_dynamics.make(last_string.intern, last_position)
          last_compound_music.add_music(last_dynamics)
       end
 
    build_dynamic_hairpin_crescendo (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         create last_dynamics.make(last_compound_music.reference, (once "<").intern, last_position)
+         create last_dynamics.make((once "<").intern, last_position)
          last_compound_music.add_music(last_dynamics)
       end
 
    build_dynamic_hairpin_decrescendo (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         create last_dynamics.make(last_compound_music.reference, (once ">").intern, last_position)
+         create last_dynamics.make((once ">").intern, last_position)
          last_compound_music.add_music(last_dynamics)
       end
 
    build_dynamic_end (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         create last_dynamics.make(last_compound_music.reference, (once "end").intern, last_position)
+         create last_dynamics.make((once "end").intern, last_position)
          last_compound_music.add_music(last_dynamics)
       end
 
@@ -556,9 +589,22 @@ feature {}
          current_instrument.add_syllable(last_string)
       end
 
-feature {}
-   make is
+   play_extern_syllables (syllables: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
+         syllables.node_at(1).accept(Current)
+         current_instrument.add_extern_syllables(last_identifier)
       end
+
+feature {}
+   make (a_native_provider: like native_provider) is
+      require
+         a_native_provider /= Void
+      do
+         native_provider := a_native_provider
+      ensure
+         native_provider = a_native_provider
+      end
+
+   native_provider: MIXUP_NATIVE_PROVIDER
 
 end

@@ -4,12 +4,25 @@ create {ANY}
    make
 
 feature {ANY}
+   valid_anchor: BOOLEAN is True
+
    anchor: MIXUP_NOTE_HEAD is
+      local
+         i: INTEGER; found: BOOLEAN
       do
-         if music.is_empty then
+         from
+            i := music.lower
+         until
+            found or else i > music.upper
+         loop
+            if music.item(i).valid_anchor then
+               Result := music.item(i).anchor
+               found := True
+            end
+            i := i + 1
+         end
+         if not found then
             Result := reference
-         else
-            Result := music.first.anchor
          end
       end
 
@@ -46,8 +59,9 @@ feature {ANY}
          a_music /= Void
       do
          music.add_last(a_music)
-         duration := duration + a_music.duration
-         reference := a_music.anchor
+         if a_music.valid_anchor then
+            reference := a_music.anchor
+         end
       ensure
          music.last = a_music
       end
@@ -74,9 +88,11 @@ feature {ANY}
          reference := chord.anchor
       end
 
-   commit is
+   commit (a_context: MIXUP_CONTEXT) is
+      local
+         aggregator: AGGREGATOR[MIXUP_MUSIC, INTEGER_64]
       do
-         music.do_all(agent {MIXUP_MUSIC}.commit)
+         duration := aggregator.map(music, commit_agent(a_context), 0)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
@@ -84,7 +100,13 @@ feature {ANY}
          create {MIXUP_NOTES_ITERATOR_ON_VOICE} Result.make(a_context, music)
       end
 
-feature {MIXUP_VOICES}
+feature {}
+   commit_agent (a_context: MIXUP_CONTEXT): FUNCTION[TUPLE[MIXUP_MUSIC, INTEGER_64], INTEGER_64] is
+      do
+         Result := agent (mus: MIXUP_MUSIC; dur: INTEGER_64; ctx: MIXUP_CONTEXT): INTEGER_64 is do mus.commit(ctx); Result := dur + mus.duration end (?, ?, a_context)
+      end
+
+feature {MIXUP_MUSIC, MIXUP_VOICE}
    consolidate_bars (barset: SET[INTEGER_64]; duration_offset: like duration) is
       local
          d: like duration

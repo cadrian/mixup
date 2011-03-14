@@ -2,19 +2,22 @@ class MIXUP_GROUPED_MUSIC
 
 inherit
    MIXUP_COMPOUND_MUSIC
+      redefine
+         valid_anchor
+      end
 
 insert
    MIXUP_VOICE
-      export
-         {MIXUP_VOICE} consolidate_bars
       redefine
-         new_events_iterator
+         new_events_iterator, valid_anchor
       end
 
 create {ANY}
    as_beam, as_slur, as_tie
 
 feature {ANY}
+   valid_anchor: BOOLEAN is True
+
    xuplet_numerator: INTEGER_64
    xuplet_denominator: INTEGER_64
    xuplet_text: FIXED_STRING

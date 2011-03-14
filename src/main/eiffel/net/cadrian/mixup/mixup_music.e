@@ -5,11 +5,17 @@ feature {ANY}
       deferred
       end
 
-   anchor: MIXUP_NOTE_HEAD is
+   valid_anchor: BOOLEAN is
       deferred
       end
 
-   commit is
+   anchor: MIXUP_NOTE_HEAD is
+      require
+         valid_anchor
+      deferred
+      end
+
+   commit (a_context: MIXUP_CONTEXT) is
       deferred
       end
 
@@ -21,7 +27,7 @@ feature {ANY}
       deferred
       end
 
-feature {MIXUP_VOICE}
+feature {MIXUP_MUSIC, MIXUP_VOICE}
    consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
       require
          bars /= Void

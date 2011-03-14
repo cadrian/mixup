@@ -4,7 +4,9 @@ inherit
    MIXUP_MUSIC
 
 feature {ANY}
-   commit is
+   valid_anchor: BOOLEAN is True
+
+   commit (a_context: MIXUP_CONTEXT) is
       do
       end
 
@@ -16,7 +18,7 @@ feature {ANY}
    has_lyrics: BOOLEAN is True
       -- TODO: not always! (think slurs and ties)
 
-feature {MIXUP_VOICE}
+feature {MIXUP_MUSIC, MIXUP_VOICE}
    frozen consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
       do
       end

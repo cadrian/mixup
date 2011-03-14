@@ -17,6 +17,27 @@ feature {ANY}
          is_constant := enable
       end
 
+   eval (a_context: MIXUP_CONTEXT): MIXUP_VALUE is
+      do
+         Result := Current
+      end
+
+   is_context: BOOLEAN is False
+   as_context: MIXUP_CONTEXT is
+      require
+         is_context
+      do
+      end
+
+   is_callable: BOOLEAN is False
+   call (a_context: MIXUP_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      require
+         is_callable
+         a_context /= Void
+         a_args /= Void
+      do
+      end
+
 feature {MIXUP_IDENTIFIER_PART}
    as_name_in (a_name: STRING) is
       require

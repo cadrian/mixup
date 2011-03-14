@@ -14,28 +14,58 @@ feature {ANY}
          args = a_args
       end
 
-feature {MIXUP_IDENTIFIER_PART, MIXUP_IDENTIFIER}
-   as_name_in (a_name: STRING) is
-      require
-         a_name /= Void
+feature {MIXUP_IDENTIFIER}
+   eval_args (a_context: MIXUP_CONTEXT): TRAVERSABLE[MIXUP_VALUE] is
       local
+         actual_args: FAST_ARRAY[MIXUP_VALUE]
          i: INTEGER
       do
-         a_name.append(name)
-         if args /= Void then
-            a_name.extend('(')
+         if args = Void then
+            create actual_args.make(0)
+         else
+            create actual_args.with_capacity(args.count)
             from
                i := args.lower
             until
                i > args.upper
             loop
-               if i > args.lower then
-                  a_name.append(once ", ")
-               end
-               args.item(i).as_name_in(a_name)
+               actual_args.add_last(args.item(i).eval(a_context))
                i := i + 1
             end
-            a_name.extend(')')
+         end
+         Result := actual_args
+      end
+
+   append_args_in (buffer: STRING) is
+      require
+         buffer /= Void
+         args /= Void
+      local
+         i: INTEGER
+      do
+         buffer.extend('(')
+         from
+            i := args.lower
+         until
+            i > args.upper
+         loop
+            if i > args.lower then
+               buffer.append(once ", ")
+            end
+            args.item(i).as_name_in(buffer)
+            i := i + 1
+         end
+         buffer.extend(')')
+      end
+
+feature {MIXUP_IDENTIFIER_PART, MIXUP_IDENTIFIER}
+   as_name_in (a_name: STRING) is
+      require
+         a_name /= Void
+      do
+         a_name.append(name)
+         if args /= Void then
+            append_args_in(a_name)
          end
       end
 

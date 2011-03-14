@@ -7,12 +7,14 @@ create {ANY}
    make
 
 feature {ANY}
+   valid_anchor: BOOLEAN is False
+
    duration: INTEGER_64 is 0
-   anchor: MIXUP_NOTE_HEAD
+   anchor: MIXUP_NOTE_HEAD is do end
    text: FIXED_STRING
    position: FIXED_STRING
 
-   commit is
+   commit (a_context: MIXUP_CONTEXT) is
       do
       end
 
@@ -23,21 +25,19 @@ feature {ANY}
 
    has_lyrics: BOOLEAN is False
 
-feature {MIXUP_VOICE}
+feature {MIXUP_MUSIC, MIXUP_VOICE}
    frozen consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
       do
       end
 
 feature {}
-   make (a_anchor: like anchor; a_text, a_position: FIXED_STRING) is
+   make (a_text, a_position: FIXED_STRING) is
       require
          a_text /= Void
       do
-         anchor := a_anchor
          text := a_text
          position := a_position
       ensure
-         anchor = a_anchor
          text = a_text
          position = a_position
       end

@@ -4,6 +4,8 @@ inherit
    MIXUP_MUSIC
 
 feature {ANY}
+   valid_anchor: BOOLEAN is True
+
    add_music (a_music: MIXUP_MUSIC) is
       deferred
       end
