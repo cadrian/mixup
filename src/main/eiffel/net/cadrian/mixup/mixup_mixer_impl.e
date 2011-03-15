@@ -184,6 +184,7 @@ feature {}
          volte: MIXUP_INTEGER
          music: MIXUP_MUSIC_VALUE
          instr: MIXUP_INSTRUMENT
+         decorated: MIXUP_DECORATED_MUSIC
       do
          if args.count /= 2 then
             not_yet_implemented -- error: bad argument count
@@ -191,35 +192,28 @@ feature {}
             volte ::= args.first
             music ::= args.last
             instr ::= context
-            fire_start_repeat(instr.name, volte.value)
-            Result := music
-            fire_end_repeat(instr.name)
+            create decorated.make(music.value,
+                                  agent event_start_repeat(?, ?, volte.value),
+                                  agent event_end_repeat)
+            create {MIXUP_MUSIC_VALUE} Result.make(decorated)
          end
       end
 
-   native_play (context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
-      local
-         bars: ITERATOR[INTEGER_64]
-         bars_mixer: MIXUP_BARS_MIXER
-         notes: MIXUP_NOTES_ITERATOR_ON_INSTRUMENTS
+   event_start_repeat (events: MIXUP_EVENTS; context: MIXUP_EVENTS_ITERATOR_CONTEXT; volte: INTEGER_64) is
       do
-         create bars_mixer.make
-         current_context.accept(bars_mixer)
-         bars := bars_mixer.bars
+         check events = Current end
+         fire_start_repeat(context.instrument.name, volte)
+      end
 
-         from
-            create notes.make(current_context)
-         until
-            notes.is_off
-         loop
-            if not bars.is_off and then bars.item <= notes.item.time and then (bars.item < notes.item.time or else not notes.item.before_bar) then
-               fire_end_bar
-               fire_start_bar
-               bars.next
-            end
-            notes.item.fire_event(Current)
-            notes.next
-         end
+   event_end_repeat (events: MIXUP_EVENTS; context: MIXUP_EVENTS_ITERATOR_CONTEXT) is
+      do
+         check events = Current end
+         fire_end_repeat(context.instrument.name)
+      end
+
+   native_play (context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      do
+         (create {MIXUP_NOTES_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent {MIXUP_EVENTS_ITERATOR_ITEM}.fire_event(Current))
       end
 
 feature {ANY}
@@ -268,14 +262,9 @@ feature {ANY}
          players.do_all(agent {MIXUP_PLAYER}.set_note(instrument_name, note))
       end
 
-   fire_start_bar is
+   fire_next_bar (instrument_name: ABSTRACT_STRING) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.start_bar)
-      end
-
-   fire_end_bar is
-      do
-         players.do_all(agent {MIXUP_PLAYER}.end_bar)
+         players.do_all(agent {MIXUP_PLAYER}.next_bar(instrument_name))
       end
 
    fire_start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is

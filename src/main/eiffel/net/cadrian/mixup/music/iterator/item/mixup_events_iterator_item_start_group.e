@@ -13,8 +13,6 @@ feature {ANY}
    denominator: INTEGER_64
    text: FIXED_STRING
 
-   before_bar: BOOLEAN is False
-
    has_lyrics: BOOLEAN is False
 
    fire_event (a_events: MIXUP_EVENTS) is

@@ -10,8 +10,6 @@ feature {ANY}
    time: INTEGER_64
    instrument: FIXED_STRING
 
-   before_bar: BOOLEAN is True
-
    has_lyrics: BOOLEAN is False
 
    fire_event (a_events: MIXUP_EVENTS) is

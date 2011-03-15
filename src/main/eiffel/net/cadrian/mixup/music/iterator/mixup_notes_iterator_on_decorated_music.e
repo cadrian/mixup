@@ -1,4 +1,4 @@
-class MIXUP_NOTES_ITERATOR_ON_GROUP
+class MIXUP_NOTES_ITERATOR_ON_DECORATED_MUSIC
 --
 -- Decorated iterator with start and end events
 --
@@ -6,7 +6,7 @@ class MIXUP_NOTES_ITERATOR_ON_GROUP
 inherit
    MIXUP_EVENTS_ITERATOR
 
-create {MIXUP_VOICE}
+create {MIXUP_DECORATED_MUSIC}
    make
 
 feature {ANY}
@@ -25,12 +25,11 @@ feature {ANY}
    item: MIXUP_EVENTS_ITERATOR_ITEM is
       do
          if start_event /= Void then
-            create {MIXUP_EVENTS_ITERATOR_ITEM_START_GROUP} Result.make(start_event, context.start_time, context.instrument.name,
-                                                                        context.xuplet_numerator, context.xuplet_denominator, context.xuplet_text)
+            create {MIXUP_EVENTS_ITERATOR_ITEM_DECORATED} Result.make(start_event, context)
          elseif not events_iterator.is_off then
             Result := events_iterator.item
          elseif end_event /= Void then
-            create {MIXUP_EVENTS_ITERATOR_ITEM_END_GROUP} Result.make(end_event, context.start_time + duration, context.instrument.name)
+            create {MIXUP_EVENTS_ITERATOR_ITEM_DECORATED} Result.make(end_event, context)
          end
       end
 
@@ -51,12 +50,11 @@ feature {MIXUP_VOICE}
    end_event: like end_event_
 
 feature {}
-   make (a_context: like context; a_duration: like duration; a_start_event: like start_event; a_end_event: like end_event; a_events_iterator: like events_iterator) is
+   make (a_context: like context; a_start_event: like start_event; a_end_event: like end_event; a_events_iterator: like events_iterator) is
       require
          a_events_iterator /= Void
       do
          context := a_context
-         duration := a_duration
          start_event_ := a_start_event
          end_event_ := a_end_event
          events_iterator := a_events_iterator
@@ -68,9 +66,8 @@ feature {}
       end
 
    context: MIXUP_EVENTS_ITERATOR_CONTEXT
-   duration: INTEGER_64
-   start_event_: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING]]
-   end_event_: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING]]
+   start_event_: PROCEDURE[TUPLE[MIXUP_EVENTS, MIXUP_EVENTS_ITERATOR_CONTEXT]]
+   end_event_: PROCEDURE[TUPLE[MIXUP_EVENTS, MIXUP_EVENTS_ITERATOR_CONTEXT]]
 
 invariant
    events_iterator /= Void

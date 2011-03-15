@@ -15,8 +15,7 @@ insert
          set_instrument as set_instrument_event,
          set_dynamics as set_dynamics_event,
          set_note as set_note_event,
-         start_bar as start_bar_event,
-         end_bar as end_bar_event,
+         next_bar as next_bar_event,
          start_beam as start_beam_event,
          end_beam as end_beam_event,
          start_slur as start_slur_event,
@@ -82,14 +81,9 @@ feature {MIXUP_MIXER}
          events_list.add_last(set_note_event(instrument, note))
       end
 
-   start_bar is
+   next_bar (instrument: STRING) is
       do
-         events_list.add_last(start_bar_event)
-      end
-
-   end_bar is
-      do
-         events_list.add_last(end_bar_event)
+         events_list.add_last(next_bar_event(instrument))
       end
 
    start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is

@@ -51,14 +51,9 @@ feature {}
          create Result.make("set_note".intern, [instrument.intern, note])
       end
 
-   start_bar: AUX_MIXUP_MOCK_EVENT is
+   next_bar (instrument: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
       do
-         create Result.make("start_bar".intern, [])
-      end
-
-   end_bar: AUX_MIXUP_MOCK_EVENT is
-      do
-         create Result.make("end_bar".intern, [])
+         create Result.make("next_bar".intern, [instrument.intern])
       end
 
    start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is

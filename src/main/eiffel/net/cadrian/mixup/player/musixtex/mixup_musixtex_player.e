@@ -50,16 +50,12 @@ feature {MIXUP_MIXER}
       do
       end
 
-   start_bar is
+   next_bar (instrument: ABSTRACT_STRING) is
       do
          if not playing then
             start_playing
          else
          end
-      end
-
-   end_bar is
-      do
       end
 
    start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is

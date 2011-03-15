@@ -43,12 +43,9 @@ feature {MIXUP_MIXER}
       do
       end
 
-   start_bar is
+   next_bar (instrument: ABSTRACT_STRING) is
       do
-      end
-
-   end_bar is
-      do
+         -- ignored
       end
 
    start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is

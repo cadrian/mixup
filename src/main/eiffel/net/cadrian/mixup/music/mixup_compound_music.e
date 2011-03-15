@@ -18,7 +18,7 @@ feature {ANY}
       deferred
       end
 
-   next_bar is
+   add_bar is
       deferred
       end
 

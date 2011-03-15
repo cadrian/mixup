@@ -10,10 +10,6 @@ feature {ANY}
          Result >= 0
       end
 
-   before_bar: BOOLEAN is
-      deferred
-      end
-
    has_lyrics: BOOLEAN is
       deferred
       end
@@ -32,11 +28,7 @@ feature {ANY}
 
    infix "<" (other: MIXUP_EVENTS_ITERATOR_ITEM): BOOLEAN is
       do
-         if time = other.time then
-            Result := before_bar
-         else
-            Result := time < other.time
-         end
+         Result := time < other.time
       end
 
 end

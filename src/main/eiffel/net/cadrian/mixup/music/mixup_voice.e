@@ -30,9 +30,9 @@ feature {ANY}
    reference: MIXUP_NOTE_HEAD
    allow_lyrics: BOOLEAN is True
 
-   next_bar is
+   add_bar is
       do
-         bars_.add_last(duration)
+         add_music(create {MIXUP_BAR}.make)
       end
 
    bars: TRAVERSABLE[INTEGER_64] is
@@ -113,14 +113,6 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
          i: INTEGER
       do
          from
-            i := bars_.lower
-         until
-            i > bars_.upper
-         loop
-            barset.add(bars_.item(i) + duration_offset)
-            i := i + 1
-         end
-         from
             i := music.lower
          until
             i > music.upper
@@ -138,14 +130,12 @@ feature {}
    make (a_reference: like reference) is
       do
          create {FAST_ARRAY[MIXUP_MUSIC]} music.make(0)
-         create {FAST_ARRAY[INTEGER_64]} bars_.make(0)
          reference := a_reference
       ensure
          reference = a_reference
       end
 
    music: COLLECTION[MIXUP_MUSIC]
-   bars_: COLLECTION[INTEGER_64]
 
 invariant
    music /= Void

@@ -3,6 +3,9 @@ deferred class MIXUP_CONTEXT
 inherit
    VISITABLE
 
+insert
+   LOGGING
+
 feature {ANY}
    name: FIXED_STRING
    resolver: MIXUP_RESOLVER
@@ -15,7 +18,7 @@ feature {ANY}
          if values.has(a_name) then
             not_yet_implemented -- error: duplicate value in the same context
          else
-            std_output.put_line(">>>> adding '" + a_name + "' to {" + generating_type + "}." + name )
+            log.trace.put_line("adding '" + a_name + "' to {" + generating_type + "}." + name )
             values.add(a_value, a_name)
          end
       end

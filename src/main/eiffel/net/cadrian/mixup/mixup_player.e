@@ -49,11 +49,7 @@ feature {MIXUP_MIXER}
       deferred
       end
 
-   start_bar is
-      deferred
-      end
-
-   end_bar is
+   next_bar (instrument: ABSTRACT_STRING) is
       deferred
       end
 

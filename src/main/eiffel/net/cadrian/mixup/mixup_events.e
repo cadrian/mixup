@@ -37,11 +37,7 @@ feature {ANY}
       deferred
       end
 
-   fire_start_bar is
-      deferred
-      end
-
-   fire_end_bar is
+   fire_next_bar (instrument_name: ABSTRACT_STRING) is
       deferred
       end
 

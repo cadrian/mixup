@@ -5,6 +5,7 @@ insert
    MIXUP_NODE_HANDLER
    MIXUP_NOTE_DURATIONS
    AUX_MIXUP_MOCK_PLAYER_EVENTS
+   LOGGING
 
 create {}
    make
@@ -78,21 +79,21 @@ feature {}
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("d", 3) >> }, << "ray" , "re"  >> }), -- a drop of golden sun
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("e", 3) >> }, << "me"  , "mi"  >> }), -- a name I call myself
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("f", 3) >> }, << "far" , "fa"  >> }), -- a long, long way to run
-           end_bar                                                                                                       ,
 
-           start_bar                                                                                                     ,
+           next_bar       ("singer"                                                                                     ),
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("g", 3) >> }, << "sew" , "so"  >> }), -- a needle pulling thread
+           next_bar       ("bass"                                                                                       ),
            set_note       ("bass",                 {MIXUP_CHORD duration_1 , << note("g", 1) >> }                       ),
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("a", 4) >> }, << "la"  , "la"  >> }), -- a note to follow so
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("b", 4) >> }, << "tea" , "ti"  >> }), -- a drink with jam and bread
            set_dynamics   ("singer", "f", Void                                                                         ),
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("c", 4) >> }, << "doe,", "do," >> }),
            end_slur       ("singer"                                                                                     ),
-           end_bar                                                                                                       ,
 
-           start_bar                                                                                                     ,
+           next_bar       ("singer"                                                                                     ),
            set_dynamics   ("singer", "mp", "hidden"                                                                     ), -- that will bring us back to
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_1 , << note("c", 3) >> }, << "doe.", "do." >> }),
+           next_bar       ("bass"                                                                                       ),
            start_slur     ("bass", 1, 1, ""                                                                             ),
            start_beam     ("bass", 3, 2, "3"                                                                            ),
            set_note       ("bass",                 {MIXUP_CHORD duration_8 , << note("c", 2) >> }                       ),
@@ -114,7 +115,7 @@ feature {}
          loop
             expected_event := expected.item(i)
             played_event := player.events.item(i + player.events.lower - expected.lower)
-            std_output.put_line(i.out + "%T" + played_event.out + "%N vs.%T" + expected_event.out)
+            log.info.put_line(i.out + "%T" + played_event.out + "%N vs.%T" + expected_event.out)
             assert(played_event.is_equal(expected_event))
             i := i + 1
          end

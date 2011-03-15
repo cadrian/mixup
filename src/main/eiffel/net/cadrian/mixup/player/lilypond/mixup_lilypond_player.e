@@ -43,11 +43,7 @@ feature {MIXUP_MIXER}
       do
       end
 
-   start_bar is
-      do
-      end
-
-   end_bar is
+   next_bar (instrument: ABSTRACT_STRING) is
       do
       end
 

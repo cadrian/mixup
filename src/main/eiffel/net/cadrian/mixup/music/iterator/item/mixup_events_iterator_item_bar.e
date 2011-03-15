@@ -1,4 +1,4 @@
-class MIXUP_EVENTS_ITERATOR_ITEM_DYNAMICS
+class MIXUP_EVENTS_ITERATOR_ITEM_BAR
 
 inherit
    MIXUP_EVENTS_ITERATOR_ITEM
@@ -8,7 +8,7 @@ create {ANY}
 
 feature {ANY}
    time: INTEGER_64
-   dynamic: MIXUP_DYNAMICS
+   bar: MIXUP_BAR
    instrument: FIXED_STRING
 
    has_lyrics: BOOLEAN is False
@@ -19,20 +19,20 @@ feature {ANY}
          event.call([a_events, Current])
       end
 
-   set_dynamic (a_dynamic: like dynamic) is
+   set_bar (a_bar: like bar) is
       do
-         dynamic := a_dynamic
+         bar := a_bar
       end
 
 feature {}
-   set (a_event: like event; a_instrument: like instrument; a_time: like time; a_dynamic: like dynamic) is
+   set (a_event: like event; a_instrument: like instrument; a_time: like time; a_bar: like bar) is
       do
          event := a_event
          instrument := a_instrument
          time := a_time
-         dynamic := a_dynamic
+         bar := a_bar
       end
 
-   event: PROCEDURE[TUPLE[MIXUP_EVENTS, MIXUP_EVENTS_ITERATOR_ITEM_DYNAMICS]]
+   event: PROCEDURE[TUPLE[MIXUP_EVENTS, MIXUP_EVENTS_ITERATOR_ITEM_BAR]]
 
 end

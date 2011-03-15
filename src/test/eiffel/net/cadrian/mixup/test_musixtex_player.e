@@ -24,9 +24,7 @@ feature {}
 
          musixtex.set_partitur("test")
          musixtex.set_instrument("Instr")
-         musixtex.start_bar
          musixtex.set_note("test", {MIXUP_CHORD duration_4, << note("c", 4) >> });
-         musixtex.end_bar
          musixtex.end_partitur
 
          -- \relativeaccid ???

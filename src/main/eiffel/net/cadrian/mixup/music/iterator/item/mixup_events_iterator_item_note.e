@@ -14,8 +14,6 @@ feature {ANY}
    note: MIXUP_NOTE
    instrument: FIXED_STRING
 
-   before_bar: BOOLEAN is False
-
    has_lyrics: BOOLEAN
 
    with_lyrics (a_lyrics: COLLECTION[FIXED_STRING]): MIXUP_EVENTS_ITERATOR_ITEM is

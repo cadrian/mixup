@@ -49,9 +49,9 @@ feature {ANY}
          voices.last.add_chord(note_heads, note_length)
       end
 
-   next_bar is
+   add_bar is
       do
-         voices.last.next_bar
+         voices.last.add_bar
       end
 
    up_staff is
