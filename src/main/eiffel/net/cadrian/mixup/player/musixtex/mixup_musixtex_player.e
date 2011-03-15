@@ -50,7 +50,7 @@ feature {MIXUP_MIXER}
       do
       end
 
-   next_bar (instrument: ABSTRACT_STRING) is
+   next_bar (instrument, style: ABSTRACT_STRING) is
       do
          if not playing then
             start_playing

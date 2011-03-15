@@ -39,12 +39,13 @@ feature {}
                                         partitur sample
                                         -- all those functions will surely be defined in a core module:
                                         set hook.at_end := function native "play"
+                                        set bar := function(style) native "bar"
                                         set repeat := function(volte, mus) native "repeat"
                                         set gamme := music << { :p,<: c,4 d e f | g a b :f: c } >>
                                         -- the singer
                                         instrument singer
                                            music
-                                              << \repeat(2, gamme) | :hidden:mp: c,1 >>
+                                              << \repeat(2, gamme) \bar("||") :hidden:mp: c,1 >>
                                            lyrics
                                               << doe ray me far sew la tea doe, _ >>
                                               << do re mi fa so la ti do, do. >>
@@ -86,9 +87,9 @@ feature {}
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("e", 3) >> }, << "me"  , "mi"  >> }), -- a name I call myself
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("f", 3) >> }, << "far" , "fa"  >> }), -- a long, long way to run
 
-           next_bar       ("singer"                                                                                     ),
+           next_bar       ("singer", Void                                                                               ),
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("g", 3) >> }, << "sew" , "so"  >> }), -- a needle pulling thread
-           next_bar       ("bass"                                                                                       ),
+           next_bar       ("bass", Void                                                                                 ),
            set_note       ("bass",                 {MIXUP_CHORD duration_1 , << note("g", 1) >> }                       ),
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("a", 4) >> }, << "la"  , "la"  >> }), -- a note to follow so
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("b", 4) >> }, << "tea" , "ti"  >> }), -- a drink with jam and bread
@@ -97,10 +98,10 @@ feature {}
            end_slur       ("singer"                                                                                     ),
            end_repeat     ("singer"                                                                                     ),
 
-           next_bar       ("singer"                                                                                     ),
+           next_bar       ("singer", "||"                                                                               ),
            set_dynamics   ("singer", "mp", "hidden"                                                                     ), -- that will bring us back to
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_1 , << note("c", 3) >> }, << "_", "do." >> }),
-           next_bar       ("bass"                                                                                       ),
+           next_bar       ("bass", Void                                                                                 ),
            start_slur     ("bass", 1, 1, ""                                                                             ),
            start_beam     ("bass", 3, 2, "3"                                                                            ),
            set_note       ("bass",                 {MIXUP_CHORD duration_8 , << note("c", 2) >> }                       ),

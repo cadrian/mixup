@@ -80,9 +80,9 @@ feature {}
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("e", 3) >> }, << "me"  , "mi"  >> }), -- a name I call myself
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("f", 3) >> }, << "far" , "fa"  >> }), -- a long, long way to run
 
-           next_bar       ("singer"                                                                                     ),
+           next_bar       ("singer", Void                                                                               ),
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("g", 3) >> }, << "sew" , "so"  >> }), -- a needle pulling thread
-           next_bar       ("bass"                                                                                       ),
+           next_bar       ("bass", Void                                                                                 ),
            set_note       ("bass",                 {MIXUP_CHORD duration_1 , << note("g", 1) >> }                       ),
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("a", 4) >> }, << "la"  , "la"  >> }), -- a note to follow so
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("b", 4) >> }, << "tea" , "ti"  >> }), -- a drink with jam and bread
@@ -90,10 +90,10 @@ feature {}
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("c", 4) >> }, << "doe,", "do," >> }),
            end_slur       ("singer"                                                                                     ),
 
-           next_bar       ("singer"                                                                                     ),
+           next_bar       ("singer", Void                                                                               ),
            set_dynamics   ("singer", "mp", "hidden"                                                                     ), -- that will bring us back to
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_1 , << note("c", 3) >> }, << "doe.", "do." >> }),
-           next_bar       ("bass"                                                                                       ),
+           next_bar       ("bass", Void                                                                                 ),
            start_slur     ("bass", 1, 1, ""                                                                             ),
            start_beam     ("bass", 3, 2, "3"                                                                            ),
            set_note       ("bass",                 {MIXUP_CHORD duration_8 , << note("c", 2) >> }                       ),

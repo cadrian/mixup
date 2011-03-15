@@ -43,7 +43,7 @@ feature {MIXUP_MIXER}
       do
       end
 
-   next_bar (instrument: ABSTRACT_STRING) is
+   next_bar (instrument, style: ABSTRACT_STRING) is
       do
          -- ignored
       end

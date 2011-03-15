@@ -52,9 +52,14 @@ feature {ANY}
          end
       end
 
-   do_all_bars (action: PROCEDURE[TUPLE[INTEGER_64]]) is
+   commit is
       do
-         voices.bars.do_all(action)
+         voices.commit(Current)
+      end
+
+   bars: TRAVERSABLE[INTEGER_64] is
+      do
+         Result := voices.bars
       end
 
 feature {}

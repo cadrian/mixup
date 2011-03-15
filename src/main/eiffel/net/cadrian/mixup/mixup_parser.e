@@ -251,7 +251,6 @@ feature {}
             i := i + 1
          end
 
-         voices.commit(current_context)
          if old_compound_music /= Void then
             old_compound_music.add_music(voices)
             last_compound_music := old_compound_music
@@ -403,7 +402,7 @@ feature {}
 
    play_next_bar (next_bar: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         last_compound_music.add_bar
+         last_compound_music.add_bar(Void)
       end
 
    play_up_staff (up_staff: MIXUP_NON_TERMINAL_NODE_IMPL) is

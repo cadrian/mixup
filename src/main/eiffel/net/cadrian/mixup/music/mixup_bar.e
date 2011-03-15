@@ -7,6 +7,8 @@ create {ANY}
    make
 
 feature {ANY}
+   style: FIXED_STRING
+
    valid_anchor: BOOLEAN is False
 
    duration: INTEGER_64 is 0
@@ -30,8 +32,11 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
       end
 
 feature {}
-   make is
+   make (a_style: like style) is
       do
+         style := a_style
+      ensure
+         style = a_style
       end
 
 end

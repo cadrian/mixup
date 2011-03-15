@@ -188,6 +188,8 @@ feature {}
       do
          if args.count /= 2 then
             not_yet_implemented -- error: bad argument count
+         elseif not (volte ?:= args.first) or else not (music ?:= args.last) then
+            not_yet_implemented -- error: bad argument type
          else
             volte ::= args.first
             music ::= args.last
@@ -196,6 +198,20 @@ feature {}
                                   agent event_start_repeat(?, ?, volte.value),
                                   agent event_end_repeat)
             create {MIXUP_MUSIC_VALUE} Result.make(decorated)
+         end
+      end
+
+   native_bar (context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      local
+         string: MIXUP_STRING
+      do
+         if args.count /= 1 then
+            not_yet_implemented -- error: bad argument count
+         elseif not (string ?:= args.first) then
+            not_yet_implemented -- error: bad argument type
+         else
+            string ::= args.first
+            create {MIXUP_MUSIC_VALUE} Result.make(create {MIXUP_BAR}.make(string.value))
          end
       end
 
@@ -262,9 +278,9 @@ feature {ANY}
          players.do_all(agent {MIXUP_PLAYER}.set_note(instrument_name, note))
       end
 
-   fire_next_bar (instrument_name: ABSTRACT_STRING) is
+   fire_next_bar (instrument_name, style: ABSTRACT_STRING) is
       do
-         players.do_all(agent {MIXUP_PLAYER}.next_bar(instrument_name))
+         players.do_all(agent {MIXUP_PLAYER}.next_bar(instrument_name, style))
       end
 
    fire_start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
@@ -324,6 +340,8 @@ feature {ANY}
             Result := agent native_play_midi
          when "repeat" then
             Result := agent native_repeat
+         when "bar" then
+            Result := agent native_bar
          else
             not_yet_implemented -- error: unknown native function
          end

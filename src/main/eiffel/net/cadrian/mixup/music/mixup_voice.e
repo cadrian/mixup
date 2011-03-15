@@ -30,9 +30,9 @@ feature {ANY}
    reference: MIXUP_NOTE_HEAD
    allow_lyrics: BOOLEAN is True
 
-   add_bar is
+   add_bar (style: FIXED_STRING) is
       do
-         add_music(create {MIXUP_BAR}.make)
+         add_music(create {MIXUP_BAR}.make(style))
       end
 
    bars: TRAVERSABLE[INTEGER_64] is

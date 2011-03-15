@@ -18,7 +18,7 @@ feature {ANY}
       deferred
       end
 
-   add_bar is
+   add_bar (style: FIXED_STRING) is
       deferred
       end
 

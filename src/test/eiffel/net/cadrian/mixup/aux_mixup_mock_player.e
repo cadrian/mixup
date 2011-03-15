@@ -81,9 +81,9 @@ feature {MIXUP_MIXER}
          events_list.add_last(set_note_event(instrument, note))
       end
 
-   next_bar (instrument: STRING) is
+   next_bar (instrument, style: STRING) is
       do
-         events_list.add_last(next_bar_event(instrument))
+         events_list.add_last(next_bar_event(instrument, style))
       end
 
    start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is

@@ -43,7 +43,7 @@ feature {}
       require
          a_events /= Void
       do
-         a_events.fire_next_bar(a_item.instrument)
+         a_events.fire_next_bar(a_item.instrument, a_item.style)
       end
 
 invariant

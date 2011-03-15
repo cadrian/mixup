@@ -11,6 +11,11 @@ feature {ANY}
    bar: MIXUP_BAR
    instrument: FIXED_STRING
 
+   style: FIXED_STRING is
+      do
+         Result := bar.style
+      end
+
    has_lyrics: BOOLEAN is False
 
 feature {ANY}
