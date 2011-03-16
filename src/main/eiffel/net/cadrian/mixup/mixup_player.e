@@ -1,104 +1,14 @@
 deferred class MIXUP_PLAYER
+-- just a VISITOR with a fancy name (viz. an Acyclic Visitor)
+--
+-- see also MIXUP_CORE_PLAYER
 
 feature {ANY}
-   set_score (name: ABSTRACT_STRING) is
+   play (a_event: MIXUP_EVENT) is
       require
-         name /= Void
-      deferred
-      end
-
-   end_score is
-      deferred
-      end
-
-   set_book (name: ABSTRACT_STRING) is
-      require
-         name /= Void
-      deferred
-      end
-
-   end_book is
-      deferred
-      end
-
-   set_partitur (name: ABSTRACT_STRING) is
-      require
-         name /= Void
-      deferred
-      end
-
-   end_partitur is
-      deferred
-      end
-
-   set_instrument (name: ABSTRACT_STRING) is
-      require
-         name /= Void
-      deferred
-      end
-
-   set_dynamics (instrument_name: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
-      require
-         instrument_name /= Void
-      deferred
-      end
-
-   set_note (instrument: ABSTRACT_STRING; note: MIXUP_NOTE) is
-      require
-         instrument /= Void
-      deferred
-      end
-
-   next_bar (instrument, style: ABSTRACT_STRING) is
-      deferred
-      end
-
-   start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
-      require
-         instrument /= Void
-      deferred
-      end
-
-   end_beam (instrument: ABSTRACT_STRING) is
-      require
-         instrument /= Void
-      deferred
-      end
-
-   start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
-      require
-         instrument /= Void
-      deferred
-      end
-
-   end_slur (instrument: ABSTRACT_STRING) is
-      require
-         instrument /= Void
-      deferred
-      end
-
-   start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
-      require
-         instrument /= Void
-      deferred
-      end
-
-   end_tie (instrument: ABSTRACT_STRING) is
-      require
-         instrument /= Void
-      deferred
-      end
-
-   start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
-      require
-         instrument /= Void
-      deferred
-      end
-
-   end_repeat (instrument: ABSTRACT_STRING) is
-      require
-         instrument /= Void
-      deferred
+         a_event /= Void
+      do
+         a_event.fire(Current)
       end
 
 end

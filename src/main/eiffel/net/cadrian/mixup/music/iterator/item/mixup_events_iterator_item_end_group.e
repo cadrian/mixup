@@ -14,17 +14,17 @@ feature {ANY}
 
    fire_event (a_player: MIXUP_PLAYER) is
       do
-         event.call([a_player, instrument])
+         a_player.play(event_factory.item([instrument]))
       end
 
 feature {}
-   make (a_event: like event; a_time: like time; a_instrument: like instrument) is
+   make (a_event_factory: like event_factory; a_time: like time; a_instrument: like instrument) is
       do
-         event := a_event
+         event_factory := a_event_factory
          time := a_time
          instrument := a_instrument
       end
 
-   event: PROCEDURE[TUPLE[MIXUP_PLAYER, FIXED_STRING]]
+   event_factory: FUNCTION[TUPLE[FIXED_STRING], MIXUP_EVENT]
 
 end

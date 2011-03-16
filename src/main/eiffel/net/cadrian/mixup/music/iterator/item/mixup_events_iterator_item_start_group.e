@@ -17,13 +17,13 @@ feature {ANY}
 
    fire_event (a_player: MIXUP_PLAYER) is
       do
-         event.call([a_player, instrument, numerator, denominator, text])
+         a_player.play(event_factory.item([instrument, numerator, denominator, text]))
       end
 
 feature {}
-   make (a_event: like event; a_time: like time; a_instrument: like instrument; a_numerator: like numerator; a_denominator: like denominator; a_text: like text) is
+   make (a_event_factory: like event_factory; a_time: like time; a_instrument: like instrument; a_numerator: like numerator; a_denominator: like denominator; a_text: like text) is
       do
-         event := a_event
+         event_factory := a_event_factory
          time := a_time
          instrument := a_instrument
          numerator := a_numerator
@@ -31,6 +31,6 @@ feature {}
          text := a_text
       end
 
-   event: PROCEDURE[TUPLE[MIXUP_PLAYER, FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING]]
+   event_factory: FUNCTION[TUPLE[FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING], MIXUP_EVENT]
 
 end

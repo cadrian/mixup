@@ -43,7 +43,7 @@ feature {}
       require
          a_player /= Void
       do
-         a_player.set_note(a_item.instrument, a_item.note)
+         a_player.play(create {MIXUP_EVENT_SET_NOTE}.make(a_item.instrument, a_item.note))
       end
 
 invariant

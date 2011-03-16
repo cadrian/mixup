@@ -43,7 +43,7 @@ feature {}
       require
          a_player /= Void
       do
-         a_player.set_dynamics(a_item.instrument, a_item.dynamic.text, a_item.dynamic.position)
+         a_player.play(create {MIXUP_EVENT_SET_DYNAMICS}.make(a_item.instrument, a_item.dynamic.text, a_item.dynamic.position))
       end
 
 invariant

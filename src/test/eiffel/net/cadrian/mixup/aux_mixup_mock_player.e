@@ -1,7 +1,7 @@
 class AUX_MIXUP_MOCK_PLAYER
 
 inherit
-   MIXUP_PLAYER
+   MIXUP_CORE_PLAYER
 
 insert
    AUX_MIXUP_MOCK_PLAYER_EVENTS
@@ -36,92 +36,92 @@ feature {ANY}
       end
 
 feature {ANY}
-   set_book (name: STRING) is
+   play_set_book (name: STRING) is
       do
          events_list.add_last(set_book_event(name))
       end
 
-   end_book is
+   play_end_book is
       do
          events_list.add_last(end_book_event)
       end
 
-   set_score (name: STRING) is
+   play_set_score (name: STRING) is
       do
          events_list.add_last(set_score_event(name))
       end
 
-   end_score is
+   play_end_score is
       do
          events_list.add_last(end_score_event)
       end
 
-   set_partitur (name: STRING) is
+   play_set_partitur (name: STRING) is
       do
          events_list.add_last(set_partitur_event(name))
       end
 
-   end_partitur is
+   play_end_partitur is
       do
          events_list.add_last(end_partitur_event)
       end
 
-   set_instrument (name: STRING) is
+   play_set_instrument (name: STRING) is
       do
          events_list.add_last(set_instrument_event(name))
       end
 
-   set_dynamics (instrument_name: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
+   play_set_dynamics (instrument_name: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
       do
          events_list.add_last(set_dynamics_event(instrument_name, dynamics, position))
       end
 
-   set_note (instrument: STRING; note: MIXUP_NOTE) is
+   play_set_note (instrument: STRING; note: MIXUP_NOTE) is
       do
          events_list.add_last(set_note_event(instrument, note))
       end
 
-   next_bar (instrument, style: STRING) is
+   play_next_bar (instrument, style: STRING) is
       do
          events_list.add_last(next_bar_event(instrument, style))
       end
 
-   start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
          events_list.add_last(start_beam_event(instrument, xuplet_numerator, xuplet_denominator, text))
       end
 
-   end_beam (instrument: ABSTRACT_STRING) is
+   play_end_beam (instrument: ABSTRACT_STRING) is
       do
          events_list.add_last(end_beam_event(instrument))
       end
 
-   start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
          events_list.add_last(start_slur_event(instrument, xuplet_numerator, xuplet_denominator, text))
       end
 
-   end_slur (instrument: ABSTRACT_STRING) is
+   play_end_slur (instrument: ABSTRACT_STRING) is
       do
          events_list.add_last(end_slur_event(instrument))
       end
 
-   start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
          events_list.add_last(start_tie_event(instrument, xuplet_numerator, xuplet_denominator, text))
       end
 
-   end_tie (instrument: ABSTRACT_STRING) is
+   play_end_tie (instrument: ABSTRACT_STRING) is
       do
          events_list.add_last(end_tie_event(instrument))
       end
 
-   start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
+   play_start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
       do
          events_list.add_last(start_repeat_event(instrument,  volte))
       end
 
-   end_repeat (instrument: ABSTRACT_STRING) is
+   play_end_repeat (instrument: ABSTRACT_STRING) is
       do
          events_list.add_last(end_repeat_event(instrument))
       end

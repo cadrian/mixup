@@ -43,7 +43,7 @@ feature {}
       require
          a_player /= Void
       do
-         a_player.next_bar(a_item.instrument, a_item.style)
+         a_player.play(create {MIXUP_EVENT_NEXT_BAR}.make(a_item.instrument, a_item.style))
       end
 
 invariant

@@ -89,12 +89,12 @@ feature {}
 
    event_start_repeat (player: MIXUP_PLAYER; context: MIXUP_EVENTS_ITERATOR_CONTEXT; volte: INTEGER_64) is
       do
-         player.start_repeat(context.instrument.name, volte)
+         player.play(create {MIXUP_EVENT_START_REPEAT}.make(context.instrument.name, volte))
       end
 
    event_end_repeat (player: MIXUP_PLAYER; context: MIXUP_EVENTS_ITERATOR_CONTEXT) is
       do
-         player.end_repeat(context.instrument.name)
+         player.play(create {MIXUP_EVENT_END_REPEAT}.make(context.instrument.name))
       end
 
 feature {ANY}
