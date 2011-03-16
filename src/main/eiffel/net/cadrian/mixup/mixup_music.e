@@ -15,7 +15,7 @@ feature {ANY}
       deferred
       end
 
-   commit (a_context: MIXUP_CONTEXT) is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
       deferred
       end
 

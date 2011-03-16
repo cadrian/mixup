@@ -12,13 +12,12 @@ inherit
          start_instrument
       end
 
-create {MIXUP_MIXER}
+create {MIXUP_MIXER_CONDUCTOR}
    make
 
 feature {MIXUP_INSTRUMENT}
    start_instrument (a_instrument: MIXUP_INSTRUMENT) is
       do
-         a_instrument.commit
          instruments.add_last(a_instrument)
       end
 

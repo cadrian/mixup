@@ -6,7 +6,7 @@ inherit
 create {ANY}
    make, connect_to
 
-feature {MIXUP_MIXER}
+feature {ANY}
    set_score (name: ABSTRACT_STRING) is
       do
          push_section(name)

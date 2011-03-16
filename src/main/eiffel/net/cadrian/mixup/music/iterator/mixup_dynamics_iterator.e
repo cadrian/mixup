@@ -34,16 +34,16 @@ feature {}
          not is_off
       end
 
-   event_set_dynamics: PROCEDURE[TUPLE[MIXUP_EVENTS, MIXUP_EVENTS_ITERATOR_ITEM_DYNAMICS]] is
+   event_set_dynamics: PROCEDURE[TUPLE[MIXUP_PLAYER, MIXUP_EVENTS_ITERATOR_ITEM_DYNAMICS]] is
       once
          Result := agent set_dynamics
       end
 
-   set_dynamics (a_events: MIXUP_EVENTS; a_item: MIXUP_EVENTS_ITERATOR_ITEM_DYNAMICS) is
+   set_dynamics (a_player: MIXUP_PLAYER; a_item: MIXUP_EVENTS_ITERATOR_ITEM_DYNAMICS) is
       require
-         a_events /= Void
+         a_player /= Void
       do
-         a_events.fire_set_dynamics(a_item.instrument, a_item.dynamic.text, a_item.dynamic.position)
+         a_player.set_dynamics(a_item.instrument, a_item.dynamic.text, a_item.dynamic.position)
       end
 
 invariant

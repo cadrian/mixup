@@ -88,37 +88,37 @@ feature {}
          is_tie
       end
 
-   start_event: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING]]
-   end_event: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING]]
+   start_event: PROCEDURE[TUPLE[MIXUP_PLAYER, FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING]]
+   end_event: PROCEDURE[TUPLE[MIXUP_PLAYER, FIXED_STRING]]
 
-   start_beam: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING]] is
+   start_beam: PROCEDURE[TUPLE[MIXUP_PLAYER, FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING]] is
       once
-         Result := agent {MIXUP_EVENTS}.fire_start_beam
+         Result := agent {MIXUP_PLAYER}.start_beam
       end
 
-   end_beam: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING]] is
+   end_beam: PROCEDURE[TUPLE[MIXUP_PLAYER, FIXED_STRING]] is
       once
-         Result := agent {MIXUP_EVENTS}.fire_end_beam
+         Result := agent {MIXUP_PLAYER}.end_beam
       end
 
-   start_slur: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING]] is
+   start_slur: PROCEDURE[TUPLE[MIXUP_PLAYER, FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING]] is
       once
-         Result := agent {MIXUP_EVENTS}.fire_start_slur
+         Result := agent {MIXUP_PLAYER}.start_slur
       end
 
-   end_slur: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING]] is
+   end_slur: PROCEDURE[TUPLE[MIXUP_PLAYER, FIXED_STRING]] is
       once
-         Result := agent {MIXUP_EVENTS}.fire_end_slur
+         Result := agent {MIXUP_PLAYER}.end_slur
       end
 
-   start_tie: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING]] is
+   start_tie: PROCEDURE[TUPLE[MIXUP_PLAYER, FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING]] is
       once
-         Result := agent {MIXUP_EVENTS}.fire_start_tie
+         Result := agent {MIXUP_PLAYER}.start_tie
       end
 
-   end_tie: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING]] is
+   end_tie: PROCEDURE[TUPLE[MIXUP_PLAYER, FIXED_STRING]] is
       once
-         Result := agent {MIXUP_EVENTS}.fire_end_tie
+         Result := agent {MIXUP_PLAYER}.end_tie
       end
 
 end

@@ -14,7 +14,7 @@ feature {ANY}
    duration: INTEGER_64 is 0
    anchor: MIXUP_NOTE_HEAD is do end
 
-   commit (a_context: MIXUP_CONTEXT) is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
       do
       end
 

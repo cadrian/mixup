@@ -10,6 +10,13 @@ feature {ANY}
    name: FIXED_STRING
    resolver: MIXUP_RESOLVER
 
+   commit (a_player: MIXUP_PLAYER) is
+      require
+         a_player /= Void
+      do
+         children.do_all(agent {MIXUP_CONTEXT}.commit(a_player))
+      end
+
    add_value (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
       require
          a_name /= Void
@@ -23,7 +30,7 @@ feature {ANY}
          end
       end
 
-   hook (hook_name: ABSTRACT_STRING; visitor: MIXUP_VALUE_VISITOR): MIXUP_VALUE is
+   hook (hook_name: ABSTRACT_STRING): MIXUP_VALUE is
       local
          full_hook_name, debug_values: STRING
       do

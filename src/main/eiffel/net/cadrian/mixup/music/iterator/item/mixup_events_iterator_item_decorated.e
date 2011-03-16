@@ -14,9 +14,9 @@ feature {ANY}
 
    has_lyrics: BOOLEAN is False
 
-   fire_event (a_events: MIXUP_EVENTS) is
+   fire_event (a_player: MIXUP_PLAYER) is
       do
-         event.call([a_events, context])
+         event.call([a_player, context])
       end
 
 feature {}
@@ -27,6 +27,6 @@ feature {}
       end
 
    context: MIXUP_EVENTS_ITERATOR_CONTEXT
-   event: PROCEDURE[TUPLE[MIXUP_EVENTS, MIXUP_EVENTS_ITERATOR_CONTEXT]]
+   event: PROCEDURE[TUPLE[MIXUP_PLAYER, MIXUP_EVENTS_ITERATOR_CONTEXT]]
 
 end

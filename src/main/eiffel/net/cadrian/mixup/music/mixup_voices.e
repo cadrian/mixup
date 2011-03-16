@@ -74,11 +74,11 @@ feature {ANY}
          voices.count = old voices.count + 1
       end
 
-   commit (a_context: MIXUP_CONTEXT) is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
       local
          durations: AVL_SET[INTEGER_64]
       do
-         voices.do_all(commit_agent(a_context))
+         voices.do_all(commit_agent(a_context, a_player))
          create durations.make
          voices.do_all(agent (voice: MIXUP_VOICE; durations_set: SET[INTEGER_64]) is
                           do
@@ -121,9 +121,9 @@ feature {}
    voices: COLLECTION[MIXUP_VOICE]
    reference_: MIXUP_NOTE_HEAD
 
-   commit_agent (a_context: MIXUP_CONTEXT): PROCEDURE[TUPLE[MIXUP_VOICE]] is
+   commit_agent (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): PROCEDURE[TUPLE[MIXUP_VOICE]] is
       do
-         Result := agent {MIXUP_VOICE}.commit(a_context)
+         Result := agent {MIXUP_VOICE}.commit(a_context, a_player)
       end
 
 end

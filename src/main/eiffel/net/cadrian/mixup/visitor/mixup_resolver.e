@@ -7,13 +7,14 @@ create {ANY}
    make
 
 feature {ANY}
-   resolve (a_identifier: MIXUP_IDENTIFIER): MIXUP_VALUE is
+   resolve (a_identifier: MIXUP_IDENTIFIER; a_player: MIXUP_PLAYER): MIXUP_VALUE is
       local
          identifier: MIXUP_IDENTIFIER
       do
+         current_player := a_player
          identifier := resolved_identifier(a_identifier)
          if identifier /= Void then
-            Result := identifier.eval(context)
+            Result := identifier.eval(context, a_player)
          end
       end
 
@@ -67,7 +68,7 @@ feature {MIXUP_BOOLEAN}
 feature {MIXUP_IDENTIFIER}
    visit_identifier (a_identifier: MIXUP_IDENTIFIER) is
       do
-         value := resolve(a_identifier)
+         value := resolve(a_identifier, current_player)
       end
 
 feature {MIXUP_INTEGER}
@@ -118,6 +119,7 @@ feature {}
 
    context: MIXUP_CONTEXT
    value: MIXUP_VALUE
+   current_player: MIXUP_PLAYER
 
 invariant
    context /= Void

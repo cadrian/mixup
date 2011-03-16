@@ -22,12 +22,12 @@ feature {ANY}
          Result := music.anchor
       end
 
-   commit (a_context: MIXUP_CONTEXT) is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
       local
          music_value: MIXUP_MUSIC_VALUE
          value: MIXUP_VALUE
       do
-         value := a_context.resolver.resolve(identifier)
+         value := a_context.resolver.resolve(identifier, a_player)
          if value = Void then
             not_yet_implemented -- error: unresolved identifier
          elseif music_value ?:= value then

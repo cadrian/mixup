@@ -12,7 +12,7 @@ feature {ANY}
          v.visit_user_function(Current)
       end
 
-   call (a_context: MIXUP_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   call (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
          not_yet_implemented
       end

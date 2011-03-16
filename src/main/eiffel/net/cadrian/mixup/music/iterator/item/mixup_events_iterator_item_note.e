@@ -36,9 +36,9 @@ feature {ANY}
       end
 
 feature {ANY}
-   fire_event (a_events: MIXUP_EVENTS) is
+   fire_event (a_player: MIXUP_PLAYER) is
       do
-         event.call([a_events, Current])
+         event.call([a_player, Current])
       end
 
    set_note (a_note: like note) is
@@ -56,6 +56,6 @@ feature {}
          has_lyrics := a_lyrics
       end
 
-   event: PROCEDURE[TUPLE[MIXUP_EVENTS, MIXUP_EVENTS_ITERATOR_ITEM_NOTE]]
+   event: PROCEDURE[TUPLE[MIXUP_PLAYER, MIXUP_EVENTS_ITERATOR_ITEM_NOTE]]
 
 end

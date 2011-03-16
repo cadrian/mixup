@@ -38,7 +38,6 @@ feature {}
          parser_buffer.initialize_with("[
                                         partitur sample
                                         -- all those functions will surely be defined in a core module:
-                                        set hook.at_end := function native "play"
                                         set bar := function(style) native "bar"
                                         set repeat := function(volte, mus) native "repeat"
                                         set gamme := music << { :p,<: c,4 d e f | g a b :f: c } >>

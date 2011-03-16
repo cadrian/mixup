@@ -35,7 +35,7 @@ feature {ANY}
          Result := events_list
       end
 
-feature {MIXUP_MIXER}
+feature {ANY}
    set_book (name: STRING) is
       do
          events_list.add_last(set_book_event(name))

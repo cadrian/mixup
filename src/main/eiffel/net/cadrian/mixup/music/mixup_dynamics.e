@@ -14,7 +14,7 @@ feature {ANY}
    text: FIXED_STRING
    position: FIXED_STRING
 
-   commit (a_context: MIXUP_CONTEXT) is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
       do
       end
 

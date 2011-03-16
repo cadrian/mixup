@@ -1,0 +1,11 @@
+- move the players loop up (DONE)
+
+- pass the current player to functions (DONE)
+
+- always play (not a native function or a hook) (DONE)
+
+- \repeat and \bar are not native functions (but user)
+
+- specific events to each player (e.g. "%" vs. MPC)
+  => change the events management to some generic event infrastructure
+     + visitor

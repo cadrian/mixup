@@ -88,11 +88,11 @@ feature {ANY}
          reference := chord.anchor
       end
 
-   commit (a_context: MIXUP_CONTEXT) is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
       local
          aggregator: AGGREGATOR[MIXUP_MUSIC, INTEGER_64]
       do
-         duration := aggregator.map(music, commit_agent(a_context), 0)
+         duration := aggregator.map(music, commit_agent(a_context, a_player), 0)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
@@ -101,9 +101,12 @@ feature {ANY}
       end
 
 feature {}
-   commit_agent (a_context: MIXUP_CONTEXT): FUNCTION[TUPLE[MIXUP_MUSIC, INTEGER_64], INTEGER_64] is
+   commit_agent (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): FUNCTION[TUPLE[MIXUP_MUSIC, INTEGER_64], INTEGER_64] is
       do
-         Result := agent (mus: MIXUP_MUSIC; dur: INTEGER_64; ctx: MIXUP_CONTEXT): INTEGER_64 is do mus.commit(ctx); Result := dur + mus.duration end (?, ?, a_context)
+         Result := agent (mus: MIXUP_MUSIC; dur: INTEGER_64; ctx: MIXUP_CONTEXT; plr: MIXUP_PLAYER): INTEGER_64 is
+            do
+               mus.commit(ctx, plr); Result := dur + mus.duration
+            end (?, ?, a_context, a_player)
       end
 
 feature {MIXUP_MUSIC, MIXUP_VOICE}

@@ -17,7 +17,7 @@ feature {ANY}
          is_constant := enable
       end
 
-   eval (a_context: MIXUP_CONTEXT): MIXUP_VALUE is
+   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): MIXUP_VALUE is
       do
          Result := Current
       end
@@ -27,15 +27,17 @@ feature {ANY}
       require
          is_context
       do
+         crash
       end
 
    is_callable: BOOLEAN is False
-   call (a_context: MIXUP_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   call (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       require
          is_callable
          a_context /= Void
          a_args /= Void
       do
+         crash
       end
 
 feature {MIXUP_IDENTIFIER_PART}

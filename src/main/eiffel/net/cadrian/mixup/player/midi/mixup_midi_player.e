@@ -6,7 +6,7 @@ inherit
 create {ANY}
    make
 
-feature {MIXUP_MIXER}
+feature {ANY}
    set_score (name: ABSTRACT_STRING) is
       do
       end

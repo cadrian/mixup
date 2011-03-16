@@ -12,9 +12,9 @@ feature {ANY}
 
    has_lyrics: BOOLEAN is False
 
-   fire_event (a_events: MIXUP_EVENTS) is
+   fire_event (a_player: MIXUP_PLAYER) is
       do
-         event.call([a_events, instrument])
+         event.call([a_player, instrument])
       end
 
 feature {}
@@ -25,6 +25,6 @@ feature {}
          instrument := a_instrument
       end
 
-   event: PROCEDURE[TUPLE[MIXUP_EVENTS, FIXED_STRING]]
+   event: PROCEDURE[TUPLE[MIXUP_PLAYER, FIXED_STRING]]
 
 end

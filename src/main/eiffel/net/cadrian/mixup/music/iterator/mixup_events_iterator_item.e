@@ -22,7 +22,7 @@ feature {ANY}
          Result /= Void
       end
 
-   fire_event (a_events: MIXUP_EVENTS) is
+   fire_event (a_player: MIXUP_PLAYER) is
       deferred
       end
 

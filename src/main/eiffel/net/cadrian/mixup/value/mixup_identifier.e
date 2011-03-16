@@ -32,7 +32,7 @@ feature {ANY}
          v.visit_identifier(Current)
       end
 
-   eval (a_context: MIXUP_CONTEXT): MIXUP_VALUE is
+   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): MIXUP_VALUE is
       local
          context: MIXUP_CONTEXT
          i: INTEGER; name_buffer: STRING
@@ -54,8 +54,8 @@ feature {ANY}
             value := a_context.lookup(name_buffer.intern, True)
             if value /= Void then
                if value.is_callable then
-                  args := parts.item(i).eval_args(a_context)
-                  Result := value.call(a_context, args)
+                  args := parts.item(i).eval_args(a_context, a_player)
+                  Result := value.call(a_context, a_player, args)
                else
                   Result := value
                end

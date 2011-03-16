@@ -15,7 +15,7 @@ feature {ANY}
       end
 
 feature {MIXUP_IDENTIFIER}
-   eval_args (a_context: MIXUP_CONTEXT): TRAVERSABLE[MIXUP_VALUE] is
+   eval_args (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): TRAVERSABLE[MIXUP_VALUE] is
       local
          actual_args: FAST_ARRAY[MIXUP_VALUE]
          i: INTEGER
@@ -29,7 +29,7 @@ feature {MIXUP_IDENTIFIER}
             until
                i > args.upper
             loop
-               actual_args.add_last(args.item(i).eval(a_context))
+               actual_args.add_last(args.item(i).eval(a_context, a_player))
                i := i + 1
             end
          end

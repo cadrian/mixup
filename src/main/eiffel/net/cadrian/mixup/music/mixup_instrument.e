@@ -4,6 +4,8 @@ inherit
    MIXUP_CONTEXT
       rename
          make as context_make
+      redefine
+         commit
       end
 
 create {ANY}
@@ -52,9 +54,9 @@ feature {ANY}
          end
       end
 
-   commit is
+   commit (a_player: MIXUP_PLAYER) is
       do
-         voices.commit(Current)
+         voices.commit(Current, a_player)
       end
 
    bars: TRAVERSABLE[INTEGER_64] is

@@ -34,16 +34,16 @@ feature {}
          not is_off
       end
 
-   event_set_note: PROCEDURE[TUPLE[MIXUP_EVENTS, MIXUP_EVENTS_ITERATOR_ITEM_NOTE]] is
+   event_set_note: PROCEDURE[TUPLE[MIXUP_PLAYER, MIXUP_EVENTS_ITERATOR_ITEM_NOTE]] is
       once
          Result := agent set_note
       end
 
-   set_note (a_events: MIXUP_EVENTS; a_item: MIXUP_EVENTS_ITERATOR_ITEM_NOTE) is
+   set_note (a_player: MIXUP_PLAYER; a_item: MIXUP_EVENTS_ITERATOR_ITEM_NOTE) is
       require
-         a_events /= Void
+         a_player /= Void
       do
-         a_events.fire_set_note(a_item.instrument, a_item.note)
+         a_player.set_note(a_item.instrument, a_item.note)
       end
 
 invariant

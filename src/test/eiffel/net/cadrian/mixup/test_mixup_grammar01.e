@@ -37,7 +37,6 @@ feature {}
 
          parser_buffer.initialize_with("[
                                         partitur sample
-                                        set hook.at_end := function native "play"
                                         instrument singer
                                            music
                                               << :p,<: { c,4 d e f | g a b :f: c } | :hidden:mp: c1 >>
