@@ -3,6 +3,9 @@ class MIXUP_VOICES
 inherit
    MIXUP_COMPOUND_MUSIC
 
+insert
+   LOGGING
+
 create {ANY}
    make
 
@@ -78,7 +81,13 @@ feature {ANY}
       local
          durations: AVL_SET[INTEGER_64]
       do
+         debug
+            log.trace.put_line("Committing voices")
+         end
          voices.do_all(commit_agent(a_context, a_player))
+         debug
+            log.trace.put_line("Checking voices bars")
+         end
          create durations.make
          voices.do_all(agent (voice: MIXUP_VOICE; durations_set: SET[INTEGER_64]) is
                           do
@@ -91,6 +100,9 @@ feature {ANY}
             not_yet_implemented -- error: all voices don't have the same duration
          end
          duration := durations.first
+         debug
+            log.trace.put_line("Voices duration = " + duration.out)
+         end
       end
 
    bars: TRAVERSABLE[INTEGER_64] is
@@ -106,8 +118,15 @@ feature {ANY}
 feature {MIXUP_MUSIC, MIXUP_VOICE}
    consolidate_bars (bars_: SET[INTEGER_64]; duration_offset: like duration) is
       do
+         if consolidating then
+            sedb_breakpoint
+         end
+         consolidating := True
          voices.first.consolidate_bars(bars_, duration_offset)
+         consolidating := False
       end
+
+   consolidating: BOOLEAN
 
 feature {}
    make (a_reference: like reference_) is

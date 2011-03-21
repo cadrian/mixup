@@ -3,6 +3,9 @@ class MIXUP_MUSIC_IDENTIFIER
 inherit
    MIXUP_MUSIC
 
+insert
+   LOGGING
+
 create {ANY}
    make
 
@@ -27,12 +30,18 @@ feature {ANY}
          music_value: MIXUP_MUSIC_VALUE
          value: MIXUP_VALUE
       do
+         debug
+            log.trace.put_line("Committing music identifier: " + identifier.as_name)
+         end
          value := a_context.resolver.resolve(identifier, a_player)
          if value = Void then
             not_yet_implemented -- error: unresolved identifier
          elseif music_value ?:= value then
             music_value ::= value
             music := music_value.value
+            debug
+               log.trace.put_line("    => " + music.out)
+            end
          else
             not_yet_implemented -- error: the identifier is not music!
          end
@@ -40,17 +49,18 @@ feature {ANY}
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
+         debug
+            log.trace.put_line("New events iterator for music identifier: " + identifier.as_name)
+         end
          Result := music.new_events_iterator(a_context)
-      end
-
-   has_lyrics: BOOLEAN is
-      do
-         Result := music.has_lyrics
       end
 
 feature {MIXUP_MUSIC, MIXUP_VOICE}
    consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
       do
+         debug
+            log.trace.put_line("Consolidate bars for music identifier: " + identifier.as_name)
+         end
          music.consolidate_bars(bars, duration_offset)
       end
 
@@ -59,6 +69,9 @@ feature {}
       require
          a_identifier /= Void
       do
+         debug
+            log.trace.put_line("Creating music identifier: " + a_identifier.as_name)
+         end
          identifier := a_identifier
       ensure
          identifier = a_identifier

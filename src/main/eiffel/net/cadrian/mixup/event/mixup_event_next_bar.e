@@ -1,14 +1,14 @@
 class MIXUP_EVENT_NEXT_BAR
 
 inherit
-   MIXUP_EVENT
+   MIXUP_EVENT_WITHOUT_LYRICS
 
 creation {ANY}
    make
 
 feature {ANY}
+   time: INTEGER_64
    instrument: FIXED_STRING
-
    style: FIXED_STRING
 
 feature {MIXUP_PLAYER}
@@ -21,15 +21,17 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_instrument: ABSTRACT_STRING; a_style: ABSTRACT_STRING) is
+   make (a_time: like time; a_instrument: ABSTRACT_STRING; a_style: ABSTRACT_STRING) is
       require
          a_instrument /= Void
       do
+         time := a_time
          instrument := a_instrument.intern
          if a_style /= Void then
             style := a_style.intern
          end
       ensure
+         time = a_time
          instrument = a_instrument
          style = a_style
       end

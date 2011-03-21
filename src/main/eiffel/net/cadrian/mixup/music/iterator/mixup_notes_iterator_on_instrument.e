@@ -4,7 +4,7 @@ class MIXUP_NOTES_ITERATOR_ON_INSTRUMENT
 --
 
 inherit
-   MIXUP_EVENTS_ITERATOR
+   MIXUP_EVENTS_CACHED_ITERATOR
 
 create {MIXUP_INSTRUMENT}
    make
@@ -14,6 +14,7 @@ feature {ANY}
       do
          index := 0
          voices_iterator.start
+         item_memory := Void
       end
 
    is_off: BOOLEAN is
@@ -21,7 +22,8 @@ feature {ANY}
          Result := voices_iterator.is_off
       end
 
-   item: MIXUP_EVENTS_ITERATOR_ITEM is
+feature {}
+   fetch_item: MIXUP_EVENT is
       local
          lyrics: FAST_ARRAY[FIXED_STRING]
          strophe: COLLECTION[FIXED_STRING]
@@ -43,12 +45,12 @@ feature {ANY}
                end
                i := i + 1
             end
-            Result := Result.with_lyrics(lyrics)
+            Result.set_lyrics(lyrics)
             used := True
          end
       end
 
-   next is
+   go_next is
       do
          voices_iterator.next
          if used then

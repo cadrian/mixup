@@ -4,7 +4,7 @@ deferred class MIXUP_NOTES_PARALLEL_ITERATOR
 --
 
 inherit
-   MIXUP_EVENTS_ITERATOR
+   MIXUP_EVENTS_CACHED_ITERATOR
 
 feature {ANY}
    start is
@@ -19,12 +19,13 @@ feature {ANY}
          Result := notes.is_empty
       end
 
-   item: MIXUP_EVENTS_ITERATOR_ITEM is
+feature {}
+   fetch_item: MIXUP_EVENT is
       do
          Result := notes.first.item
       end
 
-   next is
+   go_next is
       do
          notes.first.next
          if notes.first.is_off then

@@ -30,6 +30,8 @@ feature {}
 
          played_event, expected_event: AUX_MIXUP_MOCK_EVENT
       do
+         log.info.put_line("---------------- STARTING TEST ----------------")
+
          create factory.make
          create grammar.with_factory(factory)
          create parser.make
@@ -40,11 +42,12 @@ feature {}
                                         -- all those functions will surely be defined in a core module:
                                         set bar := function(style) native "bar"
                                         set repeat := function(volte, mus) native "repeat"
+                                        set with_lyrics := function(mus) native "with_lyrics"
                                         set gamme := music << { :p,<: c,4 d e f | g a b :f: c } >>
                                         -- the singer
                                         instrument singer
                                            music
-                                              << \repeat(2, gamme) \bar("||") :hidden:mp: c,1 >>
+                                              << \repeat(2, with_lyrics(gamme)) \bar("||") :hidden:mp: c,1 >>
                                            lyrics
                                               << doe ray me far sew la tea doe, _ >>
                                               << do re mi fa so la ti do, do. >>

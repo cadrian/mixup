@@ -15,6 +15,10 @@ feature {ANY}
          name /= Void
       do
          parts.add_last(create {MIXUP_IDENTIFIER_PART}.make(name))
+         debug
+            debug_name.clear_count
+            as_name_in(debug_name)
+         end
       end
 
    set_args (args: COLLECTION[MIXUP_VALUE]) is
@@ -22,6 +26,10 @@ feature {ANY}
          args /= Void
       do
          parts.last.set_args(args)
+         debug
+            debug_name.clear_count
+            as_name_in(debug_name)
+         end
       end
 
    accept (visitor: VISITOR) is
@@ -107,7 +115,12 @@ feature {}
    make is
       do
          create {RING_ARRAY[MIXUP_IDENTIFIER_PART]} parts.with_capacity(0, 0)
+         debug
+            debug_name := ""
+         end
       end
+
+   debug_name: STRING
 
    no_value: MIXUP_NO_VALUE is
       once

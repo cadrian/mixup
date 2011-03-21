@@ -1,5 +1,8 @@
 class MIXUP_VOICE
 
+insert
+   LOGGING
+
 create {ANY}
    make
 
@@ -58,6 +61,9 @@ feature {ANY}
       require
          a_music /= Void
       do
+         debug
+            log.trace.put_line("Adding music: " + a_music.out)
+         end
          music.add_last(a_music)
          if a_music.valid_anchor then
             reference := a_music.anchor
@@ -92,6 +98,9 @@ feature {ANY}
       local
          aggregator: AGGREGATOR[MIXUP_MUSIC, INTEGER_64]
       do
+         debug
+            log.trace.put_line("Committing voice")
+         end
          duration := aggregator.map(music, commit_agent(a_context, a_player), 0)
       end
 
@@ -105,7 +114,8 @@ feature {}
       do
          Result := agent (mus: MIXUP_MUSIC; dur: INTEGER_64; ctx: MIXUP_CONTEXT; plr: MIXUP_PLAYER): INTEGER_64 is
             do
-               mus.commit(ctx, plr); Result := dur + mus.duration
+               mus.commit(ctx, plr)
+               Result := dur + mus.duration
             end (?, ?, a_context, a_player)
       end
 

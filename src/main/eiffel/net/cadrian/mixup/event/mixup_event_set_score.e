@@ -1,12 +1,13 @@
 class MIXUP_EVENT_SET_SCORE
 
 inherit
-   MIXUP_EVENT
+   MIXUP_EVENT_WITHOUT_LYRICS
 
 creation {ANY}
    make
 
 feature {ANY}
+   time: INTEGER_64
    name: FIXED_STRING
 
 feature {MIXUP_PLAYER}
@@ -19,12 +20,14 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_name: ABSTRACT_STRING) is
+   make (a_time: like time; a_name: ABSTRACT_STRING) is
       require
          a_name /= Void
       do
+         time := a_time
          name := a_name.intern
       ensure
+         time = a_time
          name = a_name
       end
 

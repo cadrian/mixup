@@ -1,14 +1,14 @@
 class MIXUP_EVENT_START_REPEAT
 
 inherit
-   MIXUP_EVENT
+   MIXUP_EVENT_WITHOUT_LYRICS
 
 creation {ANY}
    make
 
 feature {ANY}
+   time: INTEGER_64
    instrument: FIXED_STRING
-
    volte: INTEGER_64
 
 feature {MIXUP_PLAYER}
@@ -21,13 +21,15 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_instrument: ABSTRACT_STRING; a_volte: INTEGER_64) is
+   make (a_time: like time; a_instrument: ABSTRACT_STRING; a_volte: INTEGER_64) is
       require
          a_instrument /= Void
       do
+         time := a_time
          instrument := a_instrument.intern
          volte := a_volte
       ensure
+         time = a_time
          instrument = a_instrument
          volte = a_volte
       end

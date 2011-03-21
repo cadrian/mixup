@@ -3,6 +3,9 @@ class MIXUP_DYNAMICS
 inherit
    MIXUP_MUSIC
 
+insert
+   LOGGING
+
 create {ANY}
    make
 
@@ -16,14 +19,15 @@ feature {ANY}
 
    commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
       do
+         debug
+            log.trace.put_line("Committing dynamics: " + out)
+         end
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
-         create {MIXUP_DYNAMICS_ITERATOR} Result.make(a_context, Current)
+         create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_SET_DYNAMICS}.make(a_context.start_time, a_context.instrument.name, text, position))
       end
-
-   has_lyrics: BOOLEAN is False
 
 feature {MIXUP_MUSIC, MIXUP_VOICE}
    frozen consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is

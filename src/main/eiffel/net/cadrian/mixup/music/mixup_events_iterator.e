@@ -1,7 +1,7 @@
 deferred class MIXUP_EVENTS_ITERATOR
 
 inherit
-   ITERATOR[MIXUP_EVENTS_ITERATOR_ITEM]
+   ITERATOR[MIXUP_EVENT]
       undefine
          is_equal
       end

@@ -8,6 +8,9 @@ inherit
          commit
       end
 
+insert
+   LOGGING
+
 create {ANY}
    make
 
@@ -56,6 +59,9 @@ feature {ANY}
 
    commit (a_player: MIXUP_PLAYER) is
       do
+         debug
+            log.trace.put_line("Committing instrument " + name)
+         end
          voices.commit(Current, a_player)
       end
 

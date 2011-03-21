@@ -23,10 +23,6 @@ feature {ANY}
       deferred
       end
 
-   has_lyrics: BOOLEAN is
-      deferred
-      end
-
 feature {MIXUP_MUSIC, MIXUP_VOICE}
    consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
       require

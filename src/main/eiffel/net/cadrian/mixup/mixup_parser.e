@@ -35,6 +35,8 @@ feature {MIXUP_LIST_NODE_IMPL}
 
 feature {MIXUP_NON_TERMINAL_NODE_IMPL}
    visit_mixup_non_terminal_node_impl (node: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         old_compound_music: like last_compound_music
       do
          inspect
             node.name
@@ -53,9 +55,13 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
          when "Partitur_Content" then
             play_partitur_content(node)
          when "Music" then
+            old_compound_music := last_compound_music
             last_compound_music := Void
             node.node_at(1).accept(Current)
             create {MIXUP_MUSIC_VALUE} last_value.make(last_compound_music)
+            if current_instrument = Void or else old_compound_music /= Void then
+               last_compound_music := old_compound_music
+            end
          when "Lyrics" then
             node.node_at(1).accept(Current)
          when "Instrument" then
@@ -392,12 +398,17 @@ feature {}
          if root_context = Void then
             root_context := current_context
          end
-         last_compound_music := Void
+         check
+            current_instrument = Void
+            last_compound_music = Void
+         end
          instrument.node_at(2).accept(Current)
          instrument.node_at(3).accept(Current)
          voices ::= last_compound_music
          current_instrument.set_voices(voices)
+         last_compound_music := Void
          current_context := old_context
+         current_instrument := Void
       end
 
    play_next_bar (next_bar: MIXUP_NON_TERMINAL_NODE_IMPL) is

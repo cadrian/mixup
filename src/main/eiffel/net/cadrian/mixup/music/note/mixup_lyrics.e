@@ -67,18 +67,23 @@ feature {ANY}
          tagged_out_memory.append(once " >> }")
       end
 
-   put (a_index: INTEGER; a_syllable: ABSTRACT_STRING) is
-      require
-         a_index.in_range(0, capacity - 1)
-         a_syllable /= Void
-      do
-         manifest_put(a_index, a_syllable)
-      end
-
 feature {}
-   make (a_capacity: INTEGER; a_note: MIXUP_NOTE) is
+   make (a_note: MIXUP_NOTE; a_lyrics: TRAVERSABLE[ABSTRACT_STRING]) is
+      require
+         not a_lyrics.is_empty
+         a_lyrics.for_all(agent (s: ABSTRACT_STRING): BOOLEAN is do Result := s /= Void end)
+      local
+         i: INTEGER
       do
-         manifest_make(a_capacity, a_note)
+         manifest_make(a_lyrics.count, a_note)
+         from
+            i := 0
+         until
+            i = a_lyrics.count
+         loop
+            manifest_put(i, a_lyrics.item(i + a_lyrics.lower))
+            i := i + 1
+         end
       end
 
 feature {} -- Manifest creation:

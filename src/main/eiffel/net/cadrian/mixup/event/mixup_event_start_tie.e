@@ -1,18 +1,16 @@
 class MIXUP_EVENT_START_TIE
 
 inherit
-   MIXUP_EVENT
+   MIXUP_EVENT_WITHOUT_LYRICS
 
 creation {ANY}
    make
 
 feature {ANY}
+   time: INTEGER_64
    instrument: FIXED_STRING
-
    xuplet_numerator: INTEGER_64
-
    xuplet_denominator: INTEGER_64
-
    text: FIXED_STRING
 
 feature {MIXUP_PLAYER}
@@ -25,17 +23,18 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_instrument: ABSTRACT_STRING; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64
-      a_text: ABSTRACT_STRING) is
+   make (a_time: like time; a_instrument: ABSTRACT_STRING; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64; a_text: ABSTRACT_STRING) is
       require
          a_instrument /= Void
          a_text /= Void
       do
+         time := a_time
          instrument := a_instrument.intern
          xuplet_numerator := a_xuplet_numerator
          xuplet_denominator := a_xuplet_denominator
          text := a_text.intern
       ensure
+         time = a_time
          instrument = a_instrument
          xuplet_numerator = a_xuplet_numerator
          xuplet_denominator = a_xuplet_denominator

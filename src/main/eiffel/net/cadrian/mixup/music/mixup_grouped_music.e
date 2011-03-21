@@ -53,11 +53,14 @@ feature {ANY}
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+      local
+         lyrics_manager: MIXUP_GROUPED_MUSIC_LYRICS_MANAGER
       do
          if xuplet_text /= Void then
             a_context.set_xuplet(xuplet_numerator, xuplet_denominator, xuplet_text)
          end
-         create {MIXUP_NOTES_ITERATOR_ON_GROUP} Result.make(a_context, duration, start_event_factory, end_event_factory, Precursor(a_context))
+         create lyrics_manager.make(not (is_slur or is_tie))
+         create {MIXUP_NOTES_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_event_factory, end_event_factory, agent lyrics_manager.manage_lyrics, Precursor(a_context))
       end
 
 feature {}
@@ -88,67 +91,67 @@ feature {}
          is_tie
       end
 
-   start_event_factory: FUNCTION[TUPLE[FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING], MIXUP_EVENT]
-   end_event_factory: FUNCTION[TUPLE[FIXED_STRING], MIXUP_EVENT]
+   start_event_factory: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT]
+   end_event_factory: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT]
 
-   start_beam: FUNCTION[TUPLE[FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING], MIXUP_EVENT] is
+   start_beam: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
       once
          Result := agent create_start_beam
       end
 
-   create_start_beam (a_instrument: ABSTRACT_STRING; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64; a_text: ABSTRACT_STRING): MIXUP_EVENT is
+   create_start_beam (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_START_BEAM} Result.make(a_instrument, a_xuplet_numerator, a_xuplet_denominator, a_text)
+         create {MIXUP_EVENT_START_BEAM} Result.make(a_context.start_time, a_context.instrument.name, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
       end
 
-   end_beam: FUNCTION[TUPLE[FIXED_STRING], MIXUP_EVENT] is
+   end_beam : FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
       once
          Result := agent create_end_beam
       end
 
-   create_end_beam (a_instrument: ABSTRACT_STRING): MIXUP_EVENT is
+   create_end_beam (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_END_BEAM} Result.make(a_instrument)
+         create {MIXUP_EVENT_END_BEAM} Result.make(a_context.start_time, a_context.instrument.name)
       end
 
-   start_slur: FUNCTION[TUPLE[FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING], MIXUP_EVENT] is
+   start_slur: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
       once
          Result := agent create_start_slur
       end
 
-   create_start_slur (a_instrument: ABSTRACT_STRING; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64; a_text: ABSTRACT_STRING): MIXUP_EVENT is
+   create_start_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_START_SLUR} Result.make(a_instrument, a_xuplet_numerator, a_xuplet_denominator, a_text)
+         create {MIXUP_EVENT_START_SLUR} Result.make(a_context.start_time, a_context.instrument.name, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
       end
 
-   end_slur: FUNCTION[TUPLE[FIXED_STRING], MIXUP_EVENT] is
+   end_slur: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
       once
          Result := agent create_end_slur
       end
 
-   create_end_slur (a_instrument: ABSTRACT_STRING): MIXUP_EVENT is
+   create_end_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_END_SLUR} Result.make(a_instrument)
+         create {MIXUP_EVENT_END_SLUR} Result.make(a_context.start_time, a_context.instrument.name)
       end
 
-   start_tie: FUNCTION[TUPLE[FIXED_STRING, INTEGER_64, INTEGER_64, FIXED_STRING], MIXUP_EVENT] is
+   start_tie: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
       once
          Result := agent create_start_tie
       end
 
-   create_start_tie (a_instrument: ABSTRACT_STRING; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64; a_text: ABSTRACT_STRING): MIXUP_EVENT is
+   create_start_tie (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_START_TIE} Result.make(a_instrument, a_xuplet_numerator, a_xuplet_denominator, a_text)
+         create {MIXUP_EVENT_START_TIE} Result.make(a_context.start_time, a_context.instrument.name, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
       end
 
-   end_tie: FUNCTION[TUPLE[FIXED_STRING], MIXUP_EVENT] is
+   end_tie: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
       once
          Result := agent create_end_tie
       end
 
-   create_end_tie (a_instrument: ABSTRACT_STRING): MIXUP_EVENT is
+   create_end_tie (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_END_TIE} Result.make(a_instrument)
+         create {MIXUP_EVENT_END_TIE} Result.make(a_context.start_time, a_context.instrument.name)
       end
 
 end

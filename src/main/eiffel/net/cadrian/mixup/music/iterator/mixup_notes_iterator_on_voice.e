@@ -4,7 +4,7 @@ class MIXUP_NOTES_ITERATOR_ON_VOICE
 --
 
 inherit
-   MIXUP_EVENTS_ITERATOR
+   MIXUP_EVENTS_CACHED_ITERATOR
 
 create {MIXUP_VOICE}
    make
@@ -23,12 +23,13 @@ feature {ANY}
          Result := music_iterator.is_off and then events_iterator.is_off
       end
 
-   item: MIXUP_EVENTS_ITERATOR_ITEM is
+feature {}
+   fetch_item: MIXUP_EVENT is
       do
          Result := events_iterator.item
       end
 
-   next is
+   go_next is
       do
          events_iterator.next
          if events_iterator.is_off then

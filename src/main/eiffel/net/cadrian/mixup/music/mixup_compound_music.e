@@ -34,6 +34,4 @@ feature {ANY}
       deferred
       end
 
-   has_lyrics: BOOLEAN is True
-
 end

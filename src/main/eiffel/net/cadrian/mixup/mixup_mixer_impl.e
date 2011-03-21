@@ -4,6 +4,9 @@ inherit
    MIXUP_MIXER
    MIXUP_NATIVE_PROVIDER
 
+insert
+   LOGGING
+
 create {ANY}
    make
 
@@ -66,10 +69,39 @@ feature {}
             volte ::= args.first
             music ::= args.last
             instr ::= context
-            create decorated.make(music.value,
-                                  agent event_start_repeat(?, ?, volte.value),
-                                  agent event_end_repeat)
+            create decorated.make(once "repeat", music.value,
+                                  agent event_start_repeat(?, volte.value),
+                                  agent event_end_repeat,
+                                  Void)
             create {MIXUP_MUSIC_VALUE} Result.make(decorated)
+         end
+      end
+
+   native_with_lyrics (context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      local
+         music: MIXUP_MUSIC_VALUE
+         instr: MIXUP_INSTRUMENT
+         decorated: MIXUP_DECORATED_MUSIC
+      do
+         if args.count /= 1 then
+            not_yet_implemented -- error: bad argument count
+         elseif not (music ?:= args.first) then
+            not_yet_implemented -- error: bad argument type
+         else
+            music ::= args.first
+            instr ::= context
+            create decorated.make(once "with_lyrics", music.value,
+                                  Void, Void,
+                                  agent force_lyrics)
+            create {MIXUP_MUSIC_VALUE} Result.make(decorated)
+         end
+      end
+
+   force_lyrics (context: MIXUP_EVENTS_ITERATOR_CONTEXT; event: MIXUP_EVENT): MIXUP_EVENT is
+      do
+         Result := event
+         if Result.allow_lyrics then
+            Result.set_has_lyrics(True)
          end
       end
 
@@ -87,25 +119,28 @@ feature {}
          end
       end
 
-   event_start_repeat (player: MIXUP_PLAYER; context: MIXUP_EVENTS_ITERATOR_CONTEXT; volte: INTEGER_64) is
+   event_start_repeat (context: MIXUP_EVENTS_ITERATOR_CONTEXT; volte: INTEGER_64): MIXUP_EVENT is
       do
-         player.play(create {MIXUP_EVENT_START_REPEAT}.make(context.instrument.name, volte))
+         create {MIXUP_EVENT_START_REPEAT} Result.make(context.start_time, context.instrument.name, volte)
       end
 
-   event_end_repeat (player: MIXUP_PLAYER; context: MIXUP_EVENTS_ITERATOR_CONTEXT) is
+   event_end_repeat (context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         player.play(create {MIXUP_EVENT_END_REPEAT}.make(context.instrument.name))
+         create {MIXUP_EVENT_END_REPEAT} Result.make(context.start_time, context.instrument.name)
       end
 
 feature {ANY}
    item (name: STRING): FUNCTION[TUPLE[MIXUP_CONTEXT, MIXUP_PLAYER, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE] is
       do
+         log.trace.put_line("Preparing native function: " + name)
          inspect
             name
          when "repeat" then
             Result := agent native_repeat
          when "bar" then
             Result := agent native_bar
+         when "with_lyrics" then
+            Result := agent native_with_lyrics
          else
             not_yet_implemented -- error: unknown native function
          end

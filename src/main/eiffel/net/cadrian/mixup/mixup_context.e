@@ -25,7 +25,9 @@ feature {ANY}
          if values.has(a_name) then
             not_yet_implemented -- error: duplicate value in the same context
          else
-            log.trace.put_line("adding '" + a_name + "' to {" + generating_type + "}." + name )
+            debug
+               log.trace.put_line("Adding '" + a_name + "' to {" + generating_type + "}." + name )
+            end
             values.add(a_value, a_name)
          end
       end
@@ -63,6 +65,13 @@ feature {ANY}
             end
             if Result = Void and then search_parent and then parent /= Void then
                Result := parent.lookup(identifier, True)
+            end
+         end
+         debug
+            if Result = Void then
+               log.trace.put_line("Look-up of '" + identifier + "' returned nothing.")
+            else
+               log.trace.put_line("Look-up of '" + identifier + "' returned " + Result.out)
             end
          end
       end

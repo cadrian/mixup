@@ -37,9 +37,10 @@ feature {}
 
          parser_buffer.initialize_with("[
                                         partitur sample
+                                        set with_lyrics := function(mus) native "with_lyrics"
                                         instrument singer
                                            music
-                                              << :p,<: { c,4 d e f | g a b :f: c } | :hidden:mp: c1 >>
+                                              << :p,<: \with_lyrics(music << { c,4 d e f | g a b :f: c } >>) | :hidden:mp: c,1 >>
                                            lyrics
                                               << doe ray me far sew la tea doe, doe. >>
                                               << do re mi fa so la ti do, do. >>
