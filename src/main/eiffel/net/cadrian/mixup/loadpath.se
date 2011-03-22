@@ -1,7 +1,7 @@
 ./
 core/
+core/node/loadpath.se
 music/loadpath.se
-node/loadpath.se
 value/
 visitor/
 player/loadpath.se

@@ -13,7 +13,9 @@
 -- along with Liberty Eiffel.  If not, see <http://www.gnu.org/licenses/>.
 --
 deferred class MIXUP_EVENT
--- just a VISITABLE with a fancy name
+   -- Just a VISITABLE with a fancy name
+   --
+   -- See also MIXUP_PLAYER
 
 inherit
    COMPARABLE

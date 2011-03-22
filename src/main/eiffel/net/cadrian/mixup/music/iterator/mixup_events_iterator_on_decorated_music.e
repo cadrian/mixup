@@ -13,9 +13,9 @@
 -- along with Liberty Eiffel.  If not, see <http://www.gnu.org/licenses/>.
 --
 class MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC
---
--- Decorated iterator with start and end events
---
+   --
+   -- Decorated iterator with start and end events
+   --
 
 inherit
    MIXUP_EVENTS_CACHED_ITERATOR

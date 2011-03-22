@@ -13,9 +13,9 @@
 -- along with Liberty Eiffel.  If not, see <http://www.gnu.org/licenses/>.
 --
 deferred class MIXUP_PLAYER
--- just a VISITOR with a fancy name (viz. an Acyclic Visitor)
---
--- see also MIXUP_CORE_PLAYER
+   -- Just a VISITOR with a fancy name (viz. an Acyclic Visitor)
+   --
+   -- See also MIXUP_CORE_PLAYER, MIXUP_EVENT
 
 feature {ANY}
    play (a_event: MIXUP_EVENT) is

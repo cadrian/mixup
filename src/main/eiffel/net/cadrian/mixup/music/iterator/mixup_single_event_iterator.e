@@ -13,9 +13,9 @@
 -- along with Liberty Eiffel.  If not, see <http://www.gnu.org/licenses/>.
 --
 class MIXUP_SINGLE_EVENT_ITERATOR
---
--- Trivial iterator.
---
+   --
+   -- Trivial iterator.
+   --
 
 inherit
    MIXUP_EVENTS_ITERATOR

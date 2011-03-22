@@ -13,9 +13,9 @@
 -- along with Liberty Eiffel.  If not, see <http://www.gnu.org/licenses/>.
 --
 class MIXUP_EVENTS_ITERATOR_ON_INSTRUMENT
---
--- Iterator on a single instrument: will add lyrics
---
+   --
+   -- Iterator on a single instrument: will add lyrics
+   --
 
 inherit
    MIXUP_EVENTS_CACHED_ITERATOR

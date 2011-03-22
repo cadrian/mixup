@@ -13,9 +13,9 @@
 -- along with Liberty Eiffel.  If not, see <http://www.gnu.org/licenses/>.
 --
 deferred class MIXUP_EVENTS_PARALLEL_ITERATOR
---
--- Iterator on parallel music
---
+   --
+   -- Iterator on parallel music
+   --
 
 inherit
    MIXUP_EVENTS_CACHED_ITERATOR

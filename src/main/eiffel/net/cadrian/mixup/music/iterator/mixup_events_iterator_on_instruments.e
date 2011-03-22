@@ -13,9 +13,9 @@
 -- along with Liberty Eiffel.  If not, see <http://www.gnu.org/licenses/>.
 --
 class MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS
---
--- Iterator on parallel instruments
---
+   --
+   -- Iterator on parallel instruments
+   --
 
 inherit
    MIXUP_EVENTS_PARALLEL_ITERATOR

@@ -13,8 +13,8 @@
 -- along with Liberty Eiffel.  If not, see <http://www.gnu.org/licenses/>.
 --
 deferred class MIXUP_MIXER
---
--- Can call MIXUP_PLAYER events.
---
+   --
+   -- Can call MIXUP_PLAYER events.
+   --
 
 end -- class MIXUP_MIXER

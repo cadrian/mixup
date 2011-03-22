@@ -13,9 +13,9 @@
 -- along with Liberty Eiffel.  If not, see <http://www.gnu.org/licenses/>.
 --
 class MIXUP_EVENTS_ITERATOR_ON_VOICE
---
--- Iterator on a single voice
---
+   --
+   -- Iterator on a single voice
+   --
 
 inherit
    MIXUP_EVENTS_CACHED_ITERATOR
