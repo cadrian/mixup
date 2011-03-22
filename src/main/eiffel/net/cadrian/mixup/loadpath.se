@@ -1,4 +1,5 @@
 ./
+core/
 music/loadpath.se
 node/loadpath.se
 value/
