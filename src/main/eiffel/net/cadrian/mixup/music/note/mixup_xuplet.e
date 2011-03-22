@@ -1,3 +1,17 @@
+-- This file is part of MiXuP.
+--
+-- MiXuP is free software: you can redistribute it and/or modify
+-- it under the terms of the GNU General Public License as published by
+-- the Free Software Foundation, version 3 of the License.
+--
+-- Liberty Eiffel is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-- GNU General Public License for more details.
+--
+-- You should have received a copy of the GNU General Public License
+-- along with Liberty Eiffel.  If not, see <http://www.gnu.org/licenses/>.
+--
 class MIXUP_XUPLET
 
 inherit
@@ -7,7 +21,7 @@ inherit
       end
 
 create {ANY}
-   manifest_creation
+   manifest_create
 
 feature {ANY}
    count: INTEGER is
@@ -36,7 +50,7 @@ feature {ANY}
          end
       end
 
-feature {} -- Manifest creation:
+feature {} -- Manifest create:
    manifest_make (a_capacity, a_xuplet: INTEGER; a_duration: INTEGER_64) is
       require
          a_capacity > 0
@@ -59,4 +73,4 @@ feature {} -- Manifest creation:
 feature {MIXUP_XUPLET}
    storage: NATIVE_ARRAY[MIXUP_NOTE]
 
-end
+end -- class MIXUP_XUPLET
