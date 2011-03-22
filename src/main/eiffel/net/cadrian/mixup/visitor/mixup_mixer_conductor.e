@@ -21,7 +21,7 @@ feature {MIXUP_SCORE}
 
    end_score (a_score: MIXUP_SCORE) is
       do
-         (create {MIXUP_NOTES_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
+         (create {MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
          run_hook(a_score, current_player, once "at_end")
          current_player.play(create {MIXUP_EVENT_END_SCORE}.make(0))
       end
@@ -35,7 +35,7 @@ feature {MIXUP_BOOK}
 
    end_book (a_book: MIXUP_BOOK) is
       do
-         (create {MIXUP_NOTES_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
+         (create {MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
          run_hook(a_book, current_player, once "at_end")
          current_player.play(create {MIXUP_EVENT_END_BOOK}.make(0))
       end
@@ -49,7 +49,7 @@ feature {MIXUP_PARTITUR}
 
    end_partitur (a_partitur: MIXUP_PARTITUR) is
       do
-         (create {MIXUP_NOTES_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
+         (create {MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
          run_hook(a_partitur, current_player, once "at_end")
          current_player.play(create {MIXUP_EVENT_END_PARTITUR}.make(0))
       end

@@ -1,4 +1,4 @@
-class MIXUP_NOTES_ITERATOR_ON_DECORATED_MUSIC
+class MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC
 --
 -- Decorated iterator with start and end events
 --

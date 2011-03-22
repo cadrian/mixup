@@ -1,4 +1,4 @@
-class MIXUP_NOTES_ITERATOR_ON_INSTRUMENT
+class MIXUP_EVENTS_ITERATOR_ON_INSTRUMENT
 --
 -- Iterator on a single instrument: will add lyrics
 --

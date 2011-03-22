@@ -1,4 +1,4 @@
-class MIXUP_NOTES_ITERATOR_ON_VOICE
+class MIXUP_EVENTS_ITERATOR_ON_VOICE
 --
 -- Iterator on a single voice
 --

@@ -60,7 +60,7 @@ feature {ANY}
             a_context.set_xuplet(xuplet_numerator, xuplet_denominator, xuplet_text)
          end
          create lyrics_manager.make(not (is_slur or is_tie))
-         create {MIXUP_NOTES_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_event_factory, end_event_factory, agent lyrics_manager.manage_lyrics, Precursor(a_context))
+         create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_event_factory, end_event_factory, agent lyrics_manager.manage_lyrics, Precursor(a_context))
       end
 
 feature {}

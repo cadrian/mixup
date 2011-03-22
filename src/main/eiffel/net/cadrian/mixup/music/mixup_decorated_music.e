@@ -38,7 +38,7 @@ feature {ANY}
          debug
             log.trace.put_line("Iterating over decorated music: " + tag)
          end
-         create {MIXUP_NOTES_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_event_factory, end_event_factory, event_modifier, music.new_events_iterator(a_context))
+         create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_event_factory, end_event_factory, event_modifier, music.new_events_iterator(a_context))
       end
 
 feature {MIXUP_MUSIC, MIXUP_VOICE}

@@ -1,10 +1,10 @@
-class MIXUP_NOTES_ITERATOR_ON_VOICES
+class MIXUP_EVENTS_ITERATOR_ON_VOICES
 --
 -- Iterator on parallel voices
 --
 
 inherit
-   MIXUP_NOTES_PARALLEL_ITERATOR
+   MIXUP_EVENTS_PARALLEL_ITERATOR
 
 create {MIXUP_VOICES}
    make

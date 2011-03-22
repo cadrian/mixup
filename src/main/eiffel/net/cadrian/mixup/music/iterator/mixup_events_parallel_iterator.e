@@ -1,4 +1,4 @@
-deferred class MIXUP_NOTES_PARALLEL_ITERATOR
+deferred class MIXUP_EVENTS_PARALLEL_ITERATOR
 --
 -- Iterator on parallel music
 --

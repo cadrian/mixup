@@ -53,7 +53,7 @@ feature {ANY}
          context.set_instrument(Current)
          Result := voices.new_events_iterator(context)
          if not strophes.is_empty then
-            create {MIXUP_NOTES_ITERATOR_ON_INSTRUMENT} Result.make(Result, strophes)
+            create {MIXUP_EVENTS_ITERATOR_ON_INSTRUMENT} Result.make(Result, strophes)
          end
       end
 

@@ -106,7 +106,7 @@ feature {ANY}
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
-         create {MIXUP_NOTES_ITERATOR_ON_VOICE} Result.make(a_context, music)
+         create {MIXUP_EVENTS_ITERATOR_ON_VOICE} Result.make(a_context, music)
       end
 
 feature {}

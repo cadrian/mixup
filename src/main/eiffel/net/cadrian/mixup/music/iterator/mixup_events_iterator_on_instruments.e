@@ -1,10 +1,10 @@
-class MIXUP_NOTES_ITERATOR_ON_INSTRUMENTS
+class MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS
 --
 -- Iterator on parallel instruments
 --
 
 inherit
-   MIXUP_NOTES_PARALLEL_ITERATOR
+   MIXUP_EVENTS_PARALLEL_ITERATOR
    MIXUP_CONTEXT_VISITOR
       undefine
          is_equal
