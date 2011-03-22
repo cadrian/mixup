@@ -30,8 +30,6 @@ feature {}
 
          played_event, expected_event: AUX_MIXUP_MOCK_EVENT
       do
-         log.info.put_line("---------------- STARTING TEST ----------------")
-
          create factory.make
          create grammar.with_factory(factory)
          create parser.make
