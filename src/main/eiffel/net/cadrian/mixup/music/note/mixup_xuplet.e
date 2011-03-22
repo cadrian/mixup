@@ -21,7 +21,7 @@ inherit
       end
 
 create {ANY}
-   manifest_create
+   manifest_creation
 
 feature {ANY}
    count: INTEGER is
