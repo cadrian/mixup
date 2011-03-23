@@ -81,6 +81,14 @@ feature {ANY}
          tagged_out_memory.append(once " >> }")
       end
 
+   accept (visitor: VISITOR) is
+      local
+         v: MIXUP_NOTE_VISITOR
+      do
+         v ::= visitor
+         v.visit_lyrics(Current)
+      end
+
 feature {}
    make (a_note: MIXUP_NOTE; a_lyrics: TRAVERSABLE[ABSTRACT_STRING]) is
       require

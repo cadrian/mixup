@@ -19,6 +19,10 @@ inherit
       redefine
          is_equal, out_in_tagged_out_memory
       end
+   INDEXABLE[MIXUP_NOTE_HEAD]
+      redefine
+         is_equal, out_in_tagged_out_memory
+      end
 
 create {ANY}
    make, manifest_creation
@@ -27,6 +31,30 @@ feature {ANY}
    count: INTEGER is
       do
          Result := capacity
+      end
+
+   is_empty: BOOLEAN is False
+
+   lower: INTEGER is 0
+
+   upper: INTEGER is
+      do
+         Result := count - 1
+      end
+
+   item (i: INTEGER): MIXUP_NOTE_HEAD is
+      do
+         Result := storage.item(i)
+      end
+
+   first: like item is
+      do
+         Result := storage.item(lower)
+      end
+
+   last: like item is
+      do
+         Result := storage.item(upper)
       end
 
    capacity: INTEGER
@@ -79,6 +107,14 @@ feature {ANY}
             i := i + 1
          end
          tagged_out_memory.append(once " >> }")
+      end
+
+   accept (visitor: VISITOR) is
+      local
+         v: MIXUP_NOTE_VISITOR
+      do
+         v ::= visitor
+         v.visit_chord(Current)
       end
 
 feature {}

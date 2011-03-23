@@ -16,6 +16,7 @@ deferred class MIXUP_NOTE
 
 inherit
    MIXUP_MUSIC
+   VISITABLE
 
 insert
    LOGGING

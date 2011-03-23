@@ -18,6 +18,7 @@ insert
    EIFFELTEST_TOOLS
    MIXUP_NOTE_DURATIONS
    MIXUP_MIXER
+   LOGGING
 
 create {}
    make
@@ -32,18 +33,44 @@ feature {}
       local
          lilypond: MIXUP_LILYPOND_PLAYER
          buffer: STRING_OUTPUT_STREAM
+         expected: STRING
       do
          create buffer.make
          create lilypond.connect_to(buffer)
 
          lilypond.set_partitur("test")
          lilypond.set_instrument("Instr")
-         lilypond.set_note("test", {MIXUP_CHORD duration_4, << note("c", 4) >> });
+         lilypond.set_note("Instr", {MIXUP_CHORD duration_4, << note("c", 4) >> });
          lilypond.end_partitur
 
-         assert(buffer.to_string.is_equal("[
+         expected := "[
+% ---------------- Generated using MiXuP ----------------
 
-                                           ]"))
+\include "mixup-partitur.ily"
+
+\header {
+   mixup-partitur = "test"
+}
+
+\book {
+   \score {
+      <<
+         \new Staff = "Instr1" <<
+            \set Staff.instrumentName = "Instr"
+            \new Voice = "Instr1Voice1" {
+               <<
+                  c4
+               >>
+            }
+         >>
+      >>
+   }
+}
+
+]"
+
+         log.info.put_line(buffer.to_string)
+         assert(buffer.to_string.is_equal(expected))
       end
 
 end -- class TEST_LILYPOND_PLAYER

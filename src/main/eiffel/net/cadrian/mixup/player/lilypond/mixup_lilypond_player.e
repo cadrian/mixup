@@ -23,7 +23,7 @@ create {ANY}
 feature {ANY}
    set_score (name: ABSTRACT_STRING) is
       do
-         push_section(name)
+         push_section(once "score", name)
       end
 
    end_score is
@@ -33,7 +33,7 @@ feature {ANY}
 
    set_book (name: ABSTRACT_STRING) is
       do
-         push_section(name)
+         push_section(once "book", name)
       end
 
    end_book is
@@ -43,7 +43,7 @@ feature {ANY}
 
    set_partitur (name: ABSTRACT_STRING) is
       do
-         push_section(name)
+         push_section(once "partitur", name)
       end
 
    end_partitur is
@@ -52,65 +52,95 @@ feature {ANY}
       end
 
    set_instrument (name: ABSTRACT_STRING) is
+      local
+         inst_name: FIXED_STRING
+         instrument: MIXUP_LILYPOND_INSTRUMENT
       do
+         inst_name := name.intern
+         create instrument.make(inst_name)
+         instruments.add(instrument, inst_name)
       end
 
-   set_dynamics (instrument_name: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (instrument: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
       do
+         instruments.reference_at(instrument.intern).set_dynamics(dynamics, position)
       end
 
    set_note (instrument: ABSTRACT_STRING; note: MIXUP_NOTE) is
       do
+         instruments.reference_at(instrument.intern).set_note(note)
       end
 
-   next_bar (instrument, style: ABSTRACT_STRING) is
+   next_bar (instrument: ABSTRACT_STRING; style: ABSTRACT_STRING) is
       do
+         instruments.reference_at(instrument.intern).next_bar(style)
       end
 
    start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
+         instruments.reference_at(instrument.intern).start_beam(xuplet_numerator, xuplet_denominator, text)
       end
 
    end_beam (instrument: ABSTRACT_STRING) is
       do
+         instruments.reference_at(instrument.intern).end_beam
       end
 
    start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
+         instruments.reference_at(instrument.intern).start_slur(xuplet_numerator, xuplet_denominator, text)
       end
 
    end_slur (instrument: ABSTRACT_STRING) is
       do
+         instruments.reference_at(instrument.intern).end_slur
       end
 
    start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
+         instruments.reference_at(instrument.intern).start_tie(xuplet_numerator, xuplet_denominator, text)
       end
 
    end_tie (instrument: ABSTRACT_STRING) is
       do
+         instruments.reference_at(instrument.intern).end_tie
       end
 
    start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
       do
+         instruments.reference_at(instrument.intern).start_repeat(volte)
       end
 
    end_repeat (instrument: ABSTRACT_STRING) is
       do
+         instruments.reference_at(instrument.intern).end_repeat
       end
 
 feature {} -- headers and footers
-   put_header is
+   put_header (section, name: ABSTRACT_STRING) is
       do
-         section_output.put_line(once "%% ---------------- Generated using MiXuP ----------------")
+         section_output.put_line("%% ---------------- Generated using MiXuP ----------------")
+         section_output.put_new_line
+         section_output.put_line("\include %"mixup-" + section.out + ".ily%"")
+         section_output.put_new_line
+         section_output.put_line("\header {")
+         section_output.put_line("   mixup-" + section.out + " = %"" + name.out + "%"")
+         section_output.put_line("}")
+         section_output.put_new_line
+         section_output.put_line("\book {")
+         section_output.put_line("   \score {")
+         section_output.put_line("      <<")
       end
 
    put_footer is
       do
+         section_output.put_line("      >>")
+         section_output.put_line("   }")
+         section_output.put_line("}")
       end
 
 feature {} -- section files management
-   push_section (name: ABSTRACT_STRING) is
+   push_section (section, name: ABSTRACT_STRING) is
       require
          name /= Void
       local
@@ -130,18 +160,20 @@ feature {} -- section files management
                outputs_stack.push(tfr)
                opus_output := tfr
             end
-            put_header
          elseif managed_output then
             filename := opus_name.out + "-" + name.out
             create tfr.connect_to(filename)
             section_output.put_line("\include %"" + filename + "%"")
             outputs_stack.push(tfr)
          end
+         put_header(section, name)
          section_stack.push(name.intern)
       end
 
    pop_section is
       do
+         instruments.new_iterator_on_items.do_all(agent {MIXUP_LILYPOND_INSTRUMENT}.generate(section_output))
+         instruments.clear_count
          section_stack.pop
          if section_stack.is_empty then
             put_footer
@@ -181,7 +213,7 @@ feature {}
    managed_output: BOOLEAN
    section_stack: STACK[FIXED_STRING]
    outputs_stack: STACK[OUTPUT_STREAM]
-   instruments: HASHED_DICTIONARY[MIXUP_LILYPOND_INSTRUMENT, FIXED_STRING]
+   instruments: LINKED_HASHED_DICTIONARY[MIXUP_LILYPOND_INSTRUMENT, FIXED_STRING]
 
    section_output: OUTPUT_STREAM is
          -- the output file for the current section.

@@ -13,4 +13,104 @@
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
 class MIXUP_LILYPOND_INSTRUMENT
+
+create {ANY}
+   make
+
+feature {ANY}
+   name: FIXED_STRING
+
+feature {MIXUP_LILYPOND_PLAYER}
+   set_dynamics (dynamics, position: ABSTRACT_STRING) is
+      do
+         current_staff.set_dynamics(dynamics, position)
+      end
+
+   set_note (note: MIXUP_NOTE) is
+      do
+         current_staff.set_note(note)
+      end
+
+   next_bar (style: ABSTRACT_STRING) is
+      do
+         current_staff.next_bar(style)
+      end
+
+   start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+      do
+         current_staff.start_beam(xuplet_numerator, xuplet_numerator, text)
+      end
+
+   end_beam is
+      do
+         current_staff.end_beam
+      end
+
+   start_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+      do
+         current_staff.start_slur(xuplet_numerator, xuplet_denominator, text)
+      end
+
+   end_slur is
+      do
+         current_staff.end_slur
+      end
+
+   start_tie (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+      do
+         current_staff.start_tie(xuplet_numerator, xuplet_denominator, text)
+      end
+
+   end_tie is
+      do
+         current_staff.end_tie
+      end
+
+   start_repeat (volte: INTEGER_64) is
+      do
+         current_staff.start_repeat(volte)
+      end
+
+   end_repeat is
+      do
+         current_staff.end_repeat
+      end
+
+feature {MIXUP_LILYPOND_PLAYER}
+   generate (output: OUTPUT_STREAM) is
+      require
+         output.is_connected
+      do
+         staffs.do_all(agent {MIXUP_LILYPOND_STAFF}.generate(output))
+      end
+
+feature {}
+   make (a_name: like name) is
+      require
+         a_name /= Void
+      do
+         name := a_name
+         create staffs.with_capacity(2)
+         staffs.add_last(create {MIXUP_LILYPOND_STAFF}.make(Current, 1, absolute_reference));
+      ensure
+         name = a_name
+      end
+
+   staffs: FAST_ARRAY[MIXUP_LILYPOND_STAFF]
+   current_staff_index: INTEGER
+
+   current_staff: MIXUP_LILYPOND_STAFF is
+      do
+         Result := staffs.item(current_staff_index)
+      end
+
+   absolute_reference: MIXUP_NOTE_HEAD is
+      once
+         Result.set("a", 4)
+      end
+
+invariant
+   name /= Void
+   staffs.valid_index(current_staff_index)
+
 end -- class MIXUP_LILYPOND_INSTRUMENT
