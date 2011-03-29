@@ -119,7 +119,7 @@ feature {ANY}
          end
       end
 
-   bars: TRAVERSABLE[INTEGER_64] is
+   bars: ITERABLE[INTEGER_64] is
       do
          Result := voices.first.bars
       end

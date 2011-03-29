@@ -12,7 +12,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class TEST_MIXUP_GRAMMAR03
+class TEST_MIXUP_GRAMMAR04
 
 insert
    EIFFELTEST_TOOLS
@@ -51,11 +51,35 @@ feature {}
 
          parser_buffer.initialize_with("[
                                         partitur sample
+
                                         -- all those functions will surely be defined in a core module:
                                         set bar := function(style) native "bar"
-                                        set repeat := function(volte, mus) native "repeat"
+                                        set seq := function(lower, upper) native "seq"
+                                        set store_music := function(memory, mus) native "store_music"
+                                        set store_text := function(memory, str, pos) native "store_text"
+                                        set restore := function(memory) native "restore"
                                         set with_lyrics := function(mus) native "with_lyrics"
+
+                                        set repeat_inline := function(volte, mus) do
+                                                                for i in seq(1, volte) do
+                                                                   store_music(mem, mus)
+                                                                end
+                                                                Result := restore(mem)
+                                                             end
+
+                                        set repeat := function(volte, mus) do
+                                                         store_music(mem, bar("||:"))
+                                                         if volte > 2 then
+                                                            store_text(mem, volte + " times", "up")
+                                                         end
+                                                         store_music(mem, mus)
+                                                         store_music(mem, bar(":||"))
+                                                         Result := restore(mem)
+                                                      end
+
+                                        -- some music
                                         set gamme := music << { :p,<: c,4 d e f | g a b :f: c } >>
+
                                         -- the singer
                                         instrument singer
                                            music
@@ -64,6 +88,7 @@ feature {}
                                               << doe ray me far sew la tea doe, _ >>
                                               << do re mi fa so la ti do, do. >>
                                            end
+
                                         -- small company
                                         instrument bass
                                            music
@@ -148,4 +173,4 @@ feature {}
          end
       end
 
-end -- class TEST_MIXUP_GRAMMAR03
+end -- class TEST_MIXUP_GRAMMAR04

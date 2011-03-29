@@ -85,7 +85,7 @@ feature {}
       local
          hook, res: MIXUP_VALUE
       do
-         hook := a_context.hook(hook_name)
+         hook := a_context.hook(hook_name, a_player)
          if hook = Void then
             -- nothing to do
          elseif hook.is_callable then

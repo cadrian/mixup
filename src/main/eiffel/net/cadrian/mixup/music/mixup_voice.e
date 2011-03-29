@@ -52,7 +52,7 @@ feature {ANY}
          add_music(create {MIXUP_BAR}.make(style))
       end
 
-   bars: TRAVERSABLE[INTEGER_64] is
+   bars: ITERABLE[INTEGER_64] is
       local
          barset: AVL_SET[INTEGER_64]
       do

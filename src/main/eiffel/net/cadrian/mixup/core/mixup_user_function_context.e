@@ -12,40 +12,23 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-deferred class MIXUP_COMPOUND_MUSIC
+class MIXUP_USER_FUNCTION_CONTEXT
 
 inherit
-   MIXUP_MUSIC
+   MIXUP_CONTEXT
 
-feature {ANY}
-   valid_anchor: BOOLEAN is True
+create {ANY}
+   make
 
-   add_music (a_music: MIXUP_MUSIC) is
-      deferred
+feature {}
+   accept_start (visitor: MIXUP_CONTEXT_VISITOR) is
+      do
+         visitor.start_user_function(Current)
       end
 
-   add_chord (note_heads: COLLECTION[FIXED_STRING]; note_length: INTEGER_64) is
-      deferred
+   accept_end (visitor: MIXUP_CONTEXT_VISITOR) is
+      do
+         visitor.end_user_function(Current)
       end
 
-   reference: MIXUP_NOTE_HEAD is
-      deferred
-      end
-
-   add_bar (style: FIXED_STRING) is
-      deferred
-      end
-
-   bars: ITERABLE[INTEGER_64] is
-      deferred
-      end
-
-   up_staff is
-      deferred
-      end
-
-   down_staff is
-      deferred
-      end
-
-end -- class MIXUP_COMPOUND_MUSIC
+end -- class MIXUP_USER_FUNCTION_CONTEXT

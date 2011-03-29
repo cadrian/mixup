@@ -19,7 +19,7 @@ create {ANY}
 
 feature {ANY}
    name: FIXED_STRING
-   args: TRAVERSABLE[MIXUP_VALUE]
+   args: TRAVERSABLE[MIXUP_EXPRESSION]
 
    set_args (a_args: like args) is
       do

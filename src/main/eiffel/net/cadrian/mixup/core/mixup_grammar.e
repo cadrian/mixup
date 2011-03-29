@@ -160,9 +160,8 @@ feature {}
                                    "Identifier_Part", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW identifier", "Identifier_Args" >> }, Void;
                                                                              >> };
                                    "Identifier_Args", {PARSE_NON_TERMINAL << epsilon, Void;
-                                                                             {FAST_ARRAY[STRING] << "KW (", "Value*", "KW )" >> }, Void;
+                                                                             {FAST_ARRAY[STRING] << "KW (", "Expression*", "KW )" >> }, Void;
                                                                              >> };
-                                   "Value*", list_of("Value", True, "KW ,");
 
                                    "Lyrics", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW lyrics", "Strophe*" >> }, Void;
                                                                     >> };
@@ -302,7 +301,7 @@ feature {}
                                                                                       {FAST_ARRAY[STRING] << "KW Result", "KW :=", "Expression" >> }, Void;
                                                                                       {FAST_ARRAY[STRING] << "Expression" >> }, Void;
                                                                                       >> };
-                                   "Loop", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW for", "KW identifier", "KW in", "Value", "KW do", "Statement*", "KW end" >> }, Void;
+                                   "Loop", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW for", "KW identifier", "KW in", "Expression", "KW do", "Statement*", "KW end" >> }, Void;
                                                                   >> };
                                    "If_Then_Else", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "If", "ElseIf*", "Else", "KW end" >> }, Void;
                                                                 >> };

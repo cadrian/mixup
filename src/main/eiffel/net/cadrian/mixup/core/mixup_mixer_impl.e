@@ -69,6 +69,7 @@ feature {}
 
 feature {}
    native_repeat (context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+         -- TODO: to remove (replaced by a user function)
       local
          volte: MIXUP_INTEGER
          music: MIXUP_MUSIC_VALUE
@@ -143,6 +144,22 @@ feature {}
          create {MIXUP_EVENT_END_REPEAT} Result.make(context.start_time, context.instrument.name)
       end
 
+   native_seq (context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      do
+      end
+
+   native_store_music (context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      do
+      end
+
+   native_store_text (context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      do
+      end
+
+   native_restore (context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      do
+      end
+
 feature {ANY}
    item (name: STRING): FUNCTION[TUPLE[MIXUP_CONTEXT, MIXUP_PLAYER, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE] is
       do
@@ -155,6 +172,14 @@ feature {ANY}
             Result := agent native_bar
          when "with_lyrics" then
             Result := agent native_with_lyrics
+         when "seq" then
+            Result := agent native_seq
+         when "store_music" then
+            Result := agent native_store_music
+         when "store_text" then
+            Result := agent native_store_text
+         when "restore" then
+            Result := agent native_restore
          else
             not_yet_implemented -- error: unknown native function
          end

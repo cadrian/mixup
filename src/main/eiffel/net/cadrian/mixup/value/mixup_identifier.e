@@ -35,7 +35,7 @@ feature {ANY}
          end
       end
 
-   set_args (args: COLLECTION[MIXUP_VALUE]) is
+   set_args (args: COLLECTION[MIXUP_EXPRESSION]) is
       require
          args /= Void
       do
@@ -73,7 +73,7 @@ feature {ANY}
                name_buffer.extend('.')
             end
             name_buffer.append(parts.item(i).name)
-            value := a_context.lookup(name_buffer.intern, True)
+            value := a_context.lookup(name_buffer.intern, a_player, True)
             if value /= Void then
                if value.is_callable then
                   args := parts.item(i).eval_args(a_context, a_player)

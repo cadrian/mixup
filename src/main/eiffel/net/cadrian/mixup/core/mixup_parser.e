@@ -36,8 +36,8 @@ feature {MIXUP_LIST_NODE_IMPL}
       do
          inspect
             node.name
-         when "Value*" then
-            build_value_list(node)
+         when "Expression*" then
+            build_expression_list(node)
          when "Voice+" then
             build_voices(node)
          when "Identifier" then
@@ -72,7 +72,7 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             old_compound_music := last_compound_music
             last_compound_music := Void
             node.node_at(1).accept(Current)
-            create {MIXUP_MUSIC_VALUE} last_value.make(last_compound_music)
+            create {MIXUP_MUSIC_VALUE} last_expression.make(last_compound_music)
             if current_instrument = Void or else old_compound_music /= Void then
                last_compound_music := old_compound_music
             end
@@ -128,6 +128,10 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             build_identifier_part(node)
          when "Identifier_Args" then
             build_identifier_args(node)
+         when "Signature" then
+            build_signature(node)
+         when "Arg" then
+            build_signature_arg(node)
          when "Value" then
             build_value(node)
          when "Function_Native" then
@@ -156,20 +160,20 @@ feature {MIXUP_TERMINAL_NODE_IMPL}
          when "KW string" then
             string_image ::= node.image
             last_string := string_image.image
-            create {MIXUP_STRING} last_value.make(string_image.decoded, last_string)
+            create {MIXUP_STRING} last_expression.make(string_image.decoded, last_string)
          when "KW number" then
             if integer_image ?:= node.image then
                integer_image ::= node.image
-               create {MIXUP_INTEGER} last_value.make(integer_image.decoded)
+               create {MIXUP_INTEGER} last_expression.make(integer_image.decoded)
             elseif real_image ?:= node.image then
                real_image ::= node.image
-               create {MIXUP_REAL} last_value.make(real_image.decoded)
+               create {MIXUP_REAL} last_expression.make(real_image.decoded)
             else
                not_yet_implemented -- error: invalid number
             end
          when "KW boolean" then
             boolean_image ::= node.image
-            create {MIXUP_BOOLEAN} last_value.make(boolean_image.decoded)
+            create {MIXUP_BOOLEAN} last_expression.make(boolean_image.decoded)
          when "KW note head" then
             last_note_head.copy(node.image.image)
          else
@@ -178,21 +182,21 @@ feature {MIXUP_TERMINAL_NODE_IMPL}
       end
 
 feature {}
-   root_context: MIXUP_CONTEXT
-   name: FIXED_STRING
-   current_identifier: MIXUP_IDENTIFIER
-   last_identifier: MIXUP_IDENTIFIER
-   last_value: MIXUP_VALUE
-   last_values: COLLECTION[MIXUP_VALUE]
-   last_note_length: INTEGER_64
-   last_note_head: STRING is ""
-   note_heads: COLLECTION[FIXED_STRING]
-   last_compound_music: MIXUP_COMPOUND_MUSIC
-   current_context: MIXUP_CONTEXT
-   last_string: STRING
-   last_xuplet_numerator: INTEGER_64
+   root_context:            MIXUP_CONTEXT
+   name:                    FIXED_STRING
+   current_identifier:      MIXUP_IDENTIFIER
+   last_identifier:         MIXUP_IDENTIFIER
+   last_expression:         MIXUP_EXPRESSION
+   last_expressions:        COLLECTION[MIXUP_EXPRESSION]
+   last_note_length:        INTEGER_64
+   last_note_head:          STRING is ""
+   note_heads:              COLLECTION[FIXED_STRING]
+   last_compound_music:     MIXUP_COMPOUND_MUSIC
+   current_context:         MIXUP_CONTEXT
+   last_string:             STRING
+   last_xuplet_numerator:   INTEGER_64
    last_xuplet_denominator: INTEGER_64
-   last_xuplet_text: FIXED_STRING
+   last_xuplet_text:        FIXED_STRING
 
    build_identifier (dot_identifier: MIXUP_LIST_NODE_IMPL) is
       local
@@ -201,7 +205,7 @@ feature {}
          old_identifier := current_identifier
          create current_identifier.make
          dot_identifier.accept_all(Current)
-         last_value := current_identifier
+         last_expression := current_identifier
          last_identifier := current_identifier
          current_identifier := old_identifier
       end
@@ -216,36 +220,36 @@ feature {}
    build_identifier_args (identifier_args: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          if not identifier_args.is_empty then
-            last_values := Void
+            last_expressions := Void
             identifier_args.node_at(1).accept(Current)
-            current_identifier.set_args(last_values)
+            current_identifier.set_args(last_expressions)
          end
       end
 
    build_value (value: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         last_value := Void
+         last_expression := Void
          value.accept_all(Current)
          check
-            last_value /= Void
+            last_expression /= Void
          end
       end
 
-   build_value_list (value_list: MIXUP_LIST_NODE_IMPL) is
+   build_expression_list (expression_list: MIXUP_LIST_NODE_IMPL) is
       local
-         i: INTEGER; values: like last_values
+         i: INTEGER; expressions: like last_expressions
       do
-         create {FAST_ARRAY[MIXUP_VALUE]} values.with_capacity((value_list.count + 1) // 2)
+         create {FAST_ARRAY[MIXUP_EXPRESSION]} expressions.with_capacity((expression_list.count + 1) // 2)
          from
-            i := value_list.lower
+            i := expression_list.lower
          until
-            i > value_list.upper
+            i > expression_list.upper
          loop
-            value_list.item(i).accept(Current)
-            values.add_last(last_value)
+            expression_list.item(i).accept(Current)
+            expressions.add_last(last_expression)
             i := i + 1
          end
-         last_values := values
+         last_expressions := expressions
       end
 
    build_voices (a_voices: MIXUP_LIST_NODE_IMPL) is
@@ -292,7 +296,7 @@ feature {}
             last_xuplet_text := Void
          else
             spec.node_at(0).accept(Current)
-            int ::= last_value
+            int ::= last_expression
             last_xuplet_numerator := int.value
             spec.node_at(2).accept(Current)
             last_xuplet_denominator := int.value
@@ -303,53 +307,78 @@ feature {}
                last_xuplet_text := string.intern
             else
                spec.node_at(3).accept(Current)
-               str ::= last_value
+               str ::= last_expression
                last_xuplet_text := str.value
             end
          end
       end
 
 feature {} -- Functions
-   last_function: MIXUP_FUNCTION
+   last_function:   MIXUP_FUNCTION
+   last_statements: FAST_ARRAY[MIXUP_STATEMENT]
+   last_signature:  FAST_ARRAY[FIXED_STRING]
+
+   build_signature (signature: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         create last_signature.make(0)
+         if not signature.is_empty then
+            signature.node_at(1).accept(Current)
+         end
+      end
+
+   build_signature_arg (arg: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         arg.node_at(0).accept(Current)
+         last_signature.add_last(name)
+      end
 
    build_function_native (function_native: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
          string: MIXUP_STRING; str: STRING
       do
          function_native.node_at(1).accept(Current)
-         string ::= last_value
+         string ::= last_expression
          str := once ""
          str.clear_count
          str.append(string.value)
          create {MIXUP_NATIVE_FUNCTION} last_function.make(string.value, native_provider.item(str))
-         last_value := last_function
+         last_expression := last_function
       end
 
    build_function_user (function_user: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         -- TODO
-         -- last_value := last_function
+         check
+            last_statements = Void
+         end
+         create last_statements.with_capacity(4)
+         function_user.node_at(1).accept(Current)
+         create {MIXUP_USER_FUNCTION} last_function.make(last_statements, last_signature)
+         sedb_breakpoint
+         last_expression := last_function
+         last_statements := Void
       end
 
    build_definition (definition: MIXUP_NON_TERMINAL_NODE_IMPL; is_public: BOOLEAN) is
       local
          function_name: FIXED_STRING
+         def_value: MIXUP_VALUE
       do
          if definition.count = 5 then -- const
             check is_public end
             definition.node_at(2).accept(Current)
             function_name := last_identifier.as_name.intern
             definition.node_at(4).accept(Current)
-            last_value.set_public(True)
-            last_value.set_constant(True)
-            current_context.add_value(function_name, last_value)
+            def_value ::= last_expression
+            def_value.set_public(True)
+            def_value.set_constant(True)
          else
             definition.node_at(1).accept(Current)
             function_name := last_identifier.as_name.intern
             definition.node_at(3).accept(Current)
-            last_value.set_public(is_public)
-            current_context.add_value(function_name, last_value)
+            def_value ::= last_expression
+            def_value.set_public(is_public)
          end
+         current_context.add_expression(function_name, def_value)
       end
 
 feature {}
@@ -526,8 +555,8 @@ feature {}
             -- OK, keep previous
          else
             note_length.node_at(0).accept(Current)
-            if number ?:= last_value then
-               number ::= last_value
+            if number ?:= last_expression then
+               number ::= last_expression
                last_note_length := number.value
                inspect
                   last_note_length

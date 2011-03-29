@@ -117,6 +117,55 @@ feature {ANY}
          v.visit_chord(Current)
       end
 
+   has, fast_has (element: like item): BOOLEAN is
+      do
+         Result := valid_index(first_index_of(element))
+      end
+
+   first_index_of, fast_first_index_of (element: like item): INTEGER is
+      do
+         Result := index_of(element, lower)
+      end
+
+   index_of, fast_index_of (element: like item; start_index: INTEGER): INTEGER is
+      local
+         i: INTEGER
+      do
+         from
+            Result := -1
+            i := start_index
+         until
+            Result /= -1 or else i > upper
+         loop
+            if storage.item(i) = element then
+               Result := i
+            end
+            i := i + 1
+         end
+      end
+
+   reverse_index_of, fast_reverse_index_of (element: like item; start_index: INTEGER): INTEGER is
+      local
+         i: INTEGER
+      do
+         from
+            Result := -1
+            i := start_index
+         until
+            Result /= -1 or else i < lower
+         loop
+            if storage.item(i) = element then
+               Result := i
+            end
+            i := i - 1
+         end
+      end
+
+   last_index_of, fast_last_index_of (element: like item): INTEGER is
+      do
+         Result := reverse_index_of(element, upper)
+      end
+
 feature {}
    make (a_capacity: INTEGER; a_duration: INTEGER_64) is
       require

@@ -69,4 +69,17 @@ feature {MIXUP_INSTRUMENT}
       do
       end
 
+feature {MIXUP_USER_FUNCTION_CONTEXT}
+   start_user_function (a_user_function: MIXUP_USER_FUNCTION_CONTEXT) is
+      require
+         a_user_function /= Void
+      do
+      end
+
+   end_user_function (a_user_function: MIXUP_USER_FUNCTION_CONTEXT) is
+      require
+         a_user_function /= Void
+      do
+      end
+
 end -- class MIXUP_CONTEXT_VISITOR

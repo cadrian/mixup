@@ -52,7 +52,7 @@ feature {MIXUP_RESOLVER}
       end
 
 feature {}
-   resolved_args (args: TRAVERSABLE[MIXUP_VALUE]): FAST_ARRAY[MIXUP_VALUE] is
+   resolved_args (args: TRAVERSABLE[MIXUP_EXPRESSION]): FAST_ARRAY[MIXUP_VALUE] is
       require
          args /= Void
       local
@@ -64,7 +64,7 @@ feature {}
          until
             i > args.upper
          loop
-            arg := args.item(i)
+            arg := args.item(i).eval(context, current_player)
             arg.accept(Current)
             Result.add_last(value)
             i := i + 1

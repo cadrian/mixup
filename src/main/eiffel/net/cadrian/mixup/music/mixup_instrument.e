@@ -79,7 +79,7 @@ feature {ANY}
          voices.commit(Current, a_player)
       end
 
-   bars: TRAVERSABLE[INTEGER_64] is
+   bars: ITERABLE[INTEGER_64] is
       do
          Result := voices.bars
       end
