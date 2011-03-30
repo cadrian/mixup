@@ -18,10 +18,9 @@ inherit
    VISITABLE
 
 feature {ANY}
-   call (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; args: MAP[MIXUP_VALUE, FIXED_STRING]) is
+   call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
       require
          a_context /= Void
-         a_player /= Void
       deferred
       end
 

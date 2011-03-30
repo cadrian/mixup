@@ -365,7 +365,6 @@ feature {} -- Functions
          create last_statements.with_capacity(4)
          function_user.node_at(1).accept(Current)
          create {MIXUP_USER_FUNCTION} last_function.make(last_statements, last_signature)
-         sedb_breakpoint
          last_expression := last_function
          last_statements := Void
       end

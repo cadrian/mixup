@@ -31,18 +31,15 @@ feature {ANY}
 
    call (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       local
-         function_context: MIXUP_USER_FUNCTION_CONTEXT
-         args: HASHED_DICTIONARY[MIXUP_VALUE, FIXED_STRING]
-         zip: ZIP[MIXUP_VALUE, FIXED_STRING]
+         context: MIXUP_USER_FUNCTION_CONTEXT
       do
-         if a_args.count /= signature.count then
-            not_yet_implemented -- error: incorrect arguments number
+         sedb_breakpoint
+         context := prepare(a_context, a_player, a_args)
+         context.execute
+         if context.yielded then
+            create {MIXUP_YIELD_ITERATOR} Result.make(context)
          else
-            create function_context.make(once "<function>", a_context)
-            create args.with_capacity(signature.count)
-            create zip.make(a_args, signature)
-            zip.do_all(agent args.add)
-            statements.do_all(agent {MIXUP_STATEMENT}.call(function_context, a_player, args))
+            Result := context.value
          end
       end
 
@@ -61,6 +58,24 @@ feature {}
 
    statements: TRAVERSABLE[MIXUP_STATEMENT]
    signature: TRAVERSABLE[FIXED_STRING]
+
+   prepare (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_USER_FUNCTION_CONTEXT is
+      local
+         args: HASHED_DICTIONARY[MIXUP_VALUE, FIXED_STRING]
+         zip: ZIP[MIXUP_VALUE, FIXED_STRING]
+      do
+         if a_args.count /= signature.count then
+            not_yet_implemented -- error: incorrect arguments number
+         else
+            create args.with_capacity(signature.count)
+            create zip.make(a_args, signature)
+            zip.do_all(agent args.add)
+            create Result.make(a_context, a_player, args)
+            Result.add_statements(statements)
+         end
+      ensure
+         Result /= Void
+      end
 
 invariant
    statements /= Void

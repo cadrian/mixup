@@ -40,12 +40,12 @@ echo "Compiling..."
 se c $class -debug -sedb -require_check -g || exit 1
 
 echo "Executing..."
-rm -f test.log
+test -e test.log && truncate -s 0 test.log
 if [ x$1 == xgdb ]; then
     gdb ./a.out
 else
     ./a.out
 fi
-less test.log
+test -e test.log && less test.log
 
 echo "Done."

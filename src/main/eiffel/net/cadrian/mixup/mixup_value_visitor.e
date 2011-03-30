@@ -73,6 +73,13 @@ feature {MIXUP_MUSIC_VALUE}
       deferred
       end
 
+feature {MIXUP_YIELD_ITERATOR}
+   visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR) is
+      require
+         a_yield_iterator /= Void
+      deferred
+      end
+
 feature {MIXUP_NO_VALUE}
    visit_no_value (a_no_value: MIXUP_NO_VALUE) is
       require

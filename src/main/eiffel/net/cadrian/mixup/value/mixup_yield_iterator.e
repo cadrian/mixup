@@ -12,40 +12,57 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_EXPRESSION_AS_STATEMENT
+class MIXUP_YIELD_ITERATOR
 
 inherit
-   MIXUP_STATEMENT
+   MIXUP_VALUE
 
 create {ANY}
    make
 
 feature {ANY}
-   expression: MIXUP_EXPRESSION
-
-   call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
+   value: MIXUP_VALUE is
       do
+         Result := context.value
+      end
+
+   next is
+      require
+         has_next
+      do
+         context.execute
+      end
+
+   has_next: BOOLEAN is
+      do
+         Result := context.yielded
       end
 
    accept (visitor: VISITOR) is
       local
-         v: MIXUP_STATEMENT_VISITOR
+         v: MIXUP_VALUE_VISITOR
       do
          v ::= visitor
-         v.visit_expression_as_statement(Current)
+         v.visit_yield_iterator(Current)
+      end
+
+feature {MIXUP_IDENTIFIER_PART}
+   as_name_in (a_name: STRING) is
+      do
+         a_name.append("<yield>")
       end
 
 feature {}
-   make (a_expression: like expression) is
-      require
-         a_expression /= Void
+   make (a_context: like context) is
       do
-         expression := a_expression
+         context := a_context
       ensure
-         expression = a_expression
+         context = a_context
       end
 
-invariant
-   expression /= Void
+   context: MIXUP_USER_FUNCTION_CONTEXT
 
-end -- class MIXUP_EXPRESSION_AS_STATEMENT
+invariant
+   context /= Void
+
+end -- class MIXUP_YIELD_ITERATOR

@@ -73,6 +73,12 @@ feature {}
          Result.count = args.count
       end
 
+feature {MIXUP_YIELD_ITERATOR}
+   visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR) is
+      do
+         value := a_yield_iterator
+      end
+
 feature {MIXUP_BOOLEAN}
    visit_boolean (a_boolean: MIXUP_BOOLEAN) is
       do

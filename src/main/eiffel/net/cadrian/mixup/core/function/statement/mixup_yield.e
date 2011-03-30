@@ -23,7 +23,7 @@ create {ANY}
 feature {ANY}
    expression: MIXUP_EXPRESSION
 
-   call (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; args: MAP[MIXUP_VALUE, FIXED_STRING]) is
+   call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
       do
       end
 
