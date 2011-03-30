@@ -3,3 +3,4 @@
 *.c
 *.h
 a.out
+.test

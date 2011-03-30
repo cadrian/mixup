@@ -1,0 +1,51 @@
+#!/bin/bash
+
+cd $(dirname $0)
+
+export class
+
+case x$1 in
+    x[0-9])
+        class=TEST_MIXUP_GRAMMAR0$1
+        ;;
+    xlily*)
+        class=TEST_LILYPOND_PLAYER
+        ;;
+    *)
+        echo "Unknown test: $1" >&2
+        exit 1
+        ;;
+esac
+shift
+
+if [ \! -d .test/$class ]; then
+    mkdir -p .test/$class
+    ln -s $(pwd)/log.rc .test/$class/
+    {
+        root=$(dirname $(pwd))
+        root=$(dirname $root)
+        echo "$root/main/eiffel/loadpath.se"
+        echo "$(pwd)/net/cadrian/mixup/loadpath.se"
+    } > .test/$class/loadpath.se
+fi
+cd .test/$class
+
+if [ x$1 == xclean ]; then
+    echo "Cleaning..."
+    se clean $class
+    shift
+fi
+
+echo "Compiling..."
+se c $class -debug -sedb -require_check -g || exit 1
+
+echo "Executing..."
+rm -f test.log
+if [ x$1 == xgdb ]; then
+    gdb ./a.out
+else
+    ./a.out
+fi
+less test.log
+
+echo "Done."

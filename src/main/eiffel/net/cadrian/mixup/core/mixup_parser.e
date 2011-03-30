@@ -138,6 +138,18 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             build_function_native(node)
          when "Function_User" then
             build_function_user(node)
+         when "If_Then_Else" then
+            build_if_then_else(node)
+         when "If", "ElseIf" then
+            build_if(node)
+         when "Else" then
+            build_else(node)
+         when "Loop" then
+            build_loop(node)
+         when "Expression_Or_Assignment" then
+            build_expression_or_assignment(node)
+         when "Yield" then
+            build_yield(node)
          else
             node.accept_all(Current)
          end
@@ -356,6 +368,94 @@ feature {} -- Functions
          sedb_breakpoint
          last_expression := last_function
          last_statements := Void
+      end
+
+   current_if_then_else: MIXUP_IF_THEN_ELSE
+
+   build_if_then_else (a_if_then_else: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         old_if_then_else: like current_if_then_else
+      do
+         old_if_then_else := current_if_then_else
+
+         create current_if_then_else.make
+         a_if_then_else.node_at(0).accept(Current)
+         a_if_then_else.node_at(1).accept(Current)
+         a_if_then_else.node_at(2).accept(Current)
+         last_statements.add_last(current_if_then_else)
+
+         current_if_then_else := old_if_then_else
+      end
+
+   build_if (a_if: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         exp: like last_expression
+         old_statements: like last_statements
+      do
+         a_if.node_at(1).accept(Current)
+         exp := last_expression
+         old_statements := last_statements
+         create last_statements.with_capacity(4)
+         a_if.node_at(3).accept(Current)
+         current_if_then_else.add_condition(create {MIXUP_IF}.make(exp, last_statements))
+         last_statements := old_statements
+      end
+
+   build_else (a_else: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         old_statements: like last_statements
+      do
+         if not a_else.is_empty then
+            old_statements := last_statements
+            create last_statements.with_capacity(4)
+            a_else.node_at(1).accept(Current)
+            current_if_then_else.set_otherwise(create {MIXUP_ELSE}.make(last_statements))
+            last_statements := old_statements
+         end
+      end
+
+   build_loop (a_loop: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         loop_identifier: like name
+         exp: like last_expression
+         old_statements: like last_statements
+      do
+         a_loop.node_at(1).accept(Current)
+         loop_identifier := name
+         a_loop.node_at(3).accept(Current)
+         exp := last_expression
+
+         old_statements := last_statements
+         create last_statements.with_capacity(4)
+         a_loop.node_at(5).accept(Current)
+         old_statements.add_last(create {MIXUP_LOOP}.make(loop_identifier, exp, last_statements))
+         last_statements := old_statements
+      end
+
+   build_expression_or_assignment (a_expression_or_assignment: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         exp: like last_expression
+      do
+         if a_expression_or_assignment.count = 1 then
+            a_expression_or_assignment.node_at(0).accept(Current)
+            last_statements.add_last(create {MIXUP_EXPRESSION_AS_STATEMENT}.make(last_expression))
+         else
+            a_expression_or_assignment.node_at(2).accept(Current)
+            exp := last_expression
+            last_identifier := Void
+            a_expression_or_assignment.node_at(0).accept(Current)
+            if last_identifier = Void then
+               last_statements.add_last(create {MIXUP_RESULT_ASSIGNMENT}.make(exp))
+            else
+               last_statements.add_last(create {MIXUP_ASSIGNMENT}.make(last_identifier, exp))
+            end
+         end
+      end
+
+   build_yield (a_yield: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         a_yield.node_at(1).accept(Current)
+         last_statements.add_last(create {MIXUP_YIELD}.make(last_expression))
       end
 
    build_definition (definition: MIXUP_NON_TERMINAL_NODE_IMPL; is_public: BOOLEAN) is
