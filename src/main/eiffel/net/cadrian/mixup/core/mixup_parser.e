@@ -541,7 +541,7 @@ feature {}
             root_context := current_context
          end
          check
-            current_instrument = Void
+            current_instrument /= Void
             last_compound_music = Void
          end
          instrument.node_at(2).accept(Current)

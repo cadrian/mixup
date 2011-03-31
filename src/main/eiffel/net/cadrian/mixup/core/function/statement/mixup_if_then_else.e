@@ -22,7 +22,21 @@ create {ANY}
 
 feature {ANY}
    call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
+      local
+         i: INTEGER; done: BOOLEAN; execution_context: MIXUP_IF_THEN_ELSE_EXECUTION
       do
+         from
+            i := condition_list.lower
+            create execution_context.make(a_context)
+         until
+            done or else i > condition_list.upper
+         loop
+            done := execution_context.match(condition_list.item(i))
+            i := i + 1
+         end
+         if not done and then otherwise /= Void then
+            a_context.add_statements(otherwise.statements)
+         end
       end
 
    accept (visitor: VISITOR) is

@@ -35,6 +35,13 @@ feature {}
       end
 
 feature {ANY}
+   add_statement (a_statement: MIXUP_STATEMENT) is
+      require
+         a_statement /= Void
+      do
+         statements.add_first(a_statement)
+      end
+
    add_statements (a_statements: TRAVERSABLE[MIXUP_STATEMENT]) is
       require
          a_statements /= Void
@@ -46,7 +53,7 @@ feature {ANY}
          until
             i < a_statements.lower
          loop
-            statements.add_first(a_statements.item(i))
+            add_statement(a_statements.item(i))
             i := i - 1
          end
       end

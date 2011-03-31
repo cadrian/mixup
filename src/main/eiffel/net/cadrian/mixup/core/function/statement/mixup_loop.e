@@ -26,7 +26,15 @@ feature {ANY}
    statements: TRAVERSABLE[MIXUP_STATEMENT]
 
    call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
+      local
+         value: MIXUP_VALUE
       do
+         value := expression.eval(a_context, a_context.player)
+         if value = Void then
+            not_yet_implemented -- error: value could not be computed
+         else
+            value.accept(create {MIXUP_LOOP_EXECUTION}.make(a_context, Current))
+         end
       end
 
    accept (visitor: VISITOR) is

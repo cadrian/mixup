@@ -25,7 +25,16 @@ feature {ANY}
    expression: MIXUP_EXPRESSION
 
    call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
+      local
+         value: MIXUP_VALUE
       do
+         value := expression.eval(a_context, a_context.player)
+         if value = Void then
+            not_yet_implemented -- error: value could not be computed
+         else
+            -- TODO: a bit complex, because you need to be able to override an existing value, maybe in the
+            -- parent context, and so on
+         end
       end
 
    accept (visitor: VISITOR) is

@@ -79,7 +79,7 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
       end
 
 feature {}
-   make (a_identifier: MIXUP_IDENTIFIER) is
+   make (a_identifier: like identifier) is
       require
          a_identifier /= Void
       do

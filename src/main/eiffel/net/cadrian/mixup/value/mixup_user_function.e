@@ -33,7 +33,6 @@ feature {ANY}
       local
          context: MIXUP_USER_FUNCTION_CONTEXT
       do
-         sedb_breakpoint
          context := prepare(a_context, a_player, a_args)
          context.execute
          if context.yielded then

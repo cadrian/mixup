@@ -107,6 +107,18 @@ feature {ANY}
          Result /= Void
       end
 
+   is_simple: BOOLEAN is
+      do
+         Result := parts.count = 1 and then parts.first.args = Void
+      end
+
+   simple_name: FIXED_STRING is
+      require
+         is_simple
+      do
+         Result := parts.first.name
+      end
+
 feature {MIXUP_IDENTIFIER_PART}
    as_name_in (a_name: STRING) is
       local
