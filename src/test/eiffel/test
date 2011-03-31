@@ -21,13 +21,61 @@ shift
 if [ \! -d .test/$class ]; then
     mkdir -p .test/$class
     ln -s $(pwd)/log.rc .test/$class/
-    {
+fi
+
+{
         root=$(dirname $(pwd))
         root=$(dirname $root)
-        echo "$root/main/eiffel/loadpath.se"
-        echo "$(pwd)/net/cadrian/mixup/loadpath.se"
-    } > .test/$class/loadpath.se
-fi
+        cat <<EOF
+system "test"
+
+root
+    $class: make
+
+default
+    assertion(require)
+    assertion_flat_check(yes)
+    debug(no)
+    trace(yes)
+    no_style_warning (no)
+    no_warning(no)
+    verbose(no)
+    manifest_string_trace(no)
+    high_memory_compiler(yes)
+    profile(no)
+    relax(yes)
+
+cluster
+    liberty: "\${path_liberty}/src/loadpath.se"
+        option
+            debug(yes): ABSTRACT_STRING, FIXED_STRING, NATIVELY_STORED_STRING, STRING
+            --debug("parse"): DESCENDING_PARSER, PARSE_TERMINAL, PARSE_NT_NODE, PARSE_NON_TERMINAL
+            --debug("parse/eiffel/build"): EIFFEL_GRAMMAR
+            assertion(no): DESCENDING_PARSER, PARSE_TERMINAL, PARSE_NT_NODE, PARSE_NON_TERMINAL, EIFFEL_GRAMMAR, LOGGER, LOGGING, LOG_INTERNAL_CONF
+        end
+
+    main: "$root/main/eiffel/loadpath.se"
+        default
+            assertion(all)
+            debug(yes)
+        end
+
+    test: "$(pwd)/net/cadrian/mixup/loadpath.se"
+        default
+            assertion(no)
+            debug(yes)
+        end
+
+generate
+    no_strip(yes)
+    clean(no)
+    c_compiler_options: "-g -pipe"
+    split("by_type")
+
+end
+EOF
+} > .test/$class/test.ace
+
 cd .test/$class
 
 if [ x$1 == xclean ]; then
@@ -37,14 +85,14 @@ if [ x$1 == xclean ]; then
 fi
 
 echo "Compiling..."
-se c $class -debug -sedb -require_check -g || exit 1
+se c test.ace || exit 1
 
 echo "Executing..."
 test -e test.log && truncate -s 0 test.log
 if [ x$1 == xgdb ]; then
-    gdb ./a.out
+    gdb ./test
 else
-    ./a.out
+    ./test
 fi
 test -e test.log && less test.log
 
