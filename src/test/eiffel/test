@@ -1,31 +1,9 @@
 #!/bin/bash
 
-cd $(dirname $0)
+root=$(dirname $(pwd))
+root=$(dirname $root)
 
-export class
-
-case x$1 in
-    x[0-9])
-        class=TEST_MIXUP_GRAMMAR0$1
-        ;;
-    xlily*)
-        class=TEST_LILYPOND_PLAYER
-        ;;
-    *)
-        echo "Unknown test: $1" >&2
-        exit 1
-        ;;
-esac
-shift
-
-if [ \! -d .test/$class ]; then
-    mkdir -p .test/$class
-    ln -s $(pwd)/log.rc .test/$class/
-fi
-
-{
-        root=$(dirname $(pwd))
-        root=$(dirname $root)
+generate_ace_file() {
         cat <<EOF
 system "test"
 
@@ -58,9 +36,12 @@ cluster
         default
             assertion(all)
             debug(yes)
+        option
+            assertion(no): MIXUP_GRAMMAR
+            debug(no): MIXUP_GRAMMAR
         end
 
-    test: "$(pwd)/net/cadrian/mixup/loadpath.se"
+    test: "$root/test/eiffel/net/cadrian/mixup/loadpath.se"
         default
             assertion(no)
             debug(yes)
@@ -74,7 +55,31 @@ generate
 
 end
 EOF
-} > .test/$class/test.ace
+}
+
+cd $(dirname $0)
+
+export class
+
+case x$1 in
+    x[0-9])
+        class=TEST_MIXUP_GRAMMAR0$1
+        ;;
+    xlily*)
+        class=TEST_LILYPOND_PLAYER
+        ;;
+    *)
+        echo "Unknown test: $1" >&2
+        exit 1
+        ;;
+esac
+shift
+
+if [ \! -d .test/$class ]; then
+    mkdir -p .test/$class
+    ln -s $(pwd)/log.rc .test/$class/
+fi
+
 
 cd .test/$class
 
@@ -82,7 +87,10 @@ if [ x$1 == xclean ]; then
     echo "Cleaning..."
     se clean $class
     shift
+    generate_ace_file > test.ace
 fi
+
+test -e test.ace || generate_ace_file > test.ace
 
 echo "Compiling..."
 se c test.ace || exit 1

@@ -128,6 +128,18 @@ feature {MIXUP_STRING}
          value := a_string
       end
 
+feature {MIXUP_LIST}
+   visit_list (a_list: MIXUP_LIST) is
+      do
+         value := a_list
+      end
+
+feature {MIXUP_DICTIONARY}
+   visit_dictionary (a_dictionary: MIXUP_DICTIONARY) is
+      do
+         value := a_dictionary
+      end
+
 feature {MIXUP_NATIVE_FUNCTION}
    visit_native_function (a_function: MIXUP_NATIVE_FUNCTION) is
       do

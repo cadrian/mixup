@@ -25,7 +25,7 @@ feature {ANY}
       deferred
       end
 
-feature {MIXUP_IDENTIFIER_PART}
+feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
    as_name_in (a_name: STRING) is
       require
          a_name /= Void

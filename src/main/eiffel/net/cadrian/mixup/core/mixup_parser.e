@@ -150,6 +150,30 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             build_expression_or_assignment(node)
          when "Yield" then
             build_yield(node)
+         when "e1-exp" then
+            build_e1(node)
+         when "e2-exp" then
+            build_e2(node)
+         when "e3-exp" then
+            build_e3(node)
+         when "e4-exp" then
+            build_e4(node)
+         when "e5-exp" then
+            build_e5(node)
+         when "e6-exp" then
+            build_e6(node)
+         when "e7-exp" then
+            build_e7(node)
+         when "e8-exp" then
+            build_e8(node)
+         when "Unary_Expression" then
+            build_unary_expression(node)
+         when "List" then
+            build_list(node)
+         when "Dictionary" then
+            build_dictionary(node)
+         when "Expression_Pair" then
+            build_expression_pair(node)
          else
             node.accept_all(Current)
          end
@@ -199,7 +223,8 @@ feature {}
    current_identifier:      MIXUP_IDENTIFIER
    last_identifier:         MIXUP_IDENTIFIER
    last_expression:         MIXUP_EXPRESSION
-   last_expressions:        COLLECTION[MIXUP_EXPRESSION]
+   last_expressions:        FAST_ARRAY[MIXUP_EXPRESSION]
+   last_dictionary:         MIXUP_DICTIONARY
    last_note_length:        INTEGER_64
    last_note_head:          STRING is ""
    note_heads:              COLLECTION[FIXED_STRING]
@@ -230,11 +255,15 @@ feature {}
       end
 
    build_identifier_args (identifier_args: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         old_expressions: like last_expressions
       do
          if not identifier_args.is_empty then
-            last_expressions := Void
+            old_expressions := last_expressions
+            create last_expressions.make(0)
             identifier_args.node_at(1).accept(Current)
             current_identifier.set_args(last_expressions)
+            last_expressions := old_expressions
          end
       end
 
@@ -248,20 +277,21 @@ feature {}
       end
 
    build_expression_list (expression_list: MIXUP_LIST_NODE_IMPL) is
+      require
+         last_expressions.is_empty
       local
-         i: INTEGER; expressions: like last_expressions
+         i: INTEGER
       do
-         create {FAST_ARRAY[MIXUP_EXPRESSION]} expressions.with_capacity((expression_list.count + 1) // 2)
+         last_expressions.with_capacity((expression_list.count + 1) // 2)
          from
             i := expression_list.lower
          until
             i > expression_list.upper
          loop
             expression_list.item(i).accept(Current)
-            expressions.add_last(last_expression)
+            last_expressions.add_last(last_expression)
             i := i + 1
          end
-         last_expressions := expressions
       end
 
    build_voices (a_voices: MIXUP_LIST_NODE_IMPL) is
@@ -478,6 +508,75 @@ feature {} -- Functions
             def_value.set_public(is_public)
          end
          current_context.add_expression(function_name, def_value)
+      end
+
+   build_e1 (a_e1: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         sedb_breakpoint
+      end
+
+   build_e2 (a_e2: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+      end
+
+   build_e3 (a_e3: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+      end
+
+   build_e4 (a_e4: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+      end
+
+   build_e5 (a_e5: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+      end
+
+   build_e6 (a_e6: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+      end
+
+   build_e7 (a_e7: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+      end
+
+   build_e8 (a_e8: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+      end
+
+   build_unary_expression (a_unary_expression: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+      end
+
+   build_list (a_list: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         old_expressions: like last_expressions
+      do
+         old_expressions := last_expressions
+         create last_expressions.make(0)
+         a_list.node_at(1).accept(Current)
+         create {MIXUP_LIST} last_expression.make(last_expressions)
+         last_expressions := old_expressions
+      end
+
+   build_dictionary (a_dictionary: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         old_dictionary: like last_dictionary
+      do
+         old_dictionary := last_dictionary
+         create last_dictionary.make
+         a_dictionary.node_at(1).accept(Current)
+         last_expression := last_dictionary
+         last_dictionary := old_dictionary
+      end
+
+   build_expression_pair (a_expression_pair: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         key: like last_expression
+      do
+         a_expression_pair.node_at(0).accept(Current)
+         key := last_expression
+         a_expression_pair.node_at(2).accept(Current)
+         last_dictionary.add(last_expression, key)
       end
 
 feature {}

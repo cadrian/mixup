@@ -1,0 +1,103 @@
+-- This file is part of MiXuP.
+--
+-- MiXuP is free software: you can redistribute it and/or modify
+-- it under the terms of the GNU General Public License as published by
+-- the Free Software Foundation, version 3 of the License.
+--
+-- MiXuP is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-- GNU General Public License for more details.
+--
+-- You should have received a copy of the GNU General Public License
+-- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
+--
+class MIXUP_LIST
+
+inherit
+   MIXUP_VALUE
+      redefine
+         eval
+      end
+   TRAVERSABLE[MIXUP_VALUE]
+
+create {ANY}
+   make
+
+feature {ANY}
+   accept (visitor: VISITOR) is
+      local
+         v: MIXUP_VALUE_VISITOR
+      do
+         v ::= visitor
+         v.visit_list(Current)
+      end
+
+   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): MIXUP_VALUE is
+      local
+         i: INTEGER
+      do
+         create values.with_capacity(expressions.count)
+         from
+            i := expressions.lower
+         until
+            i > expressions.upper
+         loop
+            values.add_last(expressions.item(i).eval(a_context, a_player))
+            i := i + 1
+         end
+      end
+
+   lower: INTEGER is
+      do
+         Result := values.lower
+      end
+
+   upper: INTEGER is
+      do
+         Result := values.upper
+      end
+
+   item (index: INTEGER): MIXUP_VALUE is
+      do
+         Result := values.item(index)
+      end
+
+feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
+   as_name_in (buffer: STRING) is
+      local
+         i: INTEGER
+      do
+         buffer.extend('[')
+         from
+            i := expressions.lower
+         until
+            i > expressions.upper
+         loop
+            if i > expressions.lower then
+               buffer.append(once ", ")
+            end
+            expressions.item(i).as_name_in(buffer)
+            i := i + 1
+         end
+         buffer.extend(']')
+      end
+
+feature {}
+   make (a_expressions: like expressions) is
+      require
+         a_expressions /= Void
+      do
+         expressions := a_expressions
+      ensure
+         expressions = a_expressions
+      end
+
+   expressions: TRAVERSABLE[MIXUP_EXPRESSION]
+   values: FAST_ARRAY[MIXUP_VALUE]
+
+invariant
+   expressions /= Void
+   values /= Void implies values.count = expressions.count
+
+end -- class MIXUP_LIST

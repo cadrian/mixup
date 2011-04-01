@@ -31,7 +31,7 @@ feature {ANY}
          v.visit_integer(Current)
       end
 
-feature {MIXUP_IDENTIFIER_PART}
+feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
    as_name_in (a_name: STRING) is
       do
          value.append_in(a_name)

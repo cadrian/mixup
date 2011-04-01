@@ -65,6 +65,18 @@ feature {MIXUP_STRING}
          not_yet_implemented -- error: cannot match on a string
       end
 
+feature {MIXUP_LIST}
+   visit_list (a_list: MIXUP_LIST) is
+      do
+         not_yet_implemented -- error: cannot match a list
+      end
+
+feature {MIXUP_DICTIONARY}
+   visit_dictionary (a_dictionary: MIXUP_DICTIONARY) is
+      do
+         not_yet_implemented -- error: cannot match a dictionary
+      end
+
 feature {MIXUP_MUSIC_VALUE}
    visit_music (a_music: MIXUP_MUSIC_VALUE) is
       do

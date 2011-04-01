@@ -50,6 +50,34 @@ feature {MIXUP_MUSIC_VALUE}
          not_yet_implemented -- error: cannot iterate on music
       end
 
+feature {MIXUP_LIST}
+   visit_list (a_list: MIXUP_LIST) is
+      local
+         value: MIXUP_VALUE
+      do
+         if list = Void then
+            list ::= a_list.eval(context, context.player)
+            if list = Void then
+               not_yet_implemented -- error: could not compute value
+            else
+               list_index := a_list.lower
+            end
+         end
+         if list_index <= a_list.upper then
+            value := list.item(list_index)
+            context.resolver.set_local(loop_.identifier, value)
+            context.add_statement(loop_)
+            context.add_statements(loop_.statements)
+            list_index := list_index + 1
+         end
+      end
+
+feature {MIXUP_DICTIONARY}
+   visit_dictionary (a_dictionary: MIXUP_DICTIONARY) is
+      do
+         not_yet_implemented -- error: cannot loop on a dictionary
+      end
+
 feature {MIXUP_YIELD_ITERATOR}
    visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR) is
       do
@@ -78,6 +106,8 @@ feature {}
       end
 
    loop_: MIXUP_LOOP
-   more: BOOLEAN -- handles the first-call step, where the first yielded value is already available
+   more: BOOLEAN -- for yield functions: handles the first-call step, where the first yielded value is already available
+   list_index: INTEGER -- for lists
+   list: MIXUP_LIST
 
 end -- class MIXUP_LOOP_EXECUTION

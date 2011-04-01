@@ -119,7 +119,7 @@ feature {ANY}
          Result := parts.first.name
       end
 
-feature {MIXUP_IDENTIFIER_PART}
+feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
    as_name_in (a_name: STRING) is
       local
          i: INTEGER
