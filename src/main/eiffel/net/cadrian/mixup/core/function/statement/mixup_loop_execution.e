@@ -65,7 +65,7 @@ feature {MIXUP_LIST}
          end
          if list_index <= a_list.upper then
             value := list.item(list_index)
-            context.resolver.set_local(loop_.identifier, value)
+            context.set_local(loop_.identifier, value)
             context.add_statement(loop_)
             context.add_statements(loop_.statements)
             list_index := list_index + 1
@@ -84,7 +84,7 @@ feature {MIXUP_YIELD_ITERATOR}
          if more and then a_yield_iterator.has_next then
             a_yield_iterator.next
          end
-         context.resolver.set_local(loop_.identifier, a_yield_iterator.value)
+         context.set_local(loop_.identifier, a_yield_iterator.value)
          if a_yield_iterator.has_next then
             context.add_statement(loop_)
          end

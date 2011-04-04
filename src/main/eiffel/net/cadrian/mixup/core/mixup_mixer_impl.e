@@ -148,6 +148,10 @@ feature {}
       do
       end
 
+   native_new_music_store (context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      do
+      end
+
    native_store_music (context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
       end
@@ -174,6 +178,8 @@ feature {ANY}
             Result := agent native_with_lyrics
          when "seq" then
             Result := agent native_seq
+         when "new_music_store" then
+            Result := agent native_new_music_store
          when "store_music" then
             Result := agent native_store_music
          when "store_text" then

@@ -12,31 +12,25 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_BOOLEAN
+class MIXUP_GE
 
 inherit
-   MIXUP_TYPED_VALUE[BOOLEAN]
+   MIXUP_COMPARISON_OPERATOR
 
 create {ANY}
    make
 
-feature {ANY}
-   accept (visitor: VISITOR) is
+feature {}
+   compute (left_val, right_val: MIXUP_VALUE): MIXUP_VALUE is
       local
-         v: MIXUP_VALUE_VISITOR
+         left_value: COMPARABLE
       do
-         v ::= visitor
-         v.visit_boolean(Current)
+         left_val.accept(Current)
+         left_value := value
+         right_val.accept(Current)
+         create {MIXUP_BOOLEAN} Result.make(left_value >= value)
       end
 
-feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
-      do
-         if value then
-            a_name.append(once "True")
-         else
-            a_name.append(once "False")
-         end
-      end
+   operator: STRING is ">="
 
-end -- class MIXUP_BOOLEAN
+end -- class MIXUP_GE

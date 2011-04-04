@@ -18,10 +18,33 @@ inherit
    MIXUP_CONTEXT
       rename
          make as make_context
+      redefine
+         get_local, set_local
       end
 
 create {ANY}
    make
+
+feature {ANY}
+   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
+      do
+         if args.fast_has(a_name) then
+            not_yet_implemented -- error: cannot assign a parameter
+         else
+            debug
+               log.trace.put_line("Setting local: '" + a_name.out + "' => " + a_value.out)
+            end
+            locals.put(a_value, a_name)
+         end
+      end
+
+   get_local (a_name: FIXED_STRING): MIXUP_VALUE is
+      do
+         Result := args.reference_at(a_name)
+         if Result = Void then
+            Result := locals.reference_at(a_name)
+         end
+      end
 
 feature {}
    accept_start (visitor: MIXUP_CONTEXT_VISITOR) is
@@ -103,6 +126,7 @@ feature {ANY}
 
 feature {}
    statements: LINKED_LIST[MIXUP_STATEMENT]
+   locals: DICTIONARY[MIXUP_VALUE, FIXED_STRING]
 
    make (a_parent: MIXUP_CONTEXT; a_player: like player; a_args: like args) is
       require
@@ -114,6 +138,7 @@ feature {}
          player := a_player
          args := a_args
          create statements.make
+         create {HASHED_DICTIONARY[MIXUP_VALUE, FIXED_STRING]} locals.make
       ensure
          player = a_player
          args = a_args
@@ -123,5 +148,6 @@ invariant
    player /= Void
    args /= Void
    statements /= Void
+   locals /= Void
 
 end -- class MIXUP_USER_FUNCTION_CONTEXT

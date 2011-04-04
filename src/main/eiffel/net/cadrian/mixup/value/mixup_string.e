@@ -15,13 +15,19 @@
 class MIXUP_STRING
 
 inherit
-   MIXUP_VALUE
+   MIXUP_TYPED_VALUE[FIXED_STRING]
+      rename
+         make as typed_make
+      undefine
+         is_equal
+      end
+   COMPARABLE
 
 create {ANY}
    make
 
 feature {ANY}
-   value: FIXED_STRING
+   image: FIXED_STRING
 
    accept (visitor: VISITOR) is
       local
@@ -31,6 +37,11 @@ feature {ANY}
          v.visit_string(Current)
       end
 
+   infix "<" (other: like Current): BOOLEAN is
+      do
+         Result := value < other.value
+      end
+
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
    as_name_in (a_name: STRING) is
       do
@@ -38,14 +49,12 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       end
 
 feature {}
-   image: FIXED_STRING
-
    make (a_value, a_image: ABSTRACT_STRING) is
       require
          a_value /= Void
          a_image /= Void
       do
-         value := a_value.intern
+         typed_make(a_value.intern)
          image := a_image.intern
       ensure
          value = a_value.intern

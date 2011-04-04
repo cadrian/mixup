@@ -12,31 +12,15 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_BOOLEAN
+deferred class MIXUP_NUMERIC_OPERATOR
 
 inherit
-   MIXUP_TYPED_VALUE[BOOLEAN]
+   MIXUP_BINARY_EXPRESSION
 
-create {ANY}
-   make
-
-feature {ANY}
-   accept (visitor: VISITOR) is
-      local
-         v: MIXUP_VALUE_VISITOR
-      do
-         v ::= visitor
-         v.visit_boolean(Current)
+feature {}
+   operations: MIXUP_OPERATIONS is
+      once
+         create Result.make
       end
 
-feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
-      do
-         if value then
-            a_name.append(once "True")
-         else
-            a_name.append(once "False")
-         end
-      end
-
-end -- class MIXUP_BOOLEAN
+end -- class MIXUP_NUMERIC_OPERATOR

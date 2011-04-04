@@ -32,23 +32,12 @@ feature {ANY}
          identifier := resolved_identifier(a_identifier)
          if identifier /= Void then
             if identifier.is_simple then
-               Result := locals.reference_at(identifier.simple_name)
+               Result := context.get_local(identifier.simple_name)
             end
             if Result = Void then
                Result := identifier.eval(context, a_player)
             end
          end
-      end
-
-   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
-      require
-         a_name /= Void
-         a_value /= Void
-      do
-         debug
-            log.trace.put_line("Setting local: '" + a_name.out + "' => " + a_value.out)
-         end
-         locals.put(a_value, a_name)
       end
 
 feature {MIXUP_RESOLVER}
@@ -164,7 +153,6 @@ feature {}
          a_context /= Void
       do
          context := a_context
-         create {HASHED_DICTIONARY[MIXUP_VALUE, FIXED_STRING]} locals.make
       ensure
          context = a_context
       end
@@ -172,10 +160,8 @@ feature {}
    context: MIXUP_CONTEXT
    value: MIXUP_VALUE
    current_player: MIXUP_PLAYER
-   locals: DICTIONARY[MIXUP_VALUE, FIXED_STRING]
 
 invariant
    context /= Void
-   locals /= Void
 
 end -- class MIXUP_RESOLVER

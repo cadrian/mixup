@@ -90,6 +90,18 @@ feature {ANY}
          accept_end(v)
       end
 
+   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
+      require
+         a_name /= Void
+         a_value /= Void
+      do
+         crash -- unexpected
+      end
+
+   get_local (a_name: FIXED_STRING): MIXUP_VALUE is
+      do
+      end
+
 feature {MIXUP_CONTEXT}
    lookup_expression (identifier: FIXED_STRING; search_parent: BOOLEAN): MIXUP_EXPRESSION is
       require
@@ -98,7 +110,10 @@ feature {MIXUP_CONTEXT}
          id_prefix: FIXED_STRING; i: INTEGER
          child: MIXUP_CONTEXT
       do
-         Result := expressions.reference_at(identifier)
+         Result := get_local(identifier)
+         if Result = Void then
+            Result := expressions.reference_at(identifier)
+         end
          if Result = Void then
             i := identifier.first_index_of('.')
             if identifier.valid_index(i) then

@@ -297,7 +297,7 @@ feature {}
                                                                        >> };
                                    "Yield", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW yield", "Expression" >> }, Void;
                                                                    >> };
-                                   "Expression_Or_Assignment", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Identifier", "KW :=", "Expression" >> }, Void;
+                                   "Expression_Or_Assignment", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Expression", "KW :=", "Expression" >> }, Void;
                                                                                       {FAST_ARRAY[STRING] << "KW Result", "KW :=", "Expression" >> }, Void;
                                                                                       {FAST_ARRAY[STRING] << "Expression" >> }, Void;
                                                                                       >> };
@@ -316,7 +316,7 @@ feature {}
 
                                    "Expression", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Collection" >> }, Void;
                                                                         {FAST_ARRAY[STRING] << "Unary_Expression" >> }, Void >> };
-                                   "Unary_Expression", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "e1", "r1" >> }, agent build_expression_no_array(e1, ?);
+                                   "Unary_Expression", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "e1", "r1" >> }, agent build_unary_expression(e1, ?);
                                                                               >> };
 
                                    "e1", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "e2", "r2" >> }, agent build_expression(e2);
@@ -1790,14 +1790,14 @@ feature {} -- expressions
          end
       end
 
-   build_expression_no_array (expression_name, node_name: FIXED_STRING) is
+   build_unary_expression (expression_name, node_name: FIXED_STRING) is
       local
          exp, nt: MIXUP_NON_TERMINAL_NODE
       do
          build_expression(expression_name)
 
          debug ("parse/mixup/build")
-            log.trace.put_line(once "Building expression no-array")
+            log.trace.put_line(once "Building unary expression")
          end
 
          exp ::= stack.last

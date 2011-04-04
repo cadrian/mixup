@@ -12,31 +12,23 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_BOOLEAN
+class MIXUP_SUBTRACT
 
 inherit
-   MIXUP_TYPED_VALUE[BOOLEAN]
+   MIXUP_NUMERIC_OPERATOR
 
 create {ANY}
    make
 
-feature {ANY}
-   accept (visitor: VISITOR) is
+feature {}
+   compute (left_val, right_val: MIXUP_VALUE): MIXUP_VALUE is
       local
-         v: MIXUP_VALUE_VISITOR
+         op: MIXUP_SUBTRACTION
       do
-         v ::= visitor
-         v.visit_boolean(Current)
+         op ::= operations.item(left_val)
+         Result := op.subtract(left_val, right_val)
       end
 
-feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
-      do
-         if value then
-            a_name.append(once "True")
-         else
-            a_name.append(once "False")
-         end
-      end
+   operator: STRING is "-"
 
-end -- class MIXUP_BOOLEAN
+end -- class MIXUP_SUBTRACT

@@ -12,31 +12,29 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_BOOLEAN
+class MIXUP_OPERATIONS_STRING
 
 inherit
-   MIXUP_TYPED_VALUE[BOOLEAN]
+   MIXUP_ADDITION
 
 create {ANY}
    make
 
 feature {ANY}
-   accept (visitor: VISITOR) is
+   add (left, right: MIXUP_VALUE): MIXUP_STRING is
       local
-         v: MIXUP_VALUE_VISITOR
+         s, i: STRING
       do
-         v ::= visitor
-         v.visit_boolean(Current)
+         s := as_string(left).value.out
+         s.append(as_string(right).value)
+         i := as_string(left).image.out
+         i.append(as_string(right).image)
+         create Result.make(s.intern, i.intern)
       end
 
-feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+feature {}
+   make is
       do
-         if value then
-            a_name.append(once "True")
-         else
-            a_name.append(once "False")
-         end
       end
 
-end -- class MIXUP_BOOLEAN
+end -- class MIXUP_OPERATIONS_STRING

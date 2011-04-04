@@ -55,12 +55,14 @@ feature {}
                                         -- all those functions will surely be defined in a core module:
                                         set bar := function(style) native "bar"
                                         set seq := function(lower, upper) native "seq"
+                                        set new_music_store := function native "new_music_store"
                                         set store_music := function(memory, mus) native "store_music"
                                         set store_text := function(memory, str, pos) native "store_text"
                                         set restore := function(memory) native "restore"
                                         set with_lyrics := function(mus) native "with_lyrics"
 
                                         set repeat_inline := function(volte, mus) do
+                                                                mem := new_music_store
                                                                 for i in seq(1, volte) do
                                                                    store_music(mem, mus)
                                                                 end
@@ -68,6 +70,7 @@ feature {}
                                                              end
 
                                         set repeat := function(volte, mus) do
+                                                         mem := new_music_store
                                                          store_music(mem, bar("||:"))
                                                          if volte > 2 then
                                                             store_text(mem, volte + " times", "up")

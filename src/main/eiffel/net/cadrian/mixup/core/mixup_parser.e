@@ -19,6 +19,10 @@ inherit
    MIXUP_NON_TERMINAL_NODE_IMPL_VISITOR
    MIXUP_TERMINAL_NODE_IMPL_VISITOR
 
+insert
+   MIXUP_NODE_HANDLER
+   LOGGING
+
 create {ANY}
    make
 
@@ -27,6 +31,7 @@ feature {ANY}
       require
          a_piece /= Void
       do
+         --a_piece.display(log.trace, 0, "")
          a_piece.accept(Current)
          Result := root_context
       end
@@ -43,6 +48,7 @@ feature {MIXUP_LIST_NODE_IMPL}
          when "Identifier" then
             build_identifier(node)
          else
+            log.trace.put_line("Generic list node: " + node.name)
             node.accept_all(Current)
          end
       end
@@ -151,23 +157,21 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
          when "Yield" then
             build_yield(node)
          when "e1-exp" then
-            build_e1(node)
+            build_e1_exp(node)
          when "e2-exp" then
-            build_e2(node)
+            build_e2_exp(node)
          when "e3-exp" then
-            build_e3(node)
+            build_e3_exp(node)
          when "e4-exp" then
-            build_e4(node)
+            build_e4_exp(node)
          when "e5-exp" then
-            build_e5(node)
+            build_e5_exp(node)
          when "e6-exp" then
-            build_e6(node)
+            build_e6_exp(node)
          when "e7-exp" then
+            build_e7_exp(node)
+         when "e7" then
             build_e7(node)
-         when "e8-exp" then
-            build_e8(node)
-         when "Unary_Expression" then
-            build_unary_expression(node)
          when "List" then
             build_list(node)
          when "Dictionary" then
@@ -175,6 +179,7 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
          when "Expression_Pair" then
             build_expression_pair(node)
          else
+            log.trace.put_line("Generic non-terminal node: " + node.name)
             node.accept_all(Current)
          end
       end
@@ -213,6 +218,7 @@ feature {MIXUP_TERMINAL_NODE_IMPL}
          when "KW note head" then
             last_note_head.copy(node.image.image)
          else
+            log.trace.put_line("Skipped terminal node: " + node.name)
             -- skipped
          end
       end
@@ -510,41 +516,172 @@ feature {} -- Functions
          current_context.add_expression(function_name, def_value)
       end
 
-   build_e1 (a_e1: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_e1_exp (a_e1: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         exp: like last_expression
+         i: INTEGER
       do
-         sedb_breakpoint
+         from
+            a_e1.node_at(0).accept(Current)
+            i := 1
+         until
+            i > a_e1.upper
+         loop
+            exp := last_expression
+            a_e1.node_at(i + 1).accept(Current)
+            create {MIXUP_IMPLIES} last_expression.make(exp, last_expression)
+            i := i + 2
+         end
       end
 
-   build_e2 (a_e2: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_e2_exp (a_e2: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         exp: like last_expression
+         i: INTEGER
       do
+         from
+            a_e2.node_at(0).accept(Current)
+            i := 1
+         until
+            i > a_e2.upper
+         loop
+            exp := last_expression
+            a_e2.node_at(i + 1).accept(Current)
+            inspect
+               a_e2.node_at(i).name
+            when "KW or" then
+               create {MIXUP_OR} last_expression.make(exp, last_expression)
+            when "KW xor" then
+               create {MIXUP_XOR} last_expression.make(exp, last_expression)
+            end
+            i := i + 2
+         end
       end
 
-   build_e3 (a_e3: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_e3_exp (a_e3: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         exp: like last_expression
+         i: INTEGER
       do
+         from
+            a_e3.node_at(0).accept(Current)
+            i := 1
+         until
+            i > a_e3.upper
+         loop
+            exp := last_expression
+            a_e3.node_at(i + 1).accept(Current)
+            create {MIXUP_AND} last_expression.make(exp, last_expression)
+            i := i + 2
+         end
       end
 
-   build_e4 (a_e4: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_e4_exp (a_e4: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         exp: like last_expression
+         i: INTEGER
       do
+         from
+            a_e4.node_at(0).accept(Current)
+            i := 1
+         until
+            i > a_e4.upper
+         loop
+            exp := last_expression
+            a_e4.node_at(i + 1).accept(Current)
+            inspect
+               a_e4.node_at(i).name
+            when "KW =" then
+               create {MIXUP_EQ} last_expression.make(exp, last_expression)
+            when "KW !=" then
+               create {MIXUP_NE} last_expression.make(exp, last_expression)
+            when "KW <=" then
+               create {MIXUP_LE} last_expression.make(exp, last_expression)
+            when "KW <" then
+               create {MIXUP_LT} last_expression.make(exp, last_expression)
+            when "KW >=" then
+               create {MIXUP_GE} last_expression.make(exp, last_expression)
+            when "KW >" then
+               create {MIXUP_GT} last_expression.make(exp, last_expression)
+            end
+            i := i + 2
+         end
       end
 
-   build_e5 (a_e5: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_e5_exp (a_e5: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         exp: like last_expression
+         i: INTEGER
       do
+         from
+            a_e5.node_at(0).accept(Current)
+            i := 1
+         until
+            i > a_e5.upper
+         loop
+            exp := last_expression
+            a_e5.node_at(i + 1).accept(Current)
+            inspect
+               a_e5.node_at(i).name
+            when "KW +" then
+               create {MIXUP_ADD} last_expression.make(exp, last_expression)
+            when "KW -" then
+               create {MIXUP_SUBTRACT} last_expression.make(exp, last_expression)
+            end
+            i := i + 2
+         end
       end
 
-   build_e6 (a_e6: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_e6_exp (a_e6: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         exp: like last_expression
+         i: INTEGER
       do
+         from
+            a_e6.node_at(0).accept(Current)
+            i := 1
+         until
+            i > a_e6.upper
+         loop
+            exp := last_expression
+            a_e6.node_at(i + 1).accept(Current)
+            inspect
+               a_e6.node_at(i).name
+            when "KW *" then
+               create {MIXUP_MULTIPLY} last_expression.make(exp, last_expression)
+            when "KW /" then
+               create {MIXUP_DIVIDE} last_expression.make(exp, last_expression)
+            when "KW //" then
+               create {MIXUP_INTEGER_DIVIDE} last_expression.make(exp, last_expression)
+            when "KW \\" then
+               create {MIXUP_INTEGER_MODULO} last_expression.make(exp, last_expression)
+            end
+            i := i + 2
+         end
+      end
+
+   build_e7_exp (a_e7: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         exp: like last_expression
+         i: INTEGER
+      do
+         from
+            a_e7.node_at(a_e7.upper).accept(Current)
+            i := a_e7.upper - 2
+         until
+            i < a_e7.lower
+         loop
+            exp := last_expression
+            a_e7.node_at(i).accept(Current)
+            create {MIXUP_POWER} last_expression.make(last_expression, exp)
+            i := i - 2
+         end
       end
 
    build_e7 (a_e7: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-      end
-
-   build_e8 (a_e8: MIXUP_NON_TERMINAL_NODE_IMPL) is
-      do
-      end
-
-   build_unary_expression (a_unary_expression: MIXUP_NON_TERMINAL_NODE_IMPL) is
-      do
+         -- TODO: unary operators
+         a_e7.accept_all(Current)
       end
 
    build_list (a_list: MIXUP_NON_TERMINAL_NODE_IMPL) is
