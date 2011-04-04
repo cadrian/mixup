@@ -83,6 +83,12 @@ feature {MIXUP_MUSIC_VALUE}
          not_yet_implemented -- error: cannot match on music
       end
 
+feature {MIXUP_MUSIC_STORE}
+   visit_music_store (a_music: MIXUP_MUSIC_STORE) is
+      do
+         not_yet_implemented -- error: cannot match on music store
+      end
+
 feature {MIXUP_YIELD_ITERATOR}
    visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR) is
       do

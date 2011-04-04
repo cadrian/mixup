@@ -148,6 +148,7 @@ feature {}
                                    "Value", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW string" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "KW number" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "KW boolean" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "KW Result" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Identifier" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Music" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Lyrics" >> }, Void;
@@ -298,7 +299,6 @@ feature {}
                                    "Yield", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW yield", "Expression" >> }, Void;
                                                                    >> };
                                    "Expression_Or_Assignment", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Expression", "KW :=", "Expression" >> }, Void;
-                                                                                      {FAST_ARRAY[STRING] << "KW Result", "KW :=", "Expression" >> }, Void;
                                                                                       {FAST_ARRAY[STRING] << "Expression" >> }, Void;
                                                                                       >> };
                                    "Loop", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW for", "KW identifier", "KW in", "Expression", "KW do", "Statement*", "KW end" >> }, Void;

@@ -12,10 +12,14 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_MUSIC_VALUE
+class MIXUP_MUSIC_STORE
 
 inherit
-   MIXUP_TYPED_VALUE[MIXUP_MUSIC]
+   MIXUP_VALUE
+   MIXUP_VOICES
+      rename
+         make as make_voices
+      end
 
 create {ANY}
    make
@@ -26,13 +30,29 @@ feature {ANY}
          v: MIXUP_VALUE_VISITOR
       do
          v ::= visitor
-         v.visit_music(Current)
+         v.visit_music_store(Current)
+      end
+
+   has_voice: BOOLEAN is
+      do
+         Result := not voices.is_empty
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
    as_name_in (a_name: STRING) is
       do
-         a_name.append(once "<music>")
+         a_name.append(once "<music store>")
       end
 
-end -- class MIXUP_MUSIC_VALUE
+feature {}
+   make is
+      do
+         make_voices(ref0)
+      end
+
+   ref0: MIXUP_NOTE_HEAD is
+      once
+         Result.set("a", 3)
+      end
+
+end -- class MIXUP_MUSIC_STORE

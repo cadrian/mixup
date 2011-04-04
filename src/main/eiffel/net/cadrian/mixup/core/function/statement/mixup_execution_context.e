@@ -30,6 +30,12 @@ feature {MIXUP_IDENTIFIER}
          end
       end
 
+feature {MIXUP_RESULT}
+   visit_result (a_result: MIXUP_RESULT) is
+      do
+         sedb_breakpoint -- TODO
+      end
+
 feature {MIXUP_NATIVE_FUNCTION}
    visit_native_function (a_function: MIXUP_NATIVE_FUNCTION) is
       do

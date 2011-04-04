@@ -42,8 +42,11 @@ feature {ANY}
    commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
       local
          music_value: MIXUP_MUSIC_VALUE
+         music_store: MIXUP_MUSIC_STORE
          value: MIXUP_VALUE
       do
+         -- TODO: clean up this horrible if/elseif type check (use a visitor!)
+
          debug
             log.trace.put_line("Committing music identifier: " + identifier.as_name)
          end
@@ -53,6 +56,12 @@ feature {ANY}
          elseif music_value ?:= value then
             music_value ::= value
             music := music_value.value
+            debug
+               log.trace.put_line("    => " + music.out)
+            end
+         elseif music_store ?:= value then
+            music_store ::= value
+            music := music_store
             debug
                log.trace.put_line("    => " + music.out)
             end

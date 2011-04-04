@@ -58,26 +58,23 @@ feature {}
                                         set new_music_store := function native "new_music_store"
                                         set store_music := function(memory, mus) native "store_music"
                                         set store_text := function(memory, str, pos) native "store_text"
-                                        set restore := function(memory) native "restore"
                                         set with_lyrics := function(mus) native "with_lyrics"
 
                                         set repeat_inline := function(volte, mus) do
-                                                                mem := new_music_store
+                                                                Result := new_music_store
                                                                 for i in seq(1, volte) do
-                                                                   store_music(mem, mus)
+                                                                   store_music(Result, mus)
                                                                 end
-                                                                Result := restore(mem)
                                                              end
 
                                         set repeat := function(volte, mus) do
-                                                         mem := new_music_store
-                                                         store_music(mem, bar("||:"))
+                                                         Result := new_music_store
+                                                         store_music(Result, bar("||:"))
                                                          if volte > 2 then
-                                                            store_text(mem, volte + " times", "up")
+                                                            store_text(Result, volte + " times", "up")
                                                          end
-                                                         store_music(mem, mus)
-                                                         store_music(mem, bar(":||"))
-                                                         Result := restore(mem)
+                                                         store_music(Result, mus)
+                                                         store_music(Result, bar(":||"))
                                                       end
 
                                         -- some music

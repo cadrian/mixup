@@ -150,17 +150,32 @@ feature {}
 
    native_new_music_store (context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
+         create {MIXUP_MUSIC_STORE} Result.make
       end
 
    native_store_music (context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      local
+         music_store: MIXUP_MUSIC_STORE
+         music: MIXUP_MUSIC_VALUE
       do
+         if args.count /= 2 then
+            not_yet_implemented -- error: bad argument count
+         elseif not (music_store ?:= args.first) then
+            not_yet_implemented -- error: bad argument
+         elseif not (music ?:= args.last) then
+            not_yet_implemented -- error: bad argument
+         else
+            music_store ::= args.first
+            if not music_store.has_voice then
+               music_store.next_voice
+            end
+            music ::= args.last
+            music_store.add_music(music.value)
+            music_store.commit(context, player)
+         end
       end
 
    native_store_text (context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
-      do
-      end
-
-   native_restore (context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
       end
 
@@ -184,8 +199,6 @@ feature {ANY}
             Result := agent native_store_music
          when "store_text" then
             Result := agent native_store_text
-         when "restore" then
-            Result := agent native_restore
          else
             not_yet_implemented -- error: unknown native function
          end

@@ -56,6 +56,12 @@ feature {MIXUP_IDENTIFIER}
          not_yet_implemented -- error: no hash_code
       end
 
+feature {MIXUP_RESULT}
+   visit_result (a_result: MIXUP_RESULT) is
+      do
+         not_yet_implemented -- error: bad type
+      end
+
 feature {MIXUP_INTEGER}
    visit_integer (a_integer: MIXUP_INTEGER) is
       do
@@ -100,6 +106,12 @@ feature {MIXUP_USER_FUNCTION}
 
 feature {MIXUP_MUSIC_VALUE}
    visit_music (a_music: MIXUP_MUSIC_VALUE) is
+      do
+         not_yet_implemented -- error: no hash_code
+      end
+
+feature {MIXUP_MUSIC_STORE}
+   visit_music_store (a_music: MIXUP_MUSIC_STORE) is
       do
          not_yet_implemented -- error: no hash_code
       end

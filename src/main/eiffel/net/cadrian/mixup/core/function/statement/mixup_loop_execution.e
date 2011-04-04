@@ -50,6 +50,12 @@ feature {MIXUP_MUSIC_VALUE}
          not_yet_implemented -- error: cannot iterate on music
       end
 
+feature {MIXUP_MUSIC_STORE}
+   visit_music_store (a_music: MIXUP_MUSIC_STORE) is
+      do
+         not_yet_implemented -- error: cannot iterate on music store
+      end
+
 feature {MIXUP_LIST}
    visit_list (a_list: MIXUP_LIST) is
       local

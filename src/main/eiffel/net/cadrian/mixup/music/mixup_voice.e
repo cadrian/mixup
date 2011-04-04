@@ -104,7 +104,6 @@ feature {ANY}
             i := i + 1
          end
          music.add_last(chord)
-         duration := duration + chord.duration
          reference := chord.anchor
       end
 

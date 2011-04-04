@@ -32,8 +32,7 @@ feature {ANY}
          if value = Void then
             not_yet_implemented -- error: value could not be computed
          else
-            -- TODO: a bit complex, because you need to be able to override an existing value, maybe in the
-            -- parent context, and so on
+            a_context.setup(identifier.as_name.intern, a_context.player, value)
          end
       end
 

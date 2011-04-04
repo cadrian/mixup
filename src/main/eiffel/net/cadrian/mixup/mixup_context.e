@@ -80,6 +80,20 @@ feature {ANY}
          end
       end
 
+   setup (identifier: FIXED_STRING; a_player: MIXUP_PLAYER; a_value: MIXUP_VALUE) is
+      require
+         identifier /= Void
+         a_player /= Void
+         a_value /= Void
+      local
+         done: BOOLEAN
+      do
+         done := setup_expression(identifier, True, a_value)
+         if not done then
+            not_yet_implemented -- error: could not assign
+         end
+      end
+
    accept (visitor: VISITOR) is
       local
          v: MIXUP_CONTEXT_VISITOR
@@ -129,6 +143,43 @@ feature {MIXUP_CONTEXT}
          end
       end
 
+   setup_expression (identifier: FIXED_STRING; assign_if_new: BOOLEAN; a_value: MIXUP_VALUE): BOOLEAN is
+      require
+         identifier /= Void
+         a_value /= Void
+      local
+         id_prefix: FIXED_STRING; i: INTEGER
+         child: MIXUP_CONTEXT
+         exp: MIXUP_EXPRESSION
+      do
+         exp := get_local(identifier)
+         if exp /= Void then
+            set_local(identifier, a_value)
+            Result := True
+         else
+            exp := expressions.reference_at(identifier)
+            if exp /= Void then
+               set_local(identifier, a_value)
+               Result := True
+            else
+               i := identifier.first_index_of('.')
+               if identifier.valid_index(i) then
+                  id_prefix := identifier.substring(identifier.lower, i - 1)
+                  child := children.reference_at(id_prefix)
+                  if child /= Void then
+                     Result := child.setup_expression(identifier.substring(i + 1, identifier.upper), True, a_value)
+                  end
+               end
+               if not Result and then parent /= Void then
+                  Result := parent.setup_expression(identifier, False, a_value)
+               end
+               if not Result and then assign_if_new then
+                  set_local(identifier, a_value)
+                  Result := True
+               end
+            end
+         end
+      end
 
 feature {}
    accept_start (visitor: MIXUP_CONTEXT_VISITOR) is

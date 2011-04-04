@@ -31,6 +31,13 @@ feature {MIXUP_IDENTIFIER}
       deferred
       end
 
+feature {MIXUP_RESULT}
+   visit_result (a_result: MIXUP_RESULT) is
+      require
+         a_result /= Void
+      deferred
+      end
+
 feature {MIXUP_INTEGER}
    visit_integer (a_integer: MIXUP_INTEGER) is
       require
@@ -82,6 +89,13 @@ feature {MIXUP_USER_FUNCTION}
 
 feature {MIXUP_MUSIC_VALUE}
    visit_music (a_music: MIXUP_MUSIC_VALUE) is
+      require
+         a_music /= Void
+      deferred
+      end
+
+feature {MIXUP_MUSIC_STORE}
+   visit_music_store (a_music: MIXUP_MUSIC_STORE) is
       require
          a_music /= Void
       deferred

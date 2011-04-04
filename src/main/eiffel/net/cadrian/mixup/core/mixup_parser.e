@@ -196,6 +196,8 @@ feature {MIXUP_TERMINAL_NODE_IMPL}
             node.name
          when "KW identifier" then
             name := node.image.image.intern
+         when "KW Result" then
+            create {MIXUP_RESULT} last_expression.make
          when "KW syllable" then
             last_string := node.image.image
          when "KW string" then
@@ -480,8 +482,14 @@ feature {} -- Functions
             last_identifier := Void
             a_expression_or_assignment.node_at(0).accept(Current)
             if last_identifier = Void then
+               if not ({MIXUP_RESULT} ?:= last_expression) then
+                  not_yet_implemented -- error: bad assignment
+               end
                last_statements.add_last(create {MIXUP_RESULT_ASSIGNMENT}.make(exp))
             else
+               if last_expression /= last_identifier then
+                  not_yet_implemented -- error: bad assignment
+               end
                last_statements.add_last(create {MIXUP_ASSIGNMENT}.make(last_identifier, exp))
             end
          end
