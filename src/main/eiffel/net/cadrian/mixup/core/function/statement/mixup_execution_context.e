@@ -17,6 +17,9 @@ deferred class MIXUP_EXECUTION_CONTEXT
 inherit
    MIXUP_VALUE_VISITOR
 
+insert
+   MIXUP_ERRORS
+
 feature {MIXUP_IDENTIFIER}
    visit_identifier (a_identifier: MIXUP_IDENTIFIER) is
       local
@@ -24,7 +27,7 @@ feature {MIXUP_IDENTIFIER}
       do
          value := context.resolver.resolve(a_identifier, context.player)
          if value = Void then
-            not_yet_implemented -- error: value could not be computed
+            error("value could not be computed")
          else
             value.accept(Current)
          end
@@ -55,7 +58,7 @@ feature {}
       do
          value := a_function.call(context, context.player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
          if value = Void then
-            not_yet_implemented -- error: could not compute value
+            error("value could not be computed")
          else
             value.accept(Current)
          end

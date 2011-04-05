@@ -17,43 +17,46 @@ class MIXUP_LOOP_EXECUTION
 inherit
    MIXUP_EXECUTION_CONTEXT
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
 feature {MIXUP_BOOLEAN}
    visit_boolean (a_boolean: MIXUP_BOOLEAN) is
       do
-         not_yet_implemented -- error: cannot iterate on a boolean
+         fatal("cannot iterate on a boolean")
       end
 
 feature {MIXUP_INTEGER}
    visit_integer (a_integer: MIXUP_INTEGER) is
       do
-         not_yet_implemented -- error: cannot iterate on an integer
+         fatal("cannot iterate on an integer")
       end
 
 feature {MIXUP_REAL}
    visit_real (a_real: MIXUP_REAL) is
       do
-         not_yet_implemented -- error: cannot iterate on a real
+         fatal("cannot iterate on a real")
       end
 
 feature {MIXUP_STRING}
    visit_string (a_string: MIXUP_STRING) is
       do
-         not_yet_implemented -- error: cannot iterate on a string
+         fatal("cannot iterate on a string")
       end
 
 feature {MIXUP_MUSIC_VALUE}
    visit_music (a_music: MIXUP_MUSIC_VALUE) is
       do
-         not_yet_implemented -- error: cannot iterate on music
+         fatal("cannot iterate on music")
       end
 
 feature {MIXUP_MUSIC_STORE}
    visit_music_store (a_music: MIXUP_MUSIC_STORE) is
       do
-         not_yet_implemented -- error: cannot iterate on music store
+         fatal("cannot iterate on music store")
       end
 
 feature {MIXUP_LIST}
@@ -64,7 +67,7 @@ feature {MIXUP_LIST}
          if list = Void then
             list ::= a_list.eval(context, context.player)
             if list = Void then
-               not_yet_implemented -- error: could not compute value
+               fatal("could not compute value")
             else
                list_index := a_list.lower
             end
@@ -81,7 +84,7 @@ feature {MIXUP_LIST}
 feature {MIXUP_DICTIONARY}
    visit_dictionary (a_dictionary: MIXUP_DICTIONARY) is
       do
-         not_yet_implemented -- error: cannot loop on a dictionary
+         fatal("cannot iterate on a dictionary")
       end
 
 feature {MIXUP_YIELD_ITERATOR}

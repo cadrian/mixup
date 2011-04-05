@@ -14,13 +14,16 @@
 --
 deferred class MIXUP_OPERATION
 
+insert
+   MIXUP_ERRORS
+
 feature {}
    as_integer (value: MIXUP_VALUE): INTEGER_64 is
       local
          int: MIXUP_INTEGER
       do
          if not (int ?:= value) then
-            not_yet_implemented -- error: bad type
+            fatal("bad type")
          else
             int ::= value
             Result := int.value
@@ -32,7 +35,7 @@ feature {}
          real: MIXUP_REAL
       do
          if not (real ?:= value) then
-            not_yet_implemented -- error: bad type
+            fatal("bad type")
          else
             real ::= value
             Result := real.value
@@ -42,7 +45,7 @@ feature {}
    as_string (value: MIXUP_VALUE): MIXUP_STRING is
       do
          if not (Result ?:= value) then
-            not_yet_implemented -- error: bad type
+            fatal("bad type")
          else
             Result ::= value
          end

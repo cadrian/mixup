@@ -20,6 +20,9 @@ inherit
          eval
       end
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
@@ -37,7 +40,7 @@ feature {ANY}
          user_function: MIXUP_USER_FUNCTION_CONTEXT
       do
          if not (user_function ?:= a_context) then
-            not_yet_implemented -- error: Result not in a function
+            fatal("Result not in a function")
          end
          user_function ::= a_context
          Result := user_function.value

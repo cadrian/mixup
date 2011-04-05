@@ -17,6 +17,9 @@ class MIXUP_MUSIXTEX_PLAYER
 inherit
    MIXUP_PLAYER
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make, connect_to
 
@@ -28,7 +31,7 @@ feature {ANY}
          when "current_bar_number" then
             create {MIXUP_INTEGER} Result.make(bar_number)
          else
-            not_yet_implemented -- error: unknown native function
+            fatal("unknown native function: " + name)
          end
       end
 

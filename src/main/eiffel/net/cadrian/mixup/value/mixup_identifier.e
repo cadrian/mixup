@@ -20,6 +20,9 @@ inherit
          eval
       end
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
@@ -83,14 +86,14 @@ feature {ANY}
                end
                if Result = Void then
                   if i < parts.upper then
-                     not_yet_implemented -- error: nothing returned
+                     warning("nothing returned")
                   end
                   Result := no_value
                elseif Result /= Void and then Result.is_context then
                   context := Result.as_context
                   name_buffer.clear_count
                elseif i < parts.upper then
-                  not_yet_implemented -- error: not a context
+                  fatal("not a context")
                end
             elseif parts.item(i).args /= Void then
                parts.item(i).append_args_in(name_buffer)

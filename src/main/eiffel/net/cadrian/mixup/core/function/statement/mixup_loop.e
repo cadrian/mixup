@@ -17,6 +17,9 @@ class MIXUP_LOOP
 inherit
    MIXUP_STATEMENT
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
@@ -31,7 +34,7 @@ feature {ANY}
       do
          value := expression.eval(a_context, a_context.player)
          if value = Void then
-            not_yet_implemented -- error: value could not be computed
+            error("value could not be computed")
          else
             value.accept(create {MIXUP_LOOP_EXECUTION}.make(a_context, Current))
          end

@@ -25,6 +25,7 @@ insert
       redefine
          new_events_iterator, valid_anchor
       end
+   MIXUP_ERRORS
 
 create {ANY}
    as_beam, as_slur, as_tie
@@ -47,7 +48,7 @@ feature {ANY}
          xuplet_text := a_text
 
          if (duration // a_numerator) * a_numerator /= duration then
-            not_yet_implemented -- error: invalid xuplet duration: does not divide cleanly
+            warning("invalid xuplet duration: does not divide cleanly. Expect strange results.")
          end
       end
 

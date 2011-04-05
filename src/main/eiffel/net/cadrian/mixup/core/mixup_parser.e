@@ -21,7 +21,7 @@ inherit
 
 insert
    MIXUP_NODE_HANDLER
-   LOGGING
+   MIXUP_ERRORS
 
 create {ANY}
    make
@@ -212,7 +212,7 @@ feature {MIXUP_TERMINAL_NODE_IMPL}
                real_image ::= node.image
                create {MIXUP_REAL} last_expression.make(real_image.decoded)
             else
-               not_yet_implemented -- error: invalid number
+               fatal("invalid number")
             end
          when "KW boolean" then
             boolean_image ::= node.image
@@ -483,12 +483,12 @@ feature {} -- Functions
             a_expression_or_assignment.node_at(0).accept(Current)
             if last_identifier = Void then
                if not ({MIXUP_RESULT} ?:= last_expression) then
-                  not_yet_implemented -- error: bad assignment
+                  fatal("assignment: expected either Result or an identifier")
                end
                last_statements.add_last(create {MIXUP_RESULT_ASSIGNMENT}.make(exp))
             else
                if last_expression /= last_identifier then
-                  not_yet_implemented -- error: bad assignment
+                  fatal("assignment: expected either Result or an identifier")
                end
                last_statements.add_last(create {MIXUP_ASSIGNMENT}.make(last_identifier, exp))
             end
@@ -877,7 +877,7 @@ feature {}
             inspect
                last_note_head.first
             when 'r', 'R' then
-               not_yet_implemented -- error: unexpected octave change for rest
+               error("unexpected octave change for rest")
             else
                token ::= note_head.node_at(1)
                last_note_head.append(token.image.image)
@@ -909,10 +909,10 @@ feature {}
                      note_length.node_at(1).accept(Current)
                   end
                else
-                  not_yet_implemented -- error: invalid note length
+                  fatal("invalid note length")
                end
             else
-               not_yet_implemented -- error: invalid note length
+               fatal("invalid note length")
             end
          end
       end

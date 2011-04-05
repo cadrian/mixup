@@ -19,7 +19,7 @@ inherit
    MIXUP_NATIVE_PROVIDER
 
 insert
-   LOGGING
+   MIXUP_ERRORS
 
 create {ANY}
    make
@@ -38,7 +38,7 @@ feature {ANY}
       do
          context := parser.parse(a_piece)
          if contexts.has(context.name) then
-            not_yet_implemented -- error: duplicate context name
+            warning("duplicate context name: " + context.name)
          else
             contexts.add(context, context.name)
          end
@@ -77,9 +77,9 @@ feature {}
          decorated: MIXUP_DECORATED_MUSIC
       do
          if args.count /= 2 then
-            not_yet_implemented -- error: bad argument count
+            error("bad argument count")
          elseif not (volte ?:= args.first) or else not (music ?:= args.last) then
-            not_yet_implemented -- error: bad argument type
+            error("bad argument type")
          else
             volte ::= args.first
             music ::= args.last
@@ -99,9 +99,9 @@ feature {}
          decorated: MIXUP_DECORATED_MUSIC
       do
          if args.count /= 1 then
-            not_yet_implemented -- error: bad argument count
+            error("bad argument count")
          elseif not (music ?:= args.first) then
-            not_yet_implemented -- error: bad argument type
+            error("bad argument type")
          else
             music ::= args.first
             instr ::= context
@@ -125,9 +125,9 @@ feature {}
          string: MIXUP_STRING
       do
          if args.count /= 1 then
-            not_yet_implemented -- error: bad argument count
+            error("bad argument count")
          elseif not (string ?:= args.first) then
-            not_yet_implemented -- error: bad argument type
+            error("bad argument type")
          else
             string ::= args.first
             create {MIXUP_MUSIC_VALUE} Result.make(create {MIXUP_BAR}.make(string.value))
@@ -159,11 +159,11 @@ feature {}
          music: MIXUP_MUSIC_VALUE
       do
          if args.count /= 2 then
-            not_yet_implemented -- error: bad argument count
+            error("bad argument count")
          elseif not (music_store ?:= args.first) then
-            not_yet_implemented -- error: bad argument
+            error("bad argument")
          elseif not (music ?:= args.last) then
-            not_yet_implemented -- error: bad argument
+            error("bad argument")
          else
             music_store ::= args.first
             if not music_store.has_voice then

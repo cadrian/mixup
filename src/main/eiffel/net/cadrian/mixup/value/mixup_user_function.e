@@ -17,6 +17,9 @@ class MIXUP_USER_FUNCTION
 inherit
    MIXUP_FUNCTION
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
@@ -64,7 +67,7 @@ feature {}
          zip: ZIP[MIXUP_VALUE, FIXED_STRING]
       do
          if a_args.count /= signature.count then
-            not_yet_implemented -- error: incorrect arguments number
+            fatal("incorrect arguments number")
          else
             create args.with_capacity(signature.count)
             create zip.make(a_args, signature)

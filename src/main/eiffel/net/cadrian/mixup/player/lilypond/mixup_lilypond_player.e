@@ -17,8 +17,23 @@ class MIXUP_LILYPOND_PLAYER
 inherit
    MIXUP_PLAYER
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make, connect_to
+
+feature {ANY}
+   native (name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      do
+         inspect
+            name
+         when "current_bar_number" then
+            create {MIXUP_INTEGER} Result.make(bar_number)
+         else
+            fatal("unknown native function: " + name)
+         end
+      end
 
 feature {ANY}
    set_score (name: ABSTRACT_STRING) is
@@ -59,6 +74,7 @@ feature {ANY}
          inst_name := name.intern
          create instrument.make(inst_name)
          instruments.add(instrument, inst_name)
+         bar_number := 0
       end
 
    set_dynamics (instrument: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
@@ -74,6 +90,7 @@ feature {ANY}
    next_bar (instrument: ABSTRACT_STRING; style: ABSTRACT_STRING) is
       do
          instruments.reference_at(instrument.intern).next_bar(style)
+         bar_number := bar_number + 1
       end
 
    start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
@@ -214,6 +231,7 @@ feature {}
    section_stack: STACK[FIXED_STRING]
    outputs_stack: STACK[OUTPUT_STREAM]
    instruments: LINKED_HASHED_DICTIONARY[MIXUP_LILYPOND_INSTRUMENT, FIXED_STRING]
+   bar_number: INTEGER
 
    section_output: OUTPUT_STREAM is
          -- the output file for the current section.

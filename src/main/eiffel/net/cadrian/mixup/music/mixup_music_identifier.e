@@ -18,7 +18,7 @@ inherit
    MIXUP_MUSIC
 
 insert
-   LOGGING
+   MIXUP_ERRORS
 
 create {ANY}
    make
@@ -52,7 +52,7 @@ feature {ANY}
          end
          value := a_context.resolver.resolve(identifier, a_player)
          if value = Void then
-            not_yet_implemented -- error: unresolved identifier
+            fatal("unknown identifier: " + identifier.as_name)
          elseif music_value ?:= value then
             music_value ::= value
             music := music_value.value
@@ -66,7 +66,7 @@ feature {ANY}
                log.trace.put_line("    => " + music.out)
             end
          else
-            not_yet_implemented -- error: the identifier is not music!
+            fatal("the identifier: " + identifier.as_name + " does not contain music!")
          end
       end
 

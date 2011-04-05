@@ -17,6 +17,9 @@ class MIXUP_IF_THEN_ELSE_EXECUTION
 inherit
    MIXUP_EXECUTION_CONTEXT
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
@@ -28,7 +31,7 @@ feature {ANY}
          match_ := False
          value := a_if.condition.eval(context, context.player)
          if value = Void then
-            not_yet_implemented -- error: value could not be computed
+            fatal("value could not be computed")
          else
             value.accept(Current)
             if match_ then
@@ -50,49 +53,49 @@ feature {MIXUP_BOOLEAN}
 feature {MIXUP_INTEGER}
    visit_integer (a_integer: MIXUP_INTEGER) is
       do
-         not_yet_implemented -- error: cannot match on an integer
+         fatal("cannot match on an integer")
       end
 
 feature {MIXUP_REAL}
    visit_real (a_real: MIXUP_REAL) is
       do
-         not_yet_implemented -- error: cannot match on a real
+         fatal("cannot match on a real")
       end
 
 feature {MIXUP_STRING}
    visit_string (a_string: MIXUP_STRING) is
       do
-         not_yet_implemented -- error: cannot match on a string
+         fatal("cannot match on a string")
       end
 
 feature {MIXUP_LIST}
    visit_list (a_list: MIXUP_LIST) is
       do
-         not_yet_implemented -- error: cannot match a list
+         fatal("cannot match on a list")
       end
 
 feature {MIXUP_DICTIONARY}
    visit_dictionary (a_dictionary: MIXUP_DICTIONARY) is
       do
-         not_yet_implemented -- error: cannot match a dictionary
+         fatal("cannot match on a dictionary")
       end
 
 feature {MIXUP_MUSIC_VALUE}
    visit_music (a_music: MIXUP_MUSIC_VALUE) is
       do
-         not_yet_implemented -- error: cannot match on music
+         fatal("cannot match on music")
       end
 
 feature {MIXUP_MUSIC_STORE}
    visit_music_store (a_music: MIXUP_MUSIC_STORE) is
       do
-         not_yet_implemented -- error: cannot match on music store
+         fatal("cannot match on music store")
       end
 
 feature {MIXUP_YIELD_ITERATOR}
    visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR) is
       do
-         not_yet_implemented -- error: cannot match on iterator
+         fatal("cannot match on iterator")
       end
 
 feature {}

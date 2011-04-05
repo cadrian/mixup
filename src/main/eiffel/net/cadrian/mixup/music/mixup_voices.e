@@ -18,7 +18,7 @@ inherit
    MIXUP_COMPOUND_MUSIC
 
 insert
-   LOGGING
+   MIXUP_ERRORS
 
 create {ANY}
    make
@@ -106,12 +106,12 @@ feature {ANY}
          voices.do_all(agent (voice: MIXUP_VOICE; durations_set: SET[INTEGER_64]) is
                           do
                              if not voice.bars.is_equal(bars) then
-                                not_yet_implemented -- error: bar durations mismatch
+                                warning("bar durations mismatch")
                              end
                              durations_set.add(voice.duration)
                           end (?, durations))
          if durations.count > 1 then
-            not_yet_implemented -- error: all voices don't have the same duration
+            warning("all voices don't have the same duration")
          end
          duration := durations.first
          debug

@@ -18,7 +18,7 @@ inherit
    VISITABLE
 
 insert
-   LOGGING
+   MIXUP_ERRORS
 
 feature {ANY}
    name: FIXED_STRING
@@ -37,7 +37,7 @@ feature {ANY}
          a_expression /= Void
       do
          if expressions.has(a_name) then
-            not_yet_implemented -- error: duplicate expression in the same context
+            warning("duplicate expression in the same context (ignored)")
          else
             debug
                log.trace.put_line("Adding '" + a_name + "' to {" + generating_type + "}." + name )
@@ -90,7 +90,7 @@ feature {ANY}
       do
          done := setup_expression(identifier, True, a_value)
          if not done then
-            not_yet_implemented -- error: could not assign
+            fatal("could not assign value to " + identifier.out)
          end
       end
 

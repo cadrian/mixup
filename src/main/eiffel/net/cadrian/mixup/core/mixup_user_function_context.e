@@ -22,6 +22,9 @@ inherit
          get_local, set_local
       end
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
@@ -29,7 +32,7 @@ feature {ANY}
    set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
       do
          if args.fast_has(a_name) then
-            not_yet_implemented -- error: cannot assign a parameter
+            error("cannot assign a parameter")
          else
             debug
                log.trace.put_line("Setting local: '" + a_name.out + "' => " + a_value.out)

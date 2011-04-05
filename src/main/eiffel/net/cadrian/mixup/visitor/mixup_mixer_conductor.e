@@ -23,6 +23,9 @@ inherit
          start_instrument, end_instrument
       end
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
@@ -91,10 +94,10 @@ feature {}
          elseif hook.is_callable then
             res := hook.call(a_context, a_player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
             if res /= Void then
-               not_yet_implemented -- error: lost result
+               warning("lost result")
             end
          else
-            not_yet_implemented -- error: hook not callable
+            fatal("hook not callable")
          end
       end
 

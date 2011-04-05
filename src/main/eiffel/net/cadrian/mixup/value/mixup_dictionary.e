@@ -24,6 +24,9 @@ inherit
          out_in_tagged_out_memory, is_equal
       end
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
@@ -49,9 +52,9 @@ feature {ANY}
             k := keys.item(i).eval(a_context, a_player)
             v := values.item(i).eval(a_context, a_player)
             if k = Void then
-               not_yet_implemented -- error: could not compute key
+               fatal("could not compute key")
             elseif v = Void then
-               not_yet_implemented -- error: could not compute value
+               fatal("could not compute value")
             else
                evaled.add(v, k)
             end

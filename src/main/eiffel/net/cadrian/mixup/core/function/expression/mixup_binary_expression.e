@@ -17,6 +17,9 @@ deferred class MIXUP_BINARY_EXPRESSION
 inherit
    MIXUP_EXPRESSION
 
+insert
+   MIXUP_ERRORS
+
 feature {ANY}
    eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): MIXUP_VALUE is
       local
@@ -25,9 +28,9 @@ feature {ANY}
          left_val := left.eval(a_context, a_player)
          right_val := right.eval(a_context, a_player)
          if left_val = Void then
-            not_yet_implemented -- error: could not compute the left value
+            error("could not compute the left value")
          elseif right_val = Void then
-            not_yet_implemented -- error: could not compute the right value
+            error("could not compute the right value")
          else
             Result := compute(left_val, right_val)
          end
