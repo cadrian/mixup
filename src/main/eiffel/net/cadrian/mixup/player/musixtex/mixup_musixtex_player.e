@@ -21,6 +21,18 @@ create {ANY}
    make, connect_to
 
 feature {ANY}
+   native (name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      do
+         inspect
+            name
+         when "current_bar_number" then
+            create {MIXUP_INTEGER} Result.make(bar_number)
+         else
+            not_yet_implemented -- error: unknown native function
+         end
+      end
+
+feature {ANY}
    set_score (name: ABSTRACT_STRING) is
       do
          push_section(name)
@@ -68,8 +80,8 @@ feature {ANY}
       do
          if not playing then
             start_playing
-         else
          end
+         bar_number := bar_number + 1
       end
 
    start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
@@ -213,6 +225,7 @@ feature {}
    local_output: BOOLEAN
    section_stack: STACK[FIXED_STRING]
    instruments: HASHED_DICTIONARY[MIXUP_MUSIXTEX_INSTRUMENT, FIXED_STRING]
+   bar_number: INTEGER
 
 invariant
    section_stack /= Void

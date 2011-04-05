@@ -179,6 +179,11 @@ feature {}
       do
       end
 
+   native_in_player (name: STRING; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      do
+         Result := player.native(name, context, args)
+      end
+
 feature {ANY}
    item (name: STRING): FUNCTION[TUPLE[MIXUP_CONTEXT, MIXUP_PLAYER, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE] is
       do
@@ -200,7 +205,7 @@ feature {ANY}
          when "store_text" then
             Result := agent native_store_text
          else
-            not_yet_implemented -- error: unknown native function
+            Result := agent native_in_player(name, ?, ?, ?)
          end
       end
 

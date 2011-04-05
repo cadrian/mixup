@@ -25,4 +25,12 @@ feature {ANY}
          a_event.fire(Current)
       end
 
+   native (name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      require
+         name /= Void
+         a_context /= Void
+         args /= Void
+      deferred
+      end
+
 end -- class MIXUP_PLAYER

@@ -59,6 +59,7 @@ feature {}
                                         set store_music := function(memory, mus) native "store_music"
                                         set store_text := function(memory, str, pos) native "store_text"
                                         set with_lyrics := function(mus) native "with_lyrics"
+                                        set current_bar_number := function native "current_bar_number"
 
                                         set repeat_inline := function(volte, mus) do
                                                                 Result := new_music_store
@@ -69,7 +70,9 @@ feature {}
 
                                         set repeat := function(volte, mus) do
                                                          Result := new_music_store
-                                                         store_music(Result, bar("||:"))
+                                                         if current_bar_number > 1 then
+                                                            store_music(Result, bar("||:"))
+                                                         end
                                                          if volte > 2 then
                                                             store_text(Result, volte + " times", "up")
                                                          end
@@ -83,7 +86,7 @@ feature {}
                                         -- the singer
                                         instrument singer
                                            music
-                                              << \repeat(2, with_lyrics(gamme)) \bar("||") :hidden:mp: c,1 >>
+                                              << \repeat(2, with_lyrics(gamme)) :hidden:mp: c,1 >>
                                            lyrics
                                               << doe ray me far sew la tea doe, _ >>
                                               << do re mi fa so la ti do, do. >>
@@ -106,6 +109,9 @@ feature {}
          create player.make
          mixer.add_player(player)
          mixer.add_piece(grammar.root_node)
+
+         player.when_native("current_bar_number", agent (a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is do create {MIXUP_INTEGER} Result.make(1) end)
+
          mixer.play
 
          expected := {FAST_ARRAY[AUX_MIXUP_MOCK_EVENT]
@@ -115,7 +121,6 @@ feature {}
            set_instrument ("singer"                                                                                     ),
            set_instrument ("bass"                                                                                       ),
 
-           start_repeat   ("singer", 2                                                                                  ),
            start_slur     ("singer", 1, 1, ""                                                                           ),
            set_dynamics   ("singer", "p", Void                                                                          ),
            set_dynamics   ("singer", "<", Void                                                                          ),
@@ -135,9 +140,8 @@ feature {}
            set_dynamics   ("singer", "f", Void                                                                         ),
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("c", 4) >> }, << "doe,", "do," >> }),
            end_slur       ("singer"                                                                                     ),
-           end_repeat     ("singer"                                                                                     ),
 
-           next_bar       ("singer", "||"                                                                               ),
+           next_bar       ("singer", ":||"                                                                              ),
            set_dynamics   ("singer", "mp", "hidden"                                                                     ), -- that will bring us back to
            set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_1 , << note("c", 3) >> }, << "_", "do." >> }),
            next_bar       ("bass", Void                                                                                 ),

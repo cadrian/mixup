@@ -49,6 +49,23 @@ feature {ANY}
          Result := events_list
       end
 
+   when_native (name: STRING; then_call: FUNCTION[TUPLE[MIXUP_CONTEXT, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE]) is
+      require
+         name /= Void
+      do
+         native_map.put(then_call, name.intern)
+      end
+
+   native (name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      local
+         fun: FUNCTION[TUPLE[MIXUP_CONTEXT, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE]
+      do
+         fun := native_map.reference_at(name.intern)
+         if fun /= Void then
+            Result := fun.item([a_context, args])
+         end
+      end
+
 feature {ANY}
    play_set_book (name: STRING) is
       do
@@ -142,13 +159,16 @@ feature {ANY}
 
 feature {}
    events_list: COLLECTION[AUX_MIXUP_MOCK_EVENT]
+   native_map: DICTIONARY[FUNCTION[TUPLE[MIXUP_CONTEXT, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE], FIXED_STRING]
 
    make is
       do
          create {FAST_ARRAY[AUX_MIXUP_MOCK_EVENT]} events_list.make(0)
+         create {HASHED_DICTIONARY[FUNCTION[TUPLE[MIXUP_CONTEXT, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE], FIXED_STRING]} native_map.make
       end
 
 invariant
    events_list /= Void
+   native_map /= Void
 
 end -- class AUX_MIXUP_MOCK_PLAYER
