@@ -1,11 +1,8 @@
-- move the players loop up                                               (DONE)
+- \repeat and \bar are not native functions (but user) (at least           DONE
+  \repeat, not sure about \bar)
 
-- pass the current player to functions                                   (DONE)
+- the statements queue should be a ring array, not a linked list
 
-- always play (not a native function or a hook)                          (DONE)
-
-- specific events to each player (e.g. "%" vs. MPC)                      (DONE)
-  => change the events management to some generic event infrastructure
-     + visitor
-
-- \repeat and \bar are not native functions (but user)
+- loop statement re-insertion: please ensure that the same context is
+  reused (not recreated); one way is to make the context itself a
+  statement and insert it instead of the initial loop
