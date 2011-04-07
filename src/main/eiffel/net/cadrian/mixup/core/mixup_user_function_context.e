@@ -125,7 +125,7 @@ feature {ANY}
    args: MAP[MIXUP_VALUE, FIXED_STRING]
 
 feature {}
-   statements: LINKED_LIST[MIXUP_STATEMENT]
+   statements: RING_ARRAY[MIXUP_STATEMENT]
    locals: DICTIONARY[MIXUP_VALUE, FIXED_STRING]
 
    make (a_source: like source; a_parent: MIXUP_CONTEXT; a_player: like player; a_args: like args) is
@@ -138,7 +138,7 @@ feature {}
          make_context(a_source, once "<function>", a_parent)
          player := a_player
          args := a_args
-         create statements.make
+         create statements.make(1, 0)
          create {HASHED_DICTIONARY[MIXUP_VALUE, FIXED_STRING]} locals.make
       ensure
          source = a_source
