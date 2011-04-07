@@ -94,6 +94,7 @@ feature {}
                                   agent event_start_repeat(a_source, ?, volte.value),
                                   agent event_end_repeat(a_source, ?),
                                   Void)
+            decorated.commit(context, player)
             create {MIXUP_MUSIC_VALUE} Result.make(a_source, decorated)
          end
       end
@@ -114,6 +115,7 @@ feature {}
             create decorated.make(a_source, once "with_lyrics", music.value,
                                   Void, Void,
                                   agent force_lyrics(a_source, ?, ?))
+            decorated.commit(context, player)
             create {MIXUP_MUSIC_VALUE} Result.make(a_source, decorated)
          end
       end
@@ -129,6 +131,7 @@ feature {}
    native_bar (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       local
          string: MIXUP_STRING
+         bar: MIXUP_BAR
       do
          if args.count /= 1 then
             error_at(a_source, "bad argument count")
@@ -136,7 +139,9 @@ feature {}
             error_at(args.first.source, "bad argument type")
          else
             string ::= args.first
-            create {MIXUP_MUSIC_VALUE} Result.make(a_source, create {MIXUP_BAR}.make(a_source, string.value))
+            create bar.make(a_source, string.value)
+            bar.commit(context, player)
+            create {MIXUP_MUSIC_VALUE} Result.make(a_source, bar)
          end
       end
 
