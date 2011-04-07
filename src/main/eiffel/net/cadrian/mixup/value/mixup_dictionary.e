@@ -24,9 +24,6 @@ inherit
          out_in_tagged_out_memory, is_equal
       end
 
-insert
-   MIXUP_ERRORS
-
 create {ANY}
    make
 
@@ -167,10 +164,15 @@ feature {ANY}
       end
 
 feature {}
-   make is
+   make (a_source: like source) is
+      require
+         a_source /= Void
       do
+         source := a_source
          create keys.make(0)
          create values.make(0)
+      ensure
+         source = a_source
       end
 
    keys: FAST_ARRAY[MIXUP_EXPRESSION]

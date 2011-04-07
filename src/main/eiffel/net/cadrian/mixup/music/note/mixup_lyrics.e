@@ -90,14 +90,15 @@ feature {ANY}
       end
 
 feature {}
-   make (a_note: MIXUP_NOTE; a_lyrics: TRAVERSABLE[ABSTRACT_STRING]) is
+   make (a_source: like source; a_note: MIXUP_NOTE; a_lyrics: TRAVERSABLE[ABSTRACT_STRING]) is
       require
+         a_source /= Void
          not a_lyrics.is_empty
          a_lyrics.for_all(agent (s: ABSTRACT_STRING): BOOLEAN is do Result := s /= Void end)
       local
          i: INTEGER
       do
-         manifest_make(a_lyrics.count, a_note)
+         manifest_make(a_lyrics.count, a_note, a_source)
          from
             i := 0
          until
@@ -109,11 +110,13 @@ feature {}
       end
 
 feature {} -- Manifest create:
-   manifest_make (a_capacity: INTEGER; a_note: MIXUP_NOTE) is
+   manifest_make (a_capacity: INTEGER; a_note: MIXUP_NOTE; a_source: like source) is
       require
          a_capacity > 0
          a_note /= Void
+         a_source /= Void
       do
+         source := a_source
          capacity := a_capacity
          note := a_note
          storage := storage.calloc(a_capacity)

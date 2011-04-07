@@ -28,7 +28,7 @@ feature {}
          left_val.accept(Current)
          left_value := value
          right_val.accept(Current)
-         create {MIXUP_BOOLEAN} Result.make(not left_value.is_equal(value))
+         create {MIXUP_BOOLEAN} Result.make(source, not left_value.is_equal(value))
       end
 
    operator: STRING is "/="

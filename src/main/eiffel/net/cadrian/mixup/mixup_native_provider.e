@@ -15,8 +15,9 @@
 deferred class MIXUP_NATIVE_PROVIDER
 
 feature {ANY}
-   item (name: STRING): FUNCTION[TUPLE[MIXUP_CONTEXT, MIXUP_PLAYER, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE] is
+   item (source: MIXUP_SOURCE; name: STRING): FUNCTION[TUPLE[MIXUP_CONTEXT, MIXUP_PLAYER, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE] is
       require
+         source /= Void
          name /= Void
       deferred
       ensure

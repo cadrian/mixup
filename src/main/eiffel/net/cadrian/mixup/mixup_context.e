@@ -203,10 +203,12 @@ feature {}
    children: DICTIONARY[MIXUP_CONTEXT, FIXED_STRING]
    parent: MIXUP_CONTEXT
 
-   make (a_name: ABSTRACT_STRING; a_parent: like parent) is
+   make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent) is
       require
+         a_source /= Void
          a_name /= Void
       do
+         source := a_source
          name := a_name.intern
          parent := a_parent
          create {HASHED_DICTIONARY[MIXUP_EXPRESSION, FIXED_STRING]} expressions.make
@@ -218,11 +220,13 @@ feature {}
 
          create resolver.make(Current)
       ensure
+         source = a_source
          name = a_name.intern
          parent = a_parent
       end
 
 invariant
+   source /= Void
    name /= Void
    expressions /= Void
    children /= Void

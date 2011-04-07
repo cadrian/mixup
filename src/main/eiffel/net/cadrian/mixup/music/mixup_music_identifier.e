@@ -17,9 +17,6 @@ class MIXUP_MUSIC_IDENTIFIER
 inherit
    MIXUP_MUSIC
 
-insert
-   MIXUP_ERRORS
-
 create {ANY}
    make
 
@@ -88,15 +85,18 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
       end
 
 feature {}
-   make (a_identifier: like identifier) is
+   make (a_source: like source; a_identifier: like identifier) is
       require
+         a_source /= Void
          a_identifier /= Void
       do
          debug
             log.trace.put_line("Creating music identifier: " + a_identifier.as_name)
          end
+         source := a_source
          identifier := a_identifier
       ensure
+         source = a_source
          identifier = a_identifier
       end
 

@@ -17,14 +17,11 @@ class MIXUP_LILYPOND_PLAYER
 inherit
    MIXUP_PLAYER
 
-insert
-   MIXUP_ERRORS
-
 create {ANY}
    make, connect_to
 
 feature {ANY}
-   native (name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native (a_source: MIXUP_SOURCE; name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
          inspect
             name

@@ -27,13 +27,26 @@ create {ANY}
    make
 
 feature {ANY}
-   parse (a_piece: MIXUP_NODE): MIXUP_CONTEXT is
+   parse (a_piece: like current_piece; a_file: like current_file): MIXUP_CONTEXT is
       require
          a_piece /= Void
+         a_file /= Void
       do
+         current_piece := a_piece
+         current_file := a_file
+         a_piece.generate(log.trace)
          --a_piece.display(log.trace, 0, "")
          a_piece.accept(Current)
          Result := root_context
+      end
+
+   current_piece: MIXUP_NODE
+   current_file: FIXED_STRING
+
+feature {}
+   new_source (node: MIXUP_NODE): MIXUP_SOURCE_IMPL is
+      do
+         create Result.make(current_piece, current_file, node.source_line, node.source_column)
       end
 
 feature {MIXUP_LIST_NODE_IMPL}
@@ -78,7 +91,7 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             old_compound_music := last_compound_music
             last_compound_music := Void
             node.node_at(1).accept(Current)
-            create {MIXUP_MUSIC_VALUE} last_expression.make(last_compound_music)
+            create {MIXUP_MUSIC_VALUE} last_expression.make(new_source(node), last_compound_music)
             if current_instrument = Void or else old_compound_music /= Void then
                last_compound_music := old_compound_music
             end
@@ -197,26 +210,26 @@ feature {MIXUP_TERMINAL_NODE_IMPL}
          when "KW identifier" then
             name := node.image.image.intern
          when "KW Result" then
-            create {MIXUP_RESULT} last_expression.make
+            create {MIXUP_RESULT} last_expression.make(new_source(node))
          when "KW syllable" then
             last_string := node.image.image
          when "KW string" then
             string_image ::= node.image
             last_string := string_image.image
-            create {MIXUP_STRING} last_expression.make(string_image.decoded, last_string)
+            create {MIXUP_STRING} last_expression.make(new_source(node), string_image.decoded, last_string)
          when "KW number" then
             if integer_image ?:= node.image then
                integer_image ::= node.image
-               create {MIXUP_INTEGER} last_expression.make(integer_image.decoded)
+               create {MIXUP_INTEGER} last_expression.make(new_source(node), integer_image.decoded)
             elseif real_image ?:= node.image then
                real_image ::= node.image
-               create {MIXUP_REAL} last_expression.make(real_image.decoded)
+               create {MIXUP_REAL} last_expression.make(new_source(node), real_image.decoded)
             else
                fatal("invalid number")
             end
          when "KW boolean" then
             boolean_image ::= node.image
-            create {MIXUP_BOOLEAN} last_expression.make(boolean_image.decoded)
+            create {MIXUP_BOOLEAN} last_expression.make(new_source(node), boolean_image.decoded)
          when "KW note head" then
             last_note_head.copy(node.image.image)
          else
@@ -248,7 +261,7 @@ feature {}
          old_identifier: like current_identifier
       do
          old_identifier := current_identifier
-         create current_identifier.make
+         create current_identifier.make(new_source(dot_identifier))
          dot_identifier.accept_all(Current)
          last_expression := current_identifier
          last_identifier := current_identifier
@@ -258,7 +271,7 @@ feature {}
    build_identifier_part (identifier_part: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          identifier_part.node_at(0).accept(Current)
-         current_identifier.add_identifier_part(name)
+         current_identifier.add_identifier_part(new_source(identifier_part), name)
          identifier_part.node_at(1).accept(Current)
       end
 
@@ -309,9 +322,9 @@ feature {}
       do
          old_compound_music := last_compound_music
          if old_compound_music = Void then
-            create voices.make(absolute_reference)
+            create voices.make(new_source(a_voices), absolute_reference)
          else
-            create voices.make(old_compound_music.reference)
+            create voices.make(new_source(a_voices), old_compound_music.reference)
          end
          last_compound_music := voices
 
@@ -391,7 +404,8 @@ feature {} -- Functions
          str := once ""
          str.clear_count
          str.append(string.value)
-         create {MIXUP_NATIVE_FUNCTION} last_function.make(string.value, native_provider.item(str))
+         source := new_source(function_native)
+         create {MIXUP_NATIVE_FUNCTION} last_function.make(source, string.value, native_provider.item(source, str))
          last_expression := last_function
       end
 
@@ -402,7 +416,7 @@ feature {} -- Functions
          end
          create last_statements.with_capacity(4)
          function_user.node_at(1).accept(Current)
-         create {MIXUP_USER_FUNCTION} last_function.make(last_statements, last_signature)
+         create {MIXUP_USER_FUNCTION} last_function.make(new_source(function_user), last_statements, last_signature)
          last_expression := last_function
          last_statements := Void
       end
@@ -415,7 +429,7 @@ feature {} -- Functions
       do
          old_if_then_else := current_if_then_else
 
-         create current_if_then_else.make
+         create current_if_then_else.make(new_source(a_if_then_else))
          a_if_then_else.node_at(0).accept(Current)
          a_if_then_else.node_at(1).accept(Current)
          a_if_then_else.node_at(2).accept(Current)
@@ -434,7 +448,7 @@ feature {} -- Functions
          old_statements := last_statements
          create last_statements.with_capacity(4)
          a_if.node_at(3).accept(Current)
-         current_if_then_else.add_condition(create {MIXUP_IF}.make(exp, last_statements))
+         current_if_then_else.add_condition(create {MIXUP_IF}.make(new_source(a_if), exp, last_statements))
          last_statements := old_statements
       end
 
@@ -446,7 +460,7 @@ feature {} -- Functions
             old_statements := last_statements
             create last_statements.with_capacity(4)
             a_else.node_at(1).accept(Current)
-            current_if_then_else.set_otherwise(create {MIXUP_ELSE}.make(last_statements))
+            current_if_then_else.set_otherwise(create {MIXUP_ELSE}.make(new_source(a_else), last_statements))
             last_statements := old_statements
          end
       end
@@ -465,7 +479,7 @@ feature {} -- Functions
          old_statements := last_statements
          create last_statements.with_capacity(4)
          a_loop.node_at(5).accept(Current)
-         old_statements.add_last(create {MIXUP_LOOP}.make(loop_identifier, exp, last_statements))
+         old_statements.add_last(create {MIXUP_LOOP}.make(new_source(a_loop), loop_identifier, exp, last_statements))
          last_statements := old_statements
       end
 
@@ -475,7 +489,7 @@ feature {} -- Functions
       do
          if a_expression_or_assignment.count = 1 then
             a_expression_or_assignment.node_at(0).accept(Current)
-            last_statements.add_last(create {MIXUP_EXPRESSION_AS_STATEMENT}.make(last_expression))
+            last_statements.add_last(create {MIXUP_EXPRESSION_AS_STATEMENT}.make(new_source(a_expression_or_assignment), last_expression))
          else
             a_expression_or_assignment.node_at(2).accept(Current)
             exp := last_expression
@@ -485,12 +499,12 @@ feature {} -- Functions
                if not ({MIXUP_RESULT} ?:= last_expression) then
                   fatal("assignment: expected either Result or an identifier")
                end
-               last_statements.add_last(create {MIXUP_RESULT_ASSIGNMENT}.make(exp))
+               last_statements.add_last(create {MIXUP_RESULT_ASSIGNMENT}.make(new_source(a_expression_or_assignment), exp))
             else
                if last_expression /= last_identifier then
                   fatal("assignment: expected either Result or an identifier")
                end
-               last_statements.add_last(create {MIXUP_ASSIGNMENT}.make(last_identifier, exp))
+               last_statements.add_last(create {MIXUP_ASSIGNMENT}.make(new_source(a_expression_or_assignment), last_identifier, exp))
             end
          end
       end
@@ -498,7 +512,7 @@ feature {} -- Functions
    build_yield (a_yield: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          a_yield.node_at(1).accept(Current)
-         last_statements.add_last(create {MIXUP_YIELD}.make(last_expression))
+         last_statements.add_last(create {MIXUP_YIELD}.make(new_source(a_yield), last_expression))
       end
 
    build_definition (definition: MIXUP_NON_TERMINAL_NODE_IMPL; is_public: BOOLEAN) is
@@ -537,7 +551,7 @@ feature {} -- Functions
          loop
             exp := last_expression
             a_e1.node_at(i + 1).accept(Current)
-            create {MIXUP_IMPLIES} last_expression.make(exp, last_expression)
+            create {MIXUP_IMPLIES} last_expression.make(new_source(a_e1), exp, last_expression)
             i := i + 2
          end
       end
@@ -558,9 +572,9 @@ feature {} -- Functions
             inspect
                a_e2.node_at(i).name
             when "KW or" then
-               create {MIXUP_OR} last_expression.make(exp, last_expression)
+               create {MIXUP_OR} last_expression.make(new_source(a_e2), exp, last_expression)
             when "KW xor" then
-               create {MIXUP_XOR} last_expression.make(exp, last_expression)
+               create {MIXUP_XOR} last_expression.make(new_source(a_e2), exp, last_expression)
             end
             i := i + 2
          end
@@ -579,7 +593,7 @@ feature {} -- Functions
          loop
             exp := last_expression
             a_e3.node_at(i + 1).accept(Current)
-            create {MIXUP_AND} last_expression.make(exp, last_expression)
+            create {MIXUP_AND} last_expression.make(new_source(a_e3), exp, last_expression)
             i := i + 2
          end
       end
@@ -600,17 +614,17 @@ feature {} -- Functions
             inspect
                a_e4.node_at(i).name
             when "KW =" then
-               create {MIXUP_EQ} last_expression.make(exp, last_expression)
+               create {MIXUP_EQ} last_expression.make(new_source(a_e4), exp, last_expression)
             when "KW !=" then
-               create {MIXUP_NE} last_expression.make(exp, last_expression)
+               create {MIXUP_NE} last_expression.make(new_source(a_e4), exp, last_expression)
             when "KW <=" then
-               create {MIXUP_LE} last_expression.make(exp, last_expression)
+               create {MIXUP_LE} last_expression.make(new_source(a_e4), exp, last_expression)
             when "KW <" then
-               create {MIXUP_LT} last_expression.make(exp, last_expression)
+               create {MIXUP_LT} last_expression.make(new_source(a_e4), exp, last_expression)
             when "KW >=" then
-               create {MIXUP_GE} last_expression.make(exp, last_expression)
+               create {MIXUP_GE} last_expression.make(new_source(a_e4), exp, last_expression)
             when "KW >" then
-               create {MIXUP_GT} last_expression.make(exp, last_expression)
+               create {MIXUP_GT} last_expression.make(new_source(a_e4), exp, last_expression)
             end
             i := i + 2
          end
@@ -632,9 +646,9 @@ feature {} -- Functions
             inspect
                a_e5.node_at(i).name
             when "KW +" then
-               create {MIXUP_ADD} last_expression.make(exp, last_expression)
+               create {MIXUP_ADD} last_expression.make(new_source(a_e5), exp, last_expression)
             when "KW -" then
-               create {MIXUP_SUBTRACT} last_expression.make(exp, last_expression)
+               create {MIXUP_SUBTRACT} last_expression.make(new_source(a_e5), exp, last_expression)
             end
             i := i + 2
          end
@@ -656,13 +670,13 @@ feature {} -- Functions
             inspect
                a_e6.node_at(i).name
             when "KW *" then
-               create {MIXUP_MULTIPLY} last_expression.make(exp, last_expression)
+               create {MIXUP_MULTIPLY} last_expression.make(new_source(a_e6), exp, last_expression)
             when "KW /" then
-               create {MIXUP_DIVIDE} last_expression.make(exp, last_expression)
+               create {MIXUP_DIVIDE} last_expression.make(new_source(a_e6), exp, last_expression)
             when "KW //" then
-               create {MIXUP_INTEGER_DIVIDE} last_expression.make(exp, last_expression)
+               create {MIXUP_INTEGER_DIVIDE} last_expression.make(new_source(a_e6), exp, last_expression)
             when "KW \\" then
-               create {MIXUP_INTEGER_MODULO} last_expression.make(exp, last_expression)
+               create {MIXUP_INTEGER_MODULO} last_expression.make(new_source(a_e6), exp, last_expression)
             end
             i := i + 2
          end
@@ -681,7 +695,7 @@ feature {} -- Functions
          loop
             exp := last_expression
             a_e7.node_at(i).accept(Current)
-            create {MIXUP_POWER} last_expression.make(last_expression, exp)
+            create {MIXUP_POWER} last_expression.make(new_source(a_e7), last_expression, exp)
             i := i - 2
          end
       end
@@ -699,7 +713,7 @@ feature {} -- Functions
          old_expressions := last_expressions
          create last_expressions.make(0)
          a_list.node_at(1).accept(Current)
-         create {MIXUP_LIST} last_expression.make(last_expressions)
+         create {MIXUP_LIST} last_expression.make(new_source(a_list), last_expressions)
          last_expressions := old_expressions
       end
 
@@ -708,7 +722,7 @@ feature {} -- Functions
          old_dictionary: like last_dictionary
       do
          old_dictionary := last_dictionary
-         create last_dictionary.make
+         create last_dictionary.make(new_source(a_dictionary))
          a_dictionary.node_at(1).accept(Current)
          last_expression := last_dictionary
          last_dictionary := old_dictionary
@@ -731,7 +745,7 @@ feature {}
       do
          old_context := current_context
          score.node_at(1).accept(Current)
-         create {MIXUP_SCORE} current_context.make(name, old_context)
+         create {MIXUP_SCORE} current_context.make(new_source(score), name, old_context)
          if root_context = Void then
             root_context := current_context
          end
@@ -745,7 +759,7 @@ feature {}
       do
          old_context := current_context
          book.node_at(1).accept(Current)
-         create {MIXUP_BOOK} current_context.make(name, old_context)
+         create {MIXUP_BOOK} current_context.make(new_source(book), name, old_context)
          if root_context = Void then
             root_context := current_context
          end
@@ -759,7 +773,7 @@ feature {}
       do
          old_context := current_context
          partitur.node_at(1).accept(Current)
-         create {MIXUP_PARTITUR} current_context.make(name, old_context)
+         create {MIXUP_PARTITUR} current_context.make(new_source(partitur), name, old_context)
          if root_context = Void then
             root_context := current_context
          end
@@ -779,7 +793,7 @@ feature {}
       do
          old_context := current_context
          instrument.node_at(1).accept(Current)
-         create current_instrument.make(name, old_context, absolute_reference)
+         create current_instrument.make(new_source(instrument), name, old_context, absolute_reference)
          current_context := current_instrument
          if root_context = Void then
             root_context := current_context
@@ -799,7 +813,7 @@ feature {}
 
    play_next_bar (next_bar: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         last_compound_music.add_bar(Void)
+         last_compound_music.add_bar(new_source(next_bar), Void)
       end
 
    play_up_staff (up_staff: MIXUP_NON_TERMINAL_NODE_IMPL) is
@@ -815,7 +829,7 @@ feature {}
    play_extern_music (music: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          music.node_at(1).accept(Current)
-         last_compound_music.add_music(create {MIXUP_MUSIC_IDENTIFIER}.make(last_identifier))
+         last_compound_music.add_music(create {MIXUP_MUSIC_IDENTIFIER}.make(new_source(music), last_identifier))
       end
 
    play_group (group: MIXUP_NON_TERMINAL_NODE_IMPL; grouped_music: MIXUP_GROUPED_MUSIC) is
@@ -842,17 +856,17 @@ feature {}
 
    play_beam (beam: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         play_group(beam, create {MIXUP_GROUPED_MUSIC}.as_beam(last_compound_music.reference))
+         play_group(beam, create {MIXUP_GROUPED_MUSIC}.as_beam(new_source(beam), last_compound_music.reference))
       end
 
    play_slur (slur: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         play_group(slur, create {MIXUP_GROUPED_MUSIC}.as_slur(last_compound_music.reference))
+         play_group(slur, create {MIXUP_GROUPED_MUSIC}.as_slur(new_source(slur), last_compound_music.reference))
       end
 
    play_tie (tie: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         play_group(tie, create {MIXUP_GROUPED_MUSIC}.as_tie(last_compound_music.reference))
+         play_group(tie, create {MIXUP_GROUPED_MUSIC}.as_tie(new_source(tie), last_compound_music.reference))
       end
 
    play_chord (chord: MIXUP_NON_TERMINAL_NODE_IMPL) is
@@ -865,7 +879,7 @@ feature {}
             chord.node_at(1).accept(Current)
             chord.node_at(3).accept(Current)
          end
-         last_compound_music.add_chord(note_heads, last_note_length)
+         last_compound_music.add_chord(new_source(chord), note_heads, last_note_length)
       end
 
    build_note_head (note_head: MIXUP_NON_TERMINAL_NODE_IMPL) is
@@ -936,32 +950,32 @@ feature {} -- Dynamics
    build_dynamic_identifier (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          dynamic.node_at(0).accept(Current)
-         create last_dynamics.make(name.intern, last_position)
+         create last_dynamics.make(new_source(dynamic), name.intern, last_position)
          last_compound_music.add_music(last_dynamics)
       end
 
    build_dynamic_string (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          dynamic.node_at(0).accept(Current)
-         create last_dynamics.make(last_string.intern, last_position)
+         create last_dynamics.make(new_source(dynamic), last_string.intern, last_position)
          last_compound_music.add_music(last_dynamics)
       end
 
    build_dynamic_hairpin_crescendo (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         create last_dynamics.make((once "<").intern, last_position)
+         create last_dynamics.make(new_source(dynamic), (once "<").intern, last_position)
          last_compound_music.add_music(last_dynamics)
       end
 
    build_dynamic_hairpin_decrescendo (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         create last_dynamics.make((once ">").intern, last_position)
+         create last_dynamics.make(new_source(dynamic), (once ">").intern, last_position)
          last_compound_music.add_music(last_dynamics)
       end
 
    build_dynamic_end (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         create last_dynamics.make((once "end").intern, last_position)
+         create last_dynamics.make(new_source(dynamic), (once "end").intern, last_position)
          last_compound_music.add_music(last_dynamics)
       end
 

@@ -50,22 +50,25 @@ feature {MIXUP_PLAYER}
          p ::= player
          n := note
          if lyrics /= Void then
-            create {MIXUP_LYRICS} n.make(note, lyrics)
+            create {MIXUP_LYRICS} n.make(source, note, lyrics) -- TODO: wrong source! should keep the actual one along with the lyrics.
          end
          p.play_set_note(instrument, n)
       end
 
 feature {}
-   make (a_time: like time; a_instrument: ABSTRACT_STRING; a_note: MIXUP_NOTE) is
+   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_note: MIXUP_NOTE) is
       require
+         a_source /= Void
          a_instrument /= Void
          a_note /= Void
       do
+         source := a_source
          time := a_time
          instrument := a_instrument.intern
          note := a_note
          set_has_lyrics(True)
       ensure
+         source = a_source
          time = a_time
          instrument = a_instrument
          note = a_note

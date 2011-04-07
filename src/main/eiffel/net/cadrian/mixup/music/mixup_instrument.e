@@ -22,9 +22,6 @@ inherit
          commit
       end
 
-insert
-   LOGGING
-
 create {ANY}
    make
 
@@ -96,9 +93,9 @@ feature {}
       end
 
 feature {}
-   make (a_name: ABSTRACT_STRING; a_parent: like parent; a_reference: MIXUP_NOTE_HEAD) is
+   make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent; a_reference: MIXUP_NOTE_HEAD) is
       do
-         context_make(a_name, a_parent)
+         context_make(a_source, a_name, a_parent)
          create {FAST_ARRAY[COLLECTION[FIXED_STRING]]} strophes.make(0)
       end
 

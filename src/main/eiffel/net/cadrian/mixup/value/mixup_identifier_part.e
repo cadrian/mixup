@@ -14,6 +14,9 @@
 --
 class MIXUP_IDENTIFIER_PART
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
@@ -84,16 +87,20 @@ feature {MIXUP_IDENTIFIER_PART, MIXUP_IDENTIFIER}
       end
 
 feature {}
-   make (a_name: ABSTRACT_STRING) is
+   make (a_source: like source; a_name: ABSTRACT_STRING) is
       require
+         a_source /= Void
          a_name /= Void
       do
+         source := a_source
          name := a_name.intern
       ensure
+         source = a_source
          name = a_name.intern
       end
 
 invariant
+   source /= Void
    name /= Void
 
 end -- class MIXUP_IDENTIFIER_PART

@@ -20,6 +20,12 @@ deferred class MIXUP_EVENT
 inherit
    COMPARABLE
 
+insert
+   MIXUP_ERRORS
+      undefine
+         is_equal
+      end
+
 feature {ANY}
    infix "<" (other: MIXUP_EVENT): BOOLEAN is
       do
@@ -71,5 +77,8 @@ feature {MIXUP_PLAYER}
          player /= Void
       deferred
       end
+
+invariant
+   source /= Void
 
 end -- class MIXUP_EVENT

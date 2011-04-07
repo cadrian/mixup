@@ -34,13 +34,16 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_time: like time; a_instrument: ABSTRACT_STRING) is
+   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING) is
       require
+         a_source /= Void
          a_instrument /= Void
       do
+         source := a_source
          time := a_time
          instrument := a_instrument.intern
       ensure
+         source = a_source
          time = a_time
          instrument = a_instrument
       end

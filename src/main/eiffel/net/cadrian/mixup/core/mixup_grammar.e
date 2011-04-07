@@ -14,6 +14,16 @@
 --
 class MIXUP_GRAMMAR
 
+inherit
+   MINI_PARSER_MEMORY
+      rename
+         memo as memo_save
+         restore as memo_restore
+         valid_memo as memo_is_valid
+      redefine
+         default_create
+      end
+
 insert
    MIXUP_NODE_HANDLER
       redefine
@@ -33,6 +43,17 @@ create {ANY}
 
 feature {ANY}
    end_reached: BOOLEAN
+
+   parse (buffer: MINI_PARSER_BUFFER): BOOLEAN is
+      require
+         buffer /= Void
+      local
+         parser: DESCENDING_PARSER
+      do
+         create parser.make
+         buffer.set_memory(Current)
+         Result := parser.eval(buffer, table, once "File")
+      end
 
 feature {}
    list_of (element_name: STRING; allow_empty: BOOLEAN; separator: STRING): PARSE_ATOM is
@@ -908,7 +929,7 @@ feature {}
 
    parse_number (buffer: MINI_PARSER_BUFFER): MIXUP_IMAGE is
       local
-         old_position, start_position: like position; state: INTEGER; c: CHARACTER; image: STRING
+         old_position, start_position, cur_position: like position; state: INTEGER; c: CHARACTER; image: STRING
          valid, valid_before_dot, valid_before_exp: BOOLEAN
       do
          old_position := position
@@ -948,6 +969,7 @@ feature {}
                   image := Void
                   state := -1
                end
+               cur_position := position
             until
                buffer.end_reached or else state < 0
             loop
@@ -1026,7 +1048,7 @@ feature {}
                   else
                      if image.last = '.' then
                         image.remove_last
-                        buffer.set_current_index(buffer.current_index - 1)
+                        restore(buffer, cur_position)
                         valid := valid_before_dot
                      end
                      state := -1
@@ -1045,7 +1067,7 @@ feature {}
                      state := 5
                   else
                      image.remove_last
-                     buffer.set_current_index(buffer.current_index - 1)
+                     restore(buffer, cur_position)
                      valid := valid_before_exp
                      state := -1
                   end
@@ -1063,6 +1085,7 @@ feature {}
                   end
                end
                if state >= 0 then
+                  cur_position := position
                   next_character(buffer)
                end
             end
@@ -1256,8 +1279,8 @@ feature {}
             i > keyword.upper or else Result = Void
          loop
             if buffer.end_reached or else buffer.current_character /= keyword.item(i) then
-               restore(buffer, old_position)
                Result := Void
+               restore(buffer, old_position)
             else
                next_character(buffer)
                i := i + 1
@@ -1818,7 +1841,7 @@ feature {} -- expressions
 feature {} -- buffer moves
    next_character (buffer: MINI_PARSER_BUFFER) is
       do
-         position := position.next(buffer)
+         position.next(buffer)
       end
 
    restore (buffer: MINI_PARSER_BUFFER; a_position: like position) is
@@ -1835,6 +1858,7 @@ feature {}
          factory := a_factory
          create stack.make(0)
          create left_assoc_stack.make(0)
+         create memory.make
       ensure
          factory = a_factory
          stack.is_empty
@@ -1853,8 +1877,37 @@ feature {}
          create Result.with_capacity(4)
       end
 
+feature {ANY}
+   memo_save (buffer: MINI_PARSER_BUFFER): INTEGER is
+      do
+         check
+            integrity: position.index = buffer.current_index
+         end
+         Result := buffer.current_index
+         if memory.fast_has(Result) then
+            check
+               coherence: memory.at(Result) = position
+            end
+         else
+            memory.add(position, Result)
+         end
+      end
+
+   memo_restore (a_memo: like memo_save; buffer: MINI_PARSER_BUFFER) is
+      do
+         restore(buffer, memory.at(a_memo))
+      end
+
+   memo_is_valid (a_memo: like memo_save; buffer: MINI_PARSER_BUFFER): BOOLEAN is
+      do
+         Result := memory.fast_has(a_memo)
+      end
+
+   memory: AVL_DICTIONARY[MIXUP_POSITION, INTEGER]
+
 invariant
    stack /= Void
    left_assoc_stack /= Void
+   memory /= Void
 
 end -- class MIXUP_GRAMMAR

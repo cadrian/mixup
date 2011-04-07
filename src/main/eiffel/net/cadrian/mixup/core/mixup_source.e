@@ -12,23 +12,25 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_INTEGER_DIVIDE
+deferred class MIXUP_SOURCE
 
-inherit
-   MIXUP_NUMERIC_OPERATOR
-
-create {ANY}
-   make
-
-feature {}
-   compute (left_val, right_val: MIXUP_VALUE): MIXUP_VALUE is
-      local
-         op: MIXUP_INTEGER_DIVISION
-      do
-         op ::= operations.item(source, left_val)
-         Result := op.integer_divide(left_val, right_val)
+feature {ANY}
+   file: FIXED_STRING is
+      deferred
       end
 
-   operator: STRING is "//"
+   line: INTEGER is
+      deferred
+      end
 
-end -- class MIXUP_INTEGER_DIVIDE
+   column: INTEGER is
+      deferred
+      end
+
+   display (a_output: OUTPUT_STREAM) is
+      require
+         a_output.is_connected
+      deferred
+      end
+
+end -- class MIXUP_SOURCE

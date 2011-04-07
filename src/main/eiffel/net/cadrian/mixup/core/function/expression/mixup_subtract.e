@@ -25,7 +25,7 @@ feature {}
       local
          op: MIXUP_SUBTRACTION
       do
-         op ::= operations.item(left_val)
+         op ::= operations.item(source, left_val)
          Result := op.subtract(left_val, right_val)
       end
 

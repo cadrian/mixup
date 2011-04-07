@@ -17,6 +17,9 @@ deferred class MIXUP_STATEMENT
 inherit
    VISITABLE
 
+insert
+   MIXUP_ERRORS
+
 feature {ANY}
    call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
       require

@@ -17,9 +17,6 @@ class MIXUP_YIELD
 inherit
    MIXUP_STATEMENT
 
-insert
-   MIXUP_ERRORS
-
 create {ANY}
    make
 
@@ -47,12 +44,15 @@ feature {ANY}
       end
 
 feature {}
-   make (a_expression: like expression) is
+   make (a_source: like source; a_expression: like expression) is
       require
+         a_source /= Void
          a_expression /= Void
       do
+         source := a_source
          expression := a_expression
       ensure
+         source =  a_source
          expression = a_expression
       end
 

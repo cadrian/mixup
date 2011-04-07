@@ -17,6 +17,9 @@ class MIXUP_OPERATIONS_STRING
 inherit
    MIXUP_ADDITION
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
@@ -29,12 +32,17 @@ feature {ANY}
          s.append(as_string(right).value)
          i := as_string(left).image.out
          i.append(as_string(right).image)
-         create Result.make(s.intern, i.intern)
+         create Result.make(source, s.intern, i.intern)
       end
 
 feature {}
-   make is
+   make (a_source: like source) is
+      require
+         a_source /= Void
       do
+         source := a_source
+      ensure
+         source = a_source
       end
 
 end -- class MIXUP_OPERATIONS_STRING

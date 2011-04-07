@@ -25,7 +25,6 @@ insert
       redefine
          new_events_iterator, valid_anchor
       end
-   MIXUP_ERRORS
 
 create {ANY}
    as_beam, as_slur, as_tie
@@ -79,30 +78,42 @@ feature {ANY}
       end
 
 feature {}
-   as_beam (a_reference: like reference) is
+   as_beam (a_source: like source; a_reference: like reference) is
+      require
+         a_source /= Void
       do
          make(a_reference)
+         source := a_source
          start_event_factory := start_beam
          end_event_factory := end_beam
       ensure
+         source = a_source
          is_beam
       end
 
-   as_slur (a_reference: like reference) is
+   as_slur (a_source: like source; a_reference: like reference) is
+      require
+         a_source /= Void
       do
          make(a_reference)
+         source := a_source
          start_event_factory := start_slur
          end_event_factory := end_slur
       ensure
+         source = a_source
          is_slur
       end
 
-   as_tie (a_reference: like reference) is
+   as_tie (a_source: like source; a_reference: like reference) is
+      require
+         a_source /= Void
       do
          make(a_reference)
+         source := a_source
          start_event_factory := start_tie
          end_event_factory := end_tie
       ensure
+         source = a_source
          is_tie
       end
 
@@ -116,7 +127,7 @@ feature {}
 
    create_start_beam (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_START_BEAM} Result.make(a_context.start_time, a_context.instrument.name, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
+         create {MIXUP_EVENT_START_BEAM} Result.make(source, a_context.start_time, a_context.instrument.name, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
       end
 
    end_beam : FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
@@ -126,7 +137,7 @@ feature {}
 
    create_end_beam (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_END_BEAM} Result.make(a_context.start_time, a_context.instrument.name)
+         create {MIXUP_EVENT_END_BEAM} Result.make(source, a_context.start_time, a_context.instrument.name)
       end
 
    start_slur: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
@@ -136,7 +147,7 @@ feature {}
 
    create_start_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_START_SLUR} Result.make(a_context.start_time, a_context.instrument.name, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
+         create {MIXUP_EVENT_START_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
       end
 
    end_slur: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
@@ -146,7 +157,7 @@ feature {}
 
    create_end_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_END_SLUR} Result.make(a_context.start_time, a_context.instrument.name)
+         create {MIXUP_EVENT_END_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name)
       end
 
    start_tie: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
@@ -156,7 +167,7 @@ feature {}
 
    create_start_tie (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_START_TIE} Result.make(a_context.start_time, a_context.instrument.name, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
+         create {MIXUP_EVENT_START_TIE} Result.make(source, a_context.start_time, a_context.instrument.name, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
       end
 
    end_tie: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
@@ -166,7 +177,7 @@ feature {}
 
    create_end_tie (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_END_TIE} Result.make(a_context.start_time, a_context.instrument.name)
+         create {MIXUP_EVENT_END_TIE} Result.make(source, a_context.start_time, a_context.instrument.name)
       end
 
 end -- class MIXUP_GROUPED_MUSIC

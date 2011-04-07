@@ -17,9 +17,6 @@ deferred class MIXUP_BINARY_EXPRESSION
 inherit
    MIXUP_EXPRESSION
 
-insert
-   MIXUP_ERRORS
-
 feature {ANY}
    eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): MIXUP_VALUE is
       local
@@ -47,14 +44,17 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       end
 
 feature {}
-   make (a_left: like left; a_right: like right) is
+   make (a_source: like source; a_left: like left; a_right: like right) is
       require
+         a_source /= Void
          a_left /= Void
          a_right /= Void
       do
+         source := a_source
          left := a_left
          right := a_right
       ensure
+         source = a_source
          left = a_left
          right = a_right
       end

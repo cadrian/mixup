@@ -17,6 +17,9 @@ deferred class MIXUP_EXPRESSION
 inherit
    VISITABLE
 
+insert
+   MIXUP_ERRORS
+
 feature {ANY}
    eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): MIXUP_VALUE is
       require
@@ -31,5 +34,8 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
          a_name /= Void
       deferred
       end
+
+invariant
+   source /= Void
 
 end -- class MIXUP_EXPRESSION

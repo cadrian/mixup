@@ -25,7 +25,7 @@ feature {}
       local
          op: MIXUP_INTEGER_REMAINDER
       do
-         op ::= operations.item(left_val)
+         op ::= operations.item(source, left_val)
          Result := op.integer_modulo(left_val, right_val)
       end
 

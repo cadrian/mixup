@@ -28,7 +28,7 @@ feature {}
          left_val.accept(Current)
          left_value := value
          right_val.accept(Current)
-         create {MIXUP_BOOLEAN} Result.make(left_value <= value)
+         create {MIXUP_BOOLEAN} Result.make(source, left_value <= value)
       end
 
    operator: STRING is "<="

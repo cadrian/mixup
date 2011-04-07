@@ -17,9 +17,6 @@ class MIXUP_LOOP_EXECUTION
 inherit
    MIXUP_EXECUTION_CONTEXT
 
-insert
-   MIXUP_ERRORS
-
 create {ANY}
    make
 
@@ -102,14 +99,17 @@ feature {MIXUP_YIELD_ITERATOR}
       end
 
 feature {}
-   make (a_context: like context; a_loop: like loop_) is
+   make (a_source: like source; a_context: like context; a_loop: like loop_) is
       require
+         a_source /= Void
          a_context /= Void
          a_loop /= Void
       do
+         source := a_source
          context := a_context
          loop_ := a_loop
       ensure
+         source = a_source
          context = a_context
          loop_ = a_loop
       end

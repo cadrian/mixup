@@ -23,48 +23,56 @@ inherit
    MIXUP_SUBTRACTION
    MIXUP_TAKE_POWER
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
 feature {ANY}
    add (left, right: MIXUP_VALUE): MIXUP_INTEGER is
       do
-         create Result.make(as_integer(left) + as_integer(right))
+         create Result.make(source, as_integer(left) + as_integer(right))
       end
 
    divide (left, right: MIXUP_VALUE): MIXUP_REAL is
       do
-         create Result.make(as_integer(left) / as_integer(right))
+         create Result.make(source, as_integer(left) / as_integer(right))
       end
 
    integer_divide (left, right: MIXUP_VALUE): MIXUP_INTEGER is
       do
-         create Result.make(as_integer(left) // as_integer(right))
+         create Result.make(source, as_integer(left) // as_integer(right))
       end
 
    integer_modulo (left, right: MIXUP_VALUE): MIXUP_INTEGER is
       do
-         create Result.make(as_integer(left) \\ as_integer(right))
+         create Result.make(source, as_integer(left) \\ as_integer(right))
       end
 
    multiply (left, right: MIXUP_VALUE): MIXUP_INTEGER is
       do
-         create Result.make(as_integer(left) * as_integer(right))
+         create Result.make(source, as_integer(left) * as_integer(right))
       end
 
    subtract (left, right: MIXUP_VALUE): MIXUP_INTEGER is
       do
-         create Result.make(as_integer(left) - as_integer(right))
+         create Result.make(source, as_integer(left) - as_integer(right))
       end
 
    power (left, right: MIXUP_VALUE): MIXUP_INTEGER is
       do
-         create Result.make(as_integer(left) ^ as_integer(right))
+         create Result.make(source, as_integer(left) ^ as_integer(right))
       end
 
 feature {}
-   make is
+   make (a_source: like source) is
+      require
+         a_source /= Void
       do
+         source := a_source
+      ensure
+         source = a_source
       end
 
 end -- class MIXUP_INTEGER_OPERATION

@@ -17,9 +17,6 @@ class MIXUP_LOOP
 inherit
    MIXUP_STATEMENT
 
-insert
-   MIXUP_ERRORS
-
 create {ANY}
    make
 
@@ -36,7 +33,7 @@ feature {ANY}
          if value = Void then
             error("value could not be computed")
          else
-            value.accept(create {MIXUP_LOOP_EXECUTION}.make(a_context, Current))
+            value.accept(create {MIXUP_LOOP_EXECUTION}.make(source, a_context, Current))
          end
       end
 
@@ -49,16 +46,19 @@ feature {ANY}
       end
 
 feature {}
-   make (a_identifier: like identifier; a_expression: like expression; a_statements: like statements) is
+   make (a_source: like source; a_identifier: like identifier; a_expression: like expression; a_statements: like statements) is
       require
+         a_source /= Void
          a_identifier /= Void
          a_expression /= Void
          a_statements /= Void
       do
+         source := a_source
          identifier := a_identifier
          expression := a_expression
          statements := a_statements
       ensure
+         source = a_source
          identifier = a_identifier
          expression = a_expression
          statements = a_statements

@@ -27,7 +27,7 @@ feature {ANY}
       do
          from
             i := condition_list.lower
-            create execution_context.make(a_context)
+            create execution_context.make(source, a_context)
          until
             done or else i > condition_list.upper
          loop
@@ -72,9 +72,14 @@ feature {ANY}
       end
 
 feature {}
-   make is
+   make (a_source: like source) is
+      require
+         a_source /= Void
       do
+         source := a_source
          create condition_list.with_capacity(1)
+      ensure
+         source = a_source
       end
 
    condition_list: FAST_ARRAY[MIXUP_IF]

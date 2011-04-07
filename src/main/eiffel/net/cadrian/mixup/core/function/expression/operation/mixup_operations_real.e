@@ -21,42 +21,50 @@ inherit
    MIXUP_SUBTRACTION
    MIXUP_TAKE_POWER
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
 feature {ANY}
    add (left, right: MIXUP_VALUE): MIXUP_REAL is
       do
-         create Result.make(as_real(left) + as_real(right))
+         create Result.make(source, as_real(left) + as_real(right))
       end
 
 feature {ANY}
    divide (left, right: MIXUP_VALUE): MIXUP_REAL is
       do
-         create Result.make(as_real(left) / as_real(right))
+         create Result.make(source, as_real(left) / as_real(right))
       end
 
 feature {ANY}
    multiply (left, right: MIXUP_VALUE): MIXUP_REAL is
       do
-         create Result.make(as_real(left) * as_real(right))
+         create Result.make(source, as_real(left) * as_real(right))
       end
 
 feature {ANY}
    subtract (left, right: MIXUP_VALUE): MIXUP_REAL is
       do
-         create Result.make(as_real(left) - as_real(right))
+         create Result.make(source, as_real(left) - as_real(right))
       end
 
 feature {ANY}
    power (left, right: MIXUP_VALUE): MIXUP_REAL is
       do
-         create Result.make(as_real(left) ^ as_integer(right).to_integer_32)
+         create Result.make(source, as_real(left) ^ as_integer(right).to_integer_32)
       end
 
 feature {}
-   make is
+   make (a_source: like source) is
+      require
+         a_source /= Void
       do
+         source := a_source
+      ensure
+         source = a_source
       end
 
 end -- class MIXUP_OPERATIONS_REAL

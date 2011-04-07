@@ -45,13 +45,13 @@ feature {MIXUP_RESOLVER}
       local
          i: INTEGER
       do
-         create Result.make
+         create Result.make(a_identifier.source)
          from
             i := a_identifier.parts.lower
          until
             i > a_identifier.parts.upper
          loop
-            Result.add_identifier_part(a_identifier.parts.item(i).name)
+            Result.add_identifier_part(a_identifier.parts.item(i).source, a_identifier.parts.item(i).name)
             if a_identifier.parts.item(i).args /= Void then
                Result.set_args(resolved_args(a_identifier.parts.item(i).args))
             end

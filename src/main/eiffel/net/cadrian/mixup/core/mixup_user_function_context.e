@@ -22,9 +22,6 @@ inherit
          get_local, set_local
       end
 
-insert
-   MIXUP_ERRORS
-
 create {ANY}
    make
 
@@ -131,18 +128,20 @@ feature {}
    statements: LINKED_LIST[MIXUP_STATEMENT]
    locals: DICTIONARY[MIXUP_VALUE, FIXED_STRING]
 
-   make (a_parent: MIXUP_CONTEXT; a_player: like player; a_args: like args) is
+   make (a_source: like source; a_parent: MIXUP_CONTEXT; a_player: like player; a_args: like args) is
       require
+         a_source /= Void
          a_parent /= Void
          a_player /= Void
          a_args /= Void
       do
-         make_context(once "<function>", a_parent)
+         make_context(a_source, once "<function>", a_parent)
          player := a_player
          args := a_args
          create statements.make
          create {HASHED_DICTIONARY[MIXUP_VALUE, FIXED_STRING]} locals.make
       ensure
+         source = a_source
          player = a_player
          args = a_args
       end

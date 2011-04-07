@@ -47,9 +47,11 @@ feature {ANY}
    reference: MIXUP_NOTE_HEAD
    allow_lyrics: BOOLEAN is True
 
-   add_bar (style: FIXED_STRING) is
+   add_bar (a_source: MIXUP_SOURCE; style: FIXED_STRING) is
+      require
+         a_source /= Void
       do
-         add_music(create {MIXUP_BAR}.make(style))
+         add_music(create {MIXUP_BAR}.make(a_source, style))
       end
 
    bars: ITERABLE[INTEGER_64] is
@@ -86,14 +88,16 @@ feature {ANY}
          music.last = a_music
       end
 
-   add_chord (note_heads: COLLECTION[FIXED_STRING]; note_length: INTEGER_64) is
+   add_chord (a_source: MIXUP_SOURCE; note_heads: COLLECTION[FIXED_STRING]; note_length: INTEGER_64) is
+      require
+         a_source /= Void
       local
          i: INTEGER
          ref: like reference
          chord: MIXUP_CHORD
       do
          from
-            create chord.make(note_heads.count, note_length)
+            create chord.make(a_source, note_heads.count, note_length)
             ref := reference
             i := note_heads.lower
          until
@@ -157,8 +161,6 @@ feature {}
       do
          create {FAST_ARRAY[MIXUP_MUSIC]} music.make(0)
          reference := a_reference
-      ensure
-         reference = a_reference
       end
 
    music: COLLECTION[MIXUP_MUSIC]

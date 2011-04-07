@@ -17,9 +17,6 @@ class MIXUP_DECORATED_MUSIC
 inherit
    MIXUP_MUSIC
 
-insert
-   LOGGING
-
 create {ANY}
    make
 
@@ -65,20 +62,24 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
       end
 
 feature {}
-   make (a_tag: like tag; a_music: like music; a_start_event_factory: like start_event_factory; a_end_event_factory: like end_event_factory; a_event_modifier: like event_modifier) is
+   make (a_source: like source; a_tag: like tag; a_music: like music;
+         a_start_event_factory: like start_event_factory; a_end_event_factory: like end_event_factory; a_event_modifier: like event_modifier) is
       require
+         a_source /= Void
          a_tag /= Void
          a_music /= Void
       do
          debug
             log.trace.put_line("Creating decorated music: " + a_tag)
          end
+         source := a_source
          tag := a_tag
          music := a_music
          start_event_factory := a_start_event_factory
          end_event_factory := a_end_event_factory
          event_modifier := a_event_modifier
       ensure
+         source = a_source
          music = a_music
          start_event_factory = a_start_event_factory
          end_event_factory = a_end_event_factory

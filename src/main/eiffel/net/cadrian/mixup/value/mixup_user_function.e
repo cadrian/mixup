@@ -17,9 +17,6 @@ class MIXUP_USER_FUNCTION
 inherit
    MIXUP_FUNCTION
 
-insert
-   MIXUP_ERRORS
-
 create {ANY}
    make
 
@@ -39,21 +36,24 @@ feature {ANY}
          context := prepare(a_context, a_player, a_args)
          context.execute
          if context.yielded then
-            create {MIXUP_YIELD_ITERATOR} Result.make(context)
+            create {MIXUP_YIELD_ITERATOR} Result.make(source, context) -- TODO: wrong! must get the yield instruction source!
          else
             Result := context.value
          end
       end
 
 feature {}
-   make (a_statements: like statements; a_signature: like signature) is
+   make (a_source: like source; a_statements: like statements; a_signature: like signature) is
       require
+         a_source /= Void
          a_statements /= Void
          a_statements /= Void
       do
+         source := a_source
          statements := a_statements
          signature := a_signature
       ensure
+         source = a_source
          statements = a_statements
          signature = a_signature
       end
@@ -72,7 +72,7 @@ feature {}
             create args.with_capacity(signature.count)
             create zip.make(a_args, signature)
             zip.do_all(agent args.add)
-            create Result.make(a_context, a_player, args)
+            create Result.make(source, a_context, a_player, args)
             Result.add_statements(statements)
          end
       ensure

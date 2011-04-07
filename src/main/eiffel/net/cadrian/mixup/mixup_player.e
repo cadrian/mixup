@@ -17,6 +17,9 @@ deferred class MIXUP_PLAYER
    --
    -- See also MIXUP_CORE_PLAYER, MIXUP_EVENT
 
+insert
+   MIXUP_ERRORS
+
 feature {ANY}
    play (a_event: MIXUP_EVENT) is
       require
@@ -25,8 +28,9 @@ feature {ANY}
          a_event.fire(Current)
       end
 
-   native (name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native (a_source: MIXUP_SOURCE; name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       require
+         a_source /= Void
          name /= Void
          a_context /= Void
          args /= Void

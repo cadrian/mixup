@@ -34,7 +34,6 @@ feature {}
       local
          grammar: MIXUP_GRAMMAR
          factory: AUX_MIXUP_GRAMMAR_NODE_FACTORY
-         parser: DESCENDING_PARSER
          parser_buffer: MINI_PARSER_BUFFER
          evaled: BOOLEAN
          player: AUX_MIXUP_MOCK_PLAYER
@@ -43,10 +42,11 @@ feature {}
          expected: COLLECTION[AUX_MIXUP_MOCK_EVENT]; i: INTEGER
 
          played_event, expected_event: AUX_MIXUP_MOCK_EVENT
+         source: AUX_MIXUP_MOCK_SOURCE
       do
+         create source.make
          create factory.make
          create grammar.with_factory(factory)
-         create parser.make
          create parser_buffer
 
          parser_buffer.initialize_with("[
@@ -98,9 +98,10 @@ feature {}
                                               << :p: c,,1 | g | { [ 3/2 c8 e g ] c'2. } >>
                                            end
                                         end
+
                                         ]")
          grammar.reset
-         evaled := parser.eval(parser_buffer, grammar.table, once "File")
+         evaled := grammar.parse(parser_buffer)
 
          assert(evaled)
          assert(grammar.root_node /= Void)
@@ -108,51 +109,57 @@ feature {}
          create mixer.make
          create player.make
          mixer.add_player(player)
-         mixer.add_piece(grammar.root_node)
+         mixer.add_piece(grammar.root_node, "test")
 
-         player.when_native("current_bar_number", agent (a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is do create {MIXUP_INTEGER} Result.make(1) end)
+         player.when_native("current_bar_number", agent (a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+                                                     local
+                                                        s: AUX_MIXUP_MOCK_SOURCE
+                                                     do
+                                                        create s.make
+                                                        create {MIXUP_INTEGER} Result.make(s, 1)
+                                                     end)
 
          mixer.play
 
          expected := {FAST_ARRAY[AUX_MIXUP_MOCK_EVENT]
          <<
 
-           set_partitur   ("sample"                                                                                     ),
-           set_instrument ("singer"                                                                                     ),
-           set_instrument ("bass"                                                                                       ),
+           set_partitur   ("sample"                                                                                                     ),
+           set_instrument ("singer"                                                                                                     ),
+           set_instrument ("bass"                                                                                                       ),
 
-           start_slur     ("singer", 1, 1, ""                                                                           ),
-           set_dynamics   ("singer", "p", Void                                                                          ),
-           set_dynamics   ("singer", "<", Void                                                                          ),
-           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("c", 3) >> }, << "doe" , "do"  >> }), -- a deer, a female deer
-           set_dynamics   ("bass",   "p", Void                                                                          ),
-           set_note       ("bass",                 {MIXUP_CHORD duration_1 , << note("c", 2) >> }                       ),
-           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("d", 3) >> }, << "ray" , "re"  >> }), -- a drop of golden sun
-           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("e", 3) >> }, << "me"  , "mi"  >> }), -- a name I call myself
-           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("f", 3) >> }, << "far" , "fa"  >> }), -- a long, long way to run
+           start_slur     ("singer", 1, 1, ""                                                                                           ),
+           set_dynamics   ("singer", "p", Void                                                                                          ),
+           set_dynamics   ("singer", "<", Void                                                                                          ),
+           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("c", 3) >> }, source, << "doe" , "do"  >> }), -- a deer, a female deer
+           set_dynamics   ("bass",   "p", Void                                                                                          ),
+           set_note       ("bass",                 {MIXUP_CHORD duration_1 , source, << note("c", 2) >> }                               ),
+           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("d", 3) >> }, source, << "ray" , "re"  >> }), -- a drop of golden sun
+           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("e", 3) >> }, source, << "me"  , "mi"  >> }), -- a name I call myself
+           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("f", 3) >> }, source, << "far" , "fa"  >> }), -- a long, long way to run
 
-           next_bar       ("singer", Void                                                                               ),
-           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("g", 3) >> }, << "sew" , "so"  >> }), -- a needle pulling thread
-           next_bar       ("bass", Void                                                                                 ),
-           set_note       ("bass",                 {MIXUP_CHORD duration_1 , << note("g", 1) >> }                       ),
-           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("a", 4) >> }, << "la"  , "la"  >> }), -- a note to follow so
-           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("b", 4) >> }, << "tea" , "ti"  >> }), -- a drink with jam and bread
-           set_dynamics   ("singer", "f", Void                                                                         ),
-           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , << note("c", 4) >> }, << "doe,", "do," >> }),
-           end_slur       ("singer"                                                                                     ),
+           next_bar       ("singer", Void                                                                                               ),
+           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("g", 3) >> }, source, << "sew" , "so"  >> }), -- a needle pulling thread
+           next_bar       ("bass", Void                                                                                                 ),
+           set_note       ("bass",                 {MIXUP_CHORD duration_1 , source, << note("g", 1) >> }                               ),
+           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("a", 4) >> }, source, << "la"  , "la"  >> }), -- a note to follow so
+           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("b", 4) >> }, source, << "tea" , "ti"  >> }), -- a drink with jam and bread
+           set_dynamics   ("singer", "f", Void                                                                                          ),
+           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("c", 4) >> }, source, << "doe,", "do," >> }),
+           end_slur       ("singer"                                                                                                     ),
 
-           next_bar       ("singer", ":||"                                                                              ),
-           set_dynamics   ("singer", "mp", "hidden"                                                                     ), -- that will bring us back to
-           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_1 , << note("c", 3) >> }, << "_", "do." >> }),
-           next_bar       ("bass", Void                                                                                 ),
-           start_slur     ("bass", 1, 1, ""                                                                             ),
-           start_beam     ("bass", 3, 2, "3"                                                                            ),
-           set_note       ("bass",                 {MIXUP_CHORD duration_8 , << note("c", 2) >> }                       ),
-           set_note       ("bass",                 {MIXUP_CHORD duration_8 , << note("e", 2) >> }                       ),
-           set_note       ("bass",                 {MIXUP_CHORD duration_8 , << note("g", 2) >> }                       ),
-           end_beam       ("bass",                                                                                      ),
-           set_note       ("bass",                 {MIXUP_CHORD duration_2p, << note("c", 3) >> }                       ),
-           end_slur       ("bass",                                                                                      ),
+           next_bar       ("singer", ":||"                                                                                              ),
+           set_dynamics   ("singer", "mp", "hidden"                                                                                     ), -- that will bring us back to
+           set_note       ("singer", {MIXUP_LYRICS {MIXUP_CHORD duration_1 , source, << note("c", 3) >> }, source, << "_"   , "do." >> }),
+           next_bar       ("bass", Void                                                                                                 ),
+           start_slur     ("bass", 1, 1, ""                                                                                             ),
+           start_beam     ("bass", 3, 2, "3"                                                                                            ),
+           set_note       ("bass",                 {MIXUP_CHORD duration_8 , source, << note("c", 2) >> }                               ),
+           set_note       ("bass",                 {MIXUP_CHORD duration_8 , source, << note("e", 2) >> }                               ),
+           set_note       ("bass",                 {MIXUP_CHORD duration_8 , source, << note("g", 2) >> }                               ),
+           end_beam       ("bass",                                                                                                      ),
+           set_note       ("bass",                 {MIXUP_CHORD duration_2p, source, << note("c", 3) >> }                               ),
+           end_slur       ("bass",                                                                                                      ),
 
            end_partitur
 

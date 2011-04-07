@@ -24,7 +24,7 @@ feature {ANY}
       deferred
       end
 
-   add_chord (note_heads: COLLECTION[FIXED_STRING]; note_length: INTEGER_64) is
+   add_chord (a_source: like source; note_heads: COLLECTION[FIXED_STRING]; note_length: INTEGER_64) is
       deferred
       end
 
@@ -32,7 +32,7 @@ feature {ANY}
       deferred
       end
 
-   add_bar (style: FIXED_STRING) is
+   add_bar (a_source: like source; style: FIXED_STRING) is
       deferred
       end
 

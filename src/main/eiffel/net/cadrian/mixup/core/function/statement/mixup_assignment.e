@@ -17,9 +17,6 @@ class MIXUP_ASSIGNMENT
 inherit
    MIXUP_STATEMENT
 
-insert
-   MIXUP_ERRORS
-
 create {ANY}
    make
 
@@ -48,14 +45,17 @@ feature {ANY}
       end
 
 feature {}
-   make (a_identifier: like identifier; a_expression: like expression) is
+   make (a_source: like source; a_identifier: like identifier; a_expression: like expression) is
       require
+         a_source /= Void
          a_identifier /= Void
          a_expression /= Void
       do
+         source := a_source
          identifier := a_identifier
          expression := a_expression
       ensure
+         source = a_source
          identifier = a_identifier
          expression = a_expression
       end

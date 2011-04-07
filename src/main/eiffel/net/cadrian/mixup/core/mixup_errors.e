@@ -18,37 +18,71 @@ insert
    LOGGING
 
 feature {ANY}
+   source: MIXUP_SOURCE
+
    warning (message: ABSTRACT_STRING) is
       require
          message /= Void
+         source /= Void
       do
-         log.warning.put_line(header + message)
-         warning_count.increment
+         warning_at(source, message)
       end
 
    error (message: ABSTRACT_STRING) is
       require
          message /= Void
+         source /= Void
       do
-         log.error.put_line(header + message)
-         error_count.increment
+         error_at(source, message)
       end
 
    fatal (message: ABSTRACT_STRING) is
       require
          message /= Void
+         source /= Void
       do
-         log.error.put_line(header + message)
+         fatal_at(source, message)
+      end
+
+feature {ANY}
+   warning_at (a_source: like source; message: ABSTRACT_STRING) is
+      require
+         message /= Void
+         a_source /= Void
+      do
+         log.warning.put_line(header(a_source) + message)
+         a_source.display(log.warning)
+         warning_count.increment
+         sedb_breakpoint
+      end
+
+   error_at (a_source: like source; message: ABSTRACT_STRING) is
+      require
+         message /= Void
+         a_source /= Void
+      do
+         log.error.put_line(header(a_source) + message)
+         a_source.display(log.error)
          error_count.increment
-         display_counter(warning_count.value, "warning")
-         display_counter(error_count.value, "error")
+         sedb_breakpoint
+      end
+
+   fatal_at (a_source: like source; message: ABSTRACT_STRING) is
+      require
+         message /= Void
+         a_source /= Void
+      do
+         error_at(a_source, message)
+         display_counter(a_source, warning_count.value, "warning")
+         display_counter(a_source, error_count.value, "error")
+         log.error.put_line("**** Program interrupted.")
          die_with_code(1)
       end
 
 feature {}
-   display_counter (count: INTEGER; tag: STRING) is
+   display_counter (a_source: like source; count: INTEGER; tag: STRING) is
       do
-         log.error.put_string(header + count.out)
+         log.error.put_string(header(a_source) + count.out)
          if count = 1 then
             log.error.put_line(" " + tag)
          else
@@ -66,6 +100,15 @@ feature {}
          create Result
       end
 
-   header: STRING is "**** "
+   header (a_source: like source): STRING is
+      do
+         Result := "**** "
+         Result.append(source.file)
+         Result.append(once " line ")
+         source.line.append_in(Result)
+         Result.append(once ", column ")
+         source.column.append_in(Result)
+         Result.append(once ": ")
+      end
 
 end -- class MIXUP_ERRORS

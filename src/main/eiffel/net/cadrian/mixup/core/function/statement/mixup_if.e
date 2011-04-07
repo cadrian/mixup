@@ -14,6 +14,9 @@
 --
 class MIXUP_IF
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
@@ -22,19 +25,23 @@ feature {ANY}
    statements: TRAVERSABLE[MIXUP_STATEMENT]
 
 feature {}
-   make (a_condition: like condition; a_statements: like statements) is
+   make (a_source: like source; a_condition: like condition; a_statements: like statements) is
       require
+         a_source /= Void
          a_condition /= Void
          a_statements /= Void
       do
+         source := a_source
          condition := a_condition
          statements := a_statements
       ensure
+         source = a_source
          condition = a_condition
          statements = a_statements
       end
 
 invariant
+   source /= Void
    condition /= Void
    statements /= Void
 

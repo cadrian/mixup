@@ -14,6 +14,9 @@
 --
 deferred class MIXUP_MUSIC
 
+insert
+   MIXUP_ERRORS
+
 feature {ANY}
    duration: INTEGER_64 is
       deferred
@@ -43,5 +46,8 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
          bars /= Void
       deferred
       end
+
+invariant
+   source /= Void
 
 end -- class MIXUP_MUSIC

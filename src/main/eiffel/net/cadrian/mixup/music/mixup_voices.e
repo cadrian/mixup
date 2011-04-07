@@ -17,9 +17,6 @@ class MIXUP_VOICES
 inherit
    MIXUP_COMPOUND_MUSIC
 
-insert
-   MIXUP_ERRORS
-
 create {ANY}
    make
 
@@ -61,14 +58,14 @@ feature {ANY}
          voices.last.add_music(a_music)
       end
 
-   add_chord (note_heads: COLLECTION[FIXED_STRING]; note_length: INTEGER_64) is
+   add_chord (a_source: like source; note_heads: COLLECTION[FIXED_STRING]; note_length: INTEGER_64) is
       do
-         voices.last.add_chord(note_heads, note_length)
+         voices.last.add_chord(a_source, note_heads, note_length)
       end
 
-   add_bar (style: FIXED_STRING) is
+   add_bar (a_source: like source; style: FIXED_STRING) is
       do
-         voices.last.add_bar(style)
+         voices.last.add_bar(a_source, style)
       end
 
    up_staff is
@@ -143,11 +140,15 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
    consolidating: BOOLEAN
 
 feature {}
-   make (a_reference: like reference_) is
+   make (a_source: like source; a_reference: like reference_) is
+      require
+         a_source /= Void
       do
+         source := a_source
          create {FAST_ARRAY[MIXUP_VOICE]} voices.make(0)
          reference_ := a_reference
       ensure
+         source = a_source
          reference_ = a_reference
       end
 

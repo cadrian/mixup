@@ -49,14 +49,16 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       end
 
 feature {}
-   make (a_value, a_image: ABSTRACT_STRING) is
+   make (a_source: like source; a_value, a_image: ABSTRACT_STRING) is
       require
+         a_source /= Void
          a_value /= Void
          a_image /= Void
       do
-         typed_make(a_value.intern)
+         typed_make(a_source, a_value.intern)
          image := a_image.intern
       ensure
+         source = a_source
          value = a_value.intern
          image = a_image.intern
       end

@@ -25,7 +25,7 @@ feature {}
       local
          op: MIXUP_MULTIPLICATION
       do
-         op ::= operations.item(left_val)
+         op ::= operations.item(source, left_val)
          Result := op.multiply(left_val, right_val)
       end
 

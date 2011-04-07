@@ -35,14 +35,17 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_time: like time; a_instrument: ABSTRACT_STRING; a_volte: INTEGER_64) is
+   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_volte: INTEGER_64) is
       require
+         a_source /= Void
          a_instrument /= Void
       do
+         source := a_source
          time := a_time
          instrument := a_instrument.intern
          volte := a_volte
       ensure
+         source = a_source
          time = a_time
          instrument = a_instrument
          volte = a_volte

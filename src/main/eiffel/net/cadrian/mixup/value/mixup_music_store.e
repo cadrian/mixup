@@ -45,9 +45,13 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       end
 
 feature {}
-   make is
+   make (a_source: like source) is
+      require
+         a_source /= Void
       do
-         make_voices(ref0)
+         make_voices(a_source, ref0)
+      ensure
+         source = a_source
       end
 
    ref0: MIXUP_NOTE_HEAD is

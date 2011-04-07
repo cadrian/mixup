@@ -24,10 +24,14 @@ feature {ANY}
    value: E_
 
 feature {}
-   make (a_value: like value) is
+   make (a_source: like source; a_value: like value) is
+      require
+         a_source /= Void
       do
+         source := a_source
          value := a_value
       ensure
+         source = a_source
          value = a_value
       end
 

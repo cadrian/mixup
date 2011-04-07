@@ -37,17 +37,20 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_time: like time; a_instrument: ABSTRACT_STRING; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64; a_text: ABSTRACT_STRING) is
+   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64; a_text: ABSTRACT_STRING) is
       require
+         a_source /= Void
          a_instrument /= Void
          a_text /= Void
       do
+         source := a_source
          time := a_time
          instrument := a_instrument.intern
          xuplet_numerator := a_xuplet_numerator
          xuplet_denominator := a_xuplet_denominator
          text := a_text.intern
       ensure
+         source = a_source
          time = a_time
          instrument = a_instrument
          xuplet_numerator = a_xuplet_numerator

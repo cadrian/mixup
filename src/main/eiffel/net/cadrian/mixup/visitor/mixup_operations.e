@@ -24,10 +24,11 @@ create {ANY}
    make
 
 feature {ANY}
-   item (a_value: MIXUP_VALUE): MIXUP_OPERATION is
+   item (a_source: like source; a_value: MIXUP_VALUE): MIXUP_OPERATION is
       require
          a_value /= Void
       do
+         source := a_source
          a_value.accept(Current)
          Result := op
       end
@@ -118,18 +119,24 @@ feature {}
    op: MIXUP_OPERATION
 
    op_integer: MIXUP_OPERATIONS_INTEGER is
-      once
-         create Result.make
+      require
+         source /= Void
+      do
+         create Result.make(source)
       end
 
    op_real: MIXUP_OPERATIONS_REAL is
-      once
-         create Result.make
+      require
+         source /= Void
+      do
+         create Result.make(source)
       end
 
    op_string: MIXUP_OPERATIONS_STRING is
-      once
-         create Result.make
+      require
+         source /= Void
+      do
+         create Result.make(source)
       end
 
 end -- class MIXUP_OPERATIONS

@@ -24,7 +24,7 @@ create {MIXUP_GRAMMAR}
    default_create
 
 feature {MIXUP_GRAMMAR}
-   next (buffer: MINI_PARSER_BUFFER): like Current is
+   next (buffer: MINI_PARSER_BUFFER) is
       do
          buffer.next
          index := buffer.current_index
@@ -33,14 +33,14 @@ feature {MIXUP_GRAMMAR}
                buffer.current_character
             when '%N' then
                line := line + 1
-               column := 1
+               column := 0
             when '%R' then
                -- ignored
+               next(buffer)
             else
                column := column + 1
             end
          end
-         Result := Current
       end
 
 feature {MIXUP_GRAMMAR, MIXUP_IMAGE, MIXUP_POSITION}
@@ -59,7 +59,7 @@ feature {}
       do
          index := 1
          line := 1
-         column := 1
+         column := 0
       end
 
 end -- class MIXUP_POSITION

@@ -16,12 +16,6 @@ class MIXUP_NO_VALUE
 
 inherit
    MIXUP_VALUE
-      undefine
-         is_equal
-      end
-
-insert
-   SINGLETON
 
 create {ANY}
    make
@@ -42,8 +36,13 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       end
 
 feature {}
-   make is
+   make (a_source: like source) is
+      require
+         a_source /= Void
       do
+         source := a_source
+      ensure
+         source = a_source
       end
 
 end -- class MIXUP_NO_VALUE

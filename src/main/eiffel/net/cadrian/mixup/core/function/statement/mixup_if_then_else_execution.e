@@ -17,9 +17,6 @@ class MIXUP_IF_THEN_ELSE_EXECUTION
 inherit
    MIXUP_EXECUTION_CONTEXT
 
-insert
-   MIXUP_ERRORS
-
 create {ANY}
    make
 
@@ -99,12 +96,15 @@ feature {MIXUP_YIELD_ITERATOR}
       end
 
 feature {}
-   make (a_context: like context) is
+   make (a_source: like source; a_context: like context) is
       require
+         a_source /= Void
          a_context /= Void
       do
+         source := a_source
          context := a_context
       ensure
+         source = a_source
          context = a_context
       end
 

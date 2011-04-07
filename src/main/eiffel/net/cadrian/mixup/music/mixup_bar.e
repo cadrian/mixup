@@ -17,9 +17,6 @@ class MIXUP_BAR
 inherit
    MIXUP_MUSIC
 
-insert
-   LOGGING
-
 create {ANY}
    make
 
@@ -40,7 +37,7 @@ feature {ANY}
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
-         create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_NEXT_BAR}.make(a_context.start_time, a_context.instrument.name, style))
+         create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_NEXT_BAR}.make(source, a_context.start_time, a_context.instrument.name, style))
       end
 
 feature {MIXUP_MUSIC, MIXUP_VOICE}
@@ -50,10 +47,14 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
       end
 
 feature {}
-   make (a_style: like style) is
+   make (a_source: like source; a_style: like style) is
+      require
+         a_source /= Void
       do
+         source := a_source
          style := a_style
       ensure
+         source = a_source
          style = a_style
       end
 

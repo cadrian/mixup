@@ -37,14 +37,17 @@ feature {ANY}
       end
 
 feature {}
-   make (a_name: ABSTRACT_STRING; a_native_caller: like native_caller) is
+   make (a_source: like source; a_name: ABSTRACT_STRING; a_native_caller: like native_caller) is
       require
+         a_source /= Void
          a_name /= Void
          a_native_caller /= Void
       do
+         source := a_source
          name := a_name.intern
          native_caller := a_native_caller
       ensure
+         source = a_source
          name = a_name.intern
          native_caller = a_native_caller
       end

@@ -25,7 +25,7 @@ feature {}
       local
          op: MIXUP_DIVISION
       do
-         op ::= operations.item(left_val)
+         op ::= operations.item(source, left_val)
          Result := op.divide(left_val, right_val)
       end
 

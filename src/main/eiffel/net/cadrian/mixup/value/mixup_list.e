@@ -84,12 +84,15 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       end
 
 feature {}
-   make (a_expressions: like expressions) is
+   make (a_source: like source; a_expressions: like expressions) is
       require
+         a_source /= Void
          a_expressions /= Void
       do
+         source := a_source
          expressions := a_expressions
       ensure
+         source = a_source
          expressions = a_expressions
       end
 

@@ -25,7 +25,7 @@ feature {}
       local
          op: MIXUP_TAKE_POWER
       do
-         op ::= operations.item(left_val)
+         op ::= operations.item(source, left_val)
          Result := op.power(left_val, right_val)
       end
 

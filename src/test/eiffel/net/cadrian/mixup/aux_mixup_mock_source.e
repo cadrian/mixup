@@ -12,23 +12,27 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_INTEGER_DIVIDE
+class AUX_MIXUP_MOCK_SOURCE
 
 inherit
-   MIXUP_NUMERIC_OPERATOR
+   MIXUP_SOURCE
 
 create {ANY}
    make
 
-feature {}
-   compute (left_val, right_val: MIXUP_VALUE): MIXUP_VALUE is
-      local
-         op: MIXUP_INTEGER_DIVISION
+feature {ANY}
+   file: FIXED_STRING
+   line: INTEGER
+   column: INTEGER
+
+   display (a_output: OUTPUT_STREAM) is
       do
-         op ::= operations.item(source, left_val)
-         Result := op.integer_divide(left_val, right_val)
       end
 
-   operator: STRING is "//"
+feature {}
+   make is
+      do
+         file := "<test>".intern
+      end
 
-end -- class MIXUP_INTEGER_DIVIDE
+end -- class AUX_MIXUP_MOCK_EVENT

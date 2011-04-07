@@ -20,18 +20,15 @@ inherit
          eval
       end
 
-insert
-   MIXUP_ERRORS
-
 create {ANY}
    make
 
 feature {ANY}
-   add_identifier_part (name: ABSTRACT_STRING) is
+   add_identifier_part (a_source: like source; name: ABSTRACT_STRING) is
       require
          name /= Void
       do
-         parts.add_last(create {MIXUP_IDENTIFIER_PART}.make(name))
+         parts.add_last(create {MIXUP_IDENTIFIER_PART}.make(a_source, name))
          debug
             debug_name.clear_count
             as_name_in(debug_name)
@@ -141,20 +138,22 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       end
 
 feature {}
-   make is
+   make (a_source: like source) is
+      require
+         a_source /= Void
       do
+         source := a_source
          create {RING_ARRAY[MIXUP_IDENTIFIER_PART]} parts.with_capacity(0, 0)
          debug
             debug_name := ""
          end
+         create no_value.make(a_source)
+      ensure
+         source = a_source
       end
 
    debug_name: STRING
-
-   no_value: MIXUP_NO_VALUE is
-      once
-         create Result.make
-      end
+   no_value: MIXUP_NO_VALUE
 
 feature {MIXUP_VALUE_VISITOR}
    parts: COLLECTION[MIXUP_IDENTIFIER_PART]

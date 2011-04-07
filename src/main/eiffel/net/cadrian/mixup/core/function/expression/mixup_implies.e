@@ -25,10 +25,10 @@ feature {}
       do
          left_val.accept(Current)
          if not value then
-            create {MIXUP_BOOLEAN} Result.make(True)
+            create {MIXUP_BOOLEAN} Result.make(source, True)
          else
             right_val.accept(Current)
-            create {MIXUP_BOOLEAN} Result.make(value)
+            create {MIXUP_BOOLEAN} Result.make(source, value)
          end
       end
 

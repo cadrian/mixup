@@ -167,20 +167,23 @@ feature {ANY}
       end
 
 feature {}
-   make (a_capacity: INTEGER; a_duration: INTEGER_64) is
+   make (a_source: like source; a_capacity: INTEGER; a_duration: INTEGER_64) is
       require
+         a_source /= Void
          a_duration > 0
          a_capacity > 0
       do
-         manifest_make(a_capacity, a_duration)
+         manifest_make(a_capacity, a_duration, a_source)
       end
 
 feature {} -- Manifest create:
-   manifest_make (a_capacity: INTEGER; a_duration: INTEGER_64) is
+   manifest_make (a_capacity: INTEGER; a_duration: INTEGER_64; a_source: like source) is
       require
+         a_source /= Void
          a_capacity > 0
          a_duration > 0
       do
+         source := a_source
          capacity := a_capacity
          duration := a_duration
          storage := storage.calloc(a_capacity)
