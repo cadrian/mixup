@@ -26,7 +26,7 @@ feature {ANY}
          inspect
             name
          when "current_bar_number" then
-            create {MIXUP_INTEGER} Result.make(bar_number)
+            create {MIXUP_INTEGER} Result.make(a_source, bar_number)
          else
             fatal("unknown native function: " + name)
          end

@@ -34,13 +34,15 @@ feature {}
          lilypond: MIXUP_LILYPOND_PLAYER
          buffer: STRING_OUTPUT_STREAM
          expected: STRING
+         source: AUX_MIXUP_MOCK_SOURCE
       do
+         create source.make
          create buffer.make
          create lilypond.connect_to(buffer)
 
          lilypond.set_partitur("test")
          lilypond.set_instrument("Instr")
-         lilypond.set_note("Instr", {MIXUP_CHORD duration_4, << note("c", 4) >> });
+         lilypond.set_note("Instr", {MIXUP_CHORD duration_4, source, << note("c", 4) >> });
          lilypond.end_partitur
 
          expected := "[
