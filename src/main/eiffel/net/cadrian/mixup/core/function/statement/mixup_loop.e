@@ -33,7 +33,7 @@ feature {ANY}
          if value = Void then
             error("value could not be computed")
          else
-            value.accept(create {MIXUP_LOOP_EXECUTION}.make(source, a_context, Current))
+            a_context.add_statement(create {MIXUP_LOOP_EXECUTION}.make(source, a_context, Current, value))
          end
       end
 

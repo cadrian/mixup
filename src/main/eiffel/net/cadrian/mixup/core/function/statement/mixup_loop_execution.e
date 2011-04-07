@@ -16,9 +16,17 @@ class MIXUP_LOOP_EXECUTION
 
 inherit
    MIXUP_EXECUTION_CONTEXT
+   MIXUP_STATEMENT
 
 create {ANY}
    make
+
+feature {ANY}
+   call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
+      do
+         value.accept(Current)
+      end
+
 
 feature {MIXUP_BOOLEAN}
    visit_boolean (a_boolean: MIXUP_BOOLEAN) is
@@ -71,7 +79,7 @@ feature {MIXUP_SEQ}
 feature {}
    visit_iterable (a_iterable: MIXUP_ITERABLE) is
       local
-         value: MIXUP_VALUE
+         item: MIXUP_VALUE
       do
          if iterable = Void then
             iterable ::= a_iterable.eval(context, context.player)
@@ -82,9 +90,9 @@ feature {}
             end
          end
          if iterable_index <= a_iterable.upper then
-            value := iterable.item(iterable_index)
-            context.set_local(loop_.identifier, value)
-            context.add_statement(loop_)
+            item := iterable.item(iterable_index)
+            context.set_local(loop_.identifier, item)
+            context.add_statement(Current)
             context.add_statements(loop_.statements)
             iterable_index := iterable_index + 1
          end
@@ -104,31 +112,35 @@ feature {MIXUP_YIELD_ITERATOR}
          end
          context.set_local(loop_.identifier, a_yield_iterator.value)
          if a_yield_iterator.has_next then
-            context.add_statement(loop_)
+            context.add_statement(Current)
          end
          context.add_statements(loop_.statements)
          more := True
       end
 
 feature {}
-   make (a_source: like source; a_context: like context; a_loop: like loop_) is
+   make (a_source: like source; a_context: like context; a_loop: like loop_; a_value: like value) is
       require
          a_source /= Void
          a_context /= Void
          a_loop /= Void
+         a_value /= Void
       do
          source := a_source
          context := a_context
          loop_ := a_loop
+         value := a_value
       ensure
          source = a_source
          context = a_context
          loop_ = a_loop
+         value = a_value
       end
 
    loop_: MIXUP_LOOP
    more: BOOLEAN -- for yield functions: handles the first-call step, where the first yielded value is already available
    iterable_index: INTEGER -- for iterables
    iterable: MIXUP_ITERABLE
+   value: MIXUP_VALUE
 
 end -- class MIXUP_LOOP_EXECUTION

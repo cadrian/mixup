@@ -3,7 +3,7 @@
 
 - the statements queue should be a ring array, not a linked list           DONE
 
-- loop statement re-insertion: please ensure that the same context is
+- loop statement re-insertion: please ensure that the same context is      DONE
   reused (not recreated); one way is to make the context itself a
   statement and insert it instead of the initial loop
 
