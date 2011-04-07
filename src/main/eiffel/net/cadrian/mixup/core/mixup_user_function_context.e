@@ -63,6 +63,9 @@ feature {ANY}
          a_statement /= Void
       do
          statements.add_first(a_statement)
+         debug
+            log.trace.put_line("statements queue size = " + statements.count.out)
+         end
       end
 
    add_statements (a_statements: TRAVERSABLE[MIXUP_STATEMENT]) is

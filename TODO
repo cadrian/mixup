@@ -6,3 +6,5 @@
 - loop statement re-insertion: please ensure that the same context is
   reused (not recreated); one way is to make the context itself a
   statement and insert it instead of the initial loop
+
+- external module loading

@@ -129,6 +129,12 @@ feature {MIXUP_LIST}
          value := a_list
       end
 
+feature {MIXUP_SEQ}
+   visit_seq (a_seq: MIXUP_SEQ) is
+      do
+         value := a_seq
+      end
+
 feature {MIXUP_DICTIONARY}
    visit_dictionary (a_dictionary: MIXUP_DICTIONARY) is
       do

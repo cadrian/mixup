@@ -156,7 +156,20 @@ feature {}
       end
 
    native_seq (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      local
+         low, up: MIXUP_INTEGER
       do
+         if args.count /= 2 then
+            error_at(a_source, "bad argument count")
+         elseif not (low ?:= args.first) then
+            error_at(args.first.source, "bad argument")
+         elseif not (up ?:= args.last) then
+            error_at(args.last.source, "bad argument")
+         else
+            low ::= args.first
+            up ::= args.last
+            create {MIXUP_SEQ} Result.make(a_source, low, up)
+         end
       end
 
    native_new_music_store (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is

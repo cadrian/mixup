@@ -15,11 +15,10 @@
 class MIXUP_LIST
 
 inherit
-   MIXUP_VALUE
+   MIXUP_ITERABLE
       redefine
          eval
       end
-   TRAVERSABLE[MIXUP_VALUE]
 
 create {ANY}
    make

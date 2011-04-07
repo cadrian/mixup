@@ -66,6 +66,13 @@ feature {MIXUP_LIST}
       deferred
       end
 
+feature {MIXUP_SEQ}
+   visit_seq (a_seq: MIXUP_SEQ) is
+      require
+         a_seq /= Void
+      deferred
+      end
+
 feature {MIXUP_DICTIONARY}
    visit_dictionary (a_dictionary: MIXUP_DICTIONARY) is
       require

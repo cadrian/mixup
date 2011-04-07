@@ -63,6 +63,12 @@ feature {MIXUP_LIST}
          fatal("bad type")
       end
 
+feature {MIXUP_SEQ}
+   visit_seq (a_seq: MIXUP_SEQ) is
+      do
+         fatal("bad type")
+      end
+
 feature {MIXUP_DICTIONARY}
    visit_dictionary (a_dictionary: MIXUP_DICTIONARY) is
       do

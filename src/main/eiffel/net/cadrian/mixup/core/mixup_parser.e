@@ -61,7 +61,9 @@ feature {MIXUP_LIST_NODE_IMPL}
          when "Identifier" then
             build_identifier(node)
          else
-            log.trace.put_line("Generic list node: " + node.name)
+            debug
+               log.trace.put_line("Generic list node: " + node.name)
+            end
             node.accept_all(Current)
          end
       end
@@ -192,7 +194,9 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
          when "Expression_Pair" then
             build_expression_pair(node)
          else
-            log.trace.put_line("Generic non-terminal node: " + node.name)
+            debug
+               log.trace.put_line("Generic non-terminal node: " + node.name)
+            end
             node.accept_all(Current)
          end
       end

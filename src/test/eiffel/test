@@ -38,7 +38,7 @@ cluster
             debug(yes)
         option
             assertion(no): MIXUP_GRAMMAR
-            debug(no): MIXUP_GRAMMAR
+            debug(no): MIXUP_GRAMMAR, MIXUP_PARSER
         end
 
     test: "$root/test/eiffel/net/cadrian/mixup/loadpath.se"
@@ -76,6 +76,7 @@ esac
 shift
 
 if [ \! -d .test/$class ]; then
+    echo "Initializing..."
     mkdir -p .test/$class
     ln -s $(pwd)/log.rc .test/$class/
 fi

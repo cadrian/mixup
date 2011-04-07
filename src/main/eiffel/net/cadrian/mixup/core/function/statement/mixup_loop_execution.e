@@ -58,23 +58,35 @@ feature {MIXUP_MUSIC_STORE}
 
 feature {MIXUP_LIST}
    visit_list (a_list: MIXUP_LIST) is
+      do
+         visit_iterable(a_list)
+      end
+
+feature {MIXUP_SEQ}
+   visit_seq (a_seq: MIXUP_SEQ) is
+      do
+         visit_iterable(a_seq)
+      end
+
+feature {}
+   visit_iterable (a_iterable: MIXUP_ITERABLE) is
       local
          value: MIXUP_VALUE
       do
-         if list = Void then
-            list ::= a_list.eval(context, context.player)
-            if list = Void then
+         if iterable = Void then
+            iterable ::= a_iterable.eval(context, context.player)
+            if iterable = Void then
                fatal("could not compute value")
             else
-               list_index := a_list.lower
+               iterable_index := a_iterable.lower
             end
          end
-         if list_index <= a_list.upper then
-            value := list.item(list_index)
+         if iterable_index <= a_iterable.upper then
+            value := iterable.item(iterable_index)
             context.set_local(loop_.identifier, value)
             context.add_statement(loop_)
             context.add_statements(loop_.statements)
-            list_index := list_index + 1
+            iterable_index := iterable_index + 1
          end
       end
 
@@ -116,7 +128,7 @@ feature {}
 
    loop_: MIXUP_LOOP
    more: BOOLEAN -- for yield functions: handles the first-call step, where the first yielded value is already available
-   list_index: INTEGER -- for lists
-   list: MIXUP_LIST
+   iterable_index: INTEGER -- for iterables
+   iterable: MIXUP_ITERABLE
 
 end -- class MIXUP_LOOP_EXECUTION

@@ -71,6 +71,12 @@ feature {MIXUP_LIST}
          fatal("cannot match on a list")
       end
 
+feature {MIXUP_SEQ}
+   visit_seq (a_seq: MIXUP_SEQ) is
+      do
+         fatal("cannot match on a seq")
+      end
+
 feature {MIXUP_DICTIONARY}
    visit_dictionary (a_dictionary: MIXUP_DICTIONARY) is
       do
