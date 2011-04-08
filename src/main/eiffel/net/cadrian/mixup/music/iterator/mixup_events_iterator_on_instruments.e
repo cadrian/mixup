@@ -23,14 +23,14 @@ inherit
       undefine
          is_equal
       redefine
-         start_instrument
+         visit_instrument
       end
 
 create {MIXUP_MIXER_CONDUCTOR}
    make
 
 feature {MIXUP_INSTRUMENT}
-   start_instrument (a_instrument: MIXUP_INSTRUMENT) is
+   visit_instrument (a_instrument: MIXUP_INSTRUMENT) is
       do
          instruments.add_last(a_instrument)
       end

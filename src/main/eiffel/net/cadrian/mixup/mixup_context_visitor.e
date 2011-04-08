@@ -57,26 +57,14 @@ feature {MIXUP_PARTITUR}
       end
 
 feature {MIXUP_INSTRUMENT}
-   start_instrument (a_instrument: MIXUP_INSTRUMENT) is
-      require
-         a_instrument /= Void
-      do
-      end
-
-   end_instrument (a_instrument: MIXUP_INSTRUMENT) is
+   visit_instrument (a_instrument: MIXUP_INSTRUMENT) is
       require
          a_instrument /= Void
       do
       end
 
 feature {MIXUP_USER_FUNCTION_CONTEXT}
-   start_user_function (a_user_function: MIXUP_USER_FUNCTION_CONTEXT) is
-      require
-         a_user_function /= Void
-      do
-      end
-
-   end_user_function (a_user_function: MIXUP_USER_FUNCTION_CONTEXT) is
+   visit_user_function_context (a_user_function: MIXUP_USER_FUNCTION_CONTEXT) is
       require
          a_user_function /= Void
       do

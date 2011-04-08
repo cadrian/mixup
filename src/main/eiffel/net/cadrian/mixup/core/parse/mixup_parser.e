@@ -797,7 +797,7 @@ feature {}
       do
          old_context := current_context
          instrument.node_at(1).accept(Current)
-         create current_instrument.make(new_source(instrument), name, old_context, absolute_reference)
+         create current_instrument.make(new_source(instrument), name, old_context)
          current_context := current_instrument
          if root_context = Void then
             root_context := current_context

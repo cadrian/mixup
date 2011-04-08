@@ -18,8 +18,6 @@ inherit
    MIXUP_CONTEXT
       rename
          make as context_make
-      redefine
-         commit
       end
 
 create {ANY}
@@ -73,24 +71,30 @@ feature {ANY}
          set_bar_number(voices.commit(Current, a_player, start_bar_number))
       end
 
+   accept (visitor: VISITOR) is
+      local
+         v: MIXUP_CONTEXT_VISITOR
+      do
+         v ::= visitor
+         v.visit_instrument(Current)
+      end
+
    bars: ITERABLE[INTEGER_64] is
       do
          Result := voices.bars
       end
 
-feature {}
-   accept_start (visitor: MIXUP_CONTEXT_VISITOR) is
+feature {MIXUP_CONTEXT}
+   add_child (a_child: MIXUP_CONTEXT) is
       do
-         visitor.start_instrument(Current)
-      end
-
-   accept_end (visitor: MIXUP_CONTEXT_VISITOR) is
-      do
-         visitor.end_instrument(Current)
+         check
+            {MIXUP_USER_FUNCTION_CONTEXT} ?:= a_child
+         end
+         -- nothing to do
       end
 
 feature {}
-   make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent; a_reference: MIXUP_NOTE_HEAD) is
+   make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent) is
       do
          context_make(a_source, a_name, a_parent)
          create {FAST_ARRAY[COLLECTION[FIXED_STRING]]} strophes.make(0)

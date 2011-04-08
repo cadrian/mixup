@@ -46,15 +46,17 @@ feature {ANY}
          end
       end
 
-feature {}
-   accept_start (visitor: MIXUP_CONTEXT_VISITOR) is
+   commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER) is
       do
-         visitor.start_user_function(Current)
+         set_bar_number(start_bar_number)
       end
 
-   accept_end (visitor: MIXUP_CONTEXT_VISITOR) is
+   accept (visitor: VISITOR) is
+      local
+         v: MIXUP_CONTEXT_VISITOR
       do
-         visitor.end_user_function(Current)
+         v ::= visitor
+         v.visit_user_function_context(Current)
       end
 
 feature {ANY}
@@ -126,6 +128,15 @@ feature {ANY}
    value: MIXUP_VALUE
    player: MIXUP_PLAYER
    args: MAP[MIXUP_VALUE, FIXED_STRING]
+
+feature {MIXUP_CONTEXT}
+   add_child (a_child: MIXUP_CONTEXT) is
+      do
+         check
+            {MIXUP_USER_FUNCTION_CONTEXT} ?:= a_child
+         end
+         -- nothing to do
+      end
 
 feature {}
    statements: RING_ARRAY[MIXUP_STATEMENT]

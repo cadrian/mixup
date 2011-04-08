@@ -15,7 +15,7 @@
 class MIXUP_SCORE
 
 inherit
-   MIXUP_CONTEXT
+   MIXUP_BINDER
 
 create {ANY}
    make

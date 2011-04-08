@@ -34,12 +34,7 @@ feature {ANY}
       end
 
    commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER) is
-      require
-         a_player /= Void
-      local
-         bar_counter: AGGREGATOR[MIXUP_CONTEXT, INTEGER]
-      do
-         set_bar_number(bar_counter.map(children, agent commit_child(?, a_player, start_bar_number, ?), start_bar_number))
+      deferred
       end
 
    add_expression (a_name: FIXED_STRING; a_expression: MIXUP_EXPRESSION) is
@@ -105,16 +100,6 @@ feature {ANY}
          end
       end
 
-   accept (visitor: VISITOR) is
-      local
-         v: MIXUP_CONTEXT_VISITOR
-      do
-         v ::= visitor
-         accept_start(v)
-         children.do_all_items(agent {MIXUP_CONTEXT}.accept(visitor))
-         accept_end(v)
-      end
-
    set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
       require
          a_name /= Void
@@ -131,26 +116,13 @@ feature {MIXUP_CONTEXT}
    lookup_expression (identifier: FIXED_STRING; search_parent: BOOLEAN): MIXUP_EXPRESSION is
       require
          identifier /= Void
-      local
-         id_prefix: FIXED_STRING; i: INTEGER
-         child: MIXUP_CONTEXT
       do
          Result := get_local(identifier)
          if Result = Void then
             Result := expressions.reference_at(identifier)
          end
-         if Result = Void then
-            i := identifier.first_index_of('.')
-            if identifier.valid_index(i) then
-               id_prefix := identifier.substring(identifier.lower, i - 1)
-               child := children.reference_at(id_prefix)
-               if child /= Void then
-                  Result := child.lookup_expression(identifier.substring(i + 1, identifier.upper), False)
-               end
-            end
-            if Result = Void and then search_parent and then parent /= Void then
-               Result := parent.lookup_expression(identifier, True)
-            end
+         if Result = Void and then search_parent and then parent /= Void then
+            Result := parent.lookup_expression(identifier, True)
          end
       end
 
@@ -159,8 +131,6 @@ feature {MIXUP_CONTEXT}
          identifier /= Void
          a_value /= Void
       local
-         id_prefix: FIXED_STRING; i: INTEGER
-         child: MIXUP_CONTEXT
          exp: MIXUP_EXPRESSION
       do
          exp := get_local(identifier)
@@ -173,15 +143,7 @@ feature {MIXUP_CONTEXT}
                set_local(identifier, a_value)
                Result := True
             else
-               i := identifier.first_index_of('.')
-               if identifier.valid_index(i) then
-                  id_prefix := identifier.substring(identifier.lower, i - 1)
-                  child := children.reference_at(id_prefix)
-                  if child /= Void then
-                     Result := child.setup_expression(identifier.substring(i + 1, identifier.upper), True, a_value)
-                  end
-               end
-               if not Result and then parent /= Void then
+               if parent /= Void then
                   Result := parent.setup_expression(identifier, False, a_value)
                end
                if not Result and then assign_if_new then
@@ -192,45 +154,23 @@ feature {MIXUP_CONTEXT}
          end
       end
 
-feature {}
-   commit_child (a_child: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number, max_bar_number: INTEGER): INTEGER is
-      do
-         a_child.commit(a_player, start_bar_number)
-         Result := a_child.bar_number.max(max_bar_number)
-      end
-
-feature {}
-   accept_start (visitor: MIXUP_CONTEXT_VISITOR) is
-      deferred
-      end
-
-   accept_end (visitor: MIXUP_CONTEXT_VISITOR) is
-      deferred
-      end
-
-feature {MIXUP_CONTEXT}
-   add_child (a_context: MIXUP_CONTEXT) is
+   add_child (a_child: MIXUP_CONTEXT) is
       require
-         a_context /= Void
-      do
-         children.put(a_context, a_context.name)
+         a_child /= Void
+      deferred
       end
 
 feature {}
    expressions: DICTIONARY[MIXUP_EXPRESSION, FIXED_STRING]
-   children: DICTIONARY[MIXUP_CONTEXT, FIXED_STRING]
    parent: MIXUP_CONTEXT
 
+feature {}
    make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent) is
-      require
-         a_source /= Void
-         a_name /= Void
       do
          source := a_source
          name := a_name.intern
          parent := a_parent
          create {HASHED_DICTIONARY[MIXUP_EXPRESSION, FIXED_STRING]} expressions.make
-         create {LINKED_HASHED_DICTIONARY[MIXUP_CONTEXT, FIXED_STRING]} children.make
 
          if a_parent /= Void then
             a_parent.add_child(Current)
@@ -248,7 +188,6 @@ invariant
    source /= Void
    name /= Void
    expressions /= Void
-   children /= Void
    resolver /= Void
 
 end -- class MIXUP_CONTEXT

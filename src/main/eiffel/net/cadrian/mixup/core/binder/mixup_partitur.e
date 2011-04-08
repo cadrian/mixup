@@ -12,10 +12,10 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_BOOK
+class MIXUP_PARTITUR
 
 inherit
-   MIXUP_CONTEXT
+   MIXUP_BINDER
 
 create {ANY}
    make
@@ -23,12 +23,12 @@ create {ANY}
 feature {}
    accept_start (visitor: MIXUP_CONTEXT_VISITOR) is
       do
-         visitor.start_book(Current)
+         visitor.start_partitur(Current)
       end
 
    accept_end (visitor: MIXUP_CONTEXT_VISITOR) is
       do
-         visitor.end_book(Current)
+         visitor.end_partitur(Current)
       end
 
-end -- class MIXUP_BOOK
+end -- class MIXUP_PARTITUR

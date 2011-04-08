@@ -20,7 +20,7 @@ inherit
          start_score, end_score,
          start_book, end_book,
          start_partitur, end_partitur,
-         start_instrument, end_instrument
+         visit_instrument
       end
 
 insert
@@ -72,15 +72,10 @@ feature {MIXUP_PARTITUR}
       end
 
 feature {MIXUP_INSTRUMENT}
-   start_instrument (a_instrument: MIXUP_INSTRUMENT) is
+   visit_instrument (a_instrument: MIXUP_INSTRUMENT) is
       do
          current_player.play(create {MIXUP_EVENT_SET_INSTRUMENT}.make(a_instrument.source, 0, a_instrument.name))
-         run_hook(a_instrument, current_player, once "at_start")
-      end
-
-   end_instrument (a_instrument: MIXUP_INSTRUMENT) is
-      do
-         run_hook(a_instrument, current_player, once "at_end")
+         run_hook(a_instrument, current_player, once "at_play")
       end
 
 feature {}

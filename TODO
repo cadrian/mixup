@@ -1,14 +1,8 @@
-- \repeat and \bar are not native functions (but user) (at least           DONE
+- \repeat and \bar are not native functions (but user) (at least
   \repeat, not sure about \bar)
 
-- the statements queue should be a ring array, not a linked list           DONE
-
-- loop statement re-insertion: please ensure that the same context is      DONE
-  reused (not recreated); one way is to make the context itself a
-  statement and insert it instead of the initial loop
-
-- external module loading
-
-- split MIXUP_CONTEXT : MIXUP_BINDER (book, score, partitur)
+- split MIXUP_CONTEXT : MIXUP_BINDER (book, score, partitur)               DONE
   vs. MIXUP_INSTRUMENT to avoid redefines and having a useless
   "children" attribute in MIXUP_INSTRUMENT
+
+- external module loading
