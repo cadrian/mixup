@@ -28,11 +28,13 @@ feature {ANY}
    duration: INTEGER_64 is 0
    anchor: MIXUP_NOTE_HEAD is do end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
       do
          debug
             log.trace.put_line("Committing bar: " + out)
          end
+         Result := start_bar_number + 1
+         a_context.set_bar_number(Result)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is

@@ -8,3 +8,7 @@
   statement and insert it instead of the initial loop
 
 - external module loading
+
+- split MIXUP_CONTEXT : MIXUP_BINDER (book, score, partitur)
+  vs. MIXUP_INSTRUMENT to avoid redefines and having a useless
+  "children" attribute in MIXUP_INSTRUMENT

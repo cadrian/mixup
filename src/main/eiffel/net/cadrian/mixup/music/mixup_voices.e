@@ -88,14 +88,15 @@ feature {ANY}
          voices.count = old voices.count + 1
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
       local
          durations: AVL_SET[INTEGER_64]
+         bar_counter: AGGREGATOR[MIXUP_VOICE, INTEGER]
       do
          debug
             log.trace.put_line("Committing voices")
          end
-         voices.do_all(commit_agent(a_context, a_player))
+         Result := bar_counter.map(voices, commit_agent(a_context, a_player, start_bar_number), start_bar_number)
          debug
             log.trace.put_line("Checking voices bars")
          end
@@ -155,9 +156,14 @@ feature {}
    voices: COLLECTION[MIXUP_VOICE]
    reference_: MIXUP_NOTE_HEAD
 
-   commit_agent (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): PROCEDURE[TUPLE[MIXUP_VOICE]] is
+   commit_agent (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): FUNCTION[TUPLE[MIXUP_VOICE, INTEGER], INTEGER] is
       do
-         Result := agent {MIXUP_VOICE}.commit(a_context, a_player)
+         Result := agent commit_voice(a_context, a_player, start_bar_number, ?, ?)
+      end
+
+   commit_voice (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER; a_voice: MIXUP_VOICE; bar_number: INTEGER): INTEGER is
+      do
+         Result := a_voice.commit(a_context, a_player, start_bar_number).max(bar_number)
       end
 
 end -- class MIXUP_VOICES

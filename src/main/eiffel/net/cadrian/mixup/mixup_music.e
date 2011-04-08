@@ -32,7 +32,7 @@ feature {ANY}
       deferred
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
       deferred
       end
 

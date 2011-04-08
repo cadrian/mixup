@@ -68,12 +68,9 @@ feature {ANY}
          end
       end
 
-   commit (a_player: MIXUP_PLAYER) is
+   commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER) is
       do
-         debug
-            log.trace.put_line("Committing instrument " + name)
-         end
-         voices.commit(Current, a_player)
+         set_bar_number(voices.commit(Current, a_player, start_bar_number))
       end
 
    bars: ITERABLE[INTEGER_64] is

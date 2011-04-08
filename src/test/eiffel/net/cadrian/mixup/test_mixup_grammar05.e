@@ -106,7 +106,7 @@ feature {}
                                                         s: AUX_MIXUP_MOCK_SOURCE
                                                      do
                                                         create s.make
-                                                        create {MIXUP_INTEGER} Result.make(s, a_player.barnum)
+                                                        create {MIXUP_INTEGER} Result.make(s, a_context.bar_number)
                                                      end (player, ?, ?))
 
          mixer.play
@@ -118,9 +118,12 @@ feature {}
            set_instrument ("singer"                                                       ),
 
            set_note       ("singer", {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
-           next_bar       ("singer", ":||:"                                               ),
+           next_bar       ("singer", ":||"                                                ),
+           next_bar       ("singer", Void                                                 ),
+           next_bar       ("singer", "||:"                                                ),
            set_note       ("singer", {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
            next_bar       ("singer", ":||"                                                ),
+           next_bar       ("singer", "||"                                                 ),
            set_note       ("singer", {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
            set_note       ("singer", {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
            set_note       ("singer", {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),

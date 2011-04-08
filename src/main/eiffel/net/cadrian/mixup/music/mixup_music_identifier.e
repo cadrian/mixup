@@ -36,7 +36,7 @@ feature {ANY}
          Result := music.anchor
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
       local
          music_value: MIXUP_MUSIC_VALUE
          music_store: MIXUP_MUSIC_STORE

@@ -68,7 +68,7 @@ feature {}
          a_context /= Void
          a_player /= Void
       do
-         a_context.accept(create {MIXUP_MIXER_CONDUCTOR}.make(a_context, a_player))
+         a_context.accept(create {MIXUP_MIXER_CONDUCTOR}.make(a_context, a_player, a_context.bar_number))
       end
 
 feature {}
@@ -79,6 +79,7 @@ feature {}
          music: MIXUP_MUSIC_VALUE
          instr: MIXUP_INSTRUMENT
          decorated: MIXUP_DECORATED_MUSIC
+         bar_number: INTEGER
       do
          if args.count /= 2 then
             error_at(a_source, "bad argument count")
@@ -94,7 +95,8 @@ feature {}
                                   agent event_start_repeat(a_source, ?, volte.value),
                                   agent event_end_repeat(a_source, ?),
                                   Void)
-            decorated.commit(context, player)
+            bar_number := decorated.commit(context, player, context.bar_number)
+            context.set_bar_number(bar_number)
             create {MIXUP_MUSIC_VALUE} Result.make(a_source, decorated)
          end
       end
@@ -104,6 +106,7 @@ feature {}
          music: MIXUP_MUSIC_VALUE
          instr: MIXUP_INSTRUMENT
          decorated: MIXUP_DECORATED_MUSIC
+         bar_number: INTEGER
       do
          if args.count /= 1 then
             error_at(a_source, "bad argument count")
@@ -115,7 +118,8 @@ feature {}
             create decorated.make(a_source, once "with_lyrics", music.value,
                                   Void, Void,
                                   agent force_lyrics(a_source, ?, ?))
-            decorated.commit(context, player)
+            bar_number := decorated.commit(context, player, context.bar_number)
+            context.set_bar_number(bar_number)
             create {MIXUP_MUSIC_VALUE} Result.make(a_source, decorated)
          end
       end
@@ -132,6 +136,7 @@ feature {}
       local
          string: MIXUP_STRING
          bar: MIXUP_BAR
+         bar_number: INTEGER
       do
          if args.count /= 1 then
             error_at(a_source, "bad argument count")
@@ -140,7 +145,8 @@ feature {}
          else
             string ::= args.first
             create bar.make(a_source, string.value)
-            bar.commit(context, player)
+            bar_number := bar.commit(context, player, context.bar_number)
+            context.set_bar_number(bar_number)
             create {MIXUP_MUSIC_VALUE} Result.make(a_source, bar)
          end
       end
@@ -181,6 +187,7 @@ feature {}
       local
          music_store: MIXUP_MUSIC_STORE
          music: MIXUP_MUSIC_VALUE
+         bar_number: INTEGER
       do
          if args.count /= 2 then
             error_at(a_source, "bad argument count")
@@ -195,7 +202,8 @@ feature {}
             end
             music ::= args.last
             music_store.add_music(music.value)
-            music_store.commit(context, player)
+            bar_number := music_store.commit(context, player, context.bar_number)
+            context.set_bar_number(bar_number)
          end
       end
 

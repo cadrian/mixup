@@ -44,8 +44,6 @@ create {ANY}
    make
 
 feature {ANY}
-   barnum: INTEGER
-
    events: TRAVERSABLE[AUX_MIXUP_MOCK_EVENT] is
       do
          Result := events_list
@@ -117,7 +115,6 @@ feature {ANY}
    play_next_bar (instrument, style: STRING) is
       do
          events_list.add_last(next_bar_event(instrument, style))
-         barnum := barnum + 1
       end
 
    play_start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
@@ -168,7 +165,6 @@ feature {}
       do
          create {FAST_ARRAY[AUX_MIXUP_MOCK_EVENT]} events_list.make(0)
          create {HASHED_DICTIONARY[FUNCTION[TUPLE[MIXUP_CONTEXT, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE], FIXED_STRING]} native_map.make
-         barnum := 1
       end
 
 invariant

@@ -73,6 +73,7 @@ feature {}
             create zip.make(a_args, signature)
             zip.do_all(agent args.add)
             create Result.make(source, a_context, a_player, args)
+            Result.set_bar_number(a_context.bar_number)
             Result.add_statements(statements)
          end
       ensure

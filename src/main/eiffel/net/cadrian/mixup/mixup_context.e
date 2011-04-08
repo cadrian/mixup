@@ -23,12 +23,23 @@ insert
 feature {ANY}
    name: FIXED_STRING
    resolver: MIXUP_RESOLVER
+   bar_number: INTEGER
 
-   commit (a_player: MIXUP_PLAYER) is
+   set_bar_number (a_bar_number: like bar_number) is
+      do
+         bar_number := a_bar_number
+         if parent /= Void then
+            parent.set_bar_number(a_bar_number)
+         end
+      end
+
+   commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER) is
       require
          a_player /= Void
+      local
+         bar_counter: AGGREGATOR[MIXUP_CONTEXT, INTEGER]
       do
-         children.do_all(agent {MIXUP_CONTEXT}.commit(a_player))
+         set_bar_number(bar_counter.map(children, agent commit_child(?, a_player, start_bar_number, ?), start_bar_number))
       end
 
    add_expression (a_name: FIXED_STRING; a_expression: MIXUP_EXPRESSION) is
@@ -182,6 +193,13 @@ feature {MIXUP_CONTEXT}
       end
 
 feature {}
+   commit_child (a_child: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number, max_bar_number: INTEGER): INTEGER is
+      do
+         a_child.commit(a_player, start_bar_number)
+         Result := a_child.bar_number.max(max_bar_number)
+      end
+
+feature {}
    accept_start (visitor: MIXUP_CONTEXT_VISITOR) is
       deferred
       end
@@ -219,6 +237,7 @@ feature {}
          end
 
          create resolver.make(Current)
+         bar_number := 1
       ensure
          source = a_source
          name = a_name.intern
