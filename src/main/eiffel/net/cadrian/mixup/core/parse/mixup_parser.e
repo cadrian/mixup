@@ -82,13 +82,13 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
          when "Export" then
             build_definition(node, True)
          when "Score" then
-            play_score(node)
+            build_score(node)
          when "Book" then
-            play_book(node)
+            build_book(node)
          when "Partitur" then
-            play_partitur(node)
+            build_partitur(node)
          when "Partitur_Content" then
-            play_partitur_content(node)
+            build_partitur_content(node)
          when "Music" then
             old_compound_music := last_compound_music
             last_compound_music := Void
@@ -100,17 +100,17 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
          when "Lyrics" then
             node.node_at(1).accept(Current)
          when "Instrument" then
-            play_instrument(node)
+            build_instrument(node)
          when "Next_Bar" then
-            play_next_bar(node)
+            build_next_bar(node)
          when "Up_Staff" then
-            play_up_staff(node)
+            build_up_staff(node)
          when "Down_Staff" then
-            play_down_staff(node)
+            build_down_staff(node)
          when "Extern_Notes" then
-            play_extern_music(node)
+            build_extern_music(node)
          when "Extern_Syllable" then
-            play_extern_syllables(node)
+            build_extern_syllables(node)
          when "Position" then
             build_dynamics_position(node)
          when "Dynamic_Identifier" then
@@ -124,7 +124,7 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
          when "Dynamic_End" then
             build_dynamic_end(node)
          when "Chord" then
-            play_chord(node)
+            build_chord(node)
          when "Note_Head" then
             build_note_head(node)
          when "Note_Length" then
@@ -134,17 +134,17 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
          when "DotDot" then
             last_note_length := last_note_length + last_note_length // 2 + last_note_length // 4
          when "Beam" then
-            play_beam(node)
+            build_beam(node)
          when "Slur" then
-            play_slur(node)
+            build_slur(node)
          when "Tie" then
-            play_tie(node)
+            build_tie(node)
          when "Xuplet_Spec" then
             read_xuplet_spec(node)
          when "Strophe" then
-            play_strophe(node)
+            build_strophe(node)
          when "Syllable" then
-            play_syllable(node)
+            build_syllable(node)
          when "Identifier_Part" then
             build_identifier_part(node)
          when "Identifier_Args" then
@@ -743,7 +743,7 @@ feature {} -- Functions
       end
 
 feature {}
-   play_score (score: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_score (score: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
          old_context: like current_context
       do
@@ -757,7 +757,7 @@ feature {}
          current_context := old_context
       end
 
-   play_book (book: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_book (book: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
          old_context: like current_context
       do
@@ -771,7 +771,7 @@ feature {}
          current_context := old_context
       end
 
-   play_partitur (partitur: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_partitur (partitur: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
          old_context: like current_context
       do
@@ -785,12 +785,12 @@ feature {}
          current_context := old_context
       end
 
-   play_partitur_content (partitur_content: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_partitur_content (partitur_content: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          partitur_content.accept_all(Current)
       end
 
-   play_instrument (instrument: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_instrument (instrument: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
          old_context: like current_context
          voices: MIXUP_VOICES
@@ -815,28 +815,28 @@ feature {}
          current_instrument := Void
       end
 
-   play_next_bar (next_bar: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_next_bar (next_bar: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          last_compound_music.add_bar(new_source(next_bar), Void)
       end
 
-   play_up_staff (up_staff: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_up_staff (up_staff: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          last_compound_music.up_staff
       end
 
-   play_down_staff (down_staff: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_down_staff (down_staff: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          last_compound_music.down_staff
       end
 
-   play_extern_music (music: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_extern_music (music: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          music.node_at(1).accept(Current)
          last_compound_music.add_music(create {MIXUP_MUSIC_IDENTIFIER}.make(new_source(music), last_identifier))
       end
 
-   play_group (group: MIXUP_NON_TERMINAL_NODE_IMPL; grouped_music: MIXUP_GROUPED_MUSIC) is
+   build_group (group: MIXUP_NON_TERMINAL_NODE_IMPL; grouped_music: MIXUP_GROUPED_MUSIC) is
       local
          old_compound_music: like last_compound_music
          xnumerator, xdenominator: INTEGER_64; xtext: FIXED_STRING
@@ -858,22 +858,22 @@ feature {}
          last_compound_music := old_compound_music
       end
 
-   play_beam (beam: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_beam (beam: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         play_group(beam, create {MIXUP_GROUPED_MUSIC}.as_beam(new_source(beam), last_compound_music.reference))
+         build_group(beam, create {MIXUP_GROUPED_MUSIC}.as_beam(new_source(beam), last_compound_music.reference))
       end
 
-   play_slur (slur: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_slur (slur: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         play_group(slur, create {MIXUP_GROUPED_MUSIC}.as_slur(new_source(slur), last_compound_music.reference))
+         build_group(slur, create {MIXUP_GROUPED_MUSIC}.as_slur(new_source(slur), last_compound_music.reference))
       end
 
-   play_tie (tie: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_tie (tie: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         play_group(tie, create {MIXUP_GROUPED_MUSIC}.as_tie(new_source(tie), last_compound_music.reference))
+         build_group(tie, create {MIXUP_GROUPED_MUSIC}.as_tie(new_source(tie), last_compound_music.reference))
       end
 
-   play_chord (chord: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_chord (chord: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          create {FAST_ARRAY[FIXED_STRING]} note_heads.make(0)
          if chord.count = 2 then
@@ -991,19 +991,19 @@ feature {}
          notes.accept_all(Current)
       end
 
-   play_strophe (strophe: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_strophe (strophe: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          current_instrument.next_strophe
          strophe.node_at(1).accept(Current)
       end
 
-   play_syllable (syllable: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_syllable (syllable: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          syllable.accept_all(Current)
          current_instrument.add_syllable(last_string)
       end
 
-   play_extern_syllables (syllables: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_extern_syllables (syllables: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          syllables.node_at(1).accept(Current)
          current_instrument.add_extern_syllables(last_identifier)
