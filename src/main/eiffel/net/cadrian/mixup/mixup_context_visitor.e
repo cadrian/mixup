@@ -70,4 +70,11 @@ feature {MIXUP_USER_FUNCTION_CONTEXT}
       do
       end
 
+feature {MIXUP_MODULE}
+   visit_module (a_module: MIXUP_MODULE) is
+      require
+         a_module /= Void
+      do
+      end
+
 end -- class MIXUP_CONTEXT_VISITOR

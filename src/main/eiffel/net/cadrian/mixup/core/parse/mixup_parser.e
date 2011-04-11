@@ -81,6 +81,8 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             build_definition(node, False)
          when "Export" then
             build_definition(node, True)
+         when "Module" then
+            build_module(node)
          when "Score" then
             build_score(node)
          when "Book" then
@@ -743,46 +745,38 @@ feature {} -- Functions
       end
 
 feature {}
-   build_score (score: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_context (context_node: MIXUP_NON_TERMINAL_NODE_IMPL; factory: FUNCTION[TUPLE[MIXUP_SOURCE, MIXUP_CONTEXT], MIXUP_CONTEXT]) is
       local
          old_context: like current_context
       do
          old_context := current_context
-         score.node_at(1).accept(Current)
-         create {MIXUP_SCORE} current_context.make(new_source(score), name, old_context)
+         context_node.node_at(1).accept(Current)
+         current_context := factory.item([new_source(context_node), old_context])
          if root_context = Void then
             root_context := current_context
          end
-         score.node_at(2).accept(Current)
+         context_node.node_at(2).accept(Current)
          current_context := old_context
+      end
+
+   build_module (module: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         build_context(module, agent (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT): MIXUP_CONTEXT is do create {MIXUP_MODULE} Result.make(a_source, name, context) end)
+      end
+
+   build_score (score: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         build_context(score, agent (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT): MIXUP_CONTEXT is do create {MIXUP_SCORE} Result.make(a_source, name, context) end)
       end
 
    build_book (book: MIXUP_NON_TERMINAL_NODE_IMPL) is
-      local
-         old_context: like current_context
       do
-         old_context := current_context
-         book.node_at(1).accept(Current)
-         create {MIXUP_BOOK} current_context.make(new_source(book), name, old_context)
-         if root_context = Void then
-            root_context := current_context
-         end
-         book.node_at(2).accept(Current)
-         current_context := old_context
+         build_context(book, agent (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT): MIXUP_CONTEXT is do create {MIXUP_BOOK} Result.make(a_source, name, context) end)
       end
 
    build_partitur (partitur: MIXUP_NON_TERMINAL_NODE_IMPL) is
-      local
-         old_context: like current_context
       do
-         old_context := current_context
-         partitur.node_at(1).accept(Current)
-         create {MIXUP_PARTITUR} current_context.make(new_source(partitur), name, old_context)
-         if root_context = Void then
-            root_context := current_context
-         end
-         partitur.node_at(2).accept(Current)
-         current_context := old_context
+         build_context(partitur, agent (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT): MIXUP_CONTEXT is do create {MIXUP_PARTITUR} Result.make(a_source, name, context) end)
       end
 
    build_partitur_content (partitur_content: MIXUP_NON_TERMINAL_NODE_IMPL) is
