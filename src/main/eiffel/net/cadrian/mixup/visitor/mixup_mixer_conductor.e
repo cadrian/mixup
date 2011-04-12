@@ -87,7 +87,7 @@ feature {}
          if hook = Void then
             -- nothing to do
          elseif hook.is_callable then
-            res := hook.call(a_context, a_player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
+            res := hook.call(a_player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
             if res /= Void then
                warning_at(a_context.source, "lost result")
             end

@@ -27,21 +27,38 @@ create {ANY}
    make
 
 feature {ANY}
-   parse (a_piece: like current_piece; a_file: like current_file): MIXUP_CONTEXT is
+   parse (a_piece: like current_piece; a_file: like current_file; a_context_factory: like context_factory): MIXUP_CONTEXT is
       require
          a_piece /= Void
          a_file /= Void
+         a_context_factory /= Void
+      local
+         old_root: like root_context
+         old_context_factory: like context_factory
+         old_piece: like current_piece
+         old_file: like current_file
       do
+         old_root := root_context
+         root_context := Void
+         old_context_factory := context_factory
+         context_factory := a_context_factory
+         old_piece := current_piece
          current_piece := a_piece
+         old_file := current_file
          current_file := a_file
-         a_piece.generate(log.trace)
+         --a_piece.generate(log.trace)
          --a_piece.display(log.trace, 0, "")
          a_piece.accept(Current)
          Result := root_context
+         root_context := old_root
+         context_factory := old_context_factory
+         current_file := old_file
+         current_piece := old_piece
       end
 
    current_piece: MIXUP_NODE
    current_file: FIXED_STRING
+   context_factory: FUNCTION[TUPLE[MIXUP_SOURCE, FIXED_STRING], MIXUP_CONTEXT]
 
 feature {}
    new_source (node: MIXUP_NODE): MIXUP_SOURCE_IMPL is
@@ -60,6 +77,8 @@ feature {MIXUP_LIST_NODE_IMPL}
             build_voices(node)
          when "Identifier" then
             build_identifier(node)
+         when "Identifier+" then
+            build_identifier_list(node)
          else
             debug
                log.trace.put_line("Generic list node: " + node.name)
@@ -81,6 +100,8 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             build_definition(node, False)
          when "Export" then
             build_definition(node, True)
+         when "Import" then
+            build_import(node)
          when "Module" then
             build_module(node)
          when "Score" then
@@ -249,6 +270,7 @@ feature {}
    name:                    FIXED_STRING
    current_identifier:      MIXUP_IDENTIFIER
    last_identifier:         MIXUP_IDENTIFIER
+   last_identifiers:        FAST_ARRAY[MIXUP_IDENTIFIER]
    last_expression:         MIXUP_EXPRESSION
    last_expressions:        FAST_ARRAY[MIXUP_EXPRESSION]
    last_dictionary:         MIXUP_DICTIONARY
@@ -262,6 +284,15 @@ feature {}
    last_xuplet_denominator: INTEGER_64
    last_xuplet_text:        FIXED_STRING
 
+   build_identifier_list (identifiers: MIXUP_LIST_NODE_IMPL) is
+      do
+         check
+            last_identifiers.is_empty
+         end
+         last_identifiers.with_capacity(identifiers.count)
+         identifiers.accept_all(Current)
+      end
+
    build_identifier (dot_identifier: MIXUP_LIST_NODE_IMPL) is
       local
          old_identifier: like current_identifier
@@ -271,6 +302,9 @@ feature {}
          dot_identifier.accept_all(Current)
          last_expression := current_identifier
          last_identifier := current_identifier
+         if last_identifiers /= Void then
+            last_identifiers.add_last(last_identifier)
+         end
          current_identifier := old_identifier
       end
 
@@ -411,7 +445,7 @@ feature {} -- Functions
          str.clear_count
          str.append(string.value)
          source := new_source(function_native)
-         create {MIXUP_NATIVE_FUNCTION} last_function.make(source, string.value, native_provider.item(source, str))
+         create {MIXUP_NATIVE_FUNCTION} last_function.make(source, string.value, current_context, native_provider.item(source, str))
          last_expression := last_function
       end
 
@@ -422,7 +456,7 @@ feature {} -- Functions
          end
          create last_statements.with_capacity(4)
          function_user.node_at(1).accept(Current)
-         create {MIXUP_USER_FUNCTION} last_function.make(new_source(function_user), last_statements, last_signature)
+         create {MIXUP_USER_FUNCTION} last_function.make(new_source(function_user), current_context, last_statements, last_signature)
          last_expression := last_function
          last_statements := Void
       end
@@ -542,6 +576,27 @@ feature {} -- Functions
             def_value.set_public(is_public)
          end
          current_context.add_expression(function_name, def_value)
+      end
+
+   build_import (import: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         ctx: MIXUP_CONTEXT
+         ctx_name: FIXED_STRING
+         source_: like source
+      do
+         import.node_at(1).accept(Current)
+         ctx_name := last_identifier.as_name.intern
+         source_ := new_source(import)
+         ctx := context_factory.item([source_, ctx_name])
+         if import.count = 2 then
+            create {MIXUP_IMPORT} ctx.make(source_, ctx_name, current_context, ctx)
+         else
+            check last_identifiers = Void end
+            create last_identifiers.make(0)
+            import.node_at(3).accept(Current)
+            create {MIXUP_FROM_IMPORT} ctx.make(source_, ctx_name, current_context, ctx, last_identifiers)
+            last_identifiers := Void
+         end
       end
 
    build_e1_exp (a_e1: MIXUP_NON_TERMINAL_NODE_IMPL) is

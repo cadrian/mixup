@@ -18,8 +18,6 @@ inherit
    MIXUP_CONTEXT
       rename
          make as context_make
-      redefine
-         lookup_expression, setup_expression
       end
 
 insert
@@ -46,65 +44,6 @@ feature {ANY}
       end
 
 feature {MIXUP_CONTEXT}
-   lookup_expression (identifier: FIXED_STRING; search_parent: BOOLEAN): MIXUP_EXPRESSION is
-      local
-         id_prefix: FIXED_STRING; i: INTEGER
-         child: MIXUP_CONTEXT
-      do
-         Result := get_local(identifier)
-         if Result = Void then
-            Result := expressions.reference_at(identifier)
-         end
-         if Result = Void then
-            i := identifier.first_index_of('.')
-            if identifier.valid_index(i) then
-               id_prefix := identifier.substring(identifier.lower, i - 1)
-               child := children.reference_at(id_prefix)
-               if child /= Void then
-                  Result := child.lookup_expression(identifier.substring(i + 1, identifier.upper), False)
-               end
-            end
-            if Result = Void and then search_parent and then parent /= Void then
-               Result := parent.lookup_expression(identifier, True)
-            end
-         end
-      end
-
-   setup_expression (identifier: FIXED_STRING; assign_if_new: BOOLEAN; a_value: MIXUP_VALUE): BOOLEAN is
-      local
-         id_prefix: FIXED_STRING; i: INTEGER
-         child: MIXUP_CONTEXT
-         exp: MIXUP_EXPRESSION
-      do
-         exp := get_local(identifier)
-         if exp /= Void then
-            set_local(identifier, a_value)
-            Result := True
-         else
-            exp := expressions.reference_at(identifier)
-            if exp /= Void then
-               set_local(identifier, a_value)
-               Result := True
-            else
-               i := identifier.first_index_of('.')
-               if identifier.valid_index(i) then
-                  id_prefix := identifier.substring(identifier.lower, i - 1)
-                  child := children.reference_at(id_prefix)
-                  if child /= Void then
-                     Result := child.setup_expression(identifier.substring(i + 1, identifier.upper), True, a_value)
-                  end
-               end
-               if not Result and then parent /= Void then
-                  Result := parent.setup_expression(identifier, False, a_value)
-               end
-               if not Result and then assign_if_new then
-                  set_local(identifier, a_value)
-                  Result := True
-               end
-            end
-         end
-      end
-
    add_child (a_child: MIXUP_CONTEXT) is
       do
          children.put(a_child, a_child.name)
@@ -115,6 +54,36 @@ feature {}
       do
          a_child.commit(a_player, start_bar_number)
          Result := a_child.bar_number.max(max_bar_number)
+      end
+
+   lookup_in_children (identifier: FIXED_STRING; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
+      local
+         id_prefix: FIXED_STRING; i: INTEGER
+         child: MIXUP_CONTEXT
+      do
+         i := identifier.first_index_of('.')
+         if identifier.valid_index(i) then
+            id_prefix := identifier.substring(identifier.lower, i - 1)
+            child := children.reference_at(id_prefix)
+            if child /= Void and then child /= cut then
+               Result := child.lookup_expression(identifier.substring(i + 1, identifier.upper), False, Current)
+            end
+         end
+      end
+
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; cut: MIXUP_CONTEXT): BOOLEAN is
+      local
+         id_prefix: FIXED_STRING; i: INTEGER
+         child: MIXUP_CONTEXT
+      do
+         i := identifier.first_index_of('.')
+         if identifier.valid_index(i) then
+            id_prefix := identifier.substring(identifier.lower, i - 1)
+            child := children.reference_at(id_prefix)
+            if child /= Void and then child /= cut then
+               Result := child.setup_expression(identifier.substring(i + 1, identifier.upper), True, a_value, Current)
+            end
+         end
       end
 
 feature {}

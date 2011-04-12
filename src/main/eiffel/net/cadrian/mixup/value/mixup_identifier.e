@@ -77,7 +77,7 @@ feature {ANY}
             if value /= Void then
                if value.is_callable then
                   args := parts.item(i).eval_args(a_context, a_player)
-                  Result := value.call(a_context, a_player, args)
+                  Result := value.call(a_player, args)
                else
                   Result := value
                end

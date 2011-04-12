@@ -73,7 +73,7 @@ feature {ANY}
       local
          expression: MIXUP_EXPRESSION
       do
-         expression := lookup_expression(identifier, search_parent)
+         expression := lookup_expression(identifier, search_parent, Void)
          if expression /= Void then
             Result := expression.eval(Current, a_player)
          end
@@ -94,7 +94,7 @@ feature {ANY}
       local
          done: BOOLEAN
       do
-         done := setup_expression(identifier, True, a_value)
+         done := setup_expression(identifier, True, a_value, Void)
          if not done then
             fatal("could not assign value to " + identifier.out)
          end
@@ -113,7 +113,7 @@ feature {ANY}
       end
 
 feature {MIXUP_CONTEXT}
-   lookup_expression (identifier: FIXED_STRING; search_parent: BOOLEAN): MIXUP_EXPRESSION is
+   lookup_expression (identifier: FIXED_STRING; search_parent: BOOLEAN; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
       require
          identifier /= Void
       do
@@ -121,12 +121,18 @@ feature {MIXUP_CONTEXT}
          if Result = Void then
             Result := expressions.reference_at(identifier)
          end
-         if Result = Void and then search_parent and then parent /= Void then
-            Result := parent.lookup_expression(identifier, True)
+         if Result = Void then
+            Result := lookup_in_children(identifier, cut)
+            if Result = Void then
+               Result := lookup_in_imports(identifier, cut)
+               if Result = Void and then search_parent and then parent /= Void then
+                  Result := parent.lookup_expression(identifier, True, Current)
+               end
+            end
          end
       end
 
-   setup_expression (identifier: FIXED_STRING; assign_if_new: BOOLEAN; a_value: MIXUP_VALUE): BOOLEAN is
+   setup_expression (identifier: FIXED_STRING; assign_if_new: BOOLEAN; a_value: MIXUP_VALUE; cut: MIXUP_CONTEXT): BOOLEAN is
       require
          identifier /= Void
          a_value /= Void
@@ -143,12 +149,16 @@ feature {MIXUP_CONTEXT}
                set_local(identifier, a_value)
                Result := True
             else
-               if parent /= Void then
-                  Result := parent.setup_expression(identifier, False, a_value)
-               end
-               if not Result and then assign_if_new then
-                  set_local(identifier, a_value)
-                  Result := True
+               Result := setup_in_children(identifier, a_value, cut)
+               if not Result then
+                  Result := setup_in_imports(identifier, a_value, cut)
+                  if not Result and then parent /= Void then
+                     Result := parent.setup_expression(identifier, False, a_value, Current)
+                  end
+                  if not Result and then assign_if_new then
+                     set_local(identifier, a_value)
+                     Result := True
+                  end
                end
             end
          end
@@ -157,12 +167,67 @@ feature {MIXUP_CONTEXT}
    add_child (a_child: MIXUP_CONTEXT) is
       require
          a_child /= Void
+         not ({MIXUP_IMPORT} ?:= a_child)
       deferred
+      end
+
+   add_import (a_import: MIXUP_IMPORT) is
+      require
+         a_import /= Void
+      do
+         imports.add_last(a_import)
       end
 
 feature {}
    expressions: DICTIONARY[MIXUP_EXPRESSION, FIXED_STRING]
    parent: MIXUP_CONTEXT
+   imports: FAST_ARRAY[MIXUP_IMPORT]
+
+   lookup_in_children (identifier: FIXED_STRING; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
+      require
+         identifier /= Void
+      deferred
+      end
+
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; cut: MIXUP_CONTEXT): BOOLEAN is
+      require
+         identifier /= Void
+         a_value /= Void
+      deferred
+      end
+
+   lookup_in_imports (identifier: FIXED_STRING; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
+      require
+         identifier /= Void
+      local
+         i: INTEGER
+      do
+         from
+            i := imports.lower
+         until
+            Result /= Void or else i > imports.upper
+         loop
+            Result := imports.item(i).lookup_expression(identifier, False, Current)
+            i := i + 1
+         end
+      end
+
+   setup_in_imports (identifier: FIXED_STRING; a_value: MIXUP_VALUE; cut: MIXUP_CONTEXT): BOOLEAN is
+      require
+         identifier /= Void
+         a_value /= Void
+      local
+         i: INTEGER
+      do
+         from
+            i := imports.lower
+         until
+            Result or else i > imports.upper
+         loop
+            Result := imports.item(i).setup_expression(identifier, False, a_value, Current)
+            i := i + 1
+         end
+      end
 
 feature {}
    make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent) is
@@ -171,9 +236,10 @@ feature {}
          name := a_name.intern
          parent := a_parent
          create {HASHED_DICTIONARY[MIXUP_EXPRESSION, FIXED_STRING]} expressions.make
+         create imports.make(0)
 
          if a_parent /= Void then
-            a_parent.add_child(Current)
+            add_to_parent(a_parent)
          end
 
          create resolver.make(Current)
@@ -184,10 +250,16 @@ feature {}
          parent = a_parent
       end
 
+   add_to_parent (a_parent: MIXUP_CONTEXT) is
+      do
+         a_parent.add_child(Current)
+      end
+
 invariant
    source /= Void
    name /= Void
    expressions /= Void
    resolver /= Void
+   imports /= Void
 
 end -- class MIXUP_CONTEXT

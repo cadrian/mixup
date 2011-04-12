@@ -29,39 +29,43 @@ feature {ANY}
          v.visit_user_function(Current)
       end
 
-   call (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   call (a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       local
-         context: MIXUP_USER_FUNCTION_CONTEXT
+         fn_context: MIXUP_USER_FUNCTION_CONTEXT
       do
-         context := prepare(a_context, a_player, a_args)
-         context.execute
-         if context.yielded then
-            create {MIXUP_YIELD_ITERATOR} Result.make(source, context) -- TODO: wrong! must get the yield instruction source!
+         fn_context := prepare(a_player, a_args)
+         fn_context.execute
+         if fn_context.yielded then
+            create {MIXUP_YIELD_ITERATOR} Result.make(source, fn_context) -- TODO: wrong! must get the yield instruction source!
          else
-            Result := context.value
+            Result := fn_context.value
          end
       end
 
 feature {}
-   make (a_source: like source; a_statements: like statements; a_signature: like signature) is
+   make (a_source: like source; a_context: like context; a_statements: like statements; a_signature: like signature) is
       require
          a_source /= Void
+         a_context /= Void
          a_statements /= Void
          a_statements /= Void
       do
          source := a_source
+         context := a_context
          statements := a_statements
          signature := a_signature
       ensure
          source = a_source
+         context = a_context
          statements = a_statements
          signature = a_signature
       end
 
+   context: MIXUP_CONTEXT
    statements: TRAVERSABLE[MIXUP_STATEMENT]
    signature: TRAVERSABLE[FIXED_STRING]
 
-   prepare (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_USER_FUNCTION_CONTEXT is
+   prepare (a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_USER_FUNCTION_CONTEXT is
       local
          args: HASHED_DICTIONARY[MIXUP_VALUE, FIXED_STRING]
          zip: ZIP[MIXUP_VALUE, FIXED_STRING]
@@ -72,8 +76,8 @@ feature {}
             create args.with_capacity(signature.count)
             create zip.make(a_args, signature)
             zip.do_all(agent args.add)
-            create Result.make(source, a_context, a_player, args)
-            Result.set_bar_number(a_context.bar_number)
+            create Result.make(source, context, a_player, args)
+            Result.set_bar_number(context.bar_number)
             Result.add_statements(statements)
          end
       ensure
@@ -81,6 +85,7 @@ feature {}
       end
 
 invariant
+   context /= Void
    statements /= Void
    signature /= Void
 

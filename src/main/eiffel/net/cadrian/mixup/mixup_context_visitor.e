@@ -77,4 +77,18 @@ feature {MIXUP_MODULE}
       do
       end
 
+feature {MIXUP_IMPORT}
+   visit_import (a_import: MIXUP_IMPORT) is
+      require
+         a_import /= Void
+      do
+      end
+
+feature {MIXUP_FROM_IMPORT}
+   visit_from_import (a_from_import: MIXUP_FROM_IMPORT) is
+      require
+         a_from_import /= Void
+      do
+      end
+
 end -- class MIXUP_CONTEXT_VISITOR

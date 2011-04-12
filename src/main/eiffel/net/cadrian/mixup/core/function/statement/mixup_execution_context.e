@@ -56,7 +56,7 @@ feature {}
       local
          value: MIXUP_VALUE
       do
-         value := a_function.call(context, context.player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
+         value := a_function.call(context.player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
          if value = Void then
             error("value could not be computed")
          else

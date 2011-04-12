@@ -94,6 +94,15 @@ feature {MIXUP_CONTEXT}
       end
 
 feature {}
+   lookup_in_children (identifier: FIXED_STRING; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
+      do
+      end
+
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; cut: MIXUP_CONTEXT): BOOLEAN is
+      do
+      end
+
+feature {}
    make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent) is
       do
          context_make(a_source, a_name, a_parent)

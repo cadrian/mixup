@@ -35,17 +35,9 @@ feature {ANY}
          a_piece /= Void
          a_file /= Void
       local
-         context: MIXUP_CONTEXT
-         file: FIXED_STRING
+         ignored: MIXUP_CONTEXT
       do
-         file := a_file.intern
-         create {MIXUP_SOURCE_IMPL} source.make(a_piece, file, 0, 0)
-         context := parser.parse(a_piece, file)
-         if contexts.has(context.name) then
-            warning("duplicate context name: " + context.name)
-         else
-            contexts.add(context, context.name)
-         end
+         ignored := do_add_piece(a_piece, a_file.intern)
       end
 
    add_player (a_player: MIXUP_PLAYER) is
@@ -56,6 +48,38 @@ feature {ANY}
       end
 
 feature {}
+   do_add_piece (a_piece: MIXUP_NODE; a_file: FIXED_STRING): MIXUP_CONTEXT is
+      require
+         a_piece /= Void
+         a_file /= Void
+      do
+         create {MIXUP_SOURCE_IMPL} source.make(a_piece, a_file, 0, 0)
+         Result := parser.parse(a_piece, a_file, agent import_context)
+         if contexts.has(Result.name) then
+            warning("duplicate context name: " + Result.name)
+         else
+            contexts.add(Result, Result.name)
+         end
+      end
+
+   import_context (a_source: like source; a_name: FIXED_STRING): MIXUP_CONTEXT is
+      require
+         a_source /= Void
+         a_name /= Void
+      local
+         file: TUPLE[MIXUP_NODE, FIXED_STRING]
+      do
+         Result := contexts.reference_at(a_name)
+         if Result = Void then
+            file := file_reader.item([a_name])
+            if file = Void then
+               fatal_at(a_source, "Could not find module: " + a_name.out)
+            else
+               Result := do_add_piece(file.first, file.second)
+            end
+         end
+      end
+
    play_context (a_context: MIXUP_CONTEXT) is
       require
          a_context /= Void
@@ -245,17 +269,24 @@ feature {}
    parser: MIXUP_PARSER
    players: COLLECTION[MIXUP_PLAYER]
    contexts: DICTIONARY[MIXUP_CONTEXT, FIXED_STRING]
+   file_reader: FUNCTION[TUPLE[FIXED_STRING], TUPLE[MIXUP_NODE, FIXED_STRING]]
 
-   make is
+   make (a_file_reader: like file_reader) is
+      require
+         a_file_reader /= Void
       do
          create parser.make(Current)
          create {FAST_ARRAY[MIXUP_PLAYER]} players.make(0)
          create {HASHED_DICTIONARY[MIXUP_CONTEXT, FIXED_STRING]} contexts.make
+         file_reader := a_file_reader
+      ensure
+         file_reader = a_file_reader
       end
 
 invariant
    parser /= Void
    players /= Void
    contexts /= Void
+   file_reader /= Void
 
 end -- class MIXUP_MIXER_IMPL

@@ -36,6 +36,15 @@ feature {ANY}
          v.visit_module(Current)
       end
 
+feature {}
+   lookup_in_children (identifier: FIXED_STRING; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
+      do
+      end
+
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; cut: MIXUP_CONTEXT): BOOLEAN is
+      do
+      end
+
 feature {MIXUP_CONTEXT}
    add_child (a_child: MIXUP_CONTEXT) is
       do

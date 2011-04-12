@@ -45,10 +45,9 @@ feature {ANY}
       end
 
    is_callable: BOOLEAN is False
-   call (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   call (a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       require
          is_callable
-         a_context /= Void
          a_args /= Void
       do
          crash
