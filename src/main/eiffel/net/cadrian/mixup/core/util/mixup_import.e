@@ -22,9 +22,6 @@ inherit
          add_to_parent
       end
 
-insert
-   MIXUP_ERRORS
-
 create {ANY}
    make
 

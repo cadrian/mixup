@@ -20,9 +20,6 @@ inherit
          make as context_make
       end
 
-insert
-   MIXUP_ERRORS
-
 feature {ANY}
    commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER) is
       require
