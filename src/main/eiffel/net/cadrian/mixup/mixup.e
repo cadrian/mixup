@@ -34,6 +34,7 @@ feature {}
       do
          create grammar
          create mixer.make(agent parse_file)
+         create {LINKED_HASHED_DICTIONARY[DIRECTORY, FIXED_STRING]} load_paths.make
 
          configure
          if argument_count /= 1 then
@@ -58,6 +59,7 @@ feature {}
    configure is
       do
          set_log
+         set_load_paths
          mixer.add_player(create {MIXUP_LILYPOND_PLAYER}.make)
          mixer.add_player(create {MIXUP_MIDI_PLAYER}.make)
       end
@@ -110,26 +112,34 @@ feature {}
 
    find_file (a_name: FIXED_STRING): FIXED_STRING is
       local
-         name, path: STRING
+         name, path: STRING; dir: DIRECTORY
       do
          name := a_name.out
          if not name.has_suffix(once ".mix") then
             name.append(once ".mix")
          end
-         if current_directory /= Void and then current_directory.has_file(name) then
-            path := current_directory.path.out
-         elseif user_directory /= Void and then user_directory.has_file(name) then
-            path := user_directory.path.out
-         elseif system_directory /= Void and then system_directory.has_file(name) then
-            path := system_directory.path.out
-         else
+         dir := load_paths.aggregate_items(agent find_file_in_dir(name, ?, ?), Void)
+         if dir = Void then
             log.error.put_line("Could not find file: " + name)
             die_with_code(1)
          end
+         path := dir.path.out
          system_notation.to_file_path_with(path, name)
          Result := path.intern
       ensure
          exists_or_dead: Result /= Void
+      end
+
+   find_file_in_dir (a_name: STRING; found_directory, a_directory: DIRECTORY): DIRECTORY is
+      require
+         a_name /= Void
+         a_directory /= Void
+      do
+         if found_directory /= Void then
+            Result := found_directory
+         elseif a_directory.has_file(a_name) then
+            Result := a_directory
+         end
       end
 
    parse_file (a_name: FIXED_STRING): TUPLE[MIXUP_NODE, FIXED_STRING] is
@@ -144,10 +154,12 @@ feature {}
          exists_or_dead: Result /= Void
       end
 
-feature {} -- low-level files cuisine
+feature {} -- Low-level files cuisine
    current_directory: DIRECTORY is
       once
          create Result.scan_current_working_directory
+      ensure
+         Result.exists
       end
 
    user_directory: DIRECTORY is
@@ -162,27 +174,6 @@ feature {} -- low-level files cuisine
          if system /= Void then
             create Result.scan(system)
          end
-      end
-
-   set_log is
-      local
-         logrc: STRING
-         ft: FILE_TOOLS
-         conf: LOG_CONFIGURATION
-      once
-         if home /= Void then
-            logrc := home.out
-            system_notation.to_file_path_with(logrc, once "log.rc")
-            if ft.file_exists(logrc) and then ft.is_file(logrc) then
-               conf.load(create {TEXT_FILE_READ}.connect_to(logrc), agent on_log_error, Void)
-            end
-         end
-      end
-
-   on_log_error (msg: STRING) is
-      do
-         log.error.put_line(msg)
-         die_with_code(1)
       end
 
    home: FIXED_STRING is
@@ -246,5 +237,81 @@ feature {} -- low-level files cuisine
             die_with_code(1)
          end
       end
+
+feature {} -- Logs
+   set_log is
+      local
+         logrc: STRING
+         ft: FILE_TOOLS
+         conf: LOG_CONFIGURATION
+      once
+         if home /= Void then
+            logrc := home.out
+            system_notation.to_file_path_with(logrc, once "log.rc")
+            if ft.file_exists(logrc) and then ft.is_file(logrc) then
+               conf.load(create {TEXT_FILE_READ}.connect_to(logrc), agent on_log_error, Void)
+            end
+         end
+      end
+
+   on_log_error (msg: STRING) is
+      do
+         log.error.put_line(msg)
+         die_with_code(1)
+      end
+
+feature {} -- Load paths
+   set_load_paths is
+      do
+         load_paths.clear_count
+         add_load_path(current_directory)
+         if user_directory /= Void then
+            add_load_path(user_directory)
+            set_load_paths_from(user_directory)
+         end
+         if system_directory /= Void then
+            add_load_path(system_directory)
+            set_load_paths_from(system_directory)
+         end
+      end
+
+   set_load_paths_from (a_directory: DIRECTORY) is
+      local
+         input: INPUT_STREAM
+         path: FIXED_STRING
+         dir: DIRECTORY
+      do
+         if a_directory.has_file(once "load_paths") then
+            from
+               input := a_directory.file(once "load_paths").as_regular.read
+            until
+               input.end_of_input
+            loop
+               input.read_line
+               if not input.last_string.is_empty then
+                  path := input.last_string.intern
+                  if not load_paths.fast_has(path) then
+                     create dir.scan(path)
+                     if dir.exists then
+                        add_load_path(dir)
+                     end
+                  end
+               end
+            end
+         end
+      end
+
+   add_load_path (a_dir: DIRECTORY) is
+      require
+         a_dir.exists
+      do
+         log.info.put_line("Adding load path: " + a_dir.path.out)
+         load_paths.add(a_dir, a_dir.path)
+      end
+
+   load_paths: DICTIONARY[DIRECTORY, FIXED_STRING]
+
+invariant
+   load_paths /= Void
 
 end -- class MIXUP
