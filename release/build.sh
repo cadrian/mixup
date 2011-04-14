@@ -71,7 +71,7 @@ default
     assertion(boost)
     debug(no)
     trace(no)
-    no_style_warning (no)
+    no_style_warning(no)
     no_warning(no)
     verbose(no)
     manifest_string_trace(no)
@@ -84,7 +84,7 @@ cluster
     main: "${INSTALL_DIR}/src/main/eiffel/loadpath.se"
 
 generate
-    no_strip(yes)
+    no_strip(no)
     clean(no)
     c_compiler_options: "-g -pipe -Os"
     split("by_type")

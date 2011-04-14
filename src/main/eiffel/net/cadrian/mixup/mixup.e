@@ -42,7 +42,7 @@ feature {}
             die_with_code(1)
          end
 
-         file := find_file(argument(1).intern)
+         file := find_file(argument(1).intern, once ".mix")
          mixer.add_piece(parse(read_file(file)), file)
 
          mixer.play
@@ -58,8 +58,8 @@ feature {}
 
    configure is
       do
-         set_log
          set_load_paths
+         set_log
          mixer.add_player(create {MIXUP_LILYPOND_PLAYER}.make)
          mixer.add_player(create {MIXUP_MIDI_PLAYER}.make)
       end
@@ -110,13 +110,15 @@ feature {}
          exists_or_dead: Result /= Void
       end
 
-   find_file (a_name: FIXED_STRING): FIXED_STRING is
+   find_file (a_name: FIXED_STRING; a_suffix: STRING): FIXED_STRING is
+      require
+         a_name /= Void
       local
          name, path: STRING; dir: DIRECTORY
       do
          name := a_name.out
-         if not name.has_suffix(once ".mix") then
-            name.append(once ".mix")
+         if a_suffix /= Void and then not name.has_suffix(a_suffix) then
+            name.append(a_suffix)
          end
          dir := load_paths.aggregate_items(agent find_file_in_dir(name, ?, ?), Void)
          if dir = Void then
@@ -148,7 +150,7 @@ feature {}
       local
          file: FIXED_STRING
       do
-         file := find_file(a_name)
+         file := find_file(a_name, once ".mix")
          Result := [parse(read_file(file)), file]
       ensure
          exists_or_dead: Result /= Void
@@ -193,12 +195,15 @@ feature {} -- Low-level files cuisine
 
    system: FIXED_STRING is
       once
-         Result := if_exists("/usr/share/mixup")
+         Result := if_exists("/etc/mixup")
+         if Result = Void then
+            Result := if_exists("/usr/share/mixup")
+         end
          if Result = Void then
             Result := if_exists("/usr/local/share/mixup")
          end
          if Result = Void then
-            Result := if_exists("C:/Program Files/mixup/modules")
+            Result := if_exists("C:/Program Files/mixup")
          end
          if Result = Void then
             log.warning.put_line("Could not find the MiXuP installation directory.")
@@ -233,7 +238,7 @@ feature {} -- Low-level files cuisine
          end
          if Result = Void then
             log.error.put_line("Could not detect your operating system.")
-            log.error.put_line("Please drop a hint to cyril.adrian@gmail.com")
+            log.error.put_line("Please drop a hint to <cyril.adrian@gmail.com>")
             die_with_code(1)
          end
       end
@@ -241,16 +246,12 @@ feature {} -- Low-level files cuisine
 feature {} -- Logs
    set_log is
       local
-         logrc: STRING
-         ft: FILE_TOOLS
+         logrc: FIXED_STRING
          conf: LOG_CONFIGURATION
       once
-         if home /= Void then
-            logrc := home.out
-            system_notation.to_file_path_with(logrc, once "log.rc")
-            if ft.file_exists(logrc) and then ft.is_file(logrc) then
-               conf.load(create {TEXT_FILE_READ}.connect_to(logrc), agent on_log_error, Void)
-            end
+         logrc := find_file("log.rc".intern, Void)
+         if logrc /= Void then
+            conf.load(create {TEXT_FILE_READ}.connect_to(logrc), agent on_log_error, Void)
          end
       end
 
@@ -305,7 +306,6 @@ feature {} -- Load paths
       require
          a_dir.exists
       do
-         log.info.put_line("Adding load path: " + a_dir.path.out)
          load_paths.add(a_dir, a_dir.path)
       end
 
