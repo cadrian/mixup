@@ -260,7 +260,9 @@ feature {MIXUP_TERMINAL_NODE_IMPL}
          when "KW note head" then
             last_note_head.copy(node.image.image)
          else
-            log.trace.put_line("Skipped terminal node: " + node.name)
+            debug
+               log.trace.put_line("Skipped terminal node: " + node.name)
+            end
             -- skipped
          end
       end
