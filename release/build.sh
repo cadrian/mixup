@@ -39,7 +39,7 @@ logger
         IN_FILE is
                 like ON_CONSOLE with
                 output mixup_log
-                level trace
+                level info
                 end
 
 end
@@ -47,21 +47,8 @@ end
 EOF
 }
 
-export PREFIX=${PREFIX:-/usr/local}
-
-cd $(dirname $0)
-RELEASE_DIR=$(pwd)
-
-PACKAGE_DIR=${RELEASE_DIR}/mixup-$(date +'%Y%m%d-%H%M%S')
-
-cd ..
-INSTALL_DIR=$(pwd)
-
-BUILD_DIR=${INSTALL_DIR}/target
-test -d ${BUILD_DIR} || mkdir ${BUILD_DIR}
-cd ${BUILD_DIR}
-
-cat > mixup.ace <<EOF
+ace_release() {
+    cat <<EOF
 system "mixup"
 
 root
@@ -92,6 +79,71 @@ generate
 end
 
 EOF
+}
+
+ace_test() {
+    cat <<EOF
+system "mixup"
+
+root
+    MIXUP: make
+
+default
+    assertion(require)
+    assertion_flat_check(yes)
+    debug(no)
+    trace(yes)
+    no_style_warning(no)
+    no_warning(no)
+    verbose(no)
+    manifest_string_trace(no)
+    high_memory_compiler(yes)
+    profile(no)
+    relax(yes)
+
+cluster
+    liberty: "\${path_liberty}/src/loadpath.se"
+        option
+            debug(yes): ABSTRACT_STRING, FIXED_STRING, NATIVELY_STORED_STRING, STRING
+            --debug("parse"): DESCENDING_PARSER, PARSE_TERMINAL, PARSE_NT_NODE, PARSE_NON_TERMINAL
+            --debug("parse/eiffel/build"): EIFFEL_GRAMMAR
+            assertion(no): DESCENDING_PARSER, PARSE_TERMINAL, PARSE_NT_NODE, PARSE_NON_TERMINAL, EIFFEL_GRAMMAR, LOGGER, LOGGING, LOG_INTERNAL_CONF
+        end
+
+    main: "${INSTALL_DIR}/src/main/eiffel/loadpath.se"
+        default
+            assertion(all)
+            debug(yes)
+        option
+            assertion(no): MIXUP_GRAMMAR
+            debug(no): MIXUP_GRAMMAR, MIXUP_PARSER
+        end
+
+generate
+    no_strip(yes)
+    clean(no)
+    c_compiler_options: "-g -pipe -O1"
+    split("by_type")
+
+end
+
+EOF
+}
+
+export PREFIX=${PREFIX:-/usr/local}
+export LEVEL=release
+
+cd $(dirname $0)
+RELEASE_DIR=$(pwd)
+
+PACKAGE_DIR=${RELEASE_DIR}/mixup-$(date +'%Y%m%d-%H%M%S')
+
+cd ..
+INSTALL_DIR=$(pwd)
+
+BUILD_DIR=${INSTALL_DIR}/target
+test -d ${BUILD_DIR} || mkdir ${BUILD_DIR}
+cd ${BUILD_DIR}
 
 MUST_CLEAN=false
 MUST_INSTALL=false
@@ -117,6 +169,9 @@ while [ $# -gt 0 ]; do
         -install)
             MUST_INSTALL=true
             ;;
+        -test)
+            LEVEL=test
+            ;;
         *)
             echo "Unknown option: $1" >&2
             usage >&2
@@ -125,6 +180,8 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
+
+ace_${LEVEL} > mixup.ace
 
 if ${MUST_CLEAN}; then
     echo '~~~~ Cleaning'
