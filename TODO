@@ -5,4 +5,4 @@
   vs. MIXUP_INSTRUMENT to avoid redefines and having a useless
   "children" attribute in MIXUP_INSTRUMENT
 
-- external module loading
+- external module loading                                                  DONE
