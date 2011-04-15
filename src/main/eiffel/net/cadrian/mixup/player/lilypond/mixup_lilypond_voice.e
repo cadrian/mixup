@@ -62,7 +62,7 @@ feature {MIXUP_LILYPOND_STAFF}
          if style = Void then
             notes.append(" | ")
          else
-            notes.append("\bar %"" + style.out + "%"")
+            notes.append(" \bar %"" + style.out + "%"")
          end
       end
 
@@ -129,6 +129,7 @@ feature {MIXUP_CHORD}
 feature {}
    append_note_head (anchor, note: MIXUP_NOTE_HEAD) is
       do
+         notes.extend(' ')
          notes.append(note.note.out) -- TODO: octave skips
       end
 
