@@ -15,7 +15,7 @@
 class MIXUP_LILYPOND_PLAYER
 
 inherit
-   MIXUP_PLAYER
+   MIXUP_CORE_PLAYER
 
 create {ANY}
    make, connect_to
@@ -33,37 +33,37 @@ feature {ANY}
       end
 
 feature {ANY}
-   set_score (name: ABSTRACT_STRING) is
+   play_set_score (name: ABSTRACT_STRING) is
       do
          push_section(once "score", name)
       end
 
-   end_score is
+   play_end_score is
       do
          pop_section
       end
 
-   set_book (name: ABSTRACT_STRING) is
+   play_set_book (name: ABSTRACT_STRING) is
       do
          push_section(once "book", name)
       end
 
-   end_book is
+   play_end_book is
       do
          pop_section
       end
 
-   set_partitur (name: ABSTRACT_STRING) is
+   play_set_partitur (name: ABSTRACT_STRING) is
       do
          push_section(once "partitur", name)
       end
 
-   end_partitur is
+   play_end_partitur is
       do
          pop_section
       end
 
-   set_instrument (name: ABSTRACT_STRING) is
+   play_set_instrument (name: ABSTRACT_STRING) is
       local
          inst_name: FIXED_STRING
          instrument: MIXUP_LILYPOND_INSTRUMENT
@@ -74,58 +74,58 @@ feature {ANY}
          bar_number := 0
       end
 
-   set_dynamics (instrument: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
+   play_set_dynamics (instrument: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
       do
          instruments.reference_at(instrument.intern).set_dynamics(dynamics, position)
       end
 
-   set_note (instrument: ABSTRACT_STRING; note: MIXUP_NOTE) is
+   play_set_note (instrument: ABSTRACT_STRING; note: MIXUP_NOTE) is
       do
          instruments.reference_at(instrument.intern).set_note(note)
       end
 
-   next_bar (instrument: ABSTRACT_STRING; style: ABSTRACT_STRING) is
+   play_next_bar (instrument: ABSTRACT_STRING; style: ABSTRACT_STRING) is
       do
          instruments.reference_at(instrument.intern).next_bar(style)
          bar_number := bar_number + 1
       end
 
-   start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
          instruments.reference_at(instrument.intern).start_beam(xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_beam (instrument: ABSTRACT_STRING) is
+   play_end_beam (instrument: ABSTRACT_STRING) is
       do
          instruments.reference_at(instrument.intern).end_beam
       end
 
-   start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
          instruments.reference_at(instrument.intern).start_slur(xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_slur (instrument: ABSTRACT_STRING) is
+   play_end_slur (instrument: ABSTRACT_STRING) is
       do
          instruments.reference_at(instrument.intern).end_slur
       end
 
-   start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
          instruments.reference_at(instrument.intern).start_tie(xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_tie (instrument: ABSTRACT_STRING) is
+   play_end_tie (instrument: ABSTRACT_STRING) is
       do
          instruments.reference_at(instrument.intern).end_tie
       end
 
-   start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
+   play_start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
       do
          instruments.reference_at(instrument.intern).start_repeat(volte)
       end
 
-   end_repeat (instrument: ABSTRACT_STRING) is
+   play_end_repeat (instrument: ABSTRACT_STRING) is
       do
          instruments.reference_at(instrument.intern).end_repeat
       end

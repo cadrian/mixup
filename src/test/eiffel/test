@@ -15,7 +15,7 @@ default
     assertion_flat_check(yes)
     debug(no)
     trace(yes)
-    no_style_warning (no)
+    no_style_warning(no)
     no_warning(no)
     verbose(no)
     manifest_string_trace(no)
