@@ -23,6 +23,8 @@ create {ANY}
 feature {ANY}
    value: E_
 
+   is_callable: BOOLEAN is False
+
 feature {}
    make (a_source: like source; a_value: like value) is
       require

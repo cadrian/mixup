@@ -21,6 +21,8 @@ create {ANY}
    make
 
 feature {ANY}
+   is_callable: BOOLEAN is False
+
    value: MIXUP_VALUE is
       do
          Result := context.value

@@ -24,6 +24,8 @@ create {ANY}
    make
 
 feature {ANY}
+   is_callable: BOOLEAN is False
+
    add_identifier_part (a_source: like source; name: ABSTRACT_STRING) is
       require
          name /= Void

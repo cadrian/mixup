@@ -18,8 +18,6 @@ inherit
    MIXUP_VALUE
       undefine
          call
-      redefine
-         is_callable
       end
 
 feature {ANY}

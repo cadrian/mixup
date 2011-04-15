@@ -28,6 +28,8 @@ create {ANY}
    make
 
 feature {ANY}
+   is_callable: BOOLEAN is False
+
    accept (visitor: VISITOR) is
       local
          v: MIXUP_VALUE_VISITOR

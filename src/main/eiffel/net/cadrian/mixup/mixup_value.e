@@ -44,7 +44,10 @@ feature {ANY}
          crash
       end
 
-   is_callable: BOOLEAN is False
+   is_callable: BOOLEAN is
+      deferred
+      end
+
    call (a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       require
          is_callable
