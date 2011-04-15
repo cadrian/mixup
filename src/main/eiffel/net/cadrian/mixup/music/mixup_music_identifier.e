@@ -37,34 +37,8 @@ feature {ANY}
       end
 
    commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
-      local
-         music_value: MIXUP_MUSIC_VALUE
-         music_store: MIXUP_MUSIC_STORE
-         value: MIXUP_VALUE
       do
-         -- TODO: clean up this horrible if/elseif type check (use a visitor!)
-
-         debug
-            log.trace.put_line("Committing music identifier: " + identifier.as_name)
-         end
-         value := a_context.resolver.resolve(identifier, a_player)
-         if value = Void then
-            fatal("unknown identifier: " + identifier.as_name)
-         elseif music_value ?:= value then
-            music_value ::= value
-            music := music_value.value
-            debug
-               log.trace.put_line("    => " + music.out)
-            end
-         elseif music_store ?:= value then
-            music_store ::= value
-            music := music_store
-            debug
-               log.trace.put_line("    => " + music.out)
-            end
-         else
-            fatal("the identifier: " + identifier.as_name + " does not contain music!")
-         end
+         music := music_evaluator.eval(a_context, a_player)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
@@ -95,6 +69,8 @@ feature {}
          end
          source := a_source
          identifier := a_identifier
+
+         create music_evaluator.make(a_source, a_identifier)
       ensure
          source = a_source
          identifier = a_identifier
@@ -103,7 +79,10 @@ feature {}
    identifier: MIXUP_IDENTIFIER
    music: MIXUP_MUSIC
 
+   music_evaluator: MIXUP_MUSIC_EVALUATOR
+
 invariant
    identifier /= Void
+   music_evaluator /= Void
 
 end -- class MIXUP_MUSIC_IDENTIFIER
