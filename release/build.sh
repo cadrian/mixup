@@ -31,9 +31,14 @@ output
                 rotated each day keeping 3
                 end
 
+        mixup_con is console
+                format "**** @C: @m"
+                end
+
 logger
         ON_CONSOLE is
                 level warning
+                output mixup_con
                 end
 
         IN_FILE is
