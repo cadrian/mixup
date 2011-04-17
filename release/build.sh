@@ -37,8 +37,8 @@ output
 
 logger
         ON_CONSOLE is
-                level warning
                 output mixup_con
+                level warning
                 end
 
         IN_FILE is
