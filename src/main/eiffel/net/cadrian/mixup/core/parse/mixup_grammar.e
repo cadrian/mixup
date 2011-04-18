@@ -43,6 +43,7 @@ create {ANY}
 
 feature {ANY}
    end_reached: BOOLEAN
+   parse_error: PARSE_ERROR
 
    parse (buffer: MINI_PARSER_BUFFER): BOOLEAN is
       require
@@ -53,6 +54,7 @@ feature {ANY}
          create parser.make
          buffer.set_memory(Current)
          Result := parser.eval(buffer, table, once "File")
+         parse_error := parser.error
       end
 
 feature {}
@@ -117,7 +119,7 @@ feature {}
 
                                    "Score", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW score", "KW identifier", "Score_Content" >> }, Void;
                                                                    >> };
-                                   "Score_Content", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Definition*", "Book+" >> }, Void;
+                                   "Score_Content", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Definition*", "Book*" >> }, Void;
                                                                            {FAST_ARRAY[STRING] << "Book_Content" >> }, Void;
                                                                            >> };
 
@@ -139,20 +141,20 @@ feature {}
 
                                    "Identifier+", list_of("Identifier", False, "KW ,");
 
-                                   "Book+", list_of("Book", False, Void);
+                                   "Book*", list_of("Book", True, Void);
                                    "Book", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW book", "KW identifier", "Book_Content" >> }, Void;
                                                                   >> };
-                                   "Book_Content", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Definition*", "Partitur+" >> }, Void;
+                                   "Book_Content", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Definition*", "Partitur*" >> }, Void;
                                                                           {FAST_ARRAY[STRING] << "Partitur_Content" >> }, Void;
                                                                           >> };
 
-                                   "Partitur+", list_of("Partitur", False, Void);
+                                   "Partitur*", list_of("Partitur", True, Void);
                                    "Partitur", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW partitur", "KW identifier", "Partitur_Content" >> }, Void;
                                                                       >> };
-                                   "Partitur_Content", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Definition*", "Instrument+" >> }, Void;
+                                   "Partitur_Content", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Definition*", "Instrument*" >> }, Void;
                                                                               >> };
 
-                                   "Instrument+", list_of("Instrument", False, Void);
+                                   "Instrument*", list_of("Instrument", True, Void);
                                    "Instrument", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW instrument", "KW identifier", "Definition*", "Some_Music", "KW end" >> }, Void;
                                                                         >> };
 

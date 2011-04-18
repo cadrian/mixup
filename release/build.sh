@@ -16,10 +16,10 @@ install() {
     PKG_SHARED=$2
 
     mkdir -p ${PKG_BIN}
-    find . -name 'mixup*' -type f -executable -exec cp {} ${PKG_BIN}/ \;
+    find . -name 'mixup*' -type f -executable -exec cp -a {} ${PKG_BIN}/ \;
 
     mkdir -p ${PKG_SHARED}/modules
-    cp $INSTALL_DIR/src/mixup/* ${PKG_SHARED}/modules/
+    cp -a $INSTALL_DIR/src/mixup/* ${PKG_SHARED}/modules/
 
     cat > ${PKG_SHARED}/log.rc <<EOF
 log configuration
@@ -32,7 +32,7 @@ output
                 end
 
         mixup_con is console
-                format "**** @C: @m"
+                format "**** @C: @m%N"
                 end
 
 logger

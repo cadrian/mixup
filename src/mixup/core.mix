@@ -44,14 +44,16 @@ set store_text := function(memory, str, pos) native "store_text"
 set with_lyrics := function(mus) native "with_lyrics"
 set current_bar_number := function native "current_bar_number"
 
-set repeat_inline := function(volte, mus) do
+set repeat_inline := function(volte, mus)
+                     do
                         Result := new_music_store
                         for i in seq(1, volte) do
                            store_music(Result, mus)
                         end
                      end
 
-set repeat := function(volte, mus) do
+set repeat := function(volte, mus)
+              do
                  Result := new_music_store
                  if current_bar_number > 1 then
                     store_music(Result, bar("||:"))

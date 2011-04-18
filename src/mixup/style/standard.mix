@@ -1,0 +1,10 @@
+module standard
+
+from core import *
+
+export header := function
+                 do
+                     print(title)
+                 end
+
+end

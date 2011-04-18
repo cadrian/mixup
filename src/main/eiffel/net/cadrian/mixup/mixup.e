@@ -30,7 +30,7 @@ feature {}
 
    make is
       local
-         file: FIXED_STRING
+         file: FILE
       do
          create grammar
          create mixer.make(agent parse_file)
@@ -42,8 +42,12 @@ feature {}
             die_with_code(1)
          end
 
+         open_directory := current_directory
          file := find_file(argument(1).intern, once ".mix")
-         mixer.add_piece(parse(read_file(file)), file)
+         mixer.add_piece(parse(read_file(file)), file.path)
+         check
+            open_directory = current_directory
+         end
 
          mixer.play
       end
@@ -69,78 +73,113 @@ feature {}
          a_source /= Void
       local
          evaled: BOOLEAN
+         error: PARSE_ERROR
       do
          grammar.reset
          evaled := grammar.parse(a_source)
          if not evaled then
-            log.error.put_line("Could not parse the source file.")
+            log.error.put_line("Incomplete source file.")
             die_with_code(1)
          end
          Result := grammar.root_node
+         if Result = Void then
+            log.error.put_line("Could not parse the source file.")
+            from
+               error := grammar.parse_error
+            until
+               error = Void
+            loop
+               log.error.put_line(error.message + " (@" + error.index.out + ")")
+               error := error.next
+            end
+            die_with_code(1)
+         end
       ensure
          exists_or_dead: Result /= Void
       end
 
-   read_file (a_file_name: FIXED_STRING): MINI_PARSER_BUFFER is
+   open_directory: DIRECTORY
+
+   read_file (a_file: FILE): MINI_PARSER_BUFFER is
       require
-         a_file_name /= Void
+         a_file /= Void
       local
          source: STRING
-         tfr: TEXT_FILE_READ
+         input: INPUT_STREAM
       do
-         create tfr.connect_to(a_file_name)
-         if not tfr.is_connected then
-            log.error.put_line("Could not open " + a_file_name.out + " for reading (not a regular file?)")
+         if not a_file.is_regular then
+            log.error.put_line("Could not open " + a_file.path.out + " for reading (is it a directory?)")
             die_with_code(1)
          end
-         log.info.put_line("Reading " + a_file_name.out)
+         input := a_file.as_regular.read
+         if input = Void or else not input.is_connected then
+            log.error.put_line("Could not open " + a_file.path.out + " for reading (is it a regular file?)")
+            die_with_code(1)
+         end
+         log.info.put_line("Reading " + a_file.path.out)
          from
             source := ""
          until
-            tfr.end_of_input
+            input.end_of_input
          loop
-            tfr.read_line
-            source.append(tfr.last_string)
+            input.read_line
+            source.append(input.last_string)
             source.extend('%N')
          end
-         tfr.disconnect
+         input.disconnect
          create Result
          Result.initialize_with(source)
       ensure
          exists_or_dead: Result /= Void
       end
 
-   find_file (a_name: FIXED_STRING; a_suffix: STRING): FIXED_STRING is
+   find_file (a_name: FIXED_STRING; a_suffix: STRING): FILE is
       require
          a_name /= Void
       local
-         name, path: STRING; dir: DIRECTORY
+         name: STRING
+         file_finder: AGGREGATOR[DIRECTORY, FILE]
       do
          name := a_name.out
          if a_suffix /= Void and then not name.has_suffix(a_suffix) then
             name.append(a_suffix)
          end
-         dir := load_paths.aggregate_items(agent find_file_in_dir(name, ?, ?), Void)
-         if dir = Void then
+         Result := file_finder.map(load_paths,
+                                   agent find_file_in_dir(name.intern, ?, ?),
+                                   find_file_in_dir(name.intern, open_directory, Void))
+         if Result = Void then
             log.error.put_line("Could not find file: " + name)
             die_with_code(1)
          end
-         path := dir.path.out
-         system_notation.to_file_path_with(path, name)
-         Result := path.intern
       ensure
          exists_or_dead: Result /= Void
       end
 
-   find_file_in_dir (a_name: STRING; found_directory, a_directory: DIRECTORY): DIRECTORY is
+   find_file_in_dir (a_name: FIXED_STRING; a_directory: DIRECTORY; found_file: FILE): FILE is
       require
          a_name /= Void
          a_directory /= Void
+      local
+         dot_index: INTEGER
+         dirname, basename: FIXED_STRING
+         dir: DIRECTORY
       do
-         if found_directory /= Void then
-            Result := found_directory
+         if found_file /= Void then
+            Result := found_file
          elseif a_directory.has_file(a_name) then
-            Result := a_directory
+            Result := a_directory.file(a_name)
+            open_directory := a_directory
+         else
+            dot_index := a_name.first_index_of('.')
+            if dot_index < a_name.upper - 4 then -- because the last dot belongs to the ".mix" suffix
+               dirname := a_name.substring(a_name.lower, dot_index - 1)
+               if a_directory.has_file(dirname) and then a_directory.file(dirname).is_directory then
+                  dir := a_directory.file(dirname).as_directory
+                  basename := a_name.substring(dot_index + 1, a_name.upper)
+                  log.info.put_line(a_name + ": looking for " + basename + " in " + dir.path)
+                  Result := find_file_in_dir(basename, dir, Void)
+               end
+            end
          end
       end
 
@@ -148,10 +187,13 @@ feature {}
       require
          a_name /= Void
       local
-         file: FIXED_STRING
+         file: FILE
+         old_directory: like open_directory
       do
+         old_directory := open_directory
          file := find_file(a_name, once ".mix")
-         Result := [parse(read_file(file)), file]
+         Result := [parse(read_file(file)), file.path]
+         open_directory := old_directory
       ensure
          exists_or_dead: Result /= Void
       end
@@ -246,12 +288,13 @@ feature {} -- Low-level files cuisine
 feature {} -- Logs
    set_log is
       local
-         logrc: FIXED_STRING
+         logrc: FILE
          conf: LOG_CONFIGURATION
       once
+         open_directory := current_directory
          logrc := find_file("log.rc".intern, Void)
-         if logrc /= Void then
-            conf.load(create {TEXT_FILE_READ}.connect_to(logrc), agent on_log_error, Void)
+         if logrc /= Void and then logrc.is_regular then
+            conf.load(logrc.as_regular.read, agent on_log_error, Void)
          end
       end
 
@@ -265,7 +308,6 @@ feature {} -- Load paths
    set_load_paths is
       do
          load_paths.clear_count
-         add_load_path(current_directory)
          if user_directory /= Void then
             add_load_path(user_directory)
             set_load_paths_from(user_directory)

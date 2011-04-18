@@ -67,15 +67,19 @@ feature {}
 
    prepare (a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_USER_FUNCTION_CONTEXT is
       local
-         args: HASHED_DICTIONARY[MIXUP_VALUE, FIXED_STRING]
+         args: DICTIONARY[MIXUP_VALUE, FIXED_STRING]
          zip: ZIP[MIXUP_VALUE, FIXED_STRING]
       do
          if a_args.count /= signature.count then
             fatal("incorrect arguments number")
          else
-            create args.with_capacity(signature.count)
-            create zip.make(a_args, signature)
-            zip.do_all(agent args.add)
+            if signature.count = 0 then
+               create {ARRAY_DICTIONARY[MIXUP_VALUE, FIXED_STRING]} args.with_capacity(0)
+            else
+               create {HASHED_DICTIONARY[MIXUP_VALUE, FIXED_STRING]} args.with_capacity(signature.count)
+               create zip.make(a_args, signature)
+               zip.do_all(agent args.add)
+            end
             create Result.make(source, context, a_player, args)
             Result.set_bar_number(context.bar_number)
             Result.add_statements(statements)

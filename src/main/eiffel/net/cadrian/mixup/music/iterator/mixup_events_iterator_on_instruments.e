@@ -26,6 +26,12 @@ inherit
          visit_instrument
       end
 
+insert
+   MIXUP_ERRORS
+      undefine
+         is_equal
+      end
+
 create {MIXUP_MIXER_CONDUCTOR}
    make
 
@@ -42,6 +48,9 @@ feature {}
       do
          create {FAST_ARRAY[MIXUP_INSTRUMENT]} instruments.make(0)
          a_context.accept(Current)
+         if instruments.is_empty then
+            fatal_at(a_context.source, "No instrument found")
+         end
          start
       end
 

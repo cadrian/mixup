@@ -32,50 +32,51 @@ create {ANY}
 feature {MIXUP_SCORE}
    start_score (a_score: MIXUP_SCORE) is
       do
-         current_player.play(create {MIXUP_EVENT_SET_SCORE}.make(a_score.source, 0, a_score.name))
          run_hook(a_score, current_player, once "at_start")
+         current_player.play(create {MIXUP_EVENT_SET_SCORE}.make(a_score.source, 0, a_score.name))
       end
 
    end_score (a_score: MIXUP_SCORE) is
       do
          (create {MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
-         run_hook(a_score, current_player, once "at_end")
          current_player.play(create {MIXUP_EVENT_END_SCORE}.make(a_score.source, 0))
+         run_hook(a_score, current_player, once "at_end")
       end
 
 feature {MIXUP_BOOK}
    start_book (a_book: MIXUP_BOOK) is
       do
-         current_player.play(create {MIXUP_EVENT_SET_BOOK}.make(a_book.source, 0, a_book.name))
          run_hook(a_book, current_player, once "at_start")
+         current_player.play(create {MIXUP_EVENT_SET_BOOK}.make(a_book.source, 0, a_book.name))
       end
 
    end_book (a_book: MIXUP_BOOK) is
       do
          (create {MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
-         run_hook(a_book, current_player, once "at_end")
          current_player.play(create {MIXUP_EVENT_END_BOOK}.make(a_book.source, 0))
+         run_hook(a_book, current_player, once "at_end")
       end
 
 feature {MIXUP_PARTITUR}
    start_partitur (a_partitur: MIXUP_PARTITUR) is
       do
-         current_player.play(create {MIXUP_EVENT_SET_PARTITUR}.make(a_partitur.source, 0, a_partitur.name))
          run_hook(a_partitur, current_player, once "at_start")
+         current_player.play(create {MIXUP_EVENT_SET_PARTITUR}.make(a_partitur.source, 0, a_partitur.name))
       end
 
    end_partitur (a_partitur: MIXUP_PARTITUR) is
       do
          (create {MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
-         run_hook(a_partitur, current_player, once "at_end")
          current_player.play(create {MIXUP_EVENT_END_PARTITUR}.make(a_partitur.source, 0))
+         run_hook(a_partitur, current_player, once "at_end")
       end
 
 feature {MIXUP_INSTRUMENT}
    visit_instrument (a_instrument: MIXUP_INSTRUMENT) is
       do
+         run_hook(a_instrument, current_player, once "at_start")
          current_player.play(create {MIXUP_EVENT_SET_INSTRUMENT}.make(a_instrument.source, 0, a_instrument.name))
-         run_hook(a_instrument, current_player, once "at_play")
+         run_hook(a_instrument, current_player, once "at_end")
       end
 
 feature {}

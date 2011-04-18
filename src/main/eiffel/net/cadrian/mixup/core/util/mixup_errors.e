@@ -75,7 +75,7 @@ feature {ANY}
          error_at(a_source, message)
          display_counter(warning_count.value, "warning")
          display_counter(error_count.value, "error")
-         log.error.put_line("**** Program interrupted.")
+         log.error.put_line("Program interrupted.")
          die_with_code(1)
       end
 
@@ -104,13 +104,13 @@ feature {}
 
    header (a_source: like source): STRING is
       do
-         Result := "**** "
+         Result := ""
          if a_source /= Void then
-            Result.append(source.file)
+            Result.append(a_source.file)
             Result.append(once " line ")
-            source.line.append_in(Result)
+            a_source.line.append_in(Result)
             Result.append(once ", column ")
-            source.column.append_in(Result)
+            a_source.column.append_in(Result)
             Result.append(once ": ")
          end
       end
