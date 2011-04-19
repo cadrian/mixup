@@ -1,0 +1,8 @@
+module midi
+
+set hook.at_load := function native "playback_midi"
+
+export violin := "violin"
+export viola := "viola"
+
+end

@@ -1,0 +1,5 @@
+module lilypond
+
+set hook.at_load := function native "playback_lilypond"
+
+end
