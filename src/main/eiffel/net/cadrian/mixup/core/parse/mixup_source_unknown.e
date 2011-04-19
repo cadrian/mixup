@@ -12,40 +12,22 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-deferred class MIXUP_COMPOUND_MUSIC
+class MIXUP_SOURCE_UNKNOWN
 
 inherit
-   MIXUP_MUSIC
+   MIXUP_SOURCE
 
 feature {ANY}
-   valid_anchor: BOOLEAN is True
-
-   add_music (a_music: MIXUP_MUSIC) is
-      deferred
+   file: FIXED_STRING is
+      once
+         Result := "unknown".intern
       end
 
-   add_chord (a_source: like source; note_heads: COLLECTION[TUPLE[MIXUP_SOURCE, FIXED_STRING]]; note_length: INTEGER_64) is
-      deferred
+   line: INTEGER is 0
+   column: INTEGER is 0
+
+   display (a_output: OUTPUT_STREAM) is
+      do
       end
 
-   reference: MIXUP_NOTE_HEAD is
-      deferred
-      end
-
-   add_bar (a_source: like source; style: FIXED_STRING) is
-      deferred
-      end
-
-   bars: ITERABLE[INTEGER_64] is
-      deferred
-      end
-
-   up_staff is
-      deferred
-      end
-
-   down_staff is
-      deferred
-      end
-
-end -- class MIXUP_COMPOUND_MUSIC
+end -- class MIXUP_SOURCE_UNKNOWN

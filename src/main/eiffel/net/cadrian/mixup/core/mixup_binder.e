@@ -43,7 +43,7 @@ feature {ANY}
 feature {MIXUP_CONTEXT}
    add_child (a_child: MIXUP_CONTEXT) is
       do
-         children.put(a_child, a_child.name)
+         children.add(a_child, a_child.name)
       end
 
 feature {}
@@ -93,12 +93,12 @@ feature {}
       end
 
 feature {}
-   children: DICTIONARY[MIXUP_CONTEXT, FIXED_STRING]
+   children: LINKED_HASHED_DICTIONARY[MIXUP_CONTEXT, FIXED_STRING]
 
    make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent) is
       do
          context_make(a_source, a_name, a_parent)
-         create {LINKED_HASHED_DICTIONARY[MIXUP_CONTEXT, FIXED_STRING]} children.make
+         create children.make
       end
 
 invariant

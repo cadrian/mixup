@@ -112,6 +112,23 @@ feature {ANY}
       do
       end
 
+   run_hook (a_player: MIXUP_PLAYER; hook_name: STRING) is
+      local
+         h, res: MIXUP_VALUE
+      do
+         h := hook(hook_name, a_player)
+         if h = Void then
+            -- nothing to do
+         elseif h.is_callable then
+            res := h.call(a_player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
+            if res /= Void then
+               warning("lost result")
+            end
+         else
+            fatal("hook not callable")
+         end
+      end
+
 feature {MIXUP_CONTEXT}
    lookup_expression (identifier: FIXED_STRING; search_parent: BOOLEAN; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
       require

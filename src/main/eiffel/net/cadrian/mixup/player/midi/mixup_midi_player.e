@@ -15,7 +15,7 @@
 class MIXUP_MIDI_PLAYER
 
 inherit
-   MIXUP_PLAYER
+   MIXUP_CORE_PLAYER
 
 create {ANY}
    make
@@ -27,52 +27,75 @@ feature {ANY}
       end
 
 feature {ANY}
-   set_score (name: ABSTRACT_STRING) is
+   play_set_score (name: ABSTRACT_STRING) is
       do
       end
 
-   end_score is
+   play_end_score is
       do
       end
 
-   set_book (name: ABSTRACT_STRING) is
+   play_set_book (name: ABSTRACT_STRING) is
       do
       end
 
-   end_book is
+   play_end_book is
       do
       end
 
-   set_partitur (name: ABSTRACT_STRING) is
+   play_set_partitur (name: ABSTRACT_STRING) is
       do
       end
 
-   end_partitur is
+   play_end_partitur is
       do
       end
 
-   set_instrument (name: ABSTRACT_STRING) is
+   play_set_instrument (name: ABSTRACT_STRING) is
       do
       end
 
-   set_dynamics (instrument_name: ABSTRACT_STRING; time_start: INTEGER_64; dynamics, position: ABSTRACT_STRING) is
+   play_set_dynamics (instrument: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
       do
       end
 
-   set_note (instrument: ABSTRACT_STRING; time_start: INTEGER_64; note: MIXUP_NOTE) is
+   play_set_note (instrument: ABSTRACT_STRING; note: MIXUP_NOTE) is
       do
       end
 
-   next_bar (instrument, style: ABSTRACT_STRING) is
-      do
-         -- ignored
-      end
-
-   start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
+   play_next_bar (instrument: ABSTRACT_STRING; style: ABSTRACT_STRING) is
       do
       end
 
-   end_repeat (instrument: ABSTRACT_STRING) is
+   play_start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+      do
+      end
+
+   play_end_beam (instrument: ABSTRACT_STRING) is
+      do
+      end
+
+   play_start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+      do
+      end
+
+   play_end_slur (instrument: ABSTRACT_STRING) is
+      do
+      end
+
+   play_start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+      do
+      end
+
+   play_end_tie (instrument: ABSTRACT_STRING) is
+      do
+      end
+
+   play_start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
+      do
+      end
+
+   play_end_repeat (instrument: ABSTRACT_STRING) is
       do
       end
 

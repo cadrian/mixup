@@ -88,12 +88,12 @@ feature {ANY}
          music.last = a_music
       end
 
-   add_chord (a_source: MIXUP_SOURCE; note_heads: COLLECTION[FIXED_STRING]; note_length: INTEGER_64) is
+   add_chord (a_source: MIXUP_SOURCE; note_heads: COLLECTION[TUPLE[MIXUP_SOURCE, FIXED_STRING]]; note_length: INTEGER_64) is
       require
          a_source /= Void
       local
          i: INTEGER
-         ref: like reference
+         ref, note: MIXUP_NOTE_HEAD
          chord: MIXUP_CHORD
       do
          from
@@ -103,12 +103,17 @@ feature {ANY}
          until
             i > note_heads.upper
          loop
-            ref := ref.relative(note_heads.item(i))
-            chord.put(i - note_heads.lower, ref)
+            note := ref.relative(note_heads.item(i).first, note_heads.item(i).second)
+            chord.put(i - note_heads.lower, note)
+            if not note.is_rest then
+               ref := note
+            end
             i := i + 1
          end
          music.add_last(chord)
-         reference := chord.anchor
+         if not chord.anchor.is_rest then
+            reference := chord.anchor
+         end
       end
 
    commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
@@ -167,6 +172,8 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
 
 feature {}
    make (a_reference: like reference) is
+      require
+         not a_reference.is_rest
       do
          create {FAST_ARRAY[MIXUP_MUSIC]} music.make(0)
          reference := a_reference

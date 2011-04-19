@@ -58,7 +58,7 @@ feature {ANY}
          voices.last.add_music(a_music)
       end
 
-   add_chord (a_source: like source; note_heads: COLLECTION[FIXED_STRING]; note_length: INTEGER_64) is
+   add_chord (a_source: like source; note_heads: COLLECTION[TUPLE[MIXUP_SOURCE, FIXED_STRING]]; note_length: INTEGER_64) is
       do
          voices.last.add_chord(a_source, note_heads, note_length)
       end

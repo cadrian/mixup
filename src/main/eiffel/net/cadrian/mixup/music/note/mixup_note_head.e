@@ -15,7 +15,7 @@
 expanded class MIXUP_NOTE_HEAD
 
 insert
-   ANY
+   MIXUP_ERRORS
       redefine
          is_equal, out_in_tagged_out_memory
       end
@@ -24,14 +24,24 @@ feature {ANY}
    note: FIXED_STRING
    octave: INTEGER
 
-   set (a_note: ABSTRACT_STRING; a_octave: INTEGER) is
+   set (a_source: like source; a_note: ABSTRACT_STRING; a_octave: INTEGER) is
+      require
+         a_source /= Void
       do
+         source := a_source
          note := a_note.intern
          octave := a_octave
       end
 
-   relative (desc: FIXED_STRING): MIXUP_NOTE_HEAD is
+   is_rest: BOOLEAN is
+      do
+         Result := note.first = 'r' or else note.first = 'R'
+      end
+
+   relative (a_source: like source; desc: FIXED_STRING): MIXUP_NOTE_HEAD is
       require
+         not is_rest
+         a_source /= Void
          desc /= Void
       local
          i, octave_shift, up_steps, down_steps, steps, a_steps: INTEGER
@@ -43,7 +53,7 @@ feature {ANY}
          inspect
             note_.first
          when 'r', 'R' then
-            Result.set(note_, 0)
+            Result.set(a_source, note_, 0)
          else
             if note_.first /= note.first then
                up_steps   := steps_to(note_.first, up_scale, 0)
@@ -83,7 +93,7 @@ feature {ANY}
                i := i - 1
             end
 
-            Result.set(note_, octave + octave_shift)
+            Result.set(a_source, note_, octave + octave_shift)
          end
       end
 
@@ -107,6 +117,9 @@ feature {}
          i, j: INTEGER
       do
          i := scale.first_index_of(note.first)
+         if not scale.valid_index(i) then
+            fatal("Not a note: '" + note.out + "'")
+         end
          j := scale.index_of(char, i + delta)
          Result := j - i
       end

@@ -58,7 +58,7 @@ feature {}
 
    ref0: MIXUP_NOTE_HEAD is
       once
-         Result.set("a", 3)
+         Result.set(create {MIXUP_SOURCE_UNKNOWN}, "a", 3)
       end
 
 end -- class MIXUP_MUSIC_STORE

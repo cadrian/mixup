@@ -275,9 +275,9 @@ feature {}
       require
          a_file_reader /= Void
       do
-         create parser.make(Current)
+         create parser.make(create {MIXUP_SEED_PLAYER}.make(Current), Current)
          create {FAST_ARRAY[MIXUP_PLAYER]} players.make(0)
-         create {HASHED_DICTIONARY[MIXUP_CONTEXT, FIXED_STRING]} contexts.make
+         create {LINKED_HASHED_DICTIONARY[MIXUP_CONTEXT, FIXED_STRING]} contexts.make
          file_reader := a_file_reader
       ensure
          file_reader = a_file_reader

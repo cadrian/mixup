@@ -70,6 +70,7 @@ feature {ANY}
       do
          inst_name := name.intern
          create instrument.make(inst_name)
+         log.info.put_line("Lilypond: adding instrument: " + name.out)
          instruments.add(instrument, inst_name)
          bar_number := 0
       end
@@ -186,7 +187,7 @@ feature {} -- section files management
 
    pop_section is
       do
-         instruments.new_iterator_on_items.do_all(agent {MIXUP_LILYPOND_INSTRUMENT}.generate(section_output))
+         instruments.do_all_items(agent {MIXUP_LILYPOND_INSTRUMENT}.generate(section_output))
          instruments.clear_count
          section_stack.pop
          if section_stack.is_empty then

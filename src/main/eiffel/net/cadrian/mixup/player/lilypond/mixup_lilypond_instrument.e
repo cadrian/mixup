@@ -106,7 +106,7 @@ feature {}
 
    absolute_reference: MIXUP_NOTE_HEAD is
       once
-         Result.set("a", 4)
+         Result.set(create {MIXUP_SOURCE_UNKNOWN}, "a", 4)
       end
 
 invariant

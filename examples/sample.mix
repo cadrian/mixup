@@ -1,27 +1,27 @@
 partitur sample
 
-from mixup.core import *
-import mixup.template.default
-import mixup.midi
+from core import *
+from style.standard import *
+import playback.lilypond
+from playback.midi import violin, viola
 
-set time = common_time
-set signature = c_dur
+set time := common_time
+set signature := c_dur
 
-set tempo.tactus = 4 -- a beat is a quarter
-set tempo.per_minute = 60 -- 60 beats per minute
-set tempo.print = true
+set tempo.tactus := 4 -- a beat is a quarter
+set tempo.per_minute := 60 -- 60 beats per minute
+set tempo.print := true
 
-set template.show_empty_staves = false
+set template.show_empty_staves := false
 
 
 instrument soprano
-    inherit skeleton -- the default (note: definitions are inherited, but not the music or lyrics)
-    set staves = 1 -- the default (make it 2 for a piano, 3 for a church organ...)
-    set staff(1).clef = trebble -- could also be written staff.clef because there is only one staff for this instrument. Also note that trebble is the default key
-    set midi.instrument = violin
-    set midi.playback_style = legato
-    set template.instrument_name = "Soprano"
-    set template.instrument_abbrev = "S."
+    set staves := 1 -- the default (make it 2 for a piano, 3 for a church organ...)
+    set staff(1).clef := trebble -- could also be written staff.clef because there is only one staff for this instrument. Also note that trebble is the default key
+    set midi.inst := violin
+    set midi.playback_style := legato
+    set template.instrument_name := "Soprano"
+    set template.instrument_abbrev := "S."
     music
         << c4 d e f | g a b c | c,1 >>
     lyrics
@@ -30,11 +30,11 @@ instrument soprano
 
 
 instrument alto
-    set staff.clef = trebble
-    set midi.instrument = viola
-    set midi.playback_style = legato
-    set template.instrument_name = "Alto"
-    set template.instrument_abbrev = "A."
+    set staff.clef := trebble
+    set midi.inst := viola
+    set midi.playback_style := legato
+    set template.instrument_name := "Alto"
+    set template.instrument_abbrev := "A."
     music
         << r1 | c4 d e f | e1 >>
     lyrics

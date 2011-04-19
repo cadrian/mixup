@@ -54,17 +54,13 @@ feature {ANY}
          context_factory := old_context_factory
          current_file := old_file
          current_piece := old_piece
+
+         Result.run_hook(seed_player, once "at_load")
       end
 
    current_piece: MIXUP_NODE
    current_file: FIXED_STRING
    context_factory: FUNCTION[TUPLE[MIXUP_SOURCE, FIXED_STRING], MIXUP_CONTEXT]
-
-feature {}
-   new_source (node: MIXUP_NODE): MIXUP_SOURCE_IMPL is
-      do
-         create Result.make(current_piece, current_file, node.source_line, node.source_column)
-      end
 
 feature {MIXUP_LIST_NODE_IMPL}
    visit_mixup_list_node_impl (node: MIXUP_LIST_NODE_IMPL) is
@@ -278,7 +274,7 @@ feature {}
    last_dictionary:         MIXUP_DICTIONARY
    last_note_length:        INTEGER_64
    last_note_head:          STRING is ""
-   note_heads:              COLLECTION[FIXED_STRING]
+   note_heads:              COLLECTION[TUPLE[MIXUP_SOURCE, FIXED_STRING]]
    last_compound_music:     MIXUP_COMPOUND_MUSIC
    current_context:         MIXUP_CONTEXT
    last_string:             STRING
@@ -388,7 +384,7 @@ feature {}
 
    absolute_reference: MIXUP_NOTE_HEAD is
       once
-         Result.set("a", 4)
+         Result.set(create {MIXUP_SOURCE_UNKNOWN}, "a", 4)
       end
 
    read_xuplet_spec (spec: MIXUP_NON_TERMINAL_NODE_IMPL) is
@@ -926,7 +922,7 @@ feature {}
 
    build_chord (chord: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         create {FAST_ARRAY[FIXED_STRING]} note_heads.make(0)
+         create {FAST_ARRAY[TUPLE[MIXUP_SOURCE, FIXED_STRING]]} note_heads.make(0)
          if chord.count = 2 then
             chord.node_at(0).accept(Current)
             chord.node_at(1).accept(Current)
@@ -956,7 +952,7 @@ feature {}
                end
             end
          end
-         note_heads.add_last(last_note_head.intern)
+         note_heads.add_last([new_source(note_head), last_note_head.intern])
       end
 
    build_note_length (note_length: MIXUP_NON_TERMINAL_NODE_IMPL) is
@@ -1061,15 +1057,28 @@ feature {}
       end
 
 feature {}
-   make (a_native_provider: like native_provider) is
+   make (a_seed_player: like seed_player; a_native_provider: like native_provider) is
       require
+         a_seed_player /= Void
          a_native_provider /= Void
       do
+         seed_player := a_seed_player
          native_provider := a_native_provider
       ensure
+         seed_player = a_seed_player
          native_provider = a_native_provider
       end
 
+   new_source (node: MIXUP_NODE): MIXUP_SOURCE_IMPL is
+      do
+         create Result.make(current_piece, current_file, node.source_line, node.source_column)
+      end
+
    native_provider: MIXUP_NATIVE_PROVIDER
+   seed_player: MIXUP_PLAYER
+
+invariant
+   native_provider /= Void
+   seed_player /= Void
 
 end -- class MIXUP_PARSER

@@ -64,8 +64,6 @@ feature {}
       do
          set_load_paths
          set_log
-         mixer.add_player(create {MIXUP_LILYPOND_PLAYER}.make)
-         --mixer.add_player(create {MIXUP_MIDI_PLAYER}.make)
       end
 
    parse (a_source: MINI_PARSER_BUFFER): MIXUP_NODE is
