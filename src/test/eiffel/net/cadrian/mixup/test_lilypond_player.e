@@ -24,9 +24,11 @@ create {}
    make
 
 feature {}
+   source: AUX_MIXUP_MOCK_SOURCE
+
    note (a_note: STRING; a_octave: INTEGER): MIXUP_NOTE_HEAD is
       do
-         Result.set(a_note, a_octave)
+         Result.set(source, a_note, a_octave)
       end
 
    make is
@@ -34,7 +36,6 @@ feature {}
          lilypond: MIXUP_LILYPOND_PLAYER
          buffer: STRING_OUTPUT_STREAM
          expected: STRING
-         source: AUX_MIXUP_MOCK_SOURCE
       do
          create source.make
          create buffer.make
@@ -61,7 +62,7 @@ feature {}
             \set Staff.instrumentName = "Instr"
             \new Voice = "Instr1Voice1" {
                <<
-                  c4
+                   c4
                >>
             }
          >>
