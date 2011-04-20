@@ -2,12 +2,25 @@
 
 usage() {
     echo
-    echo "Usage: $0 [-clean] [-version <version>] [-install]"
+    echo "Usage: $0 [options...]"
     echo
-    echo "-clean    to call smarteiffel's clean (ensures a fresh build)"
-    echo "-version  to name the archive with a specific version number"
-    echo "          (instead of a date tag)"
-    echo "-install  installs a local version in $HOME/.mixup"
+    echo "The options are:"
+    echo
+    echo "-clean              to call smarteiffel's clean (ensures a fresh build)"
+    echo
+    echo "-version <version>  to name the archive with a specific version number"
+    echo "                    (instead of a date tag)"
+    echo "                    This also forces -clean, and sets the default prefix"
+    echo "                    to /usr instead of /usr/local"
+    echo
+    echo "-install            installs a local version in $HOME/.mixup"
+    echo
+    echo "-test               compiles a test release (with assertions) instead of"
+    echo "                    an optimized release"
+    echo
+    echo "-prefix <prefix>    sets the package prefix (default is /usr/local)"
+    echo
+    echo "-help               this help (does not run any build)"
     echo
 }
 
@@ -135,7 +148,7 @@ end
 EOF
 }
 
-export PREFIX=${PREFIX:-/usr/local}
+export PREFIX
 export LEVEL=release
 
 cd $(dirname $0)
@@ -166,6 +179,9 @@ while [ $# -gt 0 ]; do
                 echo "     Press Return to continue, or ^C to abort."
                 read
             fi
+            MUST_CLEAN=true
+            LEVEL=release
+            PREFIX=${PREFIX:-/usr}
             ;;
         -h*)
             usage
@@ -177,6 +193,10 @@ while [ $# -gt 0 ]; do
         -test)
             LEVEL=test
             ;;
+        -prefix)
+            shift
+            PREFIX="$1"
+            ;;
         *)
             echo "Unknown option: $1" >&2
             usage >&2
@@ -185,6 +205,7 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
+PREFIX=${PREFIX:-/usr/local}
 
 ace_${LEVEL} > mixup.ace
 
@@ -205,6 +226,10 @@ install ${PKG_BIN} ${PKG_SHARED}
 cat > ${PKG_SHARED}/load_paths <<EOF
 ${PREFIX}/share/mixup/modules
 EOF
+
+PKG_SRC=${PACKAGE_DIR}/${PREFIX}/src/mixup
+mkdir -p $PKG_SRC
+find . -name 'mixup*.[ch]' -type f -exec cp -a {} ${PKG_SRC}/ \;
 
 if $MUST_INSTALL; then
     echo '~~~~ Installing'
