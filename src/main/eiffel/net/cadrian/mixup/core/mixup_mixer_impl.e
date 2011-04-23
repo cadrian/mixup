@@ -101,7 +101,6 @@ feature {}
       local
          volte: MIXUP_INTEGER
          music: MIXUP_MUSIC_VALUE
-         instr: MIXUP_INSTRUMENT
          decorated: MIXUP_DECORATED_MUSIC
          bar_number: INTEGER
       do
@@ -114,7 +113,6 @@ feature {}
          else
             volte ::= args.first
             music ::= args.last
-            instr ::= context
             create decorated.make(a_source, once "repeat", music.value,
                                   agent event_start_repeat(a_source, ?, volte.value),
                                   agent event_end_repeat(a_source, ?),
@@ -128,7 +126,6 @@ feature {}
    native_with_lyrics (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       local
          music: MIXUP_MUSIC_VALUE
-         instr: MIXUP_INSTRUMENT
          decorated: MIXUP_DECORATED_MUSIC
          bar_number: INTEGER
       do
@@ -138,7 +135,6 @@ feature {}
             error_at(args.first.source, "bad argument type")
          else
             music ::= args.first
-            instr ::= context
             create decorated.make(a_source, once "with_lyrics", music.value,
                                   Void, Void,
                                   agent force_lyrics(a_source, ?, ?))
