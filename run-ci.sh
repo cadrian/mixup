@@ -48,7 +48,7 @@ status_icon() {
 
 build_site() {
     icon=$(status_icon)
-    notify-send -u critical -i $icon "MiXuP continuous integration finished ("$(status_failures_count)" failures)"
+    notify-send -u critical -i $icon "MiXuP continuous integration finished"
 
     echo '<html>'
     echo '<body>'
@@ -71,6 +71,7 @@ build_site() {
         fi
         echo '</td>'
         echo '<td><a href="file://'$log'">'$(basename $log | cut -c5-)'</a></td>'
+        echo '<td>&nbsp;|&nbsp;</td>'
         if [ -e $pkg ]; then
             echo '<td><a href="file://'$pkg'">Download</a></td>'
         else
@@ -83,9 +84,7 @@ build_site() {
     echo '</html>'
 }
 
-if git pull | grep -q 'up-to-date'; then
-    notify-send -u low -i $(status_icon) "MiXuP continuous integration finished (nothing done)"
-else
+do_ci() {
     log=$($(pwd)/src/test/eiffel/ci)
     cp $log $OUTDIR/
     buildlog=$OUTDIR/build-$(basename $log)
@@ -96,4 +95,17 @@ else
         echo 'Build failed' >> $OUTDIR/$(basename $log)
     fi
     build_site > $OUTDIR/ci.html
+}
+
+if git pull | grep -q 'up-to-date'; then
+    case x$1 in
+        x-force)
+            do_ci
+            ;;
+        *)
+            notify-send -u low -i $(status_icon) "MiXuP continuous integration finished"
+            ;;
+    esac
+else
+    do_ci
 fi

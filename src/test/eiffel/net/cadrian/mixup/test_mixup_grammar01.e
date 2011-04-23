@@ -15,26 +15,18 @@
 class TEST_MIXUP_GRAMMAR01
 
 insert
-   EIFFELTEST_TOOLS
-   MIXUP_NODE_HANDLER
-   MIXUP_NOTE_DURATIONS
-   AUX_MIXUP_MOCK_PLAYER_EVENTS
-   LOGGING
+   AUX_MIXUP_TESTS
 
 create {}
    make
 
 feature {}
-   source: AUX_MIXUP_MOCK_SOURCE
-
-   note (a_note: STRING; a_octave: INTEGER): MIXUP_NOTE_HEAD is
+   file_content (a_name: FIXED_STRING): STRING is
       do
-         Result.set(source, a_note, a_octave)
       end
 
    make is
       local
-         grammar: MIXUP_GRAMMAR
          factory: AUX_MIXUP_GRAMMAR_NODE_FACTORY
          parser: DESCENDING_PARSER
          parser_buffer: MINI_PARSER_BUFFER
@@ -74,7 +66,7 @@ feature {}
          assert(evaled)
          assert(grammar.root_node /= Void)
 
-         create mixer.make
+         create mixer.make(agent read_file)
          create player.make
          mixer.add_player(player)
          mixer.add_piece(grammar.root_node, "test")

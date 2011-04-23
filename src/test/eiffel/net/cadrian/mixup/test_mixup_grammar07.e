@@ -15,87 +15,52 @@
 class TEST_MIXUP_GRAMMAR07
 
 insert
-   EIFFELTEST_TOOLS
-   MIXUP_NODE_HANDLER
-   MIXUP_NOTE_DURATIONS
-   AUX_MIXUP_MOCK_PLAYER_EVENTS
-   LOGGING
+   AUX_MIXUP_TESTS
 
 create {}
    make
 
 feature {}
-   source: AUX_MIXUP_MOCK_SOURCE
-
-   note (a_note: STRING; a_octave: INTEGER): MIXUP_NOTE_HEAD is
-      do
-         Result.set(source, a_note, a_octave)
-      end
-
-   grammar: MIXUP_GRAMMAR
-
-   parse (a_source: STRING): MIXUP_NODE is
-      require
-         a_source /= Void
-      local
-         parser_buffer: MINI_PARSER_BUFFER
-         evaled: BOOLEAN
-      do
-         create parser_buffer
-         parser_buffer.initialize_with(a_source)
-
-         grammar.reset
-         evaled := grammar.parse(parser_buffer)
-
-         assert(evaled)
-         assert(grammar.root_node /= Void)
-
-         Result := grammar.root_node
-      end
-
-   read_file (a_name: FIXED_STRING): TUPLE[MIXUP_NODE, FIXED_STRING] is
+   file_content (a_name: FIXED_STRING): STRING is
       require
          a_name /= Void
-      local
-         node: MIXUP_NODE
       do
          inspect
             a_name.out
          when "core" then
-            node := parse("[
-                           module core
+            Result := "[
+                       module core
 
-                           set bar := function(style) native "bar"
-                           set seq := function(lower, upper) native "seq"
-                           set new_music_store := function native "new_music_store"
-                           set store_music := function(memory, mus) native "store_music"
-                           set store_text := function(memory, str, pos) native "store_text"
-                           set with_lyrics := function(mus) native "with_lyrics"
-                           set current_bar_number := function native "current_bar_number"
+                       set bar := function(style) native "bar"
+                       set seq := function(lower, upper) native "seq"
+                       set new_music_store := function native "new_music_store"
+                       set store_music := function(memory, mus) native "store_music"
+                       set store_text := function(memory, str, pos) native "store_text"
+                       set with_lyrics := function(mus) native "with_lyrics"
+                       set current_bar_number := function native "current_bar_number"
 
-                           set repeat_inline := function(volte, mus) do
-                                                   Result := new_music_store
-                                                   for i in seq(1, volte) do
-                                                      store_music(Result, mus)
-                                                   end
-                                                end
-
-                           set repeat := function(volte, mus) do
-                                            Result := new_music_store
-                                            if current_bar_number > 1 then
-                                               store_music(Result, bar("||:"))
+                       set repeat_inline := function(volte, mus) do
+                                               Result := new_music_store
+                                               for i in seq(1, volte) do
+                                                  store_music(Result, mus)
+                                               end
                                             end
-                                            if volte > 2 then
-                                               store_text(Result, volte + " times", "up")
-                                            end
-                                            store_music(Result, mus)
-                                            store_music(Result, bar(":||"))
-                                         end
 
-                           end
+                       set repeat := function(volte, mus) do
+                                        Result := new_music_store
+                                        if current_bar_number > 1 then
+                                           store_music(Result, bar("||:"))
+                                        end
+                                        if volte > 2 then
+                                           store_text(Result, volte + " times", "up")
+                                        end
+                                        store_music(Result, mus)
+                                        store_music(Result, bar(":||"))
+                                     end
 
-                           ]")
-            Result := [node, "core.mix".intern]
+                       end
+
+                       ]"
          end
       end
 
