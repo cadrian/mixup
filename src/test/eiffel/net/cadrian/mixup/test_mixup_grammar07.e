@@ -22,8 +22,6 @@ create {}
 
 feature {}
    file_content (a_name: FIXED_STRING): STRING is
-      require
-         a_name /= Void
       do
          inspect
             a_name.out

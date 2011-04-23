@@ -58,7 +58,7 @@ feature {}
 
                        end
 
-                       ]")
+                       ]"
          end
       end
 
