@@ -4,3 +4,4 @@
 *.h
 a.out
 .test
+.ci

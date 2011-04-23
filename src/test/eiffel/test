@@ -2,6 +2,8 @@
 
 root=$(dirname $(pwd))
 root=$(dirname $root)
+cd $(dirname $0)
+BASEDIR=${BASEDIR:-$(pwd)/.test}
 
 generate_ace_file() {
         cat <<EOF
@@ -14,7 +16,7 @@ default
     assertion(require)
     assertion_flat_check(yes)
     debug(no)
-    trace(yes)
+    trace(${SEDB:-yes})
     no_style_warning(no)
     no_warning(no)
     verbose(no)
@@ -57,8 +59,6 @@ end
 EOF
 }
 
-cd $(dirname $0)
-
 export class
 
 case x$1 in
@@ -75,14 +75,16 @@ case x$1 in
 esac
 shift
 
-if [ \! -d .test/$class ]; then
+OUTDIR=$BASEDIR/$class
+
+if [ \! -d $OUTDIR ]; then
     echo "Initializing..."
-    mkdir -p .test/$class
-    ln -s $(pwd)/log.rc .test/$class/
+    mkdir -p $OUTDIR
+    ln -s $(pwd)/log.rc $OUTDIR/
 fi
 
 
-cd .test/$class
+cd $OUTDIR
 
 if [ x$1 == xclean ]; then
     echo "Cleaning..."

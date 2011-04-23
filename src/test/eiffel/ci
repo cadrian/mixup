@@ -1,0 +1,35 @@
+#!/bin/bash
+#continuous integration script.
+
+cd $(dirname $0)
+
+export SEDB=no
+export BASEDIR=$(pwd)/.ci
+
+test -d $BASEDIR || mkdir -p $BASEDIR
+
+log=$BASEDIR/log-$(date +'%Y%m%d-%H%M%S')
+echo $log
+
+{
+    failures=0
+
+    for i in $(seq 7); do
+        echo "======================================================================"
+        echo "test $i"
+        echo
+        ./test $i || failures=$((failures+1))
+    done
+
+    echo "======================================================================"
+    echo "test lily"
+    echo
+    ./test lily || failures=$((failures+1))
+
+    echo "======================================================================"
+    if [ $failures -eq 0 ]; then
+        echo "SUCCESS"
+    else
+        echo "Failures: $failures"
+    fi
+} >$log 2>&1
