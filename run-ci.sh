@@ -47,10 +47,16 @@ status_icon() {
 }
 
 build_site() {
+    running=$1
+
     icon=$(status_icon)
-    notify-send -u critical -i $icon "MiXuP continuous integration finished"
 
     echo '<html>'
+    if $running; then
+        echo '<head>'
+        echo '<meta http-equiv="refresh" content="30">'
+        echo '</head>'
+    fi
     echo '<body>'
     echo
     echo '<h1>MiXuP continuous integration</h1>'
@@ -60,6 +66,13 @@ build_site() {
     echo '<h2>Build details</h2>'
     echo
     echo '<table border="0">'
+    if $running; then
+        echo '<tr>'
+        echo '<td>'
+        echo '<img src="file:///usr/share/icons/gnome/48x48/emblems/emblem-new.png">'
+        echo '</td><td colspan="3"><b>Continuous Integration is running</b></td>'
+        echo '</tr>'
+    fi
     ls -r -1 $OUTDIR/log-* | while read log; do
         echo '<tr>'
         echo '<td>'
@@ -85,6 +98,7 @@ build_site() {
 }
 
 do_ci() {
+    build_site true > $OUTDIR/ci.html
     log=$($(pwd)/src/test/eiffel/ci)
     cp $log $OUTDIR/
     buildlog=$OUTDIR/build-$(basename $log)
@@ -94,16 +108,13 @@ do_ci() {
     else
         echo 'Build failed' >> $OUTDIR/$(basename $log)
     fi
-    build_site > $OUTDIR/ci.html
+    build_site false > $OUTDIR/ci.html
 }
 
 if git pull | grep -q 'up-to-date'; then
     case x$1 in
         x-force)
             do_ci
-            ;;
-        *)
-            notify-send -u low -i $(status_icon) "MiXuP continuous integration finished"
             ;;
     esac
 else
