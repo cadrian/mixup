@@ -25,9 +25,11 @@ create {}
    make
 
 feature {}
+   source: AUX_MIXUP_MOCK_SOURCE
+
    note (a_note: STRING; a_octave: INTEGER): MIXUP_NOTE_HEAD is
       do
-         Result.set(a_note, a_octave)
+         Result.set(source, a_note, a_octave)
       end
 
    make is
@@ -42,7 +44,6 @@ feature {}
          expected: COLLECTION[AUX_MIXUP_MOCK_EVENT]; i: INTEGER
 
          played_event, expected_event: AUX_MIXUP_MOCK_EVENT
-         source: AUX_MIXUP_MOCK_SOURCE
       do
          create source.make
          create factory.make
