@@ -88,7 +88,7 @@ do_ci() {
     log=$($(pwd)/src/test/eiffel/ci)
     cp $log $OUTDIR/
     buildlog=$OUTDIR/build-$(basename $log)
-    if $(pwd)/release/build.sh > $buildlog; then
+    if $(pwd)/release/build.sh -clean > $buildlog; then
         pkg=$(grep Done: $buildlog | awk '{print $5}')
         cp $pkg $OUTDIR/build$(basename $log | cut -c4-).tgz
     else

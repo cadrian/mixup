@@ -18,13 +18,13 @@ echo $log
         echo "======================================================================"
         echo "test $i"
         echo
-        ./test $i || failures=$((failures+1))
+        ./test $i clean || failures=$((failures+1))
     done
 
     echo "======================================================================"
     echo "test lily"
     echo
-    ./test lily || failures=$((failures+1))
+    ./test lily clean || failures=$((failures+1))
 
     echo "======================================================================"
     if [ $failures -eq 0 ]; then
