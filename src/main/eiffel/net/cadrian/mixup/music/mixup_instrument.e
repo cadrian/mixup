@@ -105,8 +105,12 @@ feature {}
 feature {}
    make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent) is
       do
-         context_make(a_source, a_name, a_parent)
          create {FAST_ARRAY[COLLECTION[FIXED_STRING]]} strophes.make(0)
+         context_make(a_source, a_name, a_parent)
+
+         if a_parent /= Void then
+            a_parent.add_child(Current)
+         end
       end
 
    strophes: COLLECTION[COLLECTION[FIXED_STRING]]

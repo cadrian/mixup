@@ -184,6 +184,7 @@ feature {MIXUP_CONTEXT}
    add_child (a_child: MIXUP_CONTEXT) is
       require
          a_child /= Void
+         a_child /= Current
          not ({MIXUP_IMPORT} ?:= a_child)
       deferred
       end
@@ -255,21 +256,12 @@ feature {}
          create {HASHED_DICTIONARY[MIXUP_EXPRESSION, FIXED_STRING]} expressions.make
          create imports.make(0)
 
-         if a_parent /= Void then
-            add_to_parent(a_parent)
-         end
-
          create resolver.make(Current)
          bar_number := 1
       ensure
          source = a_source
          name = a_name.intern
          parent = a_parent
-      end
-
-   add_to_parent (a_parent: MIXUP_CONTEXT) is
-      do
-         a_parent.add_child(Current)
       end
 
 invariant

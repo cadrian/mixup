@@ -18,8 +18,6 @@ inherit
    MIXUP_CONTEXT
       rename
          make as make_context
-      redefine
-         add_to_parent
       end
 
 create {ANY}
@@ -81,18 +79,17 @@ feature {}
       require
          child_context /= Void
       do
-         make_context(a_source, a_name, a_parent)
          child := child_context
+         make_context(a_source, a_name, a_parent)
+
+         if a_parent /= Void then
+            a_parent.add_import(Current)
+         end
       ensure
          child = child_context
       end
 
    child: MIXUP_CONTEXT
-
-   add_to_parent (a_parent: MIXUP_CONTEXT) is
-      do
-         a_parent.add_import(Current)
-      end
 
 invariant
    child /= Void

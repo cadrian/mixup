@@ -158,11 +158,11 @@ feature {}
          a_player /= Void
          a_args /= Void
       do
-         make_context(a_source, once "<function>", a_parent)
          player := a_player
          args := a_args
          create statements.make(1, 0)
          create {HASHED_DICTIONARY[MIXUP_VALUE, FIXED_STRING]} locals.make
+         make_context(a_source, once "<function>", a_parent)
       ensure
          source = a_source
          player = a_player
