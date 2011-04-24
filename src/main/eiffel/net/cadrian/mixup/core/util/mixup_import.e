@@ -57,7 +57,7 @@ feature {}
 
    child_identifier (identifier: FIXED_STRING): FIXED_STRING is
       do
-         Result := identifier.substring(name.count + 1, identifier.upper)
+         Result := identifier.substring(name.count + 1 + identifier.lower, identifier.upper)
       end
 
    lookup_in_children (identifier: FIXED_STRING; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
@@ -78,13 +78,12 @@ feature {}
    make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent; child_context: like child) is
       require
          child_context /= Void
+         a_parent /= Void
       do
          child := child_context
          make_context(a_source, a_name, a_parent)
 
-         if a_parent /= Void then
-            a_parent.add_import(Current)
-         end
+         a_parent.add_import(Current)
       ensure
          child = child_context
       end

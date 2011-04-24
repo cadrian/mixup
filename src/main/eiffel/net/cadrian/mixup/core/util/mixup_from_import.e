@@ -61,8 +61,8 @@ feature {}
          child_context /= Void
          a_identifiers /= Void
       do
-         make_import(a_source, a_name, a_parent, child_context)
          identifiers := a_identifiers
+         make_import(a_source, a_name, a_parent, child_context)
       ensure
          identifiers = a_identifiers
       end
