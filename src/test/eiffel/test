@@ -103,8 +103,8 @@ test -e test.log && truncate -s 0 test.log
 if [ x$1 == xgdb ]; then
     gdb ./test
 else
-    ./test
+    ./test || exit 1
 fi
-test -e test.log && less test.log
+test -e test.log && cat test.log
 
 echo "Done."
