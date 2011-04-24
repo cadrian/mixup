@@ -26,22 +26,22 @@ status_failures_count() {
 status_icon() {
     case $(status_failures_count) in
         0)
-            echo /usr/share/icons/gnome/48x48/status/weather-clear.png
+            echo $(pwd)/src/test/ci/weather-clear.png
             ;;
         1)
-            echo /usr/share/icons/gnome/48x48/status/weather-few-clouds.png
+            echo $(pwd)/src/test/ci/weather-few-clouds.png
             ;;
         2)
-            echo /usr/share/icons/gnome/48x48/status/weather-overcast.png
+            echo $(pwd)/src/test/ci/weather-overcast.png
             ;;
         3)
-            echo /usr/share/icons/gnome/48x48/status/weather-showers-scattered.png
+            echo $(pwd)/src/test/ci/weather-showers-scattered.png
             ;;
         4)
-            echo /usr/share/icons/gnome/48x48/status/weather-showers.png
+            echo $(pwd)/src/test/ci/weather-showers.png
             ;;
         *)
-            echo /usr/share/icons/gnome/48x48/status/weather-storm.png
+            echo $(pwd)/src/test/ci/weather-storm.png
             ;;
     esac
 }
@@ -52,11 +52,13 @@ build_site() {
     icon=$(status_icon)
 
     echo '<html>'
+    echo '<head>'
     if $running; then
-        echo '<head>'
         echo '<meta http-equiv="refresh" content="30">'
-        echo '</head>'
+    else
+        echo '<meta http-equiv="refresh" content="300">'
     fi
+    echo '</head>'
     echo '<body>'
     echo
     echo '<h1>MiXuP continuous integration</h1>'
@@ -69,8 +71,8 @@ build_site() {
     if $running; then
         echo '<tr>'
         echo '<td>'
-        echo '<img src="file:///usr/share/icons/gnome/48x48/emblems/emblem-new.png">'
-        echo '</td><td colspan="3"><b>Continuous Integration is running</b></td>'
+        echo '<img src="file://'$(pwd)/src/test/ci/'emblem-new.png">'
+        echo '</td><td colspan="3"><i>Continuous Integration is running</i></td>'
         echo '</tr>'
     fi
     ls -r -1 $OUTDIR/log-* | while read log; do
@@ -78,9 +80,9 @@ build_site() {
         echo '<td>'
         pkg=$(dirname $log)/build$(basename $log | cut -c4-).tgz
         if $(status $log); then
-            echo '<img src="file:///usr/share/icons/gnome/48x48/emblems/emblem-default.png">'
+            echo '<img src="file://'$(pwd)/src/test/ci/'emblem-default.png">'
         else
-            echo '<img src="file:///usr/share/icons/gnome/48x48/emblems/emblem-important.png">'
+            echo '<img src="file://'$(pwd)/src/test/ci/'emblem-important.png">'
         fi
         echo '</td>'
         echo '<td><a href="file://'$log'">'$(basename $log | cut -c5-)'</a></td>'
