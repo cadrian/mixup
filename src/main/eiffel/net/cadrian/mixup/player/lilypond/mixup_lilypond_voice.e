@@ -163,6 +163,7 @@ feature {}
 feature {MIXUP_LYRICS}
    visit_lyrics (a_lyrics: MIXUP_LYRICS) is
       do
+         a_lyrics.note.accept(Current)
       end
 
 feature {MIXUP_LILYPOND_STAFF}
