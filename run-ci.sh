@@ -5,7 +5,7 @@
 # This script is meant to be put in a crontab.
 
 cd $(dirname $0)
-export OUTDIR=$(pwd)/target/site
+export OUTDIR=${OUTDIR:-$(pwd)/target/site}
 test -d $OUTDIR || mkdir -p $OUTDIR
 
 status() {
@@ -26,22 +26,22 @@ status_failures_count() {
 status_icon() {
     case $(status_failures_count) in
         0)
-            echo $(pwd)/src/test/ci/weather-clear.png
+            echo ci/weather-clear.png
             ;;
         1)
-            echo $(pwd)/src/test/ci/weather-few-clouds.png
+            echo ci/weather-few-clouds.png
             ;;
         2)
-            echo $(pwd)/src/test/ci/weather-overcast.png
+            echo ci/weather-overcast.png
             ;;
         3)
-            echo $(pwd)/src/test/ci/weather-showers-scattered.png
+            echo ci/weather-showers-scattered.png
             ;;
         4)
-            echo $(pwd)/src/test/ci/weather-showers.png
+            echo ci/weather-showers.png
             ;;
         *)
-            echo $(pwd)/src/test/ci/weather-storm.png
+            echo ci/weather-storm.png
             ;;
     esac
 }
@@ -65,9 +65,9 @@ build_site() {
     echo '<h1>MiXuP continuous integration</h1>'
     echo
     if [ $failures_count -eq 1 ]; then
-        echo '<table border="0"><tr><td><img src="file://'$icon'"></td><td>1 failure in the last 5 builds</td></tr></table>'
+        echo '<table border="0"><tr><td><img src="'$icon'"></td><td>1 failure in the last 5 builds</td></tr></table>'
     else
-        echo '<table border="0"><tr><td><img src="file://'$icon'"></td><td>'$failures_count' failures in the last 5 builds</td></tr></table>'
+        echo '<table border="0"><tr><td><img src="'$icon'"></td><td>'$failures_count' failures in the last 5 builds</td></tr></table>'
     fi
     echo
     echo '<h2>Build details</h2>'
@@ -75,39 +75,41 @@ build_site() {
     echo '<table border="0">'
     if $running; then
         echo '<tr>'
-        echo '<td>'
-        echo '<img src="file://'$(pwd)/src/test/ci/'emblem-new.png">'
-        echo '</td><td colspan="7"><i>Continuous Integration is running</i></td>'
+        echo '<td colspan="9">'
+        echo '<img src="ci/emblem-new.png">'
+        echo '<i>Continuous Integration is running</i></td>'
         echo '</tr>'
     fi
     ls -r -1 $OUTDIR/log-* | while read log; do
         echo '<tr>'
         echo '<td>'
+        time=$(basename $log | cut -c5- | sed -r 's/^([0-9]{4})([0-9]{2})([0-9]{2})-([0-9]{2})([0-9]{2})([0-9]{2})$/\1-\2-\3 \4:\5:\6/')
         buildlog=build-$(basename $log)
         gitlog=git-$(basename $log)
-        pkg=$(dirname $log)/build$(basename $log | cut -c4-).tgz
+        pkg=build$(basename $log | cut -c4-).tgz
         if $(status $log); then
-            echo '<img src="file://'$(pwd)/src/test/ci/'emblem-default.png">'
+            echo '<img src="ci/emblem-default.png">'
         else
-            echo '<img src="file://'$(pwd)/src/test/ci/'emblem-important.png">'
+            echo '<img src="ci/emblem-important.png">'
         fi
-        echo '</td>'
-        echo '<td><a href="file://'$log'">'$(basename $log | cut -c5-)'</a></td>'
+        echo "$time"'</td>'
         echo '<td>&nbsp;|&nbsp;</td>'
         if [ -e $gitlog ]; then
-            echo '<td><a href="file://'$gitlog'">git log</a></td>'
+            echo '<td><a href="'$gitlog'">git log</a></td>'
         else
             echo '<td><i>(git log not available)</i></td>'
         fi
         echo '<td>&nbsp;|&nbsp;</td>'
+        echo '<td><a href="'$(basename $log)'">test log</a></td>'
+        echo '<td>&nbsp;|&nbsp;</td>'
         if [ -e $buildlog ]; then
-            echo '<td><a href="file://'$buildlog'">release build log</a></td>'
+            echo '<td><a href="'$buildlog'">release build log</a></td>'
         else
             echo '<td><i>(release build log not available)</i></td>'
         fi
         echo '<td>&nbsp;|&nbsp;</td>'
         if [ -e $pkg ]; then
-            echo '<td><a href="file://'$pkg'">download release</a></td>'
+            echo '<td><a href="'$pkg'">download release</a></td>'
         else
             echo '<td><i>(build not available)</i></td>'
         fi
@@ -119,6 +121,8 @@ build_site() {
 }
 
 do_ci() {
+    test -d $OUTDIR/ci && rm -rf $OUTDIR/ci
+    cp -R $(pwd)/src/test/ci $OUTDIR/ci
     build_site true > $OUTDIR/ci.html
     log=$($(pwd)/src/test/eiffel/ci)
     cp $log $OUTDIR/
