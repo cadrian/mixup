@@ -72,12 +72,14 @@ build_site() {
         echo '<tr>'
         echo '<td>'
         echo '<img src="file://'$(pwd)/src/test/ci/'emblem-new.png">'
-        echo '</td><td colspan="3"><i>Continuous Integration is running</i></td>'
+        echo '</td><td colspan="7"><i>Continuous Integration is running</i></td>'
         echo '</tr>'
     fi
     ls -r -1 $OUTDIR/log-* | while read log; do
         echo '<tr>'
         echo '<td>'
+        buildlog=build-$(basename $log)
+        gitlog=git-$(basename $log)
         pkg=$(dirname $log)/build$(basename $log | cut -c4-).tgz
         if $(status $log); then
             echo '<img src="file://'$(pwd)/src/test/ci/'emblem-default.png">'
@@ -87,8 +89,20 @@ build_site() {
         echo '</td>'
         echo '<td><a href="file://'$log'">'$(basename $log | cut -c5-)'</a></td>'
         echo '<td>&nbsp;|&nbsp;</td>'
+        if [ -e $gitlog ]; then
+            echo '<td><a href="file://'$gitlog'">git log</a></td>'
+        else
+            echo '<td><i>(git log not available)</i></td>'
+        fi
+        echo '<td>&nbsp;|&nbsp;</td>'
+        if [ -e $buildlog ]; then
+            echo '<td><a href="file://'$buildlog'">release build log</a></td>'
+        else
+            echo '<td><i>(release build log not available)</i></td>'
+        fi
+        echo '<td>&nbsp;|&nbsp;</td>'
         if [ -e $pkg ]; then
-            echo '<td><a href="file://'$pkg'">Download</a></td>'
+            echo '<td><a href="file://'$pkg'">download release</a></td>'
         else
             echo '<td><i>(build not available)</i></td>'
         fi
@@ -104,6 +118,8 @@ do_ci() {
     log=$($(pwd)/src/test/eiffel/ci)
     cp $log $OUTDIR/
     buildlog=$OUTDIR/build-$(basename $log)
+    gitlog=$OUTDIR/git-$(basename $log)
+    git log > $gitlog
     if $(pwd)/release/build.sh -clean > $buildlog; then
         pkg=$(grep Done: $buildlog | awk '{print $5}')
         cp $pkg $OUTDIR/build$(basename $log | cut -c4-).tgz
