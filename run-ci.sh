@@ -50,6 +50,7 @@ build_site() {
     running=$1
 
     icon=$(status_icon)
+    failures_count=$(status_failures_count)
 
     echo '<html>'
     echo '<head>'
@@ -63,7 +64,11 @@ build_site() {
     echo
     echo '<h1>MiXuP continuous integration</h1>'
     echo
-    echo '<table border="0"><tr><td><img src="file://'$icon'"></td><td>'$(status_failures_count)' failures in the last 5 builds</td></tr></table>'
+    if [ $failures_count -eq 1 ]; then
+        echo '<table border="0"><tr><td><img src="file://'$icon'"></td><td>1 failure in the last 5 builds</td></tr></table>'
+    else
+        echo '<table border="0"><tr><td><img src="file://'$icon'"></td><td>'$failures_count' failures in the last 5 builds</td></tr></table>'
+    fi
     echo
     echo '<h2>Build details</h2>'
     echo
