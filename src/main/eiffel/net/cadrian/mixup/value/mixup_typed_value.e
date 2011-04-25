@@ -12,13 +12,10 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_TYPED_VALUE[E_]
+deferred class MIXUP_TYPED_VALUE[E_]
 
 inherit
    MIXUP_VALUE
-
-create {ANY}
-   make
 
 feature {ANY}
    value: E_

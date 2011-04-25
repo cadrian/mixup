@@ -49,6 +49,16 @@ feature {ANY}
          end
       end
 
+   count: INTEGER is
+      do
+         Result := values.count
+      end
+
+   is_empty: BOOLEAN is
+      do
+         Result := values.is_empty
+      end
+
    lower: INTEGER is
       do
          Result := values.lower
@@ -62,6 +72,21 @@ feature {ANY}
    item (index: INTEGER): MIXUP_VALUE is
       do
          Result := values.item(index)
+      end
+
+   first: MIXUP_VALUE is
+      do
+         Result := values.first
+      end
+
+   last: MIXUP_VALUE is
+      do
+         Result := values.last
+      end
+
+   new_iterator: ITERATOR[MIXUP_VALUE] is
+      do
+         Result := values.new_iterator
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}

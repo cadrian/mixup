@@ -39,6 +39,31 @@ feature {ANY}
          create {MIXUP_INTEGER} Result.make(source, index)
       end
 
+   first: MIXUP_VALUE is
+      do
+         Result := item(lower)
+      end
+
+   last: MIXUP_VALUE is
+      do
+         Result := item(upper)
+      end
+
+   count: INTEGER is
+      do
+         Result := upper - lower + 1
+      end
+
+   is_empty: BOOLEAN is
+      do
+         Result := count = 0
+      end
+
+   new_iterator: ITERATOR[MIXUP_VALUE] is
+      do
+         crash
+      end
+
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
    as_name_in (buffer: STRING) is
       do
