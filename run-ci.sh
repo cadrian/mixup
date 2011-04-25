@@ -93,7 +93,7 @@ build_site() {
         fi
         echo '<td>'"$time"'</td>'
         echo '<td>&nbsp;|&nbsp;</td>'
-        if [ -e $gitlog ]; then
+        if [ -e $OUTDIR/$gitlog ]; then
             echo '<td><a href="'$gitlog'">git log</a></td>'
         else
             echo '<td><i>(git log not available)</i></td>'
@@ -101,13 +101,13 @@ build_site() {
         echo '<td>&nbsp;|&nbsp;</td>'
         echo '<td><a href="'$(basename $log)'">test log</a></td>'
         echo '<td>&nbsp;|&nbsp;</td>'
-        if [ -e $buildlog ]; then
+        if [ -e $OUTDIR/$buildlog ]; then
             echo '<td><a href="'$buildlog'">release build log</a></td>'
         else
             echo '<td><i>(release build log not available)</i></td>'
         fi
         echo '<td>&nbsp;|&nbsp;</td>'
-        if [ -e $pkg ]; then
+        if [ -e $OUTDIR/$pkg ]; then
             echo '<td><a href="'$pkg'">download release</a></td>'
         else
             echo '<td><i>(build not available)</i></td>'
