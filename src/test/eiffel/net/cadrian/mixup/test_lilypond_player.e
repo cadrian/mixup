@@ -42,8 +42,8 @@ feature {}
          create lilypond.connect_to(buffer)
 
          lilypond.play_set_partitur("test")
-         lilypond.play_set_instrument("Instr")
-         lilypond.play_set_note("Instr", {MIXUP_CHORD duration_4, source, << note("c", 4) >> });
+         lilypond.play_set_instrument("MyInstr")
+         lilypond.play_set_note("MyInstr", {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("c", 4) >> }, source, << "doe", "do" >> });
          lilypond.play_end_partitur
 
          expected := "[
@@ -58,12 +58,18 @@ feature {}
 \book {
    \score {
       <<
-         \new Staff = "Instr1" <<
-            \set Staff.instrumentName = "Instr"
-            \new Voice = "Instr1Voice1" {
+         \new Staff = "MyInstr1" <<
+            \set Staff.instrumentName = "MyInstr"
+            \new Voice = "MyInstr1v1" {
                <<
                    c4
                >>
+            }
+            \new Lyrics = "MyInstr1v1x1" \lyricsto "MyInstr1v1" {
+                "doe"
+            }
+            \new AltLyrics = "MyInstr1v1x2" \lyricsto "MyInstr1v1" {
+                "do"
             }
          >>
       >>

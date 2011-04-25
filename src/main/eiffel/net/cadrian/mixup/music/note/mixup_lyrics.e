@@ -19,6 +19,10 @@ inherit
       redefine
          is_equal, out_in_tagged_out_memory
       end
+   TRAVERSABLE[FIXED_STRING]
+      redefine
+         is_equal, out_in_tagged_out_memory
+      end
 
 create {ANY}
    make, manifest_creation
@@ -88,6 +92,35 @@ feature {ANY}
          v ::= visitor
          v.visit_lyrics(Current)
       end
+
+   lower: INTEGER is 0
+
+   upper: INTEGER is
+      do
+         Result := count - 1
+      end
+
+   item (index: INTEGER): FIXED_STRING is
+      do
+         Result := storage.item(index)
+      end
+
+   first: FIXED_STRING is
+      do
+         Result := storage.item(lower)
+      end
+
+   last: FIXED_STRING is
+      do
+         Result := storage.item(upper)
+      end
+
+   new_iterator: ITERATOR[FIXED_STRING] is
+      do
+         crash
+      end
+
+   is_empty: BOOLEAN is False
 
 feature {}
    make (a_source: like source; a_note: MIXUP_NOTE; a_lyrics: TRAVERSABLE[ABSTRACT_STRING]) is

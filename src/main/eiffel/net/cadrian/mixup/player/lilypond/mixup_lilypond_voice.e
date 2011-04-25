@@ -162,20 +162,37 @@ feature {}
 
 feature {MIXUP_LYRICS}
    visit_lyrics (a_lyrics: MIXUP_LYRICS) is
+      local
+         zip: ZIP[STRING, FIXED_STRING]
       do
          a_lyrics.note.accept(Current)
+         ensure_lyrics_count(a_lyrics.count)
+         create zip.make(lyrics, a_lyrics)
+         zip.do_all(agent (lyr: STRING; a_lyr: FIXED_STRING) is
+                    do
+                       lyr.extend(' ')
+                       lyr.extend('"')
+                       lyr.append(a_lyr)
+                       lyr.extend('"')
+                    end)
       end
 
 feature {MIXUP_LILYPOND_STAFF}
    generate (output: OUTPUT_STREAM) is
       require
          output.is_connected
+      local
+         zip: ZIP[STRING, INTEGER]
       do
-         output.put_line("            \new Voice = %"" + staff.instrument.name.out + staff.id.out + "Voice" + id.out + "%" {")
+         output.put_line("            \new Voice = %"" + staff.instrument.name.out + staff.id.out + "v" + id.out + "%" {")
          output.put_line("               <<")
          output.put_line("                  " + notes)
          output.put_line("               >>")
          output.put_line("            }")
+         if not lyrics.is_empty then
+            create zip.make(lyrics, 1 |..| lyrics.count)
+            zip.do_all(agent generate_lyrics(?, ?, output))
+         end
       end
 
 feature {}
@@ -200,9 +217,39 @@ feature {}
    notes: STRING
    lyrics: FAST_ARRAY[STRING]
 
+   ensure_lyrics_count (a_count: INTEGER) is
+      do
+         from
+         until
+            lyrics.count >= a_count
+         loop
+            lyrics.add_last("")
+         end
+      ensure
+         lyrics.count >= a_count
+      end
+
+   generate_lyrics (lyr: STRING; index: INTEGER; output: OUTPUT_STREAM) is
+      require
+         lyr /= Void
+         index > 0
+         output.is_connected
+      do
+         if index \\ 2 = 0 then
+            output.put_string("            \new AltLyrics = ")
+         else
+            output.put_string("            \new Lyrics = ")
+         end
+         output.put_line("%"" + staff.instrument.name.out + staff.id.out + "v" + id.out + "x" + index.out
+                         + "%" \lyricsto %"" + staff.instrument.name.out + staff.id.out + "v" + id.out + "%" {")
+         output.put_line("               " + lyr)
+         output.put_line("            }")
+      end
+
 invariant
    staff /= Void
    lyrics /= Void
+   lyrics.for_all(agent (l: STRING): BOOLEAN is do Result := l /= Void end)
    id > 0
 
 end -- class MIXUP_LILYPOND_VOICE
