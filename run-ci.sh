@@ -75,24 +75,23 @@ build_site() {
     echo '<table border="0">'
     if $running; then
         echo '<tr>'
-        echo '<td colspan="9">'
-        echo '<img src="ci/emblem-new.png">'
-        echo '<i>Continuous Integration is running</i></td>'
+        echo '<td>'
+        echo '<img src="ci/emblem-new.png"></td>'
+        echo '<td colspan="9"><i>Continuous Integration is running</i></td>'
         echo '</tr>'
     fi
     ls -r -1 $OUTDIR/log-* | while read log; do
         echo '<tr>'
-        echo '<td>'
         time=$(basename $log | cut -c5- | sed -r 's/^([0-9]{4})([0-9]{2})([0-9]{2})-([0-9]{2})([0-9]{2})([0-9]{2})$/\1-\2-\3 \4:\5:\6/')
         buildlog=build-$(basename $log)
         gitlog=git-$(basename $log)
         pkg=build$(basename $log | cut -c4-).tgz
         if $(status $log); then
-            echo '<img src="ci/emblem-default.png">'
+            echo '<td><img src="ci/emblem-default.png"></td>'
         else
-            echo '<img src="ci/emblem-important.png">'
+            echo '<td><img src="ci/emblem-important.png"></td>'
         fi
-        echo "$time"'</td>'
+        echo '<td>'"$time"'</td>'
         echo '<td>&nbsp;|&nbsp;</td>'
         if [ -e $gitlog ]; then
             echo '<td><a href="'$gitlog'">git log</a></td>'
