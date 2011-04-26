@@ -76,7 +76,7 @@ build_site() {
     if $running; then
         echo '<tr>'
         echo '<td>'
-        echo '<img src="ci/emblem-new.png"></td>'
+        echo '<img src="ci/running.png"></td>'
         echo '<td colspan="9"><i>Continuous Integration is running</i></td>'
         echo '</tr>'
     fi
@@ -87,9 +87,9 @@ build_site() {
         gitlog=git-$(basename $log)
         pkg=build$(basename $log | cut -c4-).tgz
         if $(status $log); then
-            echo '<td><img src="ci/emblem-default.png"></td>'
+            echo '<td><img src="ci/ok.png"></td>'
         else
-            echo '<td><img src="ci/emblem-important.png"></td>'
+            echo '<td><img src="ci/ko.png"></td>'
         fi
         echo '<td>'"$time"'</td>'
         echo '<td>&nbsp;|&nbsp;</td>'
