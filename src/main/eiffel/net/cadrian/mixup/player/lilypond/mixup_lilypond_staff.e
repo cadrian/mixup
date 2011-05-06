@@ -14,6 +14,9 @@
 --
 class MIXUP_LILYPOND_STAFF
 
+insert
+   MIXUP_ERRORS
+
 create {ANY}
    make
 
@@ -128,10 +131,16 @@ feature {}
          if context /= Void then
             val := context.lookup(context_data_name, player, True)
          end
-         if val /= Void and then (str ?:= val) then
-            str ::= val
-            output.put_line("            \set " + lilypond_variable_name + " = %"" + str.value.out + "%"")
-         elseif default_value /= Void then
+         if val /= Void then
+            if str ?:= val then
+               str ::= val
+               output.put_line("            \set " + lilypond_variable_name + " = %"" + str.value.out + "%"")
+            else
+               error_at(val.source, context_data_name.out + " must be a string")
+               val := Void
+            end
+         end
+         if val = Void and then default_value /= Void then
             output.put_line("            \set " + lilypond_variable_name + " = %"" + default_value + "%"")
          end
       end
