@@ -85,7 +85,7 @@ build_site() {
         time=$(basename $log | cut -c5- | sed -r 's/^([0-9]{4})([0-9]{2})([0-9]{2})-([0-9]{2})([0-9]{2})([0-9]{2})$/\1-\2-\3 \4:\5:\6/')
         buildlog=build-$(basename $log)
         gitlog=git-$(basename $log)
-        pkg=build$(basename $log | cut -c4-).tgz
+        pkg=mixup$(basename $log | cut -c4-).tgz
         if $(status $log); then
             echo '<td><img src="ci/ok.png"></td>'
         else
@@ -130,7 +130,7 @@ do_ci() {
     git log > $gitlog
     if $(pwd)/release/build.sh -clean > $buildlog; then
         pkg=$(grep Done: $buildlog | awk '{print $5}')
-        cp $pkg $OUTDIR/build$(basename $log | cut -c4-).tgz
+        cp $pkg $OUTDIR/mixup$(basename $log | cut -c4-).tgz
     else
         echo 'Build failed' >> $OUTDIR/$(basename $log)
     fi
