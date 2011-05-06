@@ -21,6 +21,13 @@ create {ANY}
    make, connect_to
 
 feature {ANY}
+   set_context (a_context: MIXUP_CONTEXT) is
+      do
+         context := a_context
+      ensure
+         context = a_context
+      end
+
    native (a_source: MIXUP_SOURCE; name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
          inspect
@@ -28,7 +35,7 @@ feature {ANY}
          when "current_bar_number" then
             create {MIXUP_INTEGER} Result.make(a_source, bar_number)
          else
-            fatal("unknown native function: " + name)
+            warning_at(a_source, "Lilypond: unknown native function: " + name)
          end
       end
 
@@ -69,7 +76,7 @@ feature {ANY}
          instrument: MIXUP_LILYPOND_INSTRUMENT
       do
          inst_name := name.intern
-         create instrument.make(inst_name)
+         create instrument.make(context, Current, inst_name)
          log.info.put_line("Lilypond: adding instrument: " + name.out)
          instruments.add(instrument, inst_name)
          bar_number := 0
@@ -230,6 +237,7 @@ feature {}
    outputs_stack: STACK[OUTPUT_STREAM]
    instruments: LINKED_HASHED_DICTIONARY[MIXUP_LILYPOND_INSTRUMENT, FIXED_STRING]
    bar_number: INTEGER
+   context: MIXUP_CONTEXT
 
    section_output: OUTPUT_STREAM is
          -- the output file for the current section.

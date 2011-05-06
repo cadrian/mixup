@@ -37,4 +37,10 @@ feature {ANY}
       deferred
       end
 
+   set_context (a_context: MIXUP_CONTEXT) is
+      require
+         a_context /= Void
+      deferred
+      end
+
 end -- class MIXUP_PLAYER

@@ -178,7 +178,7 @@ feature {MIXUP_LYRICS}
       end
 
 feature {MIXUP_LILYPOND_STAFF}
-   generate (output: OUTPUT_STREAM) is
+   generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
       require
          output.is_connected
       local
@@ -191,7 +191,7 @@ feature {MIXUP_LILYPOND_STAFF}
          output.put_line("            }")
          if not lyrics.is_empty then
             create zip.make(lyrics, 1 |..| lyrics.count)
-            zip.do_all(agent generate_lyrics(?, ?, output))
+            zip.do_all(agent generate_lyrics(?, ?, context, output))
          end
       end
 
@@ -229,7 +229,7 @@ feature {}
          lyrics.count >= a_count
       end
 
-   generate_lyrics (lyr: STRING; index: INTEGER; output: OUTPUT_STREAM) is
+   generate_lyrics (lyr: STRING; index: INTEGER; context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
       require
          lyr /= Void
          index > 0

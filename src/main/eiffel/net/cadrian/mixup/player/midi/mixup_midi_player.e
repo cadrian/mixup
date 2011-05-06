@@ -21,9 +21,13 @@ create {ANY}
    make
 
 feature {ANY}
+   set_context (a_context: MIXUP_CONTEXT) is
+      do
+      end
+
    native (a_source: MIXUP_SOURCE; name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
-         fatal("unknown native function: " + name)
+         warning_at(a_source, "MIDI: unknown native function: " + name)
       end
 
 feature {ANY}

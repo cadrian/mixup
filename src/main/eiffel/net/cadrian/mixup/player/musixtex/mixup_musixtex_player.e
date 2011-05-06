@@ -21,6 +21,10 @@ create {ANY}
    make, connect_to
 
 feature {ANY}
+   set_context (a_context: MIXUP_CONTEXT) is
+      do
+      end
+
    native (a_source: MIXUP_SOURCE; name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
          inspect
@@ -28,7 +32,7 @@ feature {ANY}
          when "current_bar_number" then
             create {MIXUP_INTEGER} Result.make(bar_number)
          else
-            fatal("unknown native function: " + name)
+            warning_at(a_source, "MusixTeX: unknown native function: " + name)
          end
       end
 

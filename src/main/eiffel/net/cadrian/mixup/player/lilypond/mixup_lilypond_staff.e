@@ -78,31 +78,35 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
       end
 
 feature {MIXUP_LILYPOND_INSTRUMENT}
-   generate (output: OUTPUT_STREAM) is
+   generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
       require
          output.is_connected
       do
          output.put_line("         \new Staff = %"" + instrument.name.out + id.out + "%" <<")
-         output.put_line("            \set Staff.instrumentName = %"" + instrument.name.out + "%"")
-         voices.do_all(agent {MIXUP_LILYPOND_VOICE}.generate(output))
+         generate_context(context, output)
+         voices.do_all(agent {MIXUP_LILYPOND_VOICE}.generate(context, output))
          output.put_line("         >>")
       end
 
 feature {}
-   make (a_instrument: like instrument; a_id: like id; a_reference: MIXUP_NOTE_HEAD) is
+   make (a_player: like player; a_instrument: like instrument; a_id: like id; a_reference: MIXUP_NOTE_HEAD) is
       require
+         a_player /= Void
          a_instrument /= Void
          a_id > 0
       do
+         player := a_player
          instrument := a_instrument
          id := a_id
          create voices.with_capacity(4)
          voices.add_last(create {MIXUP_LILYPOND_VOICE}.make(Current, 1, a_reference));
       ensure
+         player = a_player
          instrument = a_instrument
          id = a_id
       end
 
+   player: MIXUP_LILYPOND_PLAYER
    voices: FAST_ARRAY[MIXUP_LILYPOND_VOICE]
    current_voice_index: INTEGER
 
@@ -111,7 +115,28 @@ feature {}
          Result := voices.item(current_voice_index)
       end
 
+   generate_context (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
+      local
+         val: MIXUP_VALUE; str: MIXUP_STRING
+      do
+         if context /= Void then
+            val := context.lookup(template_instrument_name, player, True)
+         end
+         if val = Void or else not (str ?:= val) then
+            output.put_line("            \set Staff.instrumentName = %"" + instrument.name.out + "%"")
+         else
+            str ::= val
+            output.put_line("            \set Staff.instrumentName = %"" + str.value.out + "%"")
+         end
+      end
+
+   template_instrument_name: FIXED_STRING is
+      once
+         Result := "template.instrument_name".intern
+      end
+
 invariant
+   player /= Void
    instrument /= Void
    id > 0
    voices.valid_index(current_voice_index)

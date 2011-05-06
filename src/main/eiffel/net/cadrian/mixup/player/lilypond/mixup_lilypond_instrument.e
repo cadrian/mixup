@@ -81,23 +81,31 @@ feature {MIXUP_LILYPOND_PLAYER}
       require
          output.is_connected
       do
-         staffs.do_all(agent {MIXUP_LILYPOND_STAFF}.generate(output))
+         staffs.do_all(agent {MIXUP_LILYPOND_STAFF}.generate(context, output))
       end
 
 feature {}
-   make (a_name: like name) is
+   make (a_context: like context; a_player: like player; a_name: like name) is
       require
+         a_context /= Void
+         a_player /= Void
          a_name /= Void
       do
+         context := a_context
+         player := a_player
          name := a_name
          create staffs.with_capacity(2)
-         staffs.add_last(create {MIXUP_LILYPOND_STAFF}.make(Current, 1, absolute_reference));
+         staffs.add_last(create {MIXUP_LILYPOND_STAFF}.make(a_player, Current, 1, absolute_reference));
       ensure
+         context = a_context
+         player = a_player
          name = a_name
       end
 
+   player: MIXUP_LILYPOND_PLAYER
    staffs: FAST_ARRAY[MIXUP_LILYPOND_STAFF]
    current_staff_index: INTEGER
+   context: MIXUP_CONTEXT
 
    current_staff: MIXUP_LILYPOND_STAFF is
       do
@@ -110,6 +118,8 @@ feature {}
       end
 
 invariant
+   context /= Void
+   player /= Void
    name /= Void
    staffs.valid_index(current_staff_index)
 

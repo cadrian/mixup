@@ -74,6 +74,7 @@ feature {MIXUP_PARTITUR}
 feature {MIXUP_INSTRUMENT}
    visit_instrument (a_instrument: MIXUP_INSTRUMENT) is
       do
+         current_player.set_context(a_instrument)
          a_instrument.run_hook(current_player, once "at_start")
          current_player.play(create {MIXUP_EVENT_SET_INSTRUMENT}.make(a_instrument.source, 0, a_instrument.name))
          a_instrument.run_hook(current_player, once "at_end")
