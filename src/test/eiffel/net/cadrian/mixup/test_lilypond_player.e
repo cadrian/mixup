@@ -36,10 +36,13 @@ feature {}
          lilypond: MIXUP_LILYPOND_PLAYER
          buffer: STRING_OUTPUT_STREAM
          expected: STRING
+         context: AUX_MIXUP_MOCK_CONTEXT
       do
          create source.make
          create buffer.make
          create lilypond.connect_to(buffer)
+         create context.make(source, "test context", Void)
+         lilypond.set_context(context)
 
          lilypond.play_set_partitur("test")
          lilypond.play_set_instrument("MyInstr")
@@ -60,6 +63,7 @@ feature {}
       <<
          \new Staff = "MyInstr1" <<
             \set Staff.instrumentName = "MyInstr"
+            \set Staff.shortInstrumentName = "M."
             \new Voice = "MyInstr1v1" {
                <<
                    c4

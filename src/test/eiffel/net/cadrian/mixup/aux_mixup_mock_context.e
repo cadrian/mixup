@@ -12,27 +12,34 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class AUX_MIXUP_MOCK_SOURCE
+class AUX_MIXUP_MOCK_CONTEXT
 
 inherit
-   MIXUP_SOURCE
+   MIXUP_CONTEXT
 
 create {ANY}
    make
 
 feature {ANY}
-   file: FIXED_STRING
-   line: INTEGER
-   column: INTEGER
+   commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER) is
+      do
+      end
 
-   display (a_output: OUTPUT_STREAM) is
+   add_child (a_child: MIXUP_CONTEXT) is
+      do
+      end
+
+   accept (a_visitor: VISITOR) is
       do
       end
 
 feature {}
-   make is
+   lookup_in_children (identifier: FIXED_STRING; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
       do
-         file := "<test>".intern
       end
 
-end -- class AUX_MIXUP_MOCK_SOURCE
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; cut: MIXUP_CONTEXT): BOOLEAN is
+      do
+      end
+
+end -- class AUX_MIXUP_MOCK_CONTEXT

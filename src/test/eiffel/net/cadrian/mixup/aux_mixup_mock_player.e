@@ -67,6 +67,13 @@ feature {ANY}
       end
 
 feature {ANY}
+   context: MIXUP_CONTEXT
+
+   set_context (a_context: like context) is
+      do
+         context := a_context
+      end
+
    play_set_book (name: STRING) is
       do
          events_list.add_last(set_book_event(name))
