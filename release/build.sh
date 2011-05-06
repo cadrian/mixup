@@ -92,7 +92,7 @@ generate
     no_strip(no)
     clean(no)
     c_compiler_options: "-g -pipe -Os"
-    split("by_type")
+    split("legacy")
 
 end
 

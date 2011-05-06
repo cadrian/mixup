@@ -123,6 +123,7 @@ do_ci() {
     test -d $OUTDIR/ci && rm -rf $OUTDIR/ci
     cp -R $(pwd)/src/test/ci $OUTDIR/ci
     build_site true > $OUTDIR/ci.html
+    export CI_CLEAN=clean
     log=$($(pwd)/src/test/eiffel/ci)
     cp $log $OUTDIR/
     buildlog=$OUTDIR/build-$(basename $log)
@@ -141,6 +142,12 @@ if git pull | grep -q 'up-to-date'; then
     case x$1 in
         x-force)
             do_ci
+            ;;
+        *)
+            if [ -e ./force-ci ]; then
+                rm -f ./force-ci
+                do_ci
+            fi
             ;;
     esac
 else
