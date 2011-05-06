@@ -25,6 +25,7 @@ instrument soprano
     music
         << c4 d e f | g a b c | c,1 >>
     lyrics
+        << doe ray me far sew la tea doe, doe... >>
         << do re mi fa so la ti do, do. >>
     end
 
