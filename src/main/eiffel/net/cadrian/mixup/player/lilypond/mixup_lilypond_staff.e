@@ -116,23 +116,34 @@ feature {}
       end
 
    generate_context (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
+      do
+         generate_context_string(context, output, template_instrument_name, once "Staff.instrumentName", instrument.name.out)
+         generate_context_string(context, output, template_instrument_abbrev, once "Staff.shortInstrumentName", instrument.name.first.out + ".")
+      end
+
+   generate_context_string (context: MIXUP_CONTEXT; output: OUTPUT_STREAM; context_data_name: FIXED_STRING; lilypond_variable_name, default_value: STRING) is
       local
          val: MIXUP_VALUE; str: MIXUP_STRING
       do
          if context /= Void then
-            val := context.lookup(template_instrument_name, player, True)
+            val := context.lookup(context_data_name, player, True)
          end
-         if val = Void or else not (str ?:= val) then
-            output.put_line("            \set Staff.instrumentName = %"" + instrument.name.out + "%"")
-         else
+         if val /= Void and then (str ?:= val) then
             str ::= val
-            output.put_line("            \set Staff.instrumentName = %"" + str.value.out + "%"")
+            output.put_line("            \set " + lilypond_variable_name + " = %"" + str.value.out + "%"")
+         elseif default_value /= Void then
+            output.put_line("            \set " + lilypond_variable_name + " = %"" + default_value + "%"")
          end
       end
 
    template_instrument_name: FIXED_STRING is
       once
          Result := "template.instrument_name".intern
+      end
+
+   template_instrument_abbrev: FIXED_STRING is
+      once
+         Result := "template.instrument_abbrev".intern
       end
 
 invariant
