@@ -25,6 +25,8 @@ create {}
    make
 
 feature {}
+   mixup_suffix: STRING is ".mix"
+
    mixer: MIXUP_MIXER_IMPL
    grammar: MIXUP_GRAMMAR
 
@@ -43,7 +45,7 @@ feature {}
          end
 
          open_directory := current_directory
-         file := find_file(argument(1).intern, once ".mix")
+         file := find_file(argument(1).intern, mixup_suffix)
          mixer.add_piece(parse(read_file(file)), file.path)
          check
             open_directory = current_directory
@@ -189,7 +191,7 @@ feature {}
          old_directory: like open_directory
       do
          old_directory := open_directory
-         file := find_file(a_name, once ".mix")
+         file := find_file(a_name, mixup_suffix)
          Result := [parse(read_file(file)), file.path]
          open_directory := old_directory
       ensure
