@@ -12,16 +12,16 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-deferred class MIXUP_EVENT_END_TIE_PLAYER
+deferred class MIXUP_EVENT_END_PHRASING_SLUR_PLAYER
 
 inherit
    MIXUP_PLAYER
 
-feature {MIXUP_EVENT_END_TIE}
-   play_end_tie (a_instrument: ABSTRACT_STRING) is
+feature {MIXUP_EVENT_END_PHRASING_SLUR}
+   play_end_phrasing_slur (a_instrument: ABSTRACT_STRING) is
       require
          a_instrument /= Void
       deferred
       end
 
-end -- class MIXUP_EVENT_END_TIE_PLAYER
+end -- class MIXUP_EVENT_END_PHRASING_SLUR_PLAYER

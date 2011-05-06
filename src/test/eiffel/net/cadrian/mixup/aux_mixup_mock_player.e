@@ -34,8 +34,8 @@ insert
          end_beam as end_beam_event,
          start_slur as start_slur_event,
          end_slur as end_slur_event,
-         start_tie as start_tie_event,
-         end_tie as end_tie_event,
+         start_phrasing_slur as start_phrasing_slur_event,
+         end_phrasing_slur as end_phrasing_slur_event,
          start_repeat as start_repeat_event,
          end_repeat as end_repeat_event
       end
@@ -144,14 +144,14 @@ feature {ANY}
          events_list.add_last(end_slur_event(instrument))
       end
 
-   play_start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_phrasing_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         events_list.add_last(start_tie_event(instrument, xuplet_numerator, xuplet_denominator, text))
+         events_list.add_last(start_phrasing_slur_event(instrument, xuplet_numerator, xuplet_denominator, text))
       end
 
-   play_end_tie (instrument: ABSTRACT_STRING) is
+   play_end_phrasing_slur (instrument: ABSTRACT_STRING) is
       do
-         events_list.add_last(end_tie_event(instrument))
+         events_list.add_last(end_phrasing_slur_event(instrument))
       end
 
    play_start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is

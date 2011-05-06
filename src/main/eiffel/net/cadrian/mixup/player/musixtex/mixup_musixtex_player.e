@@ -104,11 +104,11 @@ feature {ANY}
       do
       end
 
-   start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_phrasing_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
       end
 
-   end_tie (instrument: ABSTRACT_STRING) is
+   end_phrasing_slur (instrument: ABSTRACT_STRING) is
       do
       end
 

@@ -88,7 +88,7 @@ feature {ANY}
          music.last = a_music
       end
 
-   add_chord (a_source: MIXUP_SOURCE; note_heads: COLLECTION[TUPLE[MIXUP_SOURCE, FIXED_STRING]]; note_length: INTEGER_64) is
+   add_chord (a_source: MIXUP_SOURCE; note_heads: COLLECTION[TUPLE[MIXUP_SOURCE, FIXED_STRING]]; note_length: INTEGER_64; tie: BOOLEAN) is
       require
          a_source /= Void
       local
@@ -96,6 +96,7 @@ feature {ANY}
          ref, note: MIXUP_NOTE_HEAD
          chord: MIXUP_CHORD
       do
+         -- TODO: manage tie
          from
             create chord.make(a_source, note_heads.count, note_length)
             ref := reference

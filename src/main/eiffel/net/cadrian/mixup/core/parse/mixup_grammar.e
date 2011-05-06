@@ -213,10 +213,10 @@ feature {}
                                                                    {FAST_ARRAY[STRING] << "Down_Staff" >> }, Void; -- previous staff (going back down)
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Extern_Notes" >> }, Void; -- music insertion
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Voices" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Chord" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Chord_Or_Tie" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Beam" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Dynamics", "PhrasingSlur" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Slur" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Tie" >> }, Void;
                                                                    >> };
 
                                    "Next_Bar", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW |" >> }, Void;
@@ -228,6 +228,9 @@ feature {}
                                    "Extern_Notes", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW \", "Identifier" >> }, Void;
                                                                           >> };
 
+                                   "Chord_Or_Tie", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Chord" >> }, Void;
+                                                                          {FAST_ARRAY[STRING] << "Chord", "KW ~" >> }, Void;
+                                                                          >> };
                                    "Chord", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <", "Note_Head+", "KW >", "Note_Length" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Note_Head", "Note_Length" >> }, Void;
                                                                    >> };
@@ -289,10 +292,10 @@ feature {}
                                                                    >> };
                                    "Beam", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW [", "Xuplet_Spec", "Notes*", "KW ]" >> }, Void;
                                                                   >> };
-                                   "Slur", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW {", "Xuplet_Spec", "Notes*", "KW }" >> }, Void;
+                                   "PhrasingSlur", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW {", "Xuplet_Spec", "Notes*", "KW }" >> }, Void;
                                                                   >> };
-                                   "Tie", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW (", "Xuplet_Spec", "Notes*", "KW )" >> }, Void;
-                                                                 >> };
+                                   "Slur", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW (", "Xuplet_Spec", "Notes*", "KW )" >> }, Void;
+                                                                  >> };
                                    "Xuplet_Spec", {PARSE_NON_TERMINAL << epsilon, Void;
                                                                          {FAST_ARRAY[STRING] << "KW number", "KW /", "KW number" >> }, Void;
                                                                          {FAST_ARRAY[STRING] << "KW number", "KW /", "KW number", "KW string" >> }, Void;
@@ -409,6 +412,7 @@ feature {}
 
 
                                    "KW ^",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "^" , ""),    Void);
+                                   "KW ~",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "~" , ""),    Void);
                                    "KW <<",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<<", ""),    Void);
                                    "KW <=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<=", ""),    Void);
                                    "KW <",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<" , "<="),  Void);

@@ -118,14 +118,14 @@ feature {ANY}
          instruments.reference_at(instrument.intern).end_slur
       end
 
-   play_start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_phrasing_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         instruments.reference_at(instrument.intern).start_tie(xuplet_numerator, xuplet_denominator, text)
+         instruments.reference_at(instrument.intern).start_phrasing_slur(xuplet_numerator, xuplet_denominator, text)
       end
 
-   play_end_tie (instrument: ABSTRACT_STRING) is
+   play_end_phrasing_slur (instrument: ABSTRACT_STRING) is
       do
-         instruments.reference_at(instrument.intern).end_tie
+         instruments.reference_at(instrument.intern).end_phrasing_slur
       end
 
    play_start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is

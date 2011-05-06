@@ -142,6 +142,8 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             build_dynamic_hairpin_decrescendo(node)
          when "Dynamic_End" then
             build_dynamic_end(node)
+         when "Chord_Or_Tie" then
+            build_chord_or_tie(node)
          when "Chord" then
             build_chord(node)
          when "Note_Head" then
@@ -156,8 +158,8 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             build_beam(node)
          when "Slur" then
             build_slur(node)
-         when "Tie" then
-            build_tie(node)
+         when "Phrasing_Slur" then
+            build_phrasing_slur(node)
          when "Xuplet_Spec" then
             read_xuplet_spec(node)
          when "Strophe" then
@@ -915,9 +917,21 @@ feature {}
          build_group(slur, create {MIXUP_GROUPED_MUSIC}.as_slur(new_source(slur), last_compound_music.reference))
       end
 
-   build_tie (tie: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_phrasing_slur (phrasing_slur: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         build_group(tie, create {MIXUP_GROUPED_MUSIC}.as_tie(new_source(tie), last_compound_music.reference))
+         build_group(phrasing_slur, create {MIXUP_GROUPED_MUSIC}.as_phrasing_slur(new_source(phrasing_slur), last_compound_music.reference))
+      end
+
+   last_chord_tie: BOOLEAN
+   build_chord_or_tie (chord: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+      do
+         if chord.count = 1 then
+            last_chord_tie := False
+         else
+            last_chord_tie := True
+         end
+         chord.node_at(0).accept(Current)
       end
 
    build_chord (chord: MIXUP_NON_TERMINAL_NODE_IMPL) is
@@ -930,7 +944,7 @@ feature {}
             chord.node_at(1).accept(Current)
             chord.node_at(3).accept(Current)
          end
-         last_compound_music.add_chord(new_source(chord), note_heads, last_note_length)
+         last_compound_music.add_chord(new_source(chord), note_heads, last_note_length, last_chord_tie)
       end
 
    build_note_head (note_head: MIXUP_NON_TERMINAL_NODE_IMPL) is

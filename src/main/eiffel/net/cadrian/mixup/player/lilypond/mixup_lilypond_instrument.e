@@ -56,14 +56,14 @@ feature {MIXUP_LILYPOND_PLAYER}
          current_staff.end_slur
       end
 
-   start_tie (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         current_staff.start_tie(xuplet_numerator, xuplet_denominator, text)
+         current_staff.start_phrasing_slur(xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_tie is
+   end_phrasing_slur is
       do
-         current_staff.end_tie
+         current_staff.end_phrasing_slur
       end
 
    start_repeat (volte: INTEGER_64) is

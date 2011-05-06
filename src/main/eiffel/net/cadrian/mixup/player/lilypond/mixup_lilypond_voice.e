@@ -82,11 +82,11 @@ feature {MIXUP_LILYPOND_STAFF}
       do
       end
 
-   start_tie (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
       end
 
-   end_tie is
+   end_phrasing_slur is
       do
       end
 

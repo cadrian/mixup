@@ -87,11 +87,11 @@ feature {ANY}
       do
       end
 
-   play_start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_phrasing_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
       end
 
-   play_end_tie (instrument: ABSTRACT_STRING) is
+   play_end_phrasing_slur (instrument: ABSTRACT_STRING) is
       do
       end
 

@@ -105,19 +105,19 @@ feature {}
          create Result.make("end_slur".intern, [instrument.intern])
       end
 
-   start_tie (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+   start_phrasing_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
       local
          t: FIXED_STRING
       do
          if text /= Void then
             t := text.intern
          end
-         create Result.make("start_tie".intern, [instrument.intern, xuplet_numerator, xuplet_denominator, t])
+         create Result.make("start_phrasing_slur".intern, [instrument.intern, xuplet_numerator, xuplet_denominator, t])
       end
 
-   end_tie (instrument: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+   end_phrasing_slur (instrument: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
       do
-         create Result.make("end_tie".intern, [instrument.intern])
+         create Result.make("end_phrasing_slur".intern, [instrument.intern])
       end
 
    start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64): AUX_MIXUP_MOCK_EVENT is

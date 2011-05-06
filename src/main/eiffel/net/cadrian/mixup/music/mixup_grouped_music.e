@@ -27,7 +27,7 @@ insert
       end
 
 create {ANY}
-   as_beam, as_slur, as_tie
+   as_beam, as_slur, as_phrasing_slur
 
 feature {ANY}
    valid_anchor: BOOLEAN is True
@@ -61,9 +61,9 @@ feature {ANY}
          Result := start_event_factory = start_slur
       end
 
-   is_tie: BOOLEAN is
+   is_phrasing_slur: BOOLEAN is
       do
-         Result := start_event_factory = start_tie
+         Result := start_event_factory = start_phrasing_slur
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
@@ -73,7 +73,7 @@ feature {ANY}
          if xuplet_text /= Void then
             a_context.set_xuplet(xuplet_numerator, xuplet_denominator, xuplet_text)
          end
-         create lyrics_manager.make(not (is_slur or is_tie))
+         create lyrics_manager.make(not (is_slur or is_phrasing_slur))
          create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_event_factory, end_event_factory, agent lyrics_manager.manage_lyrics, Precursor(a_context))
       end
 
@@ -104,17 +104,17 @@ feature {}
          is_slur
       end
 
-   as_tie (a_source: like source; a_reference: like reference) is
+   as_phrasing_slur (a_source: like source; a_reference: like reference) is
       require
          a_source /= Void
       do
          make(a_reference)
          source := a_source
-         start_event_factory := start_tie
-         end_event_factory := end_tie
+         start_event_factory := start_phrasing_slur
+         end_event_factory := end_phrasing_slur
       ensure
          source = a_source
-         is_tie
+         is_phrasing_slur
       end
 
    start_event_factory: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT]
@@ -160,24 +160,24 @@ feature {}
          create {MIXUP_EVENT_END_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name)
       end
 
-   start_tie: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
+   start_phrasing_slur: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
       once
-         Result := agent create_start_tie
+         Result := agent create_start_phrasing_slur
       end
 
-   create_start_tie (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
+   create_start_phrasing_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_START_TIE} Result.make(source, a_context.start_time, a_context.instrument.name, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
+         create {MIXUP_EVENT_START_PHRASING_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
       end
 
-   end_tie: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
+   end_phrasing_slur: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
       once
-         Result := agent create_end_tie
+         Result := agent create_end_phrasing_slur
       end
 
-   create_end_tie (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
+   create_end_phrasing_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_END_TIE} Result.make(source, a_context.start_time, a_context.instrument.name)
+         create {MIXUP_EVENT_END_PHRASING_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name)
       end
 
 end -- class MIXUP_GROUPED_MUSIC

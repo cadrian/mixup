@@ -12,7 +12,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_EVENT_END_TIE
+class MIXUP_EVENT_START_PHRASING_SLUR
 
 inherit
    MIXUP_EVENT_WITHOUT_LYRICS
@@ -23,32 +23,43 @@ create {ANY}
 feature {ANY}
    time: INTEGER_64
    instrument: FIXED_STRING
+   xuplet_numerator: INTEGER_64
+   xuplet_denominator: INTEGER_64
+   text: FIXED_STRING
 
 feature {MIXUP_PLAYER}
    fire (player: MIXUP_PLAYER) is
       local
-         p: MIXUP_EVENT_END_TIE_PLAYER
+         p: MIXUP_EVENT_START_PHRASING_SLUR_PLAYER
       do
          p ::= player
-         p.play_end_tie(instrument)
+         p.play_start_phrasing_slur(instrument, xuplet_numerator, xuplet_denominator, text)
       end
 
 feature {}
-   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING) is
+   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64; a_text: ABSTRACT_STRING) is
       require
          a_source /= Void
          a_instrument /= Void
+         a_text /= Void
       do
          source := a_source
          time := a_time
          instrument := a_instrument.intern
+         xuplet_numerator := a_xuplet_numerator
+         xuplet_denominator := a_xuplet_denominator
+         text := a_text.intern
       ensure
          source = a_source
          time = a_time
          instrument = a_instrument
+         xuplet_numerator = a_xuplet_numerator
+         xuplet_denominator = a_xuplet_denominator
+         text = a_text
       end
 
 invariant
    instrument /= Void
+   text /= Void
 
-end -- class MIXUP_EVENT_END_TIE
+end -- class MIXUP_EVENT_START_PHRASING_SLUR
