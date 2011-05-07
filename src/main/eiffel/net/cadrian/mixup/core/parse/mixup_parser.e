@@ -923,15 +923,14 @@ feature {}
       end
 
    last_chord_tie: BOOLEAN
-   build_chord_or_tie (chord: MIXUP_NON_TERMINAL_NODE_IMPL) is
-      local
+   build_chord_or_tie (chord_or_tie: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         if chord.count = 1 then
+         if chord_or_tie.count = 1 then
             last_chord_tie := False
          else
             last_chord_tie := True
          end
-         chord.node_at(0).accept(Current)
+         chord_or_tie.node_at(0).accept(Current)
       end
 
    build_chord (chord: MIXUP_NON_TERMINAL_NODE_IMPL) is

@@ -215,7 +215,7 @@ feature {}
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Voices" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Chord_Or_Tie" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Beam" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "Dynamics", "PhrasingSlur" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Phrasing_Slur" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Slur" >> }, Void;
                                                                    >> };
 
@@ -292,8 +292,8 @@ feature {}
                                                                    >> };
                                    "Beam", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW [", "Xuplet_Spec", "Notes*", "KW ]" >> }, Void;
                                                                   >> };
-                                   "PhrasingSlur", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW {", "Xuplet_Spec", "Notes*", "KW }" >> }, Void;
-                                                                  >> };
+                                   "Phrasing_Slur", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW {", "Xuplet_Spec", "Notes*", "KW }" >> }, Void;
+                                                                   >> };
                                    "Slur", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW (", "Xuplet_Spec", "Notes*", "KW )" >> }, Void;
                                                                   >> };
                                    "Xuplet_Spec", {PARSE_NON_TERMINAL << epsilon, Void;
