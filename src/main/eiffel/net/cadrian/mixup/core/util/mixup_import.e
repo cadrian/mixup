@@ -24,6 +24,16 @@ create {ANY}
    make
 
 feature {ANY}
+   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
+      do
+         crash
+      end
+
+   get_local (a_name: FIXED_STRING): MIXUP_VALUE is
+      do
+         check Result = Void end
+      end
+
    commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER) is
       do
          child.commit(a_player, start_bar_number)
@@ -60,17 +70,17 @@ feature {}
          Result := identifier.substring(name.count + 1 + identifier.lower, identifier.upper)
       end
 
-   lookup_in_children (identifier: FIXED_STRING; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
+   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is
       do
-         if child /= cut and then valid_identifier(identifier) then
-            Result := child.lookup_expression(child_identifier(identifier), False, Current)
+         if child.lookup_tag /= lookup_tag and then valid_identifier(identifier) then
+            Result := child.lookup_value(child_identifier(identifier), False, lookup_tag)
          end
       end
 
-   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; cut: MIXUP_CONTEXT): BOOLEAN is
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN is
       do
-         if child /= cut and then valid_identifier(identifier) then
-            Result := child.setup_expression(child_identifier(identifier), True, a_value, Current)
+         if child.lookup_tag /= lookup_tag and then valid_identifier(identifier) then
+            Result := child.setup_value(child_identifier(identifier), True, a_value, is_const, is_public, is_local, lookup_tag)
          end
       end
 
@@ -79,6 +89,7 @@ feature {}
       require
          child_context /= Void
          a_parent /= Void
+         not ({MIXUP_IMPORT} ?:= child_context)
       do
          child := child_context
          make_context(a_source, a_name, a_parent)
@@ -92,5 +103,6 @@ feature {}
 
 invariant
    child /= Void
+   not ({MIXUP_IMPORT} ?:= child)
 
 end -- class MIXUP_IMPORT

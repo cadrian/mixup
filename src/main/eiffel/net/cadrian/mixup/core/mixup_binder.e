@@ -21,6 +21,16 @@ inherit
       end
 
 feature {ANY}
+   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
+      do
+         crash
+      end
+
+   get_local (a_name: FIXED_STRING): MIXUP_VALUE is
+      do
+         check Result = Void end
+      end
+
    commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER) is
       require
          a_player /= Void
@@ -53,7 +63,7 @@ feature {}
          Result := a_child.bar_number.max(max_bar_number)
       end
 
-   lookup_in_children (identifier: FIXED_STRING; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
+   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is
       local
          id_prefix: FIXED_STRING; i: INTEGER
          child: MIXUP_CONTEXT
@@ -62,13 +72,13 @@ feature {}
          if identifier.valid_index(i) then
             id_prefix := identifier.substring(identifier.lower, i - 1)
             child := children.reference_at(id_prefix)
-            if child /= Void and then child /= cut then
-               Result := child.lookup_expression(identifier.substring(i + 1, identifier.upper), False, Current)
+            if child /= Void and then child.lookup_tag /= lookup_tag then
+               Result := child.lookup_value(identifier.substring(i + 1, identifier.upper), False, lookup_tag)
             end
          end
       end
 
-   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; cut: MIXUP_CONTEXT): BOOLEAN is
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN is
       local
          id_prefix: FIXED_STRING; i: INTEGER
          child: MIXUP_CONTEXT
@@ -77,8 +87,8 @@ feature {}
          if identifier.valid_index(i) then
             id_prefix := identifier.substring(identifier.lower, i - 1)
             child := children.reference_at(id_prefix)
-            if child /= Void and then child /= cut then
-               Result := child.setup_expression(identifier.substring(i + 1, identifier.upper), True, a_value, Current)
+            if child /= Void and then child.lookup_tag /= lookup_tag then
+               Result := child.setup_value(identifier.substring(i + 1, identifier.upper), True, a_value, is_const, is_public, is_local, lookup_tag)
             end
          end
       end

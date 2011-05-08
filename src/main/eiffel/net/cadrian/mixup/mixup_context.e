@@ -37,31 +37,16 @@ feature {ANY}
       deferred
       end
 
-   add_expression (a_name: FIXED_STRING; a_expression: MIXUP_EXPRESSION) is
-      require
-         a_name /= Void
-         a_expression /= Void
-      do
-         if expressions.has(a_name) then
-            warning("duplicate expression in the same context (ignored)")
-         else
-            debug
-               log.trace.put_line("Adding '" + a_name + "' to {" + generating_type + "}." + name )
-            end
-            expressions.add(a_expression, a_name)
-         end
-      end
-
    hook (hook_name: ABSTRACT_STRING; a_player: MIXUP_PLAYER): MIXUP_VALUE is
       local
-         full_hook_name, debug_expressions: STRING
+         full_hook_name, debug_values: STRING
       do
          full_hook_name := once ""
          full_hook_name.clear_count
          full_hook_name.append(once "hook.")
          full_hook_name.append(hook_name)
          debug
-            debug_expressions := expressions.out
+            debug_values := values.out
          end
          Result := lookup(full_hook_name.intern, a_player, False)
       end
@@ -70,33 +55,29 @@ feature {ANY}
       require
          identifier /= Void
          a_player /= Void
-      local
-         expression: MIXUP_EXPRESSION
       do
-         expression := lookup_expression(identifier, search_parent, Void)
-         if expression /= Void then
-            Result := expression.eval(Current, a_player)
-         end
+         Result := lookup_value(identifier, search_parent, lookup_tag #+ 1)
          debug
+            log.trace.put_string("Look-up of '" + identifier + "' returned ")
             if Result = Void then
-               log.trace.put_line("Look-up of '" + identifier + "' returned nothing.")
+               log.trace.put_line("nothing")
             else
-               log.trace.put_line("Look-up of '" + identifier + "' returned " + Result.out)
+               log.trace.put_line(Result.out)
             end
          end
       end
 
-   setup (identifier: FIXED_STRING; a_player: MIXUP_PLAYER; a_value: MIXUP_VALUE) is
+   setup (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN) is
       require
          identifier /= Void
-         a_player /= Void
          a_value /= Void
+         is_local implies not is_const
       local
          done: BOOLEAN
       do
-         done := setup_expression(identifier, True, a_value, Void)
+         done := setup_value(identifier, True, a_value, is_const, is_public, is_local, lookup_tag #+ 1)
          if not done then
-            fatal("could not assign value to " + identifier.out)
+            fatal("Could not assign value to " + identifier.out)
          end
       end
 
@@ -104,12 +85,11 @@ feature {ANY}
       require
          a_name /= Void
          a_value /= Void
-      do
-         crash -- unexpected
+      deferred
       end
 
    get_local (a_name: FIXED_STRING): MIXUP_VALUE is
-      do
+      deferred
       end
 
    run_hook (a_player: MIXUP_PLAYER; hook_name: STRING) is
@@ -130,53 +110,87 @@ feature {ANY}
       end
 
 feature {MIXUP_CONTEXT}
-   lookup_expression (identifier: FIXED_STRING; search_parent: BOOLEAN; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
+   lookup_value (identifier: FIXED_STRING; search_parent: BOOLEAN; a_tag: like lookup_tag): MIXUP_VALUE is
       require
+         a_tag /= lookup_tag
          identifier /= Void
+      local
+         val: MIXUP_VALUE_IN_CONTEXT
       do
+         lookup_tag := a_tag
          Result := get_local(identifier)
          if Result = Void then
-            Result := expressions.reference_at(identifier)
+            val := values.reference_at(identifier)
+            if val /= Void then
+               Result := val.value
+               log.trace.put_line("Found identifier '" + identifier.out + "' in {" + generating_type + "}." + name + " => " + Result.out)
+            end
          end
          if Result = Void then
-            Result := lookup_in_children(identifier, cut)
+            debug
+               log.trace.put_line("{" + generating_type + "}." + name + ": look-up identifier '" + identifier.out + "' in children")
+            end
+            Result := lookup_in_children(identifier)
             if Result = Void then
-               Result := lookup_in_imports(identifier, cut)
-               if Result = Void and then search_parent and then parent /= Void then
-                  Result := parent.lookup_expression(identifier, True, Current)
+               debug
+                  log.trace.put_line("{" + generating_type + "}." + name + ": look-up identifier '" + identifier.out + "' in imports")
+               end
+               Result := lookup_in_imports(identifier)
+               if Result = Void and then search_parent and then parent /= Void and then parent.lookup_tag /= a_tag then
+                  debug
+                     log.trace.put_line("{" + generating_type + "}." + name + ": look-up identifier '" + identifier.out + "' in parent")
+                  end
+                  Result := parent.lookup_value(identifier, True, a_tag)
                end
             end
          end
       end
 
-   setup_expression (identifier: FIXED_STRING; assign_if_new: BOOLEAN; a_value: MIXUP_VALUE; cut: MIXUP_CONTEXT): BOOLEAN is
+   setup_value (identifier: FIXED_STRING; assign_if_new: BOOLEAN; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN; a_tag: like lookup_tag): BOOLEAN is
       require
+         a_tag /= lookup_tag
          identifier /= Void
          a_value /= Void
+         is_local implies not is_const
       local
-         exp: MIXUP_EXPRESSION
+         val: MIXUP_VALUE_IN_CONTEXT
+         value: MIXUP_VALUE
       do
-         exp := get_local(identifier)
-         if exp /= Void then
+         lookup_tag := a_tag
+         value := get_local(identifier)
+         if value /= Void then
             set_local(identifier, a_value)
             Result := True
          else
-            exp := expressions.reference_at(identifier)
-            if exp /= Void then
-               set_local(identifier, a_value)
+            val := values.reference_at(identifier)
+            if val /= Void then
+               if val.is_const then
+                  fatal_at(a_value.source, "Cannot set const")
+               elseif is_const then
+                  warning_at(a_value.source, "Setting const in place of non-const")
+               else
+                  log.trace.put_line("Found identifier '" + identifier.out + "' in {" + generating_type + "}." + name)
+               end
+               set_value(identifier, a_value, is_const, is_public, is_local)
                Result := True
             else
-               Result := setup_in_children(identifier, a_value, cut)
+               Result := setup_in_children(identifier, a_value, is_const, is_public, is_local)
                if not Result then
-                  Result := setup_in_imports(identifier, a_value, cut)
-                  if not Result and then parent /= Void then
-                     Result := parent.setup_expression(identifier, False, a_value, Current)
+                  Result := setup_in_imports(identifier, a_value, is_const, is_public, is_local)
+                  if not Result and then parent /= Void and then parent.lookup_tag /= a_tag then
+                     Result := parent.setup_value(identifier, False, a_value, is_const, is_public, is_local, a_tag)
                   end
                   if not Result and then assign_if_new then
-                     set_local(identifier, a_value)
+                     set_value(identifier, a_value, is_const, is_public, is_local)
                      Result := True
                   end
                end
+            end
+         end
+
+         debug
+            if not Result then
+               log.trace.put_line("Did not find identifier '" + identifier.out + "' in {" + generating_type + "}." + name)
             end
          end
       end
@@ -196,25 +210,46 @@ feature {MIXUP_CONTEXT}
          imports.add_last(a_import)
       end
 
+feature {MIXUP_CONTEXT}
+   lookup_tag: INTEGER
+
 feature {}
-   expressions: DICTIONARY[MIXUP_EXPRESSION, FIXED_STRING]
+   set_value (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN) is
+      do
+         if is_local then
+            set_local(identifier, a_value)
+         else
+            log.trace.put_string("Setting ")
+            if is_public then
+               log.trace.put_string("public ")
+            end
+            if is_const then
+               log.trace.put_string("const ")
+            end
+            log.trace.put_line("identifier '" + identifier.out + "' to {" + generating_type + "}." + name)
+            values.put(create {MIXUP_VALUE_IN_CONTEXT}.make(a_value, is_const, is_public), identifier)
+         end
+      end
+
+feature {}
+   values: DICTIONARY[MIXUP_VALUE_IN_CONTEXT, FIXED_STRING]
    parent: MIXUP_CONTEXT
    imports: FAST_ARRAY[MIXUP_IMPORT]
 
-   lookup_in_children (identifier: FIXED_STRING; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
+   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is
       require
          identifier /= Void
       deferred
       end
 
-   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; cut: MIXUP_CONTEXT): BOOLEAN is
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN is
       require
          identifier /= Void
          a_value /= Void
       deferred
       end
 
-   lookup_in_imports (identifier: FIXED_STRING; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
+   lookup_in_imports (identifier: FIXED_STRING): MIXUP_VALUE is
       require
          identifier /= Void
       local
@@ -225,12 +260,14 @@ feature {}
          until
             Result /= Void or else i > imports.upper
          loop
-            Result := imports.item(i).lookup_expression(identifier, False, Current)
+            if imports.item(i).lookup_tag /= lookup_tag then
+               Result := imports.item(i).lookup_value(identifier, False, lookup_tag)
+            end
             i := i + 1
          end
       end
 
-   setup_in_imports (identifier: FIXED_STRING; a_value: MIXUP_VALUE; cut: MIXUP_CONTEXT): BOOLEAN is
+   setup_in_imports (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN is
       require
          identifier /= Void
          a_value /= Void
@@ -242,7 +279,9 @@ feature {}
          until
             Result or else i > imports.upper
          loop
-            Result := imports.item(i).setup_expression(identifier, False, a_value, Current)
+            if imports.item(i).lookup_tag /= lookup_tag then
+               Result := imports.item(i).setup_value(identifier, False, a_value, is_const, is_public, is_local, lookup_tag)
+            end
             i := i + 1
          end
       end
@@ -253,7 +292,7 @@ feature {}
          source := a_source
          name := a_name.intern
          parent := a_parent
-         create {HASHED_DICTIONARY[MIXUP_EXPRESSION, FIXED_STRING]} expressions.make
+         create {HASHED_DICTIONARY[MIXUP_VALUE_IN_CONTEXT, FIXED_STRING]} values.make
          create imports.make(0)
 
          create resolver.make(Current)
@@ -267,7 +306,7 @@ feature {}
 invariant
    source /= Void
    name /= Void
-   expressions /= Void
+   values /= Void
    resolver /= Void
    imports /= Void
 

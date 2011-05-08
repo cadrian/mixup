@@ -24,6 +24,16 @@ create {ANY}
    make
 
 feature {ANY}
+   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
+      do
+         crash
+      end
+
+   get_local (a_name: FIXED_STRING): MIXUP_VALUE is
+      do
+         check Result = Void end
+      end
+
    set_voices (a_voices: like voices) is
       require
          a_voices /= Void
@@ -94,11 +104,11 @@ feature {MIXUP_CONTEXT}
       end
 
 feature {}
-   lookup_in_children (identifier: FIXED_STRING; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
+   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is
       do
       end
 
-   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; cut: MIXUP_CONTEXT): BOOLEAN is
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN is
       do
       end
 

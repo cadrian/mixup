@@ -40,7 +40,7 @@ feature {ANY}
 feature {}
    valid_identifier (identifier: FIXED_STRING): BOOLEAN is
       do
-         if identifier.is_empty then
+         if identifiers.is_empty then
             Result := True
          else
             Result := identifiers.exists(agent (a_id: MIXUP_IDENTIFIER; a_name: FIXED_STRING): BOOLEAN is
@@ -60,6 +60,7 @@ feature {}
       require
          child_context /= Void
          a_identifiers /= Void
+         not ({MIXUP_IMPORT} ?:= child_context)
       do
          identifiers := a_identifiers
          make_import(a_source, a_name, a_parent, child_context)

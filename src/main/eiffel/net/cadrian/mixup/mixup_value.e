@@ -18,19 +18,6 @@ inherit
    MIXUP_EXPRESSION
 
 feature {ANY}
-   is_public: BOOLEAN
-   is_constant: BOOLEAN
-
-   set_public (enable: BOOLEAN) is
-      do
-         is_public := enable
-      end
-
-   set_constant (enable: BOOLEAN) is
-      do
-         is_constant := enable
-      end
-
    eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): MIXUP_VALUE is
       do
          Result := Current

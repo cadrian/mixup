@@ -32,7 +32,7 @@ feature {ANY}
          if value = Void then
             error("value could not be computed")
          else
-            a_context.setup(identifier.as_name.intern, a_context.player, value)
+            a_context.setup(identifier.as_name.intern, value, False, True, True)
          end
       end
 

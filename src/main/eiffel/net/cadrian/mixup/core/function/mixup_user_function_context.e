@@ -18,8 +18,6 @@ inherit
    MIXUP_CONTEXT
       rename
          make as make_context
-      redefine
-         get_local, set_local
       end
 
 create {ANY}
@@ -139,11 +137,11 @@ feature {MIXUP_CONTEXT}
       end
 
 feature {}
-   lookup_in_children (identifier: FIXED_STRING; cut: MIXUP_CONTEXT): MIXUP_EXPRESSION is
+   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is
       do
       end
 
-   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; cut: MIXUP_CONTEXT): BOOLEAN is
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN is
       do
       end
 

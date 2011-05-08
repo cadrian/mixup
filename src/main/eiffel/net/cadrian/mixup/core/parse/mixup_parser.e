@@ -557,25 +557,24 @@ feature {} -- Functions
 
    build_definition (definition: MIXUP_NON_TERMINAL_NODE_IMPL; is_public: BOOLEAN) is
       local
-         function_name: FIXED_STRING
+         definition_name: FIXED_STRING
          def_value: MIXUP_VALUE
+         is_const: BOOLEAN
       do
          if definition.count = 5 then -- const
             check is_public end
             definition.node_at(2).accept(Current)
-            function_name := last_identifier.as_name.intern
+            definition_name := last_identifier.as_name.intern
             definition.node_at(4).accept(Current)
             def_value ::= last_expression
-            def_value.set_public(True)
-            def_value.set_constant(True)
+            is_const := True
          else
             definition.node_at(1).accept(Current)
-            function_name := last_identifier.as_name.intern
+            definition_name := last_identifier.as_name.intern
             definition.node_at(3).accept(Current)
             def_value ::= last_expression
-            def_value.set_public(is_public)
          end
-         current_context.add_expression(function_name, def_value)
+         current_context.setup(definition_name, def_value, is_const, is_public, False)
       end
 
    build_import (import: MIXUP_NON_TERMINAL_NODE_IMPL) is
