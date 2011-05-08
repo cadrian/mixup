@@ -157,8 +157,11 @@ feature {MIXUP_CONTEXT}
          value: MIXUP_VALUE
       do
          lookup_tag := a_tag
-         value := get_local(identifier)
+         if is_local then
+            value := get_local(identifier)
+         end
          if value /= Void then
+            check is_local end
             set_local(identifier, a_value)
             Result := True
          else
