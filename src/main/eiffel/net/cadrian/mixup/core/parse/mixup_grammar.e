@@ -209,8 +209,6 @@ feature {}
 
                                    "Notes*", list_of("Notes", True, Void);
                                    "Notes", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Next_Bar" >> }, Void; -- check bar
-                                                                   {FAST_ARRAY[STRING] << "Up_Staff" >> }, Void; -- next staff (going up; each voice starts at the lowest staff of the instrument)
-                                                                   {FAST_ARRAY[STRING] << "Down_Staff" >> }, Void; -- previous staff (going back down)
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Extern_Notes" >> }, Void; -- music insertion
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Voices" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Dynamics", "Chord_Or_Tie" >> }, Void;
@@ -221,10 +219,6 @@ feature {}
 
                                    "Next_Bar", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW |" >> }, Void;
                                                                       >> };
-                                   "Up_Staff", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW ^" >> }, Void;
-                                                                      >> };
-                                   "Down_Staff", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW ." >> }, Void;
-                                                                        >> };
                                    "Extern_Notes", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW \", "Identifier" >> }, Void;
                                                                           >> };
 
@@ -287,7 +281,10 @@ feature {}
 
                                    "Voices", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <<", "Voice+", "KW >>" >> }, Void;
                                                                     >> };
-                                   "Voice+", list_of("Voice", False, "KW //");
+                                   "Voice+", list_of("Voice", False, "Voice_Separator");
+                                   "Voice_Separator", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW //" >> }, Void; -- next voice on same staff
+                                                                             {FAST_ARRAY[STRING] << "KW ||" >> }, Void; -- next staff
+                                                                             >> };
                                    "Voice", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Notes*" >> }, Void;
                                                                    >> };
                                    "Beam", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW [", "Xuplet_Spec", "Notes*", "KW ]" >> }, Void;
@@ -411,81 +408,84 @@ feature {}
                                                                              >> };
 
 
-                                   "KW ^",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "^" , ""),    Void);
-                                   "KW ~",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "~" , ""),    Void);
-                                   "KW <<",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<<", ""),    Void);
-                                   "KW <=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<=", ""),    Void);
-                                   "KW <",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<" , "<="),  Void);
-                                   "KW =",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "=" , ""),    Void);
-                                   "KW >=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">=", ""),    Void);
-                                   "KW >>",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">>", ""),    Void);
-                                   "KW >",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">" , ">="),  Void);
-                                   "KW |",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "|" , ""),    Void);
-                                   "KW -",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "-" , ""),    Void);
-                                   "KW ,",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "," , ""),    Void);
-                                   "KW :=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":=" , ""),   Void);
-                                   "KW :",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":" , "="),   Void);
-                                   "KW !=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "!=" , ""),   Void);
-                                   "KW //",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "//" , ""),   Void);
-                                   "KW /",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "/" , "/"),   Void);
-                                   "KW ...",         create {PARSE_TERMINAL}.make(agent parse_symbol(?, "..." , ""),  Void);
-                                   "KW ..",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ".." , "."),  Void);
-                                   "KW .",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "." , "."),   Void);
-                                   "KW '",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "'" , ""),    Void);
-                                   "KW (",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "(" , ""),    Void);
-                                   "KW )",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ")" , ""),    Void);
-                                   "KW [",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "[" , ""),    Void);
-                                   "KW ]",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "]" , ""),    Void);
-                                   "KW {",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "{" , ""),    Void);
-                                   "KW }",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "}" , ""),    Void);
-                                   "KW *",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "*" , ""),    Void);
-                                   "KW \",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "\" , "\"),   Void);
-                                   "KW \\",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "\\" , ""),   Void);
-                                   "KW +",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "+" , ""),    Void);
+                                   "KW ^",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "^" , ""),      Void);
+                                   "KW ~",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "~" , ""),      Void);
+                                   "KW <<",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<<", ""),      Void);
+                                   "KW <=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<=", ""),      Void);
+                                   "KW <",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "<" , "<="),    Void);
+                                   "KW =",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "=" , ""),      Void);
+                                   "KW >=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">=", ""),      Void);
+                                   "KW >>",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">>", ""),      Void);
+                                   "KW >",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">" , ">="),    Void);
+                                   "KW |",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "|" , "|"),     Void);
+                                   "KW -",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "-" , ""),      Void);
+                                   "KW ,",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "," , ""),      Void);
+                                   "KW :=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":=" , ""),     Void);
+                                   "KW :",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":" , "="),     Void);
+                                   "KW !=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "!=" , ""),     Void);
+                                   "KW //",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "//" , ""),     Void);
+                                   "KW ||",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "||" , ""),     Void);
+                                   "KW /",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "/" , "/"),     Void);
+                                   "KW ...",         create {PARSE_TERMINAL}.make(agent parse_symbol(?, "..." , ""),    Void);
+                                   "KW ..",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ".." , "."),    Void);
+                                   "KW .",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "." , "."),     Void);
+                                   "KW '",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "'" , ""),      Void);
+                                   "KW (",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "(" , ""),      Void);
+                                   "KW )",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ")" , ""),      Void);
+                                   "KW [",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "[" , ""),      Void);
+                                   "KW ]",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "]" , ""),      Void);
+                                   "KW {",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "{" , ""),      Void);
+                                   "KW }",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "}" , ""),      Void);
+                                   "KW *",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "*" , ""),      Void);
+                                   "KW \",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "\" , "\"),     Void);
+                                   "KW \\",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "\\" , ""),     Void);
+                                   "KW +",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "+" , ""),      Void);
 
-                                   "KW and",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "and"), Void);
-                                   "KW book",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "book"), Void);
-                                   "KW bottom",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "bottom"), Void);
-                                   "KW const",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "const"), Void);
-                                   "KW do",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "do"), Void);
-                                   "KW down",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "down"), Void);
-                                   "KW else",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "else"), Void);
-                                   "KW elseif",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "elseif"), Void);
-                                   "KW end",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "end"), Void);
-                                   "KW export",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "export"), Void);
-                                   "KW for",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "for"), Void);
-                                   "KW from",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "from"), Void);
-                                   "KW function",    create {PARSE_TERMINAL}.make(agent parse_keyword(?, "function"), Void);
-                                   "KW hidden",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "hidden"), Void);
-                                   "KW if",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "if"), Void);
-                                   "KW implies",     create {PARSE_TERMINAL}.make(agent parse_keyword(?, "implies"), Void);
-                                   "KW import",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "import"), Void);
-                                   "KW in",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "in"), Void);
+                                   "KW and",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "and"),        Void);
+                                   "KW book",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "book"),       Void);
+                                   "KW bottom",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "bottom"),     Void);
+                                   "KW const",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "const"),      Void);
+                                   "KW do",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "do"),         Void);
+                                   "KW down",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "down"),       Void);
+                                   "KW else",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "else"),       Void);
+                                   "KW elseif",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "elseif"),     Void);
+                                   "KW end",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "end"),        Void);
+                                   "KW export",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "export"),     Void);
+                                   "KW for",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "for"),        Void);
+                                   "KW from",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "from"),       Void);
+                                   "KW function",    create {PARSE_TERMINAL}.make(agent parse_keyword(?, "function"),   Void);
+                                   "KW hidden",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "hidden"),     Void);
+                                   "KW if",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "if"),         Void);
+                                   "KW implies",     create {PARSE_TERMINAL}.make(agent parse_keyword(?, "implies"),    Void);
+                                   "KW import",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "import"),     Void);
+                                   "KW in",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "in"),         Void);
                                    "KW instrument",  create {PARSE_TERMINAL}.make(agent parse_keyword(?, "instrument"), Void);
-                                   "KW lyrics",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "lyrics"), Void);
-                                   "KW module",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "module"), Void);
-                                   "KW music",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "music"), Void);
-                                   "KW native",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "native"), Void);
-                                   "KW not",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "not"), Void);
-                                   "KW or",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "or"), Void);
-                                   "KW partitur",    create {PARSE_TERMINAL}.make(agent parse_keyword(?, "partitur"), Void);
-                                   "KW Result",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "Result"), Void);
-                                   "KW score",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "score"), Void);
-                                   "KW set",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "set"), Void);
-                                   "KW then",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "then"), Void);
-                                   "KW top",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "top"), Void);
-                                   "KW up",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "up"), Void);
-                                   "KW xor",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "xor"), Void);
-                                   "KW yield",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "yield"), Void);
+                                   "KW lyrics",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "lyrics"),     Void);
+                                   "KW module",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "module"),     Void);
+                                   "KW music",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "music"),      Void);
+                                   "KW native",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "native"),     Void);
+                                   "KW not",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "not"),        Void);
+                                   "KW or",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "or"),         Void);
+                                   "KW partitur",    create {PARSE_TERMINAL}.make(agent parse_keyword(?, "partitur"),   Void);
+                                   "KW Result",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "Result"),     Void);
+                                   "KW score",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "score"),      Void);
+                                   "KW set",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "set"),        Void);
+                                   "KW then",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "then"),       Void);
+                                   "KW top",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "top"),        Void);
+                                   "KW up",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "up"),         Void);
+                                   "KW xor",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "xor"),        Void);
+                                   "KW yield",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "yield"),      Void);
 
-                                   "KW boolean",     create {PARSE_TERMINAL}.make(agent parse_boolean, Void);
-                                   "KW identifier",  create {PARSE_TERMINAL}.make(agent parse_identifier, Void);
-                                   "KW note head",   create {PARSE_TERMINAL}.make(agent parse_note_head, Void);
-                                   "KW number",      create {PARSE_TERMINAL}.make(agent parse_number, Void);
-                                   "KW string",      create {PARSE_TERMINAL}.make(agent parse_string, Void);
-                                   "KW syllable",    create {PARSE_TERMINAL}.make(agent parse_syllable, Void);
+                                   "KW boolean",     create {PARSE_TERMINAL}.make(agent parse_boolean,                  Void);
+                                   "KW identifier",  create {PARSE_TERMINAL}.make(agent parse_identifier,               Void);
+                                   "KW note head",   create {PARSE_TERMINAL}.make(agent parse_note_head,                Void);
+                                   "KW number",      create {PARSE_TERMINAL}.make(agent parse_number,                   Void);
+                                   "KW string",      create {PARSE_TERMINAL}.make(agent parse_string,                   Void);
+                                   "KW syllable",    create {PARSE_TERMINAL}.make(agent parse_syllable,                 Void);
 
-                                   "KW end of file", create {PARSE_TERMINAL}.make(agent parse_end, Void) >> }
+                                   "KW end of file", create {PARSE_TERMINAL}.make(agent parse_end,                      Void);
+
+                                   >> }
       end
 
    table_memory: PARSE_TABLE

@@ -122,10 +122,6 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             build_instrument(node)
          when "Next_Bar" then
             build_next_bar(node)
-         when "Up_Staff" then
-            build_up_staff(node)
-         when "Down_Staff" then
-            build_down_staff(node)
          when "Extern_Notes" then
             build_extern_music(node)
          when "Extern_Syllable" then
@@ -257,6 +253,10 @@ feature {MIXUP_TERMINAL_NODE_IMPL}
             create {MIXUP_BOOLEAN} last_expression.make(new_source(node), boolean_image.decoded)
          when "KW note head" then
             last_note_head.copy(node.image.image)
+         when "KW //" then
+            next_staff := False
+         when "KW ||" then
+            next_staff := True
          else
             debug
                log.trace.put_line("Skipped terminal node: " + node.name)
@@ -283,6 +283,7 @@ feature {}
    last_xuplet_numerator:   INTEGER_64
    last_xuplet_denominator: INTEGER_64
    last_xuplet_text:        FIXED_STRING
+   next_staff:              BOOLEAN
 
    build_identifier_list (identifiers: MIXUP_LIST_NODE_IMPL) is
       do
@@ -359,6 +360,7 @@ feature {}
       local
          i: INTEGER; old_compound_music: like last_compound_music
          voices: MIXUP_VOICES
+         forgotten: FAST_ARRAY[MIXUP_NODE]
       do
          old_compound_music := last_compound_music
          if old_compound_music = Void then
@@ -369,11 +371,16 @@ feature {}
          last_compound_music := voices
 
          from
+            next_staff := True
             i := a_voices.lower
          until
             i > a_voices.upper
          loop
-            voices.next_voice
+            if i > a_voices.lower then
+               forgotten := a_voices.item(i).forgotten
+               forgotten.first.accept(Current)
+            end
+            voices.next_voice(next_staff)
             a_voices.item(i).accept(Current)
             i := i + 1
          end
@@ -866,16 +873,6 @@ feature {}
    build_next_bar (next_bar: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          last_compound_music.add_bar(new_source(next_bar), Void)
-      end
-
-   build_up_staff (up_staff: MIXUP_NON_TERMINAL_NODE_IMPL) is
-      do
-         last_compound_music.up_staff
-      end
-
-   build_down_staff (down_staff: MIXUP_NON_TERMINAL_NODE_IMPL) is
-      do
-         last_compound_music.down_staff
       end
 
    build_extern_music (music: MIXUP_NON_TERMINAL_NODE_IMPL) is

@@ -14,6 +14,9 @@
 --
 class MIXUP_LILYPOND_INSTRUMENT
 
+insert
+   MIXUP_LILYPOND_CONTEXT
+
 create {ANY}
    make
 
@@ -80,8 +83,24 @@ feature {MIXUP_LILYPOND_PLAYER}
    generate (output: OUTPUT_STREAM) is
       require
          output.is_connected
+      local
+         staff_type: STRING
       do
-         staffs.do_all(agent {MIXUP_LILYPOND_STAFF}.generate(context, output))
+         if staffs.count = 1 then
+            staffs.first.generate(context, output, True)
+         else
+            if staffs.count = 2 then
+               staff_type := once "PianoStaff"
+            else
+               staff_type := once "ChoirStaff"
+            end
+            context_name := get_string(context, template_instrument_staff, staff_type)
+
+            output.put_line(once "         \new " + context_name.out + " = %"" + name.out + "%" <<")
+            generate_context(context, output, Current)
+            staffs.do_all(agent {MIXUP_LILYPOND_STAFF}.generate(context, output, False))
+            output.put_line(once "         >>")
+         end
       end
 
 feature {}
@@ -94,7 +113,7 @@ feature {}
          context := a_context
          player := a_player
          name := a_name
-         create staffs.with_capacity(2)
+         create staffs.with_capacity(1)
          staffs.add_last(create {MIXUP_LILYPOND_STAFF}.make(a_player, Current, 1, absolute_reference));
       ensure
          context = a_context
@@ -106,6 +125,7 @@ feature {}
    staffs: FAST_ARRAY[MIXUP_LILYPOND_STAFF]
    current_staff_index: INTEGER
    context: MIXUP_CONTEXT
+   context_name: FIXED_STRING
 
    current_staff: MIXUP_LILYPOND_STAFF is
       do
@@ -115,6 +135,11 @@ feature {}
    absolute_reference: MIXUP_NOTE_HEAD is
       once
          Result.set(create {MIXUP_SOURCE_UNKNOWN}, "a", 4)
+      end
+
+   template_instrument_staff: FIXED_STRING is
+      once
+         Result := "template.instrument_staff".intern
       end
 
 invariant

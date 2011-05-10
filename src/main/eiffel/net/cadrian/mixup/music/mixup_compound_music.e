@@ -40,12 +40,4 @@ feature {ANY}
       deferred
       end
 
-   up_staff is
-      deferred
-      end
-
-   down_staff is
-      deferred
-      end
-
 end -- class MIXUP_COMPOUND_MUSIC

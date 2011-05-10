@@ -43,6 +43,7 @@ feature {ANY}
          end
       end
 
+   staff: INTEGER
    duration: INTEGER_64
    reference: MIXUP_NOTE_HEAD
    allow_lyrics: BOOLEAN is True
@@ -61,16 +62,6 @@ feature {ANY}
          create barset.make
          consolidate_bars(barset, 0)
          Result := barset
-      end
-
-   up_staff is
-      do
-         -- TODO
-      end
-
-   down_staff is
-      do
-         -- TODO
       end
 
    add_music (a_music: MIXUP_MUSIC) is
@@ -178,11 +169,14 @@ feature {}
       do
          create {FAST_ARRAY[MIXUP_MUSIC]} music.make(0)
          reference := a_reference
+      ensure
+         reference = a_reference
       end
 
    music: COLLECTION[MIXUP_MUSIC]
 
 invariant
    music /= Void
+   not reference.is_rest
 
 end -- class MIXUP_VOICE

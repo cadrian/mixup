@@ -68,22 +68,21 @@ feature {ANY}
          voices.last.add_bar(a_source, style)
       end
 
-   up_staff is
-      do
-         voices.last.up_staff
-      end
-
-   down_staff is
-      do
-         voices.last.down_staff
-      end
-
-   next_voice is
+   next_voice (next_staff: BOOLEAN) is
       local
          voice: MIXUP_VOICE
+         staff: FAST_ARRAY[MIXUP_VOICE]
       do
          create voice.make(reference_)
          voices.add_last(voice)
+
+         if next_staff then
+            create staff.make(0)
+            staffs.add_last(staff)
+         else
+            staff := staffs.last
+         end
+         staff.add_last(voice)
       ensure
          voices.count = old voices.count + 1
       end
@@ -146,14 +145,16 @@ feature {}
          a_source /= Void
       do
          source := a_source
-         create {FAST_ARRAY[MIXUP_VOICE]} voices.make(0)
+         create voices.make(0)
+         create staffs.make(0)
          reference_ := a_reference
       ensure
          source = a_source
          reference_ = a_reference
       end
 
-   voices: COLLECTION[MIXUP_VOICE]
+   voices: FAST_ARRAY[MIXUP_VOICE]
+   staffs: FAST_ARRAY[FAST_ARRAY[MIXUP_VOICE]]
    reference_: MIXUP_NOTE_HEAD
 
    commit_agent (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): FUNCTION[TUPLE[MIXUP_VOICE, INTEGER], INTEGER] is
