@@ -55,51 +55,51 @@ feature {ANY}
       do
       end
 
-   play_set_instrument (name: ABSTRACT_STRING) is
+   play_set_instrument (name: ABSTRACT_STRING; staff_ids: TRAVERSABLE[INTEGER]) is
       do
       end
 
-   play_set_dynamics (instrument: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
+   play_set_dynamics (instrument: ABSTRACT_STRING; staff_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
       do
       end
 
-   play_set_note (instrument: ABSTRACT_STRING; note: MIXUP_NOTE) is
+   play_set_note (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; note: MIXUP_NOTE) is
       do
       end
 
-   play_next_bar (instrument: ABSTRACT_STRING; style: ABSTRACT_STRING) is
+   play_next_bar (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; style: ABSTRACT_STRING) is
       do
       end
 
-   play_start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_beam (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
       end
 
-   play_end_beam (instrument: ABSTRACT_STRING) is
+   play_end_beam (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
       do
       end
 
-   play_start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
       end
 
-   play_end_slur (instrument: ABSTRACT_STRING) is
+   play_end_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
       do
       end
 
-   play_start_phrasing_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_phrasing_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
       end
 
-   play_end_phrasing_slur (instrument: ABSTRACT_STRING) is
+   play_end_phrasing_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
       do
       end
 
-   play_start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
+   play_start_repeat (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; volte: INTEGER_64) is
       do
       end
 
-   play_end_repeat (instrument: ABSTRACT_STRING) is
+   play_end_repeat (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
       do
       end
 

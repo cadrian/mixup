@@ -15,7 +15,7 @@
 class MIXUP_VOICE
 
 insert
-   LOGGING
+   MIXUP_ERRORS
 
 create {ANY}
    make
@@ -125,6 +125,11 @@ feature {ANY}
          create {MIXUP_EVENTS_ITERATOR_ON_VOICE} Result.make(a_context, music)
       end
 
+   set_staff_id (a_staff_id: INTEGER) is
+      do
+         music.do_all(agent {MIXUP_MUSIC}.set_staff_id(a_staff_id))
+      end
+
 feature {}
    commit_agent (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): FUNCTION[TUPLE[MIXUP_MUSIC, INTEGER], INTEGER] is
       do
@@ -163,13 +168,16 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
       end
 
 feature {}
-   make (a_reference: like reference) is
+   make (a_source: like source; a_reference: like reference) is
       require
+         a_source /= Void
          not a_reference.is_rest
       do
+         source := a_source
          create {FAST_ARRAY[MIXUP_MUSIC]} music.make(0)
          reference := a_reference
       ensure
+         source = a_source
          reference = a_reference
       end
 

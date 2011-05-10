@@ -72,7 +72,7 @@ feature {ANY}
          context.set_instrument(Current)
          Result := voices.new_events_iterator(context)
          if not strophes.is_empty then
-            create {MIXUP_EVENTS_ITERATOR_ON_INSTRUMENT} Result.make(Result, strophes)
+            create {MIXUP_EVENTS_ITERATOR_ON_LYRICS} Result.make(Result, strophes)
          end
       end
 
@@ -92,6 +92,26 @@ feature {ANY}
    bars: ITERABLE[INTEGER_64] is
       do
          Result := voices.bars
+      end
+
+   staff_ids: TRAVERSABLE[INTEGER] is
+      do
+         Result := voices.staff_id |..| (voices.staff_id + voices.staff_count - 1)
+      end
+
+   set_staff_id (a_staff_id: INTEGER) is
+      do
+         voices.set_staff_id(a_staff_id)
+      end
+
+   staff_id: INTEGER is
+      do
+         Result := voices.staff_id
+      end
+
+   staff_count: INTEGER is
+      do
+         Result := voices.staff_count
       end
 
 feature {MIXUP_CONTEXT}

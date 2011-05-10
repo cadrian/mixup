@@ -24,59 +24,59 @@ feature {ANY}
    name: FIXED_STRING
 
 feature {MIXUP_LILYPOND_PLAYER}
-   set_dynamics (dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (a_staff_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
       do
-         current_staff.set_dynamics(dynamics, position)
+         staffs.reference_at(a_staff_id).set_dynamics(dynamics, position)
       end
 
-   set_note (note: MIXUP_NOTE) is
+   set_note (a_staff_id: INTEGER; note: MIXUP_NOTE) is
       do
-         current_staff.set_note(note)
+         staffs.reference_at(a_staff_id).set_note(note)
       end
 
-   next_bar (style: ABSTRACT_STRING) is
+   next_bar (a_staff_id: INTEGER; style: ABSTRACT_STRING) is
       do
-         current_staff.next_bar(style)
+         staffs.reference_at(a_staff_id).next_bar(style)
       end
 
-   start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_beam (a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         current_staff.start_beam(xuplet_numerator, xuplet_numerator, text)
+         staffs.reference_at(a_staff_id).start_beam(xuplet_numerator, xuplet_numerator, text)
       end
 
-   end_beam is
+   end_beam (a_staff_id: INTEGER) is
       do
-         current_staff.end_beam
+         staffs.reference_at(a_staff_id).end_beam
       end
 
-   start_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_slur (a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         current_staff.start_slur(xuplet_numerator, xuplet_denominator, text)
+         staffs.reference_at(a_staff_id).start_slur(xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_slur is
+   end_slur (a_staff_id: INTEGER) is
       do
-         current_staff.end_slur
+         staffs.reference_at(a_staff_id).end_slur
       end
 
-   start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_phrasing_slur (a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         current_staff.start_phrasing_slur(xuplet_numerator, xuplet_denominator, text)
+         staffs.reference_at(a_staff_id).start_phrasing_slur(xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_phrasing_slur is
+   end_phrasing_slur (a_staff_id: INTEGER) is
       do
-         current_staff.end_phrasing_slur
+         staffs.reference_at(a_staff_id).end_phrasing_slur
       end
 
-   start_repeat (volte: INTEGER_64) is
+   start_repeat (a_staff_id: INTEGER; volte: INTEGER_64) is
       do
-         current_staff.start_repeat(volte)
+         staffs.reference_at(a_staff_id).start_repeat(volte)
       end
 
-   end_repeat is
+   end_repeat (a_staff_id: INTEGER) is
       do
-         current_staff.end_repeat
+         staffs.reference_at(a_staff_id).end_repeat
       end
 
 feature {MIXUP_LILYPOND_PLAYER}
@@ -104,17 +104,21 @@ feature {MIXUP_LILYPOND_PLAYER}
       end
 
 feature {}
-   make (a_context: like context; a_player: like player; a_name: like name) is
+   make (a_context: like context; a_player: like player; a_name: like name; a_staff_ids: TRAVERSABLE[INTEGER]) is
       require
          a_context /= Void
          a_player /= Void
          a_name /= Void
+         a_staff_ids /= Void
       do
          context := a_context
          player := a_player
          name := a_name
-         create staffs.with_capacity(1)
-         staffs.add_last(create {MIXUP_LILYPOND_STAFF}.make(a_player, Current, 1, absolute_reference));
+         create staffs.make
+         a_staff_ids.do_all(agent (id: INTEGER) is
+                               do
+                                  staffs.add(create {MIXUP_LILYPOND_STAFF}.make(player, Current, id, absolute_reference), id);
+                               end)
       ensure
          context = a_context
          player = a_player
@@ -122,15 +126,9 @@ feature {}
       end
 
    player: MIXUP_LILYPOND_PLAYER
-   staffs: FAST_ARRAY[MIXUP_LILYPOND_STAFF]
-   current_staff_index: INTEGER
+   staffs: AVL_DICTIONARY[MIXUP_LILYPOND_STAFF, INTEGER]
    context: MIXUP_CONTEXT
    context_name: FIXED_STRING
-
-   current_staff: MIXUP_LILYPOND_STAFF is
-      do
-         Result := staffs.item(current_staff_index)
-      end
 
    absolute_reference: MIXUP_NOTE_HEAD is
       once
@@ -146,6 +144,5 @@ invariant
    context /= Void
    player /= Void
    name /= Void
-   staffs.valid_index(current_staff_index)
 
 end -- class MIXUP_LILYPOND_INSTRUMENT

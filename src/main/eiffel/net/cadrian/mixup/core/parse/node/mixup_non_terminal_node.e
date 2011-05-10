@@ -61,23 +61,44 @@ feature {ANY}
       end
 
    source_line: INTEGER is
+      local
+         i: INTEGER
       do
-         if count > 0 then
-            Result := node_at(0).source_line
+         from
+            i := lower
+         until
+            Result > 0 or else i > upper
+         loop
+            Result := node_at(i).source_line
+            i := i + 1
          end
       end
 
    source_column: INTEGER is
+      local
+         i: INTEGER
       do
-         if count > 0 then
-            Result := node_at(0).source_column
+         from
+            i := lower
+         until
+            Result > 0 or else i > upper
+         loop
+            Result := node_at(i).source_column
+            i := i + 1
          end
       end
 
    source_index: INTEGER is
+      local
+         i: INTEGER
       do
-         if count > 0 then
-            Result := node_at(0).source_index
+         from
+            i := lower
+         until
+            Result > 0 or else i > upper
+         loop
+            Result := node_at(i).source_index
+            i := i + 1
          end
       end
 

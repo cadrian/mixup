@@ -24,6 +24,7 @@ feature {ANY}
    time: INTEGER_64
    instrument: FIXED_STRING
    style: FIXED_STRING
+   staff_id: INTEGER
 
 feature {MIXUP_PLAYER}
    fire (player: MIXUP_PLAYER) is
@@ -31,11 +32,11 @@ feature {MIXUP_PLAYER}
          p: MIXUP_EVENT_NEXT_BAR_PLAYER
       do
          p ::= player
-         p.play_next_bar(instrument, style)
+         p.play_next_bar(instrument, staff_id, style)
       end
 
 feature {}
-   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_style: ABSTRACT_STRING) is
+   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_staff_id: like staff_id; a_style: ABSTRACT_STRING) is
       require
          a_source /= Void
          a_instrument /= Void
@@ -43,14 +44,17 @@ feature {}
          source := a_source
          time := a_time
          instrument := a_instrument.intern
+         staff_id := a_staff_id
          if a_style /= Void then
             style := a_style.intern
          end
       ensure
          source = a_source
          time = a_time
-         instrument = a_instrument
-         style = a_style
+         instrument = a_instrument.intern
+         staff_id = a_staff_id
+         a_style /= Void implies style = a_style.intern
+         a_style = Void implies style = Void
       end
 
 invariant

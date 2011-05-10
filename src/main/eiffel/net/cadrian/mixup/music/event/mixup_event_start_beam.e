@@ -23,6 +23,7 @@ create {ANY}
 feature {ANY}
    time: INTEGER_64
    instrument: FIXED_STRING
+   staff_id: INTEGER
    xuplet_numerator: INTEGER_64
    xuplet_denominator: INTEGER_64
    text: FIXED_STRING
@@ -33,11 +34,11 @@ feature {MIXUP_PLAYER}
          p: MIXUP_EVENT_START_BEAM_PLAYER
       do
          p ::= player
-         p.play_start_beam(instrument, xuplet_numerator, xuplet_denominator, text)
+         p.play_start_beam(instrument, staff_id, xuplet_numerator, xuplet_denominator, text)
       end
 
 feature {}
-   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64; a_text: ABSTRACT_STRING) is
+   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_staff_id: like staff_id; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64; a_text: ABSTRACT_STRING) is
       require
          a_source /= Void
          a_instrument /= Void
@@ -46,13 +47,15 @@ feature {}
          source := a_source
          time := a_time
          instrument := a_instrument.intern
+         staff_id := a_staff_id
          xuplet_numerator := a_xuplet_numerator
          xuplet_denominator := a_xuplet_denominator
          text := a_text.intern
       ensure
          source = a_source
          time = a_time
-         instrument = a_instrument
+         instrument = a_instrument.intern
+         staff_id = a_staff_id
          xuplet_numerator = a_xuplet_numerator
          xuplet_denominator = a_xuplet_denominator
          text = a_text

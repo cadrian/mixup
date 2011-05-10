@@ -23,6 +23,7 @@ create {ANY}
 feature {ANY}
    time: INTEGER_64
    instrument: FIXED_STRING
+   staff_id: INTEGER
    note: MIXUP_NOTE
 
    allow_lyrics: BOOLEAN is True
@@ -52,11 +53,11 @@ feature {MIXUP_PLAYER}
          if lyrics /= Void then
             create {MIXUP_LYRICS} n.make(source, note, lyrics) -- TODO: wrong source! should keep the actual one along with the lyrics.
          end
-         p.play_set_note(instrument, n)
+         p.play_set_note(instrument, staff_id, n)
       end
 
 feature {}
-   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_note: MIXUP_NOTE) is
+   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_staff_id: like staff_id; a_note: MIXUP_NOTE) is
       require
          a_source /= Void
          a_instrument /= Void
@@ -65,12 +66,14 @@ feature {}
          source := a_source
          time := a_time
          instrument := a_instrument.intern
+         staff_id := a_staff_id
          note := a_note
          set_has_lyrics(True)
       ensure
          source = a_source
          time = a_time
-         instrument = a_instrument
+         instrument = a_instrument.intern
+         staff_id = a_staff_id
          note = a_note
       end
 

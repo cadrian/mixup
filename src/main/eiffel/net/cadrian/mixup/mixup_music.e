@@ -40,6 +40,15 @@ feature {ANY}
       deferred
       end
 
+   set_staff_id (a_staff_id: like staff_id) is
+      do
+         staff_id := a_staff_id
+      ensure
+         staff_id = a_staff_id
+      end
+
+   staff_id: INTEGER
+
 feature {MIXUP_MUSIC, MIXUP_VOICE}
    consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
       require

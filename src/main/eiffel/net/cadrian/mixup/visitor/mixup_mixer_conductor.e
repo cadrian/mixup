@@ -74,9 +74,11 @@ feature {MIXUP_PARTITUR}
 feature {MIXUP_INSTRUMENT}
    visit_instrument (a_instrument: MIXUP_INSTRUMENT) is
       do
+         a_instrument.set_staff_id(max_staff_id)
+         max_staff_id := max_staff_id + a_instrument.staff_count
          current_player.set_context(a_instrument)
          a_instrument.run_hook(current_player, once "at_start")
-         current_player.play(create {MIXUP_EVENT_SET_INSTRUMENT}.make(a_instrument.source, 0, a_instrument.name))
+         current_player.play(create {MIXUP_EVENT_SET_INSTRUMENT}.make(a_instrument.source, 0, a_instrument.name, a_instrument.staff_ids))
          a_instrument.run_hook(current_player, once "at_end")
       end
 
@@ -89,6 +91,7 @@ feature {}
          current_context := a_context
          current_player  := a_player
          a_context.commit(a_player, start_bar_number)
+         max_staff_id := 1
       ensure
          current_context = a_context
          current_player  = a_player
@@ -96,5 +99,7 @@ feature {}
 
    current_context: MIXUP_CONTEXT
    current_player: MIXUP_PLAYER
+
+   max_staff_id: INTEGER
 
 end -- class MIXUP_MIXER_CONDUCTOR

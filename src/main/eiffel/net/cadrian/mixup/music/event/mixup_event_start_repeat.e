@@ -23,6 +23,7 @@ create {ANY}
 feature {ANY}
    time: INTEGER_64
    instrument: FIXED_STRING
+   staff_id: INTEGER
    volte: INTEGER_64
 
 feature {MIXUP_PLAYER}
@@ -31,11 +32,11 @@ feature {MIXUP_PLAYER}
          p: MIXUP_EVENT_START_REPEAT_PLAYER
       do
          p ::= player
-         p.play_start_repeat(instrument, volte)
+         p.play_start_repeat(instrument, staff_id, volte)
       end
 
 feature {}
-   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_volte: INTEGER_64) is
+   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_staff_id: like staff_id; a_volte: INTEGER_64) is
       require
          a_source /= Void
          a_instrument /= Void
@@ -43,11 +44,13 @@ feature {}
          source := a_source
          time := a_time
          instrument := a_instrument.intern
+         staff_id := a_staff_id
          volte := a_volte
       ensure
          source = a_source
          time = a_time
-         instrument = a_instrument
+         instrument = a_instrument.intern
+         staff_id = a_staff_id
          volte = a_volte
       end
 

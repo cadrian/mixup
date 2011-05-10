@@ -18,7 +18,7 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_END_REPEAT}
-   play_end_repeat (a_instrument: ABSTRACT_STRING) is
+   play_end_repeat (a_instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
       require
          a_instrument /= Void
       deferred

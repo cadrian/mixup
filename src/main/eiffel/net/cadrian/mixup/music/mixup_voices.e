@@ -16,6 +16,9 @@ class MIXUP_VOICES
 
 inherit
    MIXUP_COMPOUND_MUSIC
+      redefine
+         set_staff_id
+      end
 
 create {ANY}
    make
@@ -24,6 +27,8 @@ feature {ANY}
    duration: INTEGER_64
 
 feature {ANY}
+   staff_count: INTEGER
+
    anchor: MIXUP_NOTE_HEAD is
       local
          i: INTEGER; found: BOOLEAN
@@ -68,23 +73,34 @@ feature {ANY}
          voices.last.add_bar(a_source, style)
       end
 
-   next_voice (next_staff: BOOLEAN) is
+   next_voice (a_source: MIXUP_SOURCE; next_staff: BOOLEAN) is
+      require
+         a_source /= Void
       local
          voice: MIXUP_VOICE
-         staff: FAST_ARRAY[MIXUP_VOICE]
       do
-         create voice.make(reference_)
+         create voice.make(a_source, reference_)
          voices.add_last(voice)
 
          if next_staff then
-            create staff.make(0)
-            staffs.add_last(staff)
-         else
-            staff := staffs.last
+            staff_count := staff_count + 1
          end
-         staff.add_last(voice)
+         voices.do_all(agent {MIXUP_VOICE}.set_staff_id(staff_id + staff_count - 1))
+         staffs.add_last(staff_count - 1)
       ensure
          voices.count = old voices.count + 1
+      end
+
+   set_staff_id (a_staff_id: INTEGER) is
+      local
+         voice_staff: ZIP[MIXUP_VOICE, INTEGER]
+      do
+         staff_id := a_staff_id
+         create voice_staff.make(voices, staffs)
+         voice_staff.do_all(agent (voice: MIXUP_VOICE; staff: INTEGER) is
+                               do
+                                  voice.set_staff_id(staff_id + staff)
+                               end)
       end
 
    commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
@@ -103,7 +119,7 @@ feature {ANY}
          voices.do_all(agent (voice: MIXUP_VOICE; durations_set: SET[INTEGER_64]) is
                           do
                              if not voice.bars.is_equal(bars) then
-                                warning("bar durations mismatch")
+                                warning_at(voice.source, "bar durations mismatch")
                              end
                              durations_set.add(voice.duration)
                           end (?, durations))
@@ -154,7 +170,7 @@ feature {}
       end
 
    voices: FAST_ARRAY[MIXUP_VOICE]
-   staffs: FAST_ARRAY[FAST_ARRAY[MIXUP_VOICE]]
+   staffs: FAST_ARRAY[INTEGER]
    reference_: MIXUP_NOTE_HEAD
 
    commit_agent (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): FUNCTION[TUPLE[MIXUP_VOICE, INTEGER], INTEGER] is
@@ -166,5 +182,9 @@ feature {}
       do
          Result := a_voice.commit(a_context, a_player, start_bar_number).max(bar_number)
       end
+
+invariant
+   voices /= Void
+   staffs /= Void
 
 end -- class MIXUP_VOICES

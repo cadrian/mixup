@@ -39,7 +39,7 @@ feature {ANY}
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
-         create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_NEXT_BAR}.make(source, a_context.start_time, a_context.instrument.name, style))
+         create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_NEXT_BAR}.make(source, a_context.start_time, a_context.instrument.name, staff_id, style))
       end
 
 feature {MIXUP_MUSIC, MIXUP_VOICE}

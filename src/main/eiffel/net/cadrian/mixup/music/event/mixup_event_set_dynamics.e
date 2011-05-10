@@ -22,9 +22,10 @@ create {ANY}
 
 feature {ANY}
    time: INTEGER_64
-   instrument_name: FIXED_STRING
+   instrument: FIXED_STRING
    dynamics: FIXED_STRING
    position: FIXED_STRING
+   staff_id: INTEGER
 
 feature {MIXUP_PLAYER}
    fire (player: MIXUP_PLAYER) is
@@ -32,19 +33,20 @@ feature {MIXUP_PLAYER}
          p: MIXUP_EVENT_SET_DYNAMICS_PLAYER
       do
          p ::= player
-         p.play_set_dynamics(instrument_name, dynamics, position)
+         p.play_set_dynamics(instrument, staff_id, dynamics, position)
       end
 
 feature {}
-   make (a_source: like source; a_time: like time; a_instrument_name: ABSTRACT_STRING; a_dynamics: ABSTRACT_STRING; a_position: ABSTRACT_STRING) is
+   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_staff_id: like staff_id; a_dynamics: ABSTRACT_STRING; a_position: ABSTRACT_STRING) is
       require
          a_source /= Void
-         a_instrument_name /= Void
+         a_instrument /= Void
          a_dynamics /= Void
       do
          source := a_source
          time := a_time
-         instrument_name := a_instrument_name.intern
+         instrument := a_instrument.intern
+         staff_id := a_staff_id
          dynamics := a_dynamics.intern
          if a_position /= Void then
             position := a_position.intern
@@ -52,13 +54,14 @@ feature {}
       ensure
          source = a_source
          time = a_time
-         instrument_name = a_instrument_name
+         instrument = a_instrument.intern
+         staff_id = a_staff_id
          dynamics = a_dynamics
          position = a_position
       end
 
 invariant
-   instrument_name /= Void
+   instrument /= Void
    dynamics /= Void
 
 end -- class MIXUP_EVENT_SET_DYNAMICS

@@ -17,13 +17,13 @@ class MIXUP_GROUPED_MUSIC
 inherit
    MIXUP_COMPOUND_MUSIC
       redefine
-         valid_anchor
+         valid_anchor, set_staff_id
       end
 
 insert
    MIXUP_VOICE
       redefine
-         new_events_iterator, valid_anchor
+         new_events_iterator, valid_anchor, set_staff_id
       end
 
 create {ANY}
@@ -77,13 +77,18 @@ feature {ANY}
          create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_event_factory, end_event_factory, agent lyrics_manager.manage_lyrics, Precursor(a_context))
       end
 
+   set_staff_id (a_staff_id: INTEGER) is
+      do
+         Precursor{MIXUP_COMPOUND_MUSIC}(a_staff_id)
+         Precursor{MIXUP_VOICE}(a_staff_id)
+      end
+
 feature {}
    as_beam (a_source: like source; a_reference: like reference) is
       require
          a_source /= Void
       do
-         make(a_reference)
-         source := a_source
+         make(a_source, a_reference)
          start_event_factory := start_beam
          end_event_factory := end_beam
       ensure
@@ -95,8 +100,7 @@ feature {}
       require
          a_source /= Void
       do
-         make(a_reference)
-         source := a_source
+         make(a_source, a_reference)
          start_event_factory := start_slur
          end_event_factory := end_slur
       ensure
@@ -108,8 +112,7 @@ feature {}
       require
          a_source /= Void
       do
-         make(a_reference)
-         source := a_source
+         make(a_source, a_reference)
          start_event_factory := start_phrasing_slur
          end_event_factory := end_phrasing_slur
       ensure
@@ -127,7 +130,7 @@ feature {}
 
    create_start_beam (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_START_BEAM} Result.make(source, a_context.start_time, a_context.instrument.name, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
+         create {MIXUP_EVENT_START_BEAM} Result.make(source, a_context.start_time, a_context.instrument.name, staff_id, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
       end
 
    end_beam : FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
@@ -137,7 +140,7 @@ feature {}
 
    create_end_beam (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_END_BEAM} Result.make(source, a_context.start_time, a_context.instrument.name)
+         create {MIXUP_EVENT_END_BEAM} Result.make(source, a_context.start_time, a_context.instrument.name, staff_id)
       end
 
    start_slur: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
@@ -147,7 +150,7 @@ feature {}
 
    create_start_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_START_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
+         create {MIXUP_EVENT_START_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name, staff_id, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
       end
 
    end_slur: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
@@ -157,7 +160,7 @@ feature {}
 
    create_end_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_END_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name)
+         create {MIXUP_EVENT_END_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name, staff_id)
       end
 
    start_phrasing_slur: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
@@ -167,7 +170,7 @@ feature {}
 
    create_start_phrasing_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_START_PHRASING_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
+         create {MIXUP_EVENT_START_PHRASING_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name, staff_id, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
       end
 
    end_phrasing_slur: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
@@ -177,7 +180,7 @@ feature {}
 
    create_end_phrasing_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_END_PHRASING_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name)
+         create {MIXUP_EVENT_END_PHRASING_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name, staff_id)
       end
 
 end -- class MIXUP_GROUPED_MUSIC

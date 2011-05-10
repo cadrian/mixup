@@ -12,7 +12,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_EVENTS_ITERATOR_ON_INSTRUMENT
+class MIXUP_EVENTS_ITERATOR_ON_LYRICS
    --
    -- Iterator on a single instrument: will add lyrics
    --
@@ -97,4 +97,4 @@ invariant
    voices_iterator /= Void
    strophes /= Void
 
-end -- class MIXUP_EVENTS_ITERATOR_ON_INSTRUMENT
+end -- class MIXUP_EVENTS_ITERATOR_ON_LYRICS

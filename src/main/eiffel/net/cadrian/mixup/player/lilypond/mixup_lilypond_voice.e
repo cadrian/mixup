@@ -106,6 +106,7 @@ feature {MIXUP_CHORD}
       do
          anchor := reference
          if a_chord.count > 1 then
+            notes.extend(' ')
             notes.extend('<')
          end
          from
@@ -113,9 +114,6 @@ feature {MIXUP_CHORD}
          until
             i > a_chord.upper
          loop
-            if i > a_chord.lower then
-               notes.extend(' ')
-            end
             append_note_head(anchor, a_chord.item(i))
             anchor := a_chord.item(i)
             i := i + 1

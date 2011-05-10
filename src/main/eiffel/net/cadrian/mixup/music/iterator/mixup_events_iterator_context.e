@@ -33,6 +33,8 @@ feature {ANY}
    set_instrument (a_instrument: like instrument) is
       do
          instrument := a_instrument
+      ensure
+         instrument = a_instrument
       end
 
    add_time (duration: INTEGER_64) is

@@ -70,72 +70,72 @@ feature {ANY}
          pop_section
       end
 
-   play_set_instrument (name: ABSTRACT_STRING) is
+   play_set_instrument (name: ABSTRACT_STRING; staff_ids: TRAVERSABLE[INTEGER]) is
       local
          inst_name: FIXED_STRING
          instrument: MIXUP_LILYPOND_INSTRUMENT
       do
          inst_name := name.intern
-         create instrument.make(context, Current, inst_name)
+         create instrument.make(context, Current, inst_name, staff_ids)
          log.info.put_line("Lilypond: adding instrument: " + name.out)
          instruments.add(instrument, inst_name)
          bar_number := 0
       end
 
-   play_set_dynamics (instrument: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
+   play_set_dynamics (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
       do
-         instruments.reference_at(instrument.intern).set_dynamics(dynamics, position)
+         instruments.reference_at(instrument.intern).set_dynamics(a_staff_id, dynamics, position)
       end
 
-   play_set_note (instrument: ABSTRACT_STRING; note: MIXUP_NOTE) is
+   play_set_note (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; note: MIXUP_NOTE) is
       do
-         instruments.reference_at(instrument.intern).set_note(note)
+         instruments.reference_at(instrument.intern).set_note(a_staff_id, note)
       end
 
-   play_next_bar (instrument: ABSTRACT_STRING; style: ABSTRACT_STRING) is
+   play_next_bar (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; style: ABSTRACT_STRING) is
       do
-         instruments.reference_at(instrument.intern).next_bar(style)
+         instruments.reference_at(instrument.intern).next_bar(a_staff_id, style)
          bar_number := bar_number + 1
       end
 
-   play_start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_beam (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         instruments.reference_at(instrument.intern).start_beam(xuplet_numerator, xuplet_denominator, text)
+         instruments.reference_at(instrument.intern).start_beam(a_staff_id, xuplet_numerator, xuplet_denominator, text)
       end
 
-   play_end_beam (instrument: ABSTRACT_STRING) is
+   play_end_beam (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
       do
-         instruments.reference_at(instrument.intern).end_beam
+         instruments.reference_at(instrument.intern).end_beam(a_staff_id)
       end
 
-   play_start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         instruments.reference_at(instrument.intern).start_slur(xuplet_numerator, xuplet_denominator, text)
+         instruments.reference_at(instrument.intern).start_slur(a_staff_id, xuplet_numerator, xuplet_denominator, text)
       end
 
-   play_end_slur (instrument: ABSTRACT_STRING) is
+   play_end_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
       do
-         instruments.reference_at(instrument.intern).end_slur
+         instruments.reference_at(instrument.intern).end_slur(a_staff_id)
       end
 
-   play_start_phrasing_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_phrasing_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         instruments.reference_at(instrument.intern).start_phrasing_slur(xuplet_numerator, xuplet_denominator, text)
+         instruments.reference_at(instrument.intern).start_phrasing_slur(a_staff_id, xuplet_numerator, xuplet_denominator, text)
       end
 
-   play_end_phrasing_slur (instrument: ABSTRACT_STRING) is
+   play_end_phrasing_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
       do
-         instruments.reference_at(instrument.intern).end_phrasing_slur
+         instruments.reference_at(instrument.intern).end_phrasing_slur(a_staff_id)
       end
 
-   play_start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
+   play_start_repeat (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; volte: INTEGER_64) is
       do
-         instruments.reference_at(instrument.intern).start_repeat(volte)
+         instruments.reference_at(instrument.intern).start_repeat(a_staff_id, volte)
       end
 
-   play_end_repeat (instrument: ABSTRACT_STRING) is
+   play_end_repeat (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
       do
-         instruments.reference_at(instrument.intern).end_repeat
+         instruments.reference_at(instrument.intern).end_repeat(a_staff_id)
       end
 
 feature {} -- headers and footers

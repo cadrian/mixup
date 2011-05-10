@@ -360,13 +360,12 @@ feature {}
       local
          i: INTEGER; old_compound_music: like last_compound_music
          voices: MIXUP_VOICES
-         forgotten: FAST_ARRAY[MIXUP_NODE]
       do
          old_compound_music := last_compound_music
          if old_compound_music = Void then
-            create voices.make(new_source(a_voices), absolute_reference)
+            create voices.make(new_source(a_voices.parent), absolute_reference)
          else
-            create voices.make(new_source(a_voices), old_compound_music.reference)
+            create voices.make(new_source(a_voices.parent), old_compound_music.reference)
          end
          last_compound_music := voices
 
@@ -376,12 +375,11 @@ feature {}
          until
             i > a_voices.upper
          loop
-            if i > a_voices.lower then
-               forgotten := a_voices.item(i).forgotten
-               forgotten.first.accept(Current)
-            end
-            voices.next_voice(next_staff)
+            voices.next_voice(new_source(a_voices.item(i)), next_staff)
             a_voices.item(i).accept(Current)
+            if i < a_voices.upper then
+               a_voices.item(i).forgotten.first.accept(Current)
+            end
             i := i + 1
          end
 
@@ -1079,8 +1077,15 @@ feature {}
       end
 
    new_source (node: MIXUP_NODE): MIXUP_SOURCE_IMPL is
+      local
+         line, column: INTEGER
       do
-         create Result.make(current_piece, current_file, node.source_line, node.source_column)
+         line := node.source_line
+         column := node.source_column
+         if line = 0 and then column = 0 then
+            sedb_breakpoint
+         end
+         create Result.make(current_piece, current_file, line, column)
       end
 
    native_provider: MIXUP_NATIVE_PROVIDER

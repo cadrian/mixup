@@ -16,8 +16,7 @@ set template.show_empty_staves := false
 
 
 instrument soprano
-    set staves := 1 -- the default (make it 2 for a piano, 3 for a church organ...)
-    set staff(1).clef := trebble -- could also be written staff.clef because there is only one staff for this instrument. Also note that trebble is the default key
+    set staff.clef := trebble
     set midi.inst := violin
     set midi.playback_style := legato
     set template.instrument_name := "Soprano"
