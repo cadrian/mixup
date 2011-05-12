@@ -118,8 +118,8 @@ feature {}
          <<
 
            set_partitur       ("sample"                                                                                                        ),
-           set_instrument     ("singer", set(1|..|1)                                                                                           ),
-           set_instrument     ("bass"  , set(2|..|2)                                                                                           ),
+           set_instrument     ("singer", map(1, {FAST_ARRAY[INTEGER] << 1, 2, 3, 7 >> })                                                       ),
+           set_instrument     ("bass"  , map(2, 4|..|6)                                                                                        ),
 
            start_phrasing_slur("singer", 1, 1, 1, ""                                                                                           ),
            set_dynamics       ("singer", 1, "p", Void                                                                                          ),
