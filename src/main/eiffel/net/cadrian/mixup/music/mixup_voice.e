@@ -111,7 +111,7 @@ feature {ANY}
             log.trace.put_line("Voice #" + id.out + ": adding chord: " + chord.out)
          end
          music.add_last(chord)
-         if not chord.anchor.is_rest then
+         if chord.valid_anchor then
             reference := chord.anchor
          end
       end

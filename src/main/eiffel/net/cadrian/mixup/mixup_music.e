@@ -30,6 +30,8 @@ feature {ANY}
       require
          valid_anchor
       deferred
+      ensure
+         not Result.is_rest
       end
 
    commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is

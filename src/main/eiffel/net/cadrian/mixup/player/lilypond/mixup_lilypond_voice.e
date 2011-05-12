@@ -54,7 +54,9 @@ feature {MIXUP_LILYPOND_STAFF}
    set_note (note: MIXUP_NOTE) is
       do
          note.accept(Current)
-         reference := note.anchor
+         if note.valid_anchor then
+            reference := note.anchor
+         end
       end
 
    next_bar (style: ABSTRACT_STRING) is

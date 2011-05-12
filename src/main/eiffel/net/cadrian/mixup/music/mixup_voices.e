@@ -106,7 +106,11 @@ feature {ANY}
                              durations_set.add(voice.duration)
                           end (?, durations))
          if durations.count > 1 then
-            warning("all voices don't have the same duration")
+            voices.do_all(agent (voice: MIXUP_VOICE; durations_set: SET[INTEGER_64]) is
+                             do
+                                warning_at(voice.source, "duration = " + voice.duration.out + " " + voice.out)
+                             end (?, durations))
+            warning("all voices don't have the same duration (details above)")
          end
          duration := durations.first
          debug

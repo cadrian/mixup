@@ -83,9 +83,32 @@ feature {ANY}
          manifest_put(a_index, a_note_head)
       end
 
-   anchor: MIXUP_NOTE_HEAD is
+   valid_anchor: BOOLEAN is
+      local
+         i: INTEGER
       do
-         Result := storage.item(0)
+         from
+         until
+            Result or else i = capacity
+         loop
+            Result := not storage.item(i).is_rest
+            i := i + 1
+         end
+      end
+
+   anchor: MIXUP_NOTE_HEAD is
+      local
+         i: INTEGER
+      do
+         from
+            Result := storage.item(0)
+            i := 1
+         until
+            not Result.is_rest or else i = capacity
+         loop
+            Result := storage.item(i)
+            i := i + 1
+         end
       end
 
    out_in_tagged_out_memory is

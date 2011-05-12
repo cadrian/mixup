@@ -22,8 +22,6 @@ insert
    LOGGING
 
 feature {ANY}
-   valid_anchor: BOOLEAN is True
-
    commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
       do
          debug

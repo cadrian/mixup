@@ -35,7 +35,12 @@ feature {ANY}
 
    is_rest: BOOLEAN is
       do
-         Result := note.first = 'r' or else note.first = 'R'
+         inspect
+            note.first
+         when 'r', 'R', 's' then
+            Result := True
+         else
+         end
       end
 
    relative (a_source: like source; desc: FIXED_STRING): MIXUP_NOTE_HEAD is
@@ -52,7 +57,7 @@ feature {ANY}
          note_.append(desc)
          inspect
             note_.first
-         when 'r', 'R' then
+         when 'r', 'R', 's' then
             Result.set(a_source, note_, 0)
          else
             if note_.first /= note.first then
@@ -105,7 +110,12 @@ feature {ANY}
    out_in_tagged_out_memory is
       do
          tagged_out_memory.append(note)
-         octave.append_in(tagged_out_memory)
+         inspect
+            note.first
+         when 'r', 'R', 's' then
+         else
+            octave.append_in(tagged_out_memory)
+         end
       end
 
 feature {}

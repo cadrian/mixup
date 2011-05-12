@@ -395,6 +395,8 @@ feature {}
       do
          staff.node_at(0).accept(Current)
          staves.add_last(create {MIXUP_STAFF}.make(new_source(staff), last_voices))
+         last_voices := Void
+         last_compound_music := Void
       end
 
    absolute_reference: MIXUP_NOTE_HEAD is

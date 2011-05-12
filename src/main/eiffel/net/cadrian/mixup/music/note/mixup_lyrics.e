@@ -38,6 +38,11 @@ feature {ANY}
          Result := note.duration
       end
 
+   valid_anchor: BOOLEAN is
+      do
+         Result := note.valid_anchor
+      end
+
    anchor: MIXUP_NOTE_HEAD is
       do
          Result := note.anchor

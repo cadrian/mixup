@@ -1406,7 +1406,7 @@ feature {}
          when 0 then
             inspect
                c
-            when 'a' .. 'g', 'r', 'R' then
+            when 'a' .. 'g', 'r', 'R', 's' then
                Result := True
             else
                check not Result end
@@ -1415,7 +1415,12 @@ feature {}
             inspect
                c
             when 'e', 'i' then
-               Result := not (once "rR").has(string.first)
+               inspect
+                  string.first
+               when 'r', 'R', 's' then
+               else
+                  Result := True
+               end
             else
                check not Result end
             end
