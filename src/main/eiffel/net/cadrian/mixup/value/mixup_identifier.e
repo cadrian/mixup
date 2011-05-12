@@ -17,7 +17,7 @@ class MIXUP_IDENTIFIER
 inherit
    MIXUP_VALUE
       redefine
-         eval
+         eval, out_in_tagged_out_memory
       end
 
 create {ANY}
@@ -119,6 +119,23 @@ feature {ANY}
          is_simple
       do
          Result := parts.first.name
+      end
+
+   out_in_tagged_out_memory is
+      local
+         i: INTEGER
+      do
+         from
+            i := parts.lower
+         until
+            i > parts.upper
+         loop
+            if i > parts.lower then
+               tagged_out_memory.extend('.')
+            end
+            parts.item(i).out_in_tagged_out_memory
+            i := i + 1
+         end
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}

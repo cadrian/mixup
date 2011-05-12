@@ -20,6 +20,9 @@ inherit
          is_equal
       end
    COMPARABLE
+      undefine
+         out_in_tagged_out_memory
+      end
 
 create {ANY}
    make

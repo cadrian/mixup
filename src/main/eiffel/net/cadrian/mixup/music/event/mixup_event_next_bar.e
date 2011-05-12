@@ -15,16 +15,19 @@
 class MIXUP_EVENT_NEXT_BAR
 
 inherit
+   MIXUP_EVENT_WITH_DATA
+      rename
+         make as make_
+      redefine
+         out_in_extra_data
+      end
    MIXUP_EVENT_WITHOUT_LYRICS
 
 create {ANY}
    make
 
 feature {ANY}
-   time: INTEGER_64
-   instrument: FIXED_STRING
    style: FIXED_STRING
-   staff_id: INTEGER
 
 feature {MIXUP_PLAYER}
    fire (player: MIXUP_PLAYER) is
@@ -32,32 +35,29 @@ feature {MIXUP_PLAYER}
          p: MIXUP_EVENT_NEXT_BAR_PLAYER
       do
          p ::= player
-         p.play_next_bar(instrument, staff_id, style)
+         p.play_next_bar(data, style)
       end
 
 feature {}
-   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_staff_id: like staff_id; a_style: ABSTRACT_STRING) is
-      require
-         a_source /= Void
-         a_instrument /= Void
+   make (a_data: like data; a_style: ABSTRACT_STRING) is
       do
-         source := a_source
-         time := a_time
-         instrument := a_instrument.intern
-         staff_id := a_staff_id
+         make_(a_data)
          if a_style /= Void then
             style := a_style.intern
          end
       ensure
-         source = a_source
-         time = a_time
-         instrument = a_instrument.intern
-         staff_id = a_staff_id
          a_style /= Void implies style = a_style.intern
          a_style = Void implies style = Void
       end
 
-invariant
-   instrument /= Void
+   out_in_extra_data is
+      do
+         tagged_out_memory.append(once ", style=")
+         if style = Void then
+            tagged_out_memory.append(once "<default>")
+         else
+            style.out_in_tagged_out_memory
+         end
+      end
 
 end -- class MIXUP_EVENT_NEXT_BAR

@@ -25,6 +25,8 @@ create {ANY}
 
 feature {ANY}
    instrument: MIXUP_INSTRUMENT
+   staff_id: INTEGER
+   voice_id: INTEGER
    start_time: INTEGER_64
    xuplet_numerator: INTEGER_64
    xuplet_denominator: INTEGER_64
@@ -35,6 +37,27 @@ feature {ANY}
          instrument := a_instrument
       ensure
          instrument = a_instrument
+      end
+
+   set_staff_id (a_staff_id: like staff_id) is
+      do
+         staff_id := a_staff_id
+      ensure
+         staff_id = a_staff_id
+      end
+
+   set_voice_id (a_voice_id: like voice_id) is
+      do
+         voice_id := a_voice_id
+      ensure
+         voice_id = a_voice_id
+      end
+
+   event_data (a_source: MIXUP_SOURCE): MIXUP_EVENT_DATA is
+      require
+         a_source /= Void
+      do
+         Result.set(a_source, start_time, instrument.name, staff_id, voice_id)
       end
 
    add_time (duration: INTEGER_64) is

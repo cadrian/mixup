@@ -16,6 +16,9 @@ class MIXUP_USER_FUNCTION
 
 inherit
    MIXUP_FUNCTION
+      redefine
+         out_in_tagged_out_memory
+      end
 
 create {ANY}
    make
@@ -40,6 +43,11 @@ feature {ANY}
          else
             Result := fn_context.value
          end
+      end
+
+   out_in_tagged_out_memory is
+      do
+         tagged_out_memory.append(once "<user function>")
       end
 
 feature {}

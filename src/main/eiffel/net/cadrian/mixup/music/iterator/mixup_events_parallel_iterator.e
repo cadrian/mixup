@@ -37,6 +37,18 @@ feature {}
    fetch_item: MIXUP_EVENT is
       do
          Result := notes.first.item
+         debug
+            log.trace.put_line(once "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            log.trace.put_line(" * " + generating_type + " * ")
+            log.trace.put_new_line
+            notes.do_all(agent (i: MIXUP_EVENTS_ITERATOR) is
+                         do
+                            if not i.is_off then
+                               log.trace.put_line(once "    " + i.item.out)
+                            end
+                         end)
+            log.trace.put_line(once "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+         end
       end
 
    go_next is

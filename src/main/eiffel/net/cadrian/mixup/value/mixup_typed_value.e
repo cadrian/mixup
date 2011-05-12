@@ -16,11 +16,23 @@ deferred class MIXUP_TYPED_VALUE[E_]
 
 inherit
    MIXUP_VALUE
+      redefine
+         out_in_tagged_out_memory
+      end
 
 feature {ANY}
    value: E_
 
    is_callable: BOOLEAN is False
+
+   out_in_tagged_out_memory is
+      do
+         if value = Void then
+            tagged_out_memory.append(once "Void")
+         else
+            value.out_in_tagged_out_memory
+         end
+      end
 
 feature {}
    make (a_source: like source; a_value: like value) is

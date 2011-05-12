@@ -16,6 +16,9 @@ class MIXUP_MUSIC_STORE
 
 inherit
    MIXUP_VALUE
+      undefine
+         out_in_tagged_out_memory
+      end
    MIXUP_VOICES
       rename
          make as make_voices

@@ -18,10 +18,10 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_START_BEAM}
-   play_start_beam (a_instrument: ABSTRACT_STRING; a_staff_id: INTEGER; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64
+   play_start_beam (a_data: MIXUP_EVENT_DATA; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64
       a_text: ABSTRACT_STRING) is
       require
-         a_instrument /= Void
+         a_data.instrument /= Void
          a_text /= Void
       deferred
       end

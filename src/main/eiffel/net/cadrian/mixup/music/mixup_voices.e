@@ -17,7 +17,7 @@ class MIXUP_VOICES
 inherit
    MIXUP_COMPOUND_MUSIC
       redefine
-         set_staff_id
+         out_in_tagged_out_memory
       end
 
 create {ANY}
@@ -73,7 +73,7 @@ feature {ANY}
          voices.last.add_bar(a_source, style)
       end
 
-   next_voice (a_source: MIXUP_SOURCE; next_staff: BOOLEAN) is
+   next_voice (a_source: MIXUP_SOURCE) is
       require
          a_source /= Void
       local
@@ -81,26 +81,8 @@ feature {ANY}
       do
          create voice.make(a_source, reference_)
          voices.add_last(voice)
-
-         if next_staff then
-            staff_count := staff_count + 1
-         end
-         voices.do_all(agent {MIXUP_VOICE}.set_staff_id(staff_id + staff_count - 1))
-         staffs.add_last(staff_count - 1)
       ensure
          voices.count = old voices.count + 1
-      end
-
-   set_staff_id (a_staff_id: INTEGER) is
-      local
-         voice_staff: ZIP[MIXUP_VOICE, INTEGER]
-      do
-         staff_id := a_staff_id
-         create voice_staff.make(voices, staffs)
-         voice_staff.do_all(agent (voice: MIXUP_VOICE; staff: INTEGER) is
-                               do
-                                  voice.set_staff_id(staff_id + staff)
-                               end)
       end
 
    commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
@@ -142,6 +124,13 @@ feature {ANY}
          create {MIXUP_EVENTS_ITERATOR_ON_VOICES} Result.make(a_context, voices)
       end
 
+   out_in_tagged_out_memory is
+      do
+         tagged_out_memory.append(once "<<")
+         voices.do_all(agent (v: MIXUP_VOICE) is do tagged_out_memory.extend(' '); v.out_in_tagged_out_memory end)
+         tagged_out_memory.append(once " >>")
+      end
+
 feature {MIXUP_MUSIC, MIXUP_VOICE}
    consolidate_bars (bars_: SET[INTEGER_64]; duration_offset: like duration) is
       do
@@ -162,7 +151,6 @@ feature {}
       do
          source := a_source
          create voices.make(0)
-         create staffs.make(0)
          reference_ := a_reference
       ensure
          source = a_source
@@ -170,7 +158,6 @@ feature {}
       end
 
    voices: FAST_ARRAY[MIXUP_VOICE]
-   staffs: FAST_ARRAY[INTEGER]
    reference_: MIXUP_NOTE_HEAD
 
    commit_agent (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): FUNCTION[TUPLE[MIXUP_VOICE, INTEGER], INTEGER] is
@@ -185,6 +172,5 @@ feature {}
 
 invariant
    voices /= Void
-   staffs /= Void
 
 end -- class MIXUP_VOICES

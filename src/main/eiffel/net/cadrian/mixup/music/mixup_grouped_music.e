@@ -17,13 +17,13 @@ class MIXUP_GROUPED_MUSIC
 inherit
    MIXUP_COMPOUND_MUSIC
       redefine
-         valid_anchor, set_staff_id
+         valid_anchor, out_in_tagged_out_memory
       end
 
 insert
    MIXUP_VOICE
       redefine
-         new_events_iterator, valid_anchor, set_staff_id
+         new_events_iterator, valid_anchor, out_in_tagged_out_memory
       end
 
 create {ANY}
@@ -53,17 +53,17 @@ feature {ANY}
 
    is_beam: BOOLEAN is
       do
-         Result := start_event_factory = start_beam
+         Result := tag = tag_beam
       end
 
    is_slur: BOOLEAN is
       do
-         Result := start_event_factory = start_slur
+         Result := tag = tag_slur
       end
 
    is_phrasing_slur: BOOLEAN is
       do
-         Result := start_event_factory = start_phrasing_slur
+         Result := tag = tag_phrasing_slur
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
@@ -77,10 +77,35 @@ feature {ANY}
          create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_event_factory, end_event_factory, agent lyrics_manager.manage_lyrics, Precursor(a_context))
       end
 
-   set_staff_id (a_staff_id: INTEGER) is
+   out_in_tagged_out_memory is
+      local
+         closing: CHARACTER
       do
-         Precursor{MIXUP_COMPOUND_MUSIC}(a_staff_id)
-         Precursor{MIXUP_VOICE}(a_staff_id)
+         inspect tag
+         when tag_slur then
+            tagged_out_memory.extend('(')
+            closing := ')'
+         when tag_phrasing_slur then
+            tagged_out_memory.extend('{')
+            closing := '}'
+         when tag_beam then
+            tagged_out_memory.extend('[')
+            closing := ']'
+         end
+         tagged_out_memory.extend('#')
+         id.append_in(tagged_out_memory)
+         if xuplet_numerator /= xuplet_denominator then
+            tagged_out_memory.extend(' ')
+            xuplet_numerator.append_in(tagged_out_memory)
+            tagged_out_memory.extend('/')
+            xuplet_denominator.append_in(tagged_out_memory)
+         end
+         music.do_all(agent (mus: MIXUP_MUSIC) is
+                         do
+                            tagged_out_memory.extend(' ')
+                            mus.out_in_tagged_out_memory
+                         end)
+         tagged_out_memory.extend(closing)
       end
 
 feature {}
@@ -91,6 +116,7 @@ feature {}
          make(a_source, a_reference)
          start_event_factory := start_beam
          end_event_factory := end_beam
+         tag := tag_beam
       ensure
          source = a_source
          is_beam
@@ -103,6 +129,7 @@ feature {}
          make(a_source, a_reference)
          start_event_factory := start_slur
          end_event_factory := end_slur
+         tag := tag_slur
       ensure
          source = a_source
          is_slur
@@ -115,6 +142,7 @@ feature {}
          make(a_source, a_reference)
          start_event_factory := start_phrasing_slur
          end_event_factory := end_phrasing_slur
+         tag := tag_phrasing_slur
       ensure
          source = a_source
          is_phrasing_slur
@@ -124,63 +152,72 @@ feature {}
    end_event_factory: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT]
 
    start_beam: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
-      once
+      do
          Result := agent create_start_beam
       end
 
    create_start_beam (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_START_BEAM} Result.make(source, a_context.start_time, a_context.instrument.name, staff_id, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
+         create {MIXUP_EVENT_START_BEAM} Result.make(a_context.event_data(source), a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
       end
 
    end_beam : FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
-      once
+      do
          Result := agent create_end_beam
       end
 
    create_end_beam (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_END_BEAM} Result.make(source, a_context.start_time, a_context.instrument.name, staff_id)
+         create {MIXUP_EVENT_END_BEAM} Result.make(a_context.event_data(source))
       end
 
    start_slur: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
-      once
+      do
          Result := agent create_start_slur
       end
 
    create_start_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_START_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name, staff_id, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
+         create {MIXUP_EVENT_START_SLUR} Result.make(a_context.event_data(source), a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
       end
 
    end_slur: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
-      once
+      do
          Result := agent create_end_slur
       end
 
    create_end_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_END_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name, staff_id)
+         create {MIXUP_EVENT_END_SLUR} Result.make(a_context.event_data(source))
       end
 
    start_phrasing_slur: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
-      once
+      do
          Result := agent create_start_phrasing_slur
       end
 
    create_start_phrasing_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_START_PHRASING_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name, staff_id, a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
+         create {MIXUP_EVENT_START_PHRASING_SLUR} Result.make(a_context.event_data(source), a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
       end
 
    end_phrasing_slur: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
-      once
+      do
          Result := agent create_end_phrasing_slur
       end
 
    create_end_phrasing_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
-         create {MIXUP_EVENT_END_PHRASING_SLUR} Result.make(source, a_context.start_time, a_context.instrument.name, staff_id)
+         create {MIXUP_EVENT_END_PHRASING_SLUR} Result.make(a_context.event_data(source))
       end
+
+feature {} -- tags
+   tag: INTEGER_8
+   tag_beam: INTEGER_8 is 1
+   tag_slur: INTEGER_8 is 2
+   tag_phrasing_slur: INTEGER_8 is 3
+
+invariant
+   tag.in_range(tag_beam, tag_phrasing_slur)
 
 end -- class MIXUP_GROUPED_MUSIC

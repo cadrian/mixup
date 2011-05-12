@@ -173,7 +173,7 @@ feature {}
                                                                    {FAST_ARRAY[STRING] << "KW boolean" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "KW Result" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Identifier" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "Music" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Music_Value" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Lyrics" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Function" >> }, Void;
                                                                    >> };
@@ -204,8 +204,11 @@ feature {}
                                    "Extern_Syllable", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW \", "Identifier" >> }, Void;
                                                                              >> };
 
-                                   "Music", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW music", "Voices" >> }, Void;
+                                   "Music", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW music", "Staff+" >> }, Void;
                                                                    >> };
+
+                                   "Music_Value", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW music", "Voices" >> }, Void;
+                                                                         >> };
 
                                    "Notes*", list_of("Notes", True, Void);
                                    "Notes", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Next_Bar" >> }, Void; -- check bar
@@ -279,12 +282,12 @@ feature {}
                                                                       {FAST_ARRAY[STRING] << "KW hidden", "KW :" >> }, Void; -- don't display, for midi control only
                                                                       >> };
 
+                                   "Staff+", list_of("Staff", False, Void);
+                                   "Staff", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Voices" >> }, Void;
+                                                                   >> };
                                    "Voices", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <<", "Voice+", "KW >>" >> }, Void;
                                                                     >> };
-                                   "Voice+", list_of("Voice", False, "Voice_Separator");
-                                   "Voice_Separator", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW //" >> }, Void; -- next voice on same staff
-                                                                             {FAST_ARRAY[STRING] << "KW ||" >> }, Void; -- next staff
-                                                                             >> };
+                                   "Voice+", list_of("Voice", False, "KW //");
                                    "Voice", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Notes*" >> }, Void;
                                                                    >> };
                                    "Beam", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW [", "Xuplet_Spec", "Notes*", "KW ]" >> }, Void;
@@ -417,14 +420,13 @@ feature {}
                                    "KW >=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">=", ""),      Void);
                                    "KW >>",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">>", ""),      Void);
                                    "KW >",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ">" , ">="),    Void);
-                                   "KW |",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "|" , "|"),     Void);
+                                   "KW |",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "|" , ""),      Void);
                                    "KW -",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "-" , ""),      Void);
                                    "KW ,",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "," , ""),      Void);
                                    "KW :=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":=" , ""),     Void);
                                    "KW :",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":" , "="),     Void);
                                    "KW !=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "!=" , ""),     Void);
                                    "KW //",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "//" , ""),     Void);
-                                   "KW ||",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "||" , ""),     Void);
                                    "KW /",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "/" , "/"),     Void);
                                    "KW ...",         create {PARSE_TERMINAL}.make(agent parse_symbol(?, "..." , ""),    Void);
                                    "KW ..",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ".." , "."),    Void);

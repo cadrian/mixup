@@ -15,15 +15,17 @@
 class MIXUP_EVENT_SET_NOTE
 
 inherit
-   MIXUP_EVENT
+   MIXUP_EVENT_WITH_DATA
+      rename
+         make as make_
+      redefine
+         out_in_extra_data
+      end
 
 create {ANY}
    make
 
 feature {ANY}
-   time: INTEGER_64
-   instrument: FIXED_STRING
-   staff_id: INTEGER
    note: MIXUP_NOTE
 
    allow_lyrics: BOOLEAN is True
@@ -53,32 +55,28 @@ feature {MIXUP_PLAYER}
          if lyrics /= Void then
             create {MIXUP_LYRICS} n.make(source, note, lyrics) -- TODO: wrong source! should keep the actual one along with the lyrics.
          end
-         p.play_set_note(instrument, staff_id, n)
+         p.play_set_note(data, n)
       end
 
 feature {}
-   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_staff_id: like staff_id; a_note: MIXUP_NOTE) is
+   make (a_data:like data; a_note: MIXUP_NOTE) is
       require
-         a_source /= Void
-         a_instrument /= Void
          a_note /= Void
       do
-         source := a_source
-         time := a_time
-         instrument := a_instrument.intern
-         staff_id := a_staff_id
+         make_(a_data)
          note := a_note
          set_has_lyrics(True)
       ensure
-         source = a_source
-         time = a_time
-         instrument = a_instrument.intern
-         staff_id = a_staff_id
          note = a_note
       end
 
+   out_in_extra_data is
+      do
+         tagged_out_memory.append(once ", note=")
+         note.out_in_tagged_out_memory
+      end
+
 invariant
-   instrument /= Void
    note /= Void
 
 end -- class MIXUP_EVENT_SET_NOTE

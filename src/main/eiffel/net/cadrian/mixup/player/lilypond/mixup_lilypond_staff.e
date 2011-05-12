@@ -42,7 +42,7 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
 
    start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         current_voice.start_beam(xuplet_numerator, xuplet_numerator, text)
+         current_voice.start_beam(xuplet_numerator, xuplet_denominator, text)
       end
 
    end_beam is

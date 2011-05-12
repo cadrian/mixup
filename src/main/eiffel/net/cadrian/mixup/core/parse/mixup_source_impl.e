@@ -17,11 +17,19 @@ class MIXUP_SOURCE_IMPL
 inherit
    MIXUP_SOURCE
    MIXUP_LIST_NODE_IMPL_VISITOR
+      undefine out_in_tagged_out_memory
+      end
    MIXUP_NON_TERMINAL_NODE_IMPL_VISITOR
+      undefine out_in_tagged_out_memory
+      end
    MIXUP_TERMINAL_NODE_IMPL_VISITOR
+      undefine out_in_tagged_out_memory
+      end
 
 insert
    MIXUP_NODE_HANDLER
+      undefine out_in_tagged_out_memory
+      end
 
 create {ANY}
    make

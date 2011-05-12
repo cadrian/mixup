@@ -16,6 +16,8 @@ deferred class MIXUP_LIST_NODE
 
 inherit
    MIXUP_NODE
+      undefine out_in_tagged_out_memory
+      end
 
 insert
    TRAVERSABLE[MIXUP_NODE]

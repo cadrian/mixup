@@ -16,6 +16,9 @@ class MIXUP_DYNAMICS
 
 inherit
    MIXUP_MUSIC
+      redefine
+         out_in_tagged_out_memory
+      end
 
 create {ANY}
    make
@@ -38,7 +41,13 @@ feature {ANY}
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
-         create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_SET_DYNAMICS}.make(source, a_context.start_time, a_context.instrument.name, staff_id, text, position))
+         create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_SET_DYNAMICS}.make(a_context.event_data(source), text, position))
+      end
+
+   out_in_tagged_out_memory is
+      do
+         tagged_out_memory.append(once "dyn:")
+         text.out_in_tagged_out_memory
       end
 
 feature {MIXUP_MUSIC, MIXUP_VOICE}

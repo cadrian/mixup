@@ -15,15 +15,11 @@
 class MIXUP_EVENT_END_PHRASING_SLUR
 
 inherit
+   MIXUP_EVENT_WITH_DATA
    MIXUP_EVENT_WITHOUT_LYRICS
 
 create {ANY}
    make
-
-feature {ANY}
-   time: INTEGER_64
-   instrument: FIXED_STRING
-   staff_id: INTEGER
 
 feature {MIXUP_PLAYER}
    fire (player: MIXUP_PLAYER) is
@@ -31,27 +27,7 @@ feature {MIXUP_PLAYER}
          p: MIXUP_EVENT_END_PHRASING_SLUR_PLAYER
       do
          p ::= player
-         p.play_end_phrasing_slur(instrument, staff_id)
+         p.play_end_phrasing_slur(data)
       end
-
-feature {}
-   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_staff_id: like staff_id) is
-      require
-         a_source /= Void
-         a_instrument /= Void
-      do
-         source := a_source
-         time := a_time
-         instrument := a_instrument.intern
-         staff_id := a_staff_id
-      ensure
-         source = a_source
-         time = a_time
-         instrument = a_instrument.intern
-         staff_id = a_staff_id
-      end
-
-invariant
-   instrument /= Void
 
 end -- class MIXUP_EVENT_END_PHRASING_SLUR

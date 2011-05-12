@@ -87,6 +87,7 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
    visit_mixup_non_terminal_node_impl (node: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
          old_compound_music: like last_compound_music
+         old_voices: like last_voices
       do
          inspect
             node.name
@@ -109,17 +110,24 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
          when "Partitur_Content" then
             build_partitur_content(node)
          when "Music" then
-            old_compound_music := last_compound_music
             last_compound_music := Void
+            last_voices := Void
+            node.node_at(1).accept(Current)
+         when "Music_Value" then
+            old_compound_music := last_compound_music
+            old_voices := last_voices
+            last_compound_music := Void
+            last_voices := Void
             node.node_at(1).accept(Current)
             create {MIXUP_MUSIC_VALUE} last_expression.make(new_source(node), last_compound_music)
-            if current_instrument = Void or else old_compound_music /= Void then
-               last_compound_music := old_compound_music
-            end
+            last_compound_music := old_compound_music
+            last_voices := old_voices
          when "Lyrics" then
             node.node_at(1).accept(Current)
          when "Instrument" then
             build_instrument(node)
+         when "Staff" then
+            build_staff(node)
          when "Next_Bar" then
             build_next_bar(node)
          when "Extern_Notes" then
@@ -253,10 +261,6 @@ feature {MIXUP_TERMINAL_NODE_IMPL}
             create {MIXUP_BOOLEAN} last_expression.make(new_source(node), boolean_image.decoded)
          when "KW note head" then
             last_note_head.copy(node.image.image)
-         when "KW //" then
-            next_staff := False
-         when "KW ||" then
-            next_staff := True
          else
             debug
                log.trace.put_line("Skipped terminal node: " + node.name)
@@ -276,14 +280,15 @@ feature {}
    last_dictionary:         MIXUP_DICTIONARY
    last_note_length:        INTEGER_64
    last_note_head:          STRING is ""
-   note_heads:              COLLECTION[TUPLE[MIXUP_SOURCE, FIXED_STRING]]
+   note_heads:              FAST_ARRAY[TUPLE[MIXUP_SOURCE, FIXED_STRING]]
    last_compound_music:     MIXUP_COMPOUND_MUSIC
    current_context:         MIXUP_CONTEXT
    last_string:             STRING
    last_xuplet_numerator:   INTEGER_64
    last_xuplet_denominator: INTEGER_64
    last_xuplet_text:        FIXED_STRING
-   next_staff:              BOOLEAN
+   last_voices:             MIXUP_VOICES
+   staves:                  FAST_ARRAY[MIXUP_STAFF]
 
    build_identifier_list (identifiers: MIXUP_LIST_NODE_IMPL) is
       do
@@ -368,18 +373,15 @@ feature {}
             create voices.make(new_source(a_voices.parent), old_compound_music.reference)
          end
          last_compound_music := voices
+         last_voices := voices
 
          from
-            next_staff := True
             i := a_voices.lower
          until
             i > a_voices.upper
          loop
-            voices.next_voice(new_source(a_voices.item(i)), next_staff)
+            voices.next_voice(new_source(a_voices.item(i)))
             a_voices.item(i).accept(Current)
-            if i < a_voices.upper then
-               a_voices.item(i).forgotten.first.accept(Current)
-            end
             i := i + 1
          end
 
@@ -387,6 +389,12 @@ feature {}
             old_compound_music.add_music(voices)
             last_compound_music := old_compound_music
          end
+      end
+
+   build_staff (staff: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         staff.node_at(0).accept(Current)
+         staves.add_last(create {MIXUP_STAFF}.make(new_source(staff), last_voices))
       end
 
    absolute_reference: MIXUP_NOTE_HEAD is
@@ -407,7 +415,9 @@ feature {}
             int ::= last_expression
             last_xuplet_numerator := int.value
             spec.node_at(2).accept(Current)
+            int ::= last_expression
             last_xuplet_denominator := int.value
+
             if spec.count = 3 then
                string := once ""
                string.clear_count
@@ -846,9 +856,9 @@ feature {}
    build_instrument (instrument: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
          old_context: like current_context
-         voices: MIXUP_VOICES
       do
          old_context := current_context
+         create staves.make(0)
          instrument.node_at(1).accept(Current)
          create current_instrument.make(new_source(instrument), name, old_context)
          current_context := current_instrument
@@ -861,8 +871,7 @@ feature {}
          end
          instrument.node_at(2).accept(Current)
          instrument.node_at(3).accept(Current)
-         voices ::= last_compound_music
-         current_instrument.set_voices(voices)
+         current_instrument.set_staves(staves)
          last_compound_music := Void
          current_context := old_context
          current_instrument := Void
@@ -929,7 +938,7 @@ feature {}
 
    build_chord (chord: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         create {FAST_ARRAY[TUPLE[MIXUP_SOURCE, FIXED_STRING]]} note_heads.make(0)
+         create note_heads.make(0)
          if chord.count = 2 then
             chord.node_at(0).accept(Current)
             chord.node_at(1).accept(Current)

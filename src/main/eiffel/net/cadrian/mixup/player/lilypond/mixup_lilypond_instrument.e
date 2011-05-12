@@ -41,7 +41,7 @@ feature {MIXUP_LILYPOND_PLAYER}
 
    start_beam (a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         staffs.reference_at(a_staff_id).start_beam(xuplet_numerator, xuplet_numerator, text)
+         staffs.reference_at(a_staff_id).start_beam(xuplet_numerator, xuplet_denominator, text)
       end
 
    end_beam (a_staff_id: INTEGER) is

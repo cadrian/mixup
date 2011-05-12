@@ -25,6 +25,19 @@ feature {ANY}
    name: FIXED_STRING
    staff_ids: TRAVERSABLE[INTEGER]
 
+   out_in_tagged_out_memory is
+      do
+         tagged_out_memory.extend('[')
+         tagged_out_memory.append(generating_type)
+         tagged_out_memory.append(once ": time=")
+         time.append_in(tagged_out_memory)
+         tagged_out_memory.append(once ", instrument=")
+         name.out_in_tagged_out_memory
+         tagged_out_memory.append(once ", staffs=")
+         staff_ids.out_in_tagged_out_memory
+         tagged_out_memory.extend(']')
+      end
+
 feature {MIXUP_PLAYER}
    fire (player: MIXUP_PLAYER) is
       local

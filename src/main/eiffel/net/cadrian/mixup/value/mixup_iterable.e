@@ -16,6 +16,8 @@ deferred class MIXUP_ITERABLE
 
 inherit
    MIXUP_VALUE
+      undefine out_in_tagged_out_memory
+      end
    TRAVERSABLE[MIXUP_VALUE]
 
 end -- class MIXUP_ITERABLE

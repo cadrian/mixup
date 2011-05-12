@@ -12,7 +12,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_MUSIC_IDENTIFIER
+class MIXUP_STAFF
 
 inherit
    MIXUP_MUSIC
@@ -24,77 +24,81 @@ create {ANY}
    make
 
 feature {ANY}
+   id: INTEGER
+
    duration: INTEGER_64 is
       do
-         Result := music.duration
+         Result := voices.duration
       end
 
    valid_anchor: BOOLEAN is
       do
-         Result := music /= Void
+         Result := voices.valid_anchor
       end
 
    anchor: MIXUP_NOTE_HEAD is
       do
-         Result := music.anchor
+         Result := voices.anchor
       end
 
    commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
       do
-         music := music_evaluator.eval(a_context, a_player)
+         Result := voices.commit(a_context, a_player, start_bar_number)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
-         debug
-            log.trace.put_line("New events iterator for music identifier: " + identifier.as_name)
-         end
-         Result := music.new_events_iterator(a_context)
+         a_context.set_staff_id(id)
+         Result := voices.new_events_iterator(a_context)
+      end
+
+   bars: ITERABLE[INTEGER_64] is
+      do
+         Result := voices.bars
       end
 
    out_in_tagged_out_memory is
       do
-         identifier.out_in_tagged_out_memory
-         if music /= Void then
-            tagged_out_memory.extend('=')
-            music.out_in_tagged_out_memory
-         end
+         tagged_out_memory.append(once "[staff#")
+         id.append_in(tagged_out_memory)
+         tagged_out_memory.extend(':')
+         voices.out_in_tagged_out_memory
+         tagged_out_memory.extend(']')
       end
 
 feature {MIXUP_MUSIC, MIXUP_VOICE}
-   consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
+   consolidate_bars (a_bars: SET[INTEGER_64]; duration_offset: like duration) is
       do
-         debug
-            log.trace.put_line("Consolidate bars for music identifier: " + identifier.as_name)
-         end
-         music.consolidate_bars(bars, duration_offset)
+         voices.consolidate_bars(a_bars, duration_offset)
       end
 
 feature {}
-   make (a_source: like source; a_identifier: like identifier) is
+   make (a_source: like source; a_voices: like voices) is
       require
          a_source /= Void
-         a_identifier /= Void
+         a_voices /= Void
       do
-         debug
-            log.trace.put_line("Creating music identifier: " + a_identifier.as_name)
-         end
          source := a_source
-         identifier := a_identifier
-
-         create music_evaluator.make(a_source, a_identifier)
+         voices := a_voices
+         id_provider.next
+         id := id_provider.item
+         debug
+            log.trace.put_line("Staff #" + id.out + ": voices=" + a_voices.out)
+         end
       ensure
          source = a_source
-         identifier = a_identifier
+         voices = a_voices
       end
 
-   identifier: MIXUP_IDENTIFIER
-   music: MIXUP_MUSIC
+   voices: MIXUP_VOICES
 
-   music_evaluator: MIXUP_MUSIC_EVALUATOR
+   id_provider: COUNTER is
+      once
+         create Result
+      end
 
 invariant
-   identifier /= Void
-   music_evaluator /= Void
+   voices /= Void
+   id > 0
 
-end -- class MIXUP_MUSIC_IDENTIFIER
+end -- class MIXUP_STAFF

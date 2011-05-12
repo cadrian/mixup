@@ -18,9 +18,9 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_END_BEAM}
-   play_end_beam (a_instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
+   play_end_beam (a_data: MIXUP_EVENT_DATA) is
       require
-         a_instrument /= Void
+         a_data.instrument /= Void
       deferred
       end
 

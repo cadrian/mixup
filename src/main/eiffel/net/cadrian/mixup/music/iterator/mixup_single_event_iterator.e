@@ -20,17 +20,35 @@ class MIXUP_SINGLE_EVENT_ITERATOR
 inherit
    MIXUP_EVENTS_ITERATOR
 
+insert
+   LOGGING
+      undefine is_equal
+      end
+
 create {ANY}
    make
 
 feature {ANY}
    start is
       do
+         is_off := False
+         debug
+            shown := False
+         end
       end
 
    is_off: BOOLEAN
 
-   item: MIXUP_EVENT
+   item: MIXUP_EVENT is
+      do
+         Result := item_
+         debug
+            if not shown then
+               log.trace.put_line(generating_type + ": item=" + Result.out)
+               shown := True
+            end
+         end
+      end
 
    next is
       do
@@ -42,13 +60,16 @@ feature {}
       require
          a_item /= Void
       do
-         item := a_item
+         item_ := a_item
       ensure
-         item = a_item
+         item_ = a_item
          not is_off
       end
 
+   item_: MIXUP_EVENT
+   shown: BOOLEAN
+
 invariant
-   item /= Void
+   item_ /= Void
 
 end -- class MIXUP_SINGLE_EVENT_ITERATOR

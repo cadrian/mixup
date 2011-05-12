@@ -82,60 +82,71 @@ feature {ANY}
          bar_number := 0
       end
 
-   play_set_dynamics (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
+   play_set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING) is
       do
-         instruments.reference_at(instrument.intern).set_dynamics(a_staff_id, dynamics, position)
+         log.info.put_line("Lilypond: playing dynamics: " + dynamics.out)
+         instruments.reference_at(a_data.instrument).set_dynamics(a_data.staff_id, dynamics, position)
       end
 
-   play_set_note (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; note: MIXUP_NOTE) is
+   play_set_note (a_data: MIXUP_EVENT_DATA; note: MIXUP_NOTE) is
       do
-         instruments.reference_at(instrument.intern).set_note(a_staff_id, note)
+         log.info.put_line("Lilypond: playing note: " + note.out)
+         instruments.reference_at(a_data.instrument).set_note(a_data.staff_id, note)
       end
 
-   play_next_bar (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; style: ABSTRACT_STRING) is
+   play_next_bar (a_data: MIXUP_EVENT_DATA; style: ABSTRACT_STRING) is
       do
-         instruments.reference_at(instrument.intern).next_bar(a_staff_id, style)
+         log.info.put_line("Lilypond: playing bar")
+         instruments.reference_at(a_data.instrument).next_bar(a_data.staff_id, style)
          bar_number := bar_number + 1
       end
 
-   play_start_beam (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_beam (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         instruments.reference_at(instrument.intern).start_beam(a_staff_id, xuplet_numerator, xuplet_denominator, text)
+         log.info.put_line("Lilypond: starting beam")
+         instruments.reference_at(a_data.instrument).start_beam(a_data.staff_id, xuplet_numerator, xuplet_denominator, text)
       end
 
-   play_end_beam (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
+   play_end_beam (a_data: MIXUP_EVENT_DATA) is
       do
-         instruments.reference_at(instrument.intern).end_beam(a_staff_id)
+         log.info.put_line("Lilypond: ending beam")
+         instruments.reference_at(a_data.instrument).end_beam(a_data.staff_id)
       end
 
-   play_start_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         instruments.reference_at(instrument.intern).start_slur(a_staff_id, xuplet_numerator, xuplet_denominator, text)
+         log.info.put_line("Lilypond: starting slur")
+         instruments.reference_at(a_data.instrument).start_slur(a_data.staff_id, xuplet_numerator, xuplet_denominator, text)
       end
 
-   play_end_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
+   play_end_slur (a_data: MIXUP_EVENT_DATA) is
       do
-         instruments.reference_at(instrument.intern).end_slur(a_staff_id)
+         log.info.put_line("Lilypond: ending slur")
+         instruments.reference_at(a_data.instrument).end_slur(a_data.staff_id)
       end
 
-   play_start_phrasing_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_phrasing_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         instruments.reference_at(instrument.intern).start_phrasing_slur(a_staff_id, xuplet_numerator, xuplet_denominator, text)
+         log.info.put_line("Lilypond: starting phrasing slur")
+         instruments.reference_at(a_data.instrument).start_phrasing_slur(a_data.staff_id, xuplet_numerator, xuplet_denominator, text)
       end
 
-   play_end_phrasing_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
+   play_end_phrasing_slur (a_data: MIXUP_EVENT_DATA) is
       do
-         instruments.reference_at(instrument.intern).end_phrasing_slur(a_staff_id)
+         log.info.put_line("Lilypond: ending phrasing slur")
+         instruments.reference_at(a_data.instrument).end_phrasing_slur(a_data.staff_id)
       end
 
-   play_start_repeat (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; volte: INTEGER_64) is
+   play_start_repeat (a_data: MIXUP_EVENT_DATA; volte: INTEGER_64) is
       do
-         instruments.reference_at(instrument.intern).start_repeat(a_staff_id, volte)
+         log.info.put_line("Lilypond: starting repeat x" + volte.out)
+         instruments.reference_at(a_data.instrument).start_repeat(a_data.staff_id, volte)
       end
 
-   play_end_repeat (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
+   play_end_repeat (a_data: MIXUP_EVENT_DATA) is
       do
-         instruments.reference_at(instrument.intern).end_repeat(a_staff_id)
+         log.info.put_line("Lilypond: ending repeat")
+         instruments.reference_at(a_data.instrument).end_repeat(a_data.staff_id)
       end
 
 feature {} -- headers and footers

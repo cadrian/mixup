@@ -31,6 +31,16 @@ feature {}
          Result.set(source, a_note, a_octave)
       end
 
+   set (ints: TRAVERSABLE[INTEGER]): SET[INTEGER] is
+      do
+         create {AVL_SET[INTEGER]} Result.from_collection(ints)
+      end
+
+   event_data (instr: STRING; staff_id: INTEGER): MIXUP_EVENT_DATA is
+      do
+         Result.set(source, 0, instr.intern, staff_id, 1)
+      end
+
    make is
       local
          lilypond: MIXUP_LILYPOND_PLAYER
@@ -45,8 +55,8 @@ feature {}
          lilypond.set_context(context)
 
          lilypond.play_set_partitur("test")
-         lilypond.play_set_instrument("MyInstr")
-         lilypond.play_set_note("MyInstr", {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("c", 4) >> }, source, << "doe", "do" >> });
+         lilypond.play_set_instrument("MyInstr", set(1|..|1))
+         lilypond.play_set_note(event_data("MyInstr", 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("c", 4) >> }, source, << "doe", "do" >> });
          lilypond.play_end_partitur
 
          expected := "[

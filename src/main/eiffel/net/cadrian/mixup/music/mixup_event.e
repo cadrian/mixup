@@ -19,11 +19,12 @@ deferred class MIXUP_EVENT
 
 inherit
    COMPARABLE
+      undefine out_in_tagged_out_memory
+      end
 
 insert
    MIXUP_ERRORS
-      undefine
-         is_equal
+      undefine is_equal, out_in_tagged_out_memory
       end
 
 feature {ANY}

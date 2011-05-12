@@ -12,45 +12,47 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_EVENT_START_REPEAT
+deferred class MIXUP_EVENT_WITH_DATA
 
 inherit
-   MIXUP_EVENT_WITH_DATA
-      rename
-         make as make_
-      redefine
-         out_in_extra_data
-      end
-   MIXUP_EVENT_WITHOUT_LYRICS
-
-create {ANY}
-   make
+   MIXUP_EVENT
 
 feature {ANY}
-   volte: INTEGER_64
+   data: MIXUP_EVENT_DATA
 
-feature {MIXUP_PLAYER}
-   fire (player: MIXUP_PLAYER) is
-      local
-         p: MIXUP_EVENT_START_REPEAT_PLAYER
+   time: INTEGER_64 is
       do
-         p ::= player
-         p.play_start_repeat(data, volte)
+         Result := data.start_time
+      end
+
+   out_in_tagged_out_memory is
+      do
+         tagged_out_memory.extend('[')
+         tagged_out_memory.append(generating_type)
+         tagged_out_memory.append(once ": ")
+         data.out_in_tagged_out_memory
+         out_in_extra_data
+         tagged_out_memory.extend(']')
       end
 
 feature {}
-   make (a_data: like data; a_volte: INTEGER_64) is
+   make (a_data: like data) is
+      require
+         a_data.source /= Void
+         a_data.instrument /= Void
       do
-         make_(a_data)
-         volte := a_volte
+         source := a_data.source
+         data := a_data
       ensure
-         volte = a_volte
+         data = a_data
       end
 
    out_in_extra_data is
       do
-         tagged_out_memory.append(once ", volte=")
-         volte.append_in(tagged_out_memory)
       end
 
-end -- class MIXUP_EVENT_START_REPEAT
+invariant
+   source = data.source
+   data.instrument /= Void
+
+end -- class MIXUP_EVENT_WITH_DATA

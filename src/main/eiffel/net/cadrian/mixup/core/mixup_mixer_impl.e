@@ -181,7 +181,7 @@ feature {}
          else
             music_store ::= args.first
             if not music_store.has_voice then
-               music_store.next_voice(a_source, True)
+               music_store.next_voice(a_source)
             end
             music ::= args.last
             music_store.add_music(music.value)

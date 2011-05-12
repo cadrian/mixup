@@ -16,12 +16,14 @@ class MIXUP_DICTIONARY
 
 inherit
    MIXUP_VALUE
+      undefine
+         out_in_tagged_out_memory
       redefine
          eval
       end
    MAP[MIXUP_VALUE, MIXUP_VALUE]
       undefine
-         out_in_tagged_out_memory, is_equal
+         is_equal
       end
 
 create {ANY}

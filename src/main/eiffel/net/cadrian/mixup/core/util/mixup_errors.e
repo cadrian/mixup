@@ -52,7 +52,7 @@ feature {ANY}
       do
          log.warning.put_line(header(a_source) + message)
          a_source.display(log.warning)
-         warning_count.increment
+         warning_count.next
          sedb_breakpoint
       end
 
@@ -63,7 +63,7 @@ feature {ANY}
       do
          log.error.put_line(header(a_source) + message)
          a_source.display(log.error)
-         error_count.increment
+         error_count.next
          sedb_breakpoint
       end
 
@@ -73,8 +73,8 @@ feature {ANY}
          a_source /= Void
       do
          error_at(a_source, message)
-         display_counter(warning_count.value, "warning")
-         display_counter(error_count.value, "error")
+         display_counter(warning_count.item, "warning")
+         display_counter(error_count.item, "error")
          log.error.put_line("Program interrupted.")
          die_with_code(1)
       end

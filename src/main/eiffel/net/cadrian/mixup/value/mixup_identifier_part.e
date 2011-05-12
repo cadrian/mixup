@@ -16,6 +16,9 @@ class MIXUP_IDENTIFIER_PART
 
 insert
    MIXUP_ERRORS
+      redefine
+         out_in_tagged_out_memory
+      end
 
 create {ANY}
    make
@@ -29,6 +32,28 @@ feature {ANY}
          args := a_args
       ensure
          args = a_args
+      end
+
+   out_in_tagged_out_memory is
+      local
+         i: INTEGER
+      do
+         tagged_out_memory.append(name)
+         if args /= Void then
+            tagged_out_memory.extend('(')
+            from
+               i := args.lower
+            until
+               i > args.upper
+            loop
+               if i > args.lower then
+                  tagged_out_memory.append(once ", ")
+               end
+               args.item(i).out_in_tagged_out_memory
+               i := i + 1
+            end
+            tagged_out_memory.extend(')')
+         end
       end
 
 feature {MIXUP_IDENTIFIER}

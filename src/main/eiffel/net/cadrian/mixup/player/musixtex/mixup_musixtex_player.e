@@ -72,11 +72,11 @@ feature {ANY}
          instruments.put(create {MIXUP_MUSIXTEX_INSTRUMENT}.make(instruments.count + 1, name.intern), name.intern)
       end
 
-   set_dynamics (instrument_name: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING) is
       do
       end
 
-   set_note (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; note: MIXUP_NOTE) is
+   set_note (a_data: MIXUP_EVENT_DATA; note: MIXUP_NOTE) is
       do
       end
 
@@ -88,35 +88,35 @@ feature {ANY}
          bar_number := bar_number + 1
       end
 
-   start_beam (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_beam (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
       end
 
-   end_beam (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
+   end_beam (a_data: MIXUP_EVENT_DATA) is
       do
       end
 
-   start_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
       end
 
-   end_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
+   end_slur (a_data: MIXUP_EVENT_DATA) is
       do
       end
 
-   start_phrasing_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_phrasing_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
       end
 
-   end_phrasing_slur (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
+   end_phrasing_slur (a_data: MIXUP_EVENT_DATA) is
       do
       end
 
-   start_repeat (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; volte: INTEGER_64) is
+   start_repeat (a_data: MIXUP_EVENT_DATA; volte: INTEGER_64) is
       do
       end
 
-   end_repeat (instrument: ABSTRACT_STRING; a_staff_id: INTEGER) is
+   end_repeat (a_data: MIXUP_EVENT_DATA) is
       do
       end
 

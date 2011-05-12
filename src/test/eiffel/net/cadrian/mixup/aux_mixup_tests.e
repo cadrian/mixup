@@ -68,4 +68,9 @@ feature {}
          Result := [node, (a_name.out + ".mix").intern]
       end
 
+   set (ints: TRAVERSABLE[INTEGER]): SET[INTEGER] is
+      do
+         create {AVL_SET[INTEGER]} Result.from_collection(ints)
+      end
+
 end -- class AUX_MIXUP_TESTS

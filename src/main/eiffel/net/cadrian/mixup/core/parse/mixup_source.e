@@ -14,6 +14,11 @@
 --
 deferred class MIXUP_SOURCE
 
+insert
+   ANY
+      redefine out_in_tagged_out_memory
+      end
+
 feature {ANY}
    file: FIXED_STRING is
       deferred
@@ -31,6 +36,15 @@ feature {ANY}
       require
          a_output.is_connected
       deferred
+      end
+
+   out_in_tagged_out_memory is
+      do
+         file.out_in_tagged_out_memory
+         tagged_out_memory.extend('@')
+         line.append_in(tagged_out_memory)
+         tagged_out_memory.extend(',')
+         column.append_in(tagged_out_memory)
       end
 
 end -- class MIXUP_SOURCE

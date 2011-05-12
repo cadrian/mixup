@@ -34,14 +34,20 @@ feature {ANY}
          check Result = Void end
       end
 
-   set_voices (a_voices: like voices) is
+   set_staves (a_staves: like staves) is
       require
-         a_voices /= Void
-         voices = Void
+         a_staves /= Void
+         staves = Void
       do
-         voices := a_voices
+         staves := a_staves
+         debug
+            a_staves.do_all(agent (staff: MIXUP_STAFF) is
+                               do
+                                  log.trace.put_line("Instrument " + name.out + ": " + staff.out)
+                               end)
+         end
       ensure
-         voices = a_voices
+         staves = a_staves
       end
 
    next_strophe is
@@ -70,15 +76,27 @@ feature {ANY}
          context: MIXUP_EVENTS_ITERATOR_CONTEXT
       do
          context.set_instrument(Current)
-         Result := voices.new_events_iterator(context)
+         create {MIXUP_EVENTS_ITERATOR_ON_STAVES} Result.make(context, staves)
          if not strophes.is_empty then
             create {MIXUP_EVENTS_ITERATOR_ON_LYRICS} Result.make(Result, strophes)
          end
       end
 
    commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER) is
+      local
+         bar_numbers: AGGREGATOR[MIXUP_STAFF, INTEGER]
+         a_bar_number: INTEGER
       do
-         set_bar_number(voices.commit(Current, a_player, start_bar_number))
+         a_bar_number := bar_numbers.map(staves,
+                                         agent (staff: MIXUP_STAFF; a_bar_number, start_bar_number: INTEGER; a_player: MIXUP_PLAYER): INTEGER is
+                                            do
+                                               Result := staff.commit(Current, a_player, start_bar_number)
+                                               if a_bar_number /= start_bar_number and then a_bar_number /= Result then
+                                                  fatal_at(staff.source, "Differing bar numbers (" + a_bar_number.out + " ≠ " + start_bar_number.out + ")")
+                                               end
+                                            end(?, ?, start_bar_number, a_player),
+                                         start_bar_number)
+         set_bar_number(a_bar_number)
       end
 
    accept (visitor: VISITOR) is
@@ -91,27 +109,19 @@ feature {ANY}
 
    bars: ITERABLE[INTEGER_64] is
       do
-         Result := voices.bars
+         Result := staves.first.bars
       end
 
    staff_ids: TRAVERSABLE[INTEGER] is
+      local
+         ids: AVL_SET[INTEGER]
       do
-         Result := voices.staff_id |..| (voices.staff_id + voices.staff_count - 1)
-      end
-
-   set_staff_id (a_staff_id: INTEGER) is
-      do
-         voices.set_staff_id(a_staff_id)
-      end
-
-   staff_id: INTEGER is
-      do
-         Result := voices.staff_id
-      end
-
-   staff_count: INTEGER is
-      do
-         Result := voices.staff_count
+         create ids.make
+         Result := ids
+         staves.do_all(agent (a_staff: MIXUP_STAFF; a_ids: SET[INTEGER]) is
+                          do
+                             a_ids.add(a_staff.id)
+                          end (?, ids))
       end
 
 feature {MIXUP_CONTEXT}
@@ -145,7 +155,7 @@ feature {}
 
    strophes: COLLECTION[COLLECTION[FIXED_STRING]]
    current_strophe: COLLECTION[FIXED_STRING]
-   voices: MIXUP_VOICES
+   staves: COLLECTION[MIXUP_STAFF]
 
 invariant
    strophes /= Void

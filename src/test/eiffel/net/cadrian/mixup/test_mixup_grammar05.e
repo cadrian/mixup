@@ -107,20 +107,20 @@ feature {}
          expected := {FAST_ARRAY[AUX_MIXUP_MOCK_EVENT]
          <<
 
-           set_partitur   ("sample"                                                       ),
-           set_instrument ("singer"                                                       ),
+           set_partitur   ("sample"                                                          ),
+           set_instrument ("singer", set(1|..|1)                                             ),
 
-           set_note       ("singer", {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
-           next_bar       ("singer", ":||"                                                ),
-           next_bar       ("singer", Void                                                 ),
-           next_bar       ("singer", "||:"                                                ),
-           set_note       ("singer", {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
-           next_bar       ("singer", ":||"                                                ),
-           next_bar       ("singer", "||"                                                 ),
-           set_note       ("singer", {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
-           set_note       ("singer", {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
-           set_note       ("singer", {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
-           set_note       ("singer", {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
+           set_note       ("singer", 1, {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
+           next_bar       ("singer", 1, ":||"                                                ),
+           next_bar       ("singer", 1, Void                                                 ),
+           next_bar       ("singer", 1, "||:"                                                ),
+           set_note       ("singer", 1, {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
+           next_bar       ("singer", 1, ":||"                                                ),
+           next_bar       ("singer", 1, "||"                                                 ),
+           set_note       ("singer", 1, {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
+           set_note       ("singer", 1, {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
+           set_note       ("singer", 1, {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
+           set_note       ("singer", 1, {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
 
            end_partitur
 

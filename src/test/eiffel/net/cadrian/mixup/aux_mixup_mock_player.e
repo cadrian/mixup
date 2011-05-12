@@ -76,97 +76,103 @@ feature {ANY}
 
    play_set_book (name: STRING) is
       do
-         events_list.add_last(set_book_event(name))
+         add_event(set_book_event(name))
       end
 
    play_end_book is
       do
-         events_list.add_last(end_book_event)
+         add_event(end_book_event)
       end
 
    play_set_score (name: STRING) is
       do
-         events_list.add_last(set_score_event(name))
+         add_event(set_score_event(name))
       end
 
    play_end_score is
       do
-         events_list.add_last(end_score_event)
+         add_event(end_score_event)
       end
 
    play_set_partitur (name: STRING) is
       do
-         events_list.add_last(set_partitur_event(name))
+         add_event(set_partitur_event(name))
       end
 
    play_end_partitur is
       do
-         events_list.add_last(end_partitur_event)
+         add_event(end_partitur_event)
       end
 
-   play_set_instrument (name: STRING) is
+   play_set_instrument (name: STRING; staff_ids: TRAVERSABLE[INTEGER]) is
       do
-         events_list.add_last(set_instrument_event(name))
+         add_event(set_instrument_event(name, staff_ids))
       end
 
-   play_set_dynamics (instrument_name: ABSTRACT_STRING; dynamics, position: ABSTRACT_STRING) is
+   play_set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING) is
       do
-         events_list.add_last(set_dynamics_event(instrument_name, dynamics, position))
+         add_event(set_dynamics_event(a_data.instrument, a_data.staff_id, dynamics, position))
       end
 
-   play_set_note (instrument: STRING; note: MIXUP_NOTE) is
+   play_set_note (a_data: MIXUP_EVENT_DATA; note: MIXUP_NOTE) is
       do
-         events_list.add_last(set_note_event(instrument, note))
+         add_event(set_note_event(a_data.instrument, a_data.staff_id, note))
       end
 
-   play_next_bar (instrument, style: STRING) is
+   play_next_bar (a_data: MIXUP_EVENT_DATA; style: STRING) is
       do
-         events_list.add_last(next_bar_event(instrument, style))
+         add_event(next_bar_event(a_data.instrument, a_data.staff_id, style))
       end
 
-   play_start_beam (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_beam (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         events_list.add_last(start_beam_event(instrument, xuplet_numerator, xuplet_denominator, text))
+         add_event(start_beam_event(a_data.instrument, a_data.staff_id, xuplet_numerator, xuplet_denominator, text))
       end
 
-   play_end_beam (instrument: ABSTRACT_STRING) is
+   play_end_beam (a_data: MIXUP_EVENT_DATA) is
       do
-         events_list.add_last(end_beam_event(instrument))
+         add_event(end_beam_event(a_data.instrument, a_data.staff_id))
       end
 
-   play_start_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         events_list.add_last(start_slur_event(instrument, xuplet_numerator, xuplet_denominator, text))
+         add_event(start_slur_event(a_data.instrument, a_data.staff_id, xuplet_numerator, xuplet_denominator, text))
       end
 
-   play_end_slur (instrument: ABSTRACT_STRING) is
+   play_end_slur (a_data: MIXUP_EVENT_DATA) is
       do
-         events_list.add_last(end_slur_event(instrument))
+         add_event(end_slur_event(a_data.instrument, a_data.staff_id))
       end
 
-   play_start_phrasing_slur (instrument: ABSTRACT_STRING; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   play_start_phrasing_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         events_list.add_last(start_phrasing_slur_event(instrument, xuplet_numerator, xuplet_denominator, text))
+         add_event(start_phrasing_slur_event(a_data.instrument, a_data.staff_id, xuplet_numerator, xuplet_denominator, text))
       end
 
-   play_end_phrasing_slur (instrument: ABSTRACT_STRING) is
+   play_end_phrasing_slur (a_data: MIXUP_EVENT_DATA) is
       do
-         events_list.add_last(end_phrasing_slur_event(instrument))
+         add_event(end_phrasing_slur_event(a_data.instrument, a_data.staff_id))
       end
 
-   play_start_repeat (instrument: ABSTRACT_STRING; volte: INTEGER_64) is
+   play_start_repeat (a_data: MIXUP_EVENT_DATA; volte: INTEGER_64) is
       do
-         events_list.add_last(start_repeat_event(instrument,  volte))
+         add_event(start_repeat_event(a_data.instrument, a_data.staff_id, volte))
       end
 
-   play_end_repeat (instrument: ABSTRACT_STRING) is
+   play_end_repeat (a_data: MIXUP_EVENT_DATA) is
       do
-         events_list.add_last(end_repeat_event(instrument))
+         add_event(end_repeat_event(a_data.instrument, a_data.staff_id))
       end
 
 feature {}
    events_list: COLLECTION[AUX_MIXUP_MOCK_EVENT]
    native_map: DICTIONARY[FUNCTION[TUPLE[MIXUP_CONTEXT, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE], FIXED_STRING]
+
+   add_event (a_event: AUX_MIXUP_MOCK_EVENT) is
+      do
+         log.info.put_line(once " => " + a_event.out)
+         events_list.add_last(a_event)
+      end
 
    make is
       do

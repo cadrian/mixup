@@ -15,15 +15,18 @@
 class MIXUP_EVENT_START_BEAM
 
 inherit
+   MIXUP_EVENT_WITH_DATA
+      rename
+         make as make_
+      redefine
+         out_in_extra_data
+      end
    MIXUP_EVENT_WITHOUT_LYRICS
 
 create {ANY}
    make
 
 feature {ANY}
-   time: INTEGER_64
-   instrument: FIXED_STRING
-   staff_id: INTEGER
    xuplet_numerator: INTEGER_64
    xuplet_denominator: INTEGER_64
    text: FIXED_STRING
@@ -34,35 +37,38 @@ feature {MIXUP_PLAYER}
          p: MIXUP_EVENT_START_BEAM_PLAYER
       do
          p ::= player
-         p.play_start_beam(instrument, staff_id, xuplet_numerator, xuplet_denominator, text)
+         p.play_start_beam(data, xuplet_numerator, xuplet_denominator, text)
       end
 
 feature {}
-   make (a_source: like source; a_time: like time; a_instrument: ABSTRACT_STRING; a_staff_id: like staff_id; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64; a_text: ABSTRACT_STRING) is
+   make (a_data: like data; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64; a_text: ABSTRACT_STRING) is
       require
-         a_source /= Void
-         a_instrument /= Void
          a_text /= Void
       do
-         source := a_source
-         time := a_time
-         instrument := a_instrument.intern
-         staff_id := a_staff_id
+         make_(a_data)
          xuplet_numerator := a_xuplet_numerator
          xuplet_denominator := a_xuplet_denominator
          text := a_text.intern
       ensure
-         source = a_source
-         time = a_time
-         instrument = a_instrument.intern
-         staff_id = a_staff_id
          xuplet_numerator = a_xuplet_numerator
          xuplet_denominator = a_xuplet_denominator
          text = a_text
       end
 
+   out_in_extra_data is
+      do
+         tagged_out_memory.append(once ", div=")
+         xuplet_numerator.append_in(tagged_out_memory)
+         tagged_out_memory.extend('/')
+         xuplet_denominator.append_in(tagged_out_memory)
+         if not text.is_empty then
+            tagged_out_memory.extend('(')
+            text.out_in_tagged_out_memory
+            tagged_out_memory.extend(')')
+         end
+      end
+
 invariant
-   instrument /= Void
    text /= Void
 
 end -- class MIXUP_EVENT_START_BEAM

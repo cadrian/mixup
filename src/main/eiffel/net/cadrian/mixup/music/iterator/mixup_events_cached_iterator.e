@@ -17,12 +17,20 @@ deferred class MIXUP_EVENTS_CACHED_ITERATOR
 inherit
    MIXUP_EVENTS_ITERATOR
 
+insert
+   LOGGING
+      undefine is_equal
+      end
+
 feature {ANY}
    item: like item_memory is
       do
          Result := item_memory
          if Result = Void then
             Result := fetch_item
+            debug
+               log.trace.put_line(generating_type + ": item=" + Result.out)
+            end
             item_memory := Result
          end
       end

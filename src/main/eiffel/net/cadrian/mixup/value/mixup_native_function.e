@@ -16,6 +16,9 @@ class MIXUP_NATIVE_FUNCTION
 
 inherit
    MIXUP_FUNCTION
+      redefine
+         out_in_tagged_out_memory
+      end
 
 create {ANY}
    make
@@ -34,6 +37,13 @@ feature {ANY}
    call (a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
          Result := native_caller.item([context, a_player, a_args])
+      end
+
+   out_in_tagged_out_memory is
+      do
+         tagged_out_memory.append(once "<native:")
+         name.out_in_tagged_out_memory
+         tagged_out_memory.extend('>')
       end
 
 feature {}

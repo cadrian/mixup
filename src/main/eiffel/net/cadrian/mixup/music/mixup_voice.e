@@ -16,11 +16,16 @@ class MIXUP_VOICE
 
 insert
    MIXUP_ERRORS
+      redefine
+         out_in_tagged_out_memory
+      end
 
 create {ANY}
    make
 
 feature {ANY}
+   id: INTEGER
+
    valid_anchor: BOOLEAN is True
 
    anchor: MIXUP_NOTE_HEAD is
@@ -69,7 +74,7 @@ feature {ANY}
          a_music /= Void
       do
          debug
-            log.trace.put_line("Adding music: " + a_music.out)
+            log.trace.put_line("Voice #" + id.out + ": adding music: " + a_music.out)
          end
          music.add_last(a_music)
          if a_music.valid_anchor then
@@ -102,6 +107,9 @@ feature {ANY}
             end
             i := i + 1
          end
+         debug
+            log.trace.put_line("Voice #" + id.out + ": adding chord: " + chord.out)
+         end
          music.add_last(chord)
          if not chord.anchor.is_rest then
             reference := chord.anchor
@@ -122,12 +130,21 @@ feature {ANY}
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
+         a_context.set_voice_id(id)
          create {MIXUP_EVENTS_ITERATOR_ON_VOICE} Result.make(a_context, music)
       end
 
-   set_staff_id (a_staff_id: INTEGER) is
+   out_in_tagged_out_memory is
       do
-         music.do_all(agent {MIXUP_MUSIC}.set_staff_id(a_staff_id))
+         tagged_out_memory.extend('<')
+         tagged_out_memory.extend('#')
+         id.append_in(tagged_out_memory)
+         music.do_all(agent (mus: MIXUP_MUSIC) is
+                         do
+                            tagged_out_memory.extend(' ')
+                            mus.out_in_tagged_out_memory
+                         end)
+         tagged_out_memory.extend('>')
       end
 
 feature {}
@@ -176,6 +193,8 @@ feature {}
          source := a_source
          create {FAST_ARRAY[MIXUP_MUSIC]} music.make(0)
          reference := a_reference
+         id_provider.next
+         id := id_provider.item
       ensure
          source = a_source
          reference = a_reference
@@ -183,8 +202,14 @@ feature {}
 
    music: COLLECTION[MIXUP_MUSIC]
 
+   id_provider: COUNTER is
+      once
+         create Result
+      end
+
 invariant
    music /= Void
    not reference.is_rest
+   id > 0
 
 end -- class MIXUP_VOICE

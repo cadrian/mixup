@@ -16,6 +16,9 @@ class MIXUP_BAR
 
 inherit
    MIXUP_MUSIC
+      redefine
+         out_in_tagged_out_memory
+      end
 
 create {ANY}
    make
@@ -39,7 +42,16 @@ feature {ANY}
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
-         create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_NEXT_BAR}.make(source, a_context.start_time, a_context.instrument.name, staff_id, style))
+         create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_NEXT_BAR}.make(a_context.event_data(source), style))
+      end
+
+   out_in_tagged_out_memory is
+      do
+         if style = Void then
+            tagged_out_memory.extend('|')
+         else
+            style.out_in_tagged_out_memory
+         end
       end
 
 feature {MIXUP_MUSIC, MIXUP_VOICE}
