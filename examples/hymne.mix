@@ -34,7 +34,8 @@ instrument piano
             r4 | {g2 fis} | {e a} | {ees4 ees, d r} |
         //
             r4 | R1 | r8 {[b e d] c2} | R1 |
-        ||
+        >>
+        <<
             r4 | r4 {d dis} r | R1 | R1 |
         //
             d'8 c | b4. b8 b4 <b b'>8 <a a'> | <g g'>2~ <g g'>8 <c e> <g c> <e g> | (<des g bes>2 <c fis a>4) d8 c |
