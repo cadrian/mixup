@@ -61,6 +61,11 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
          music.consolidate_bars(bars, duration_offset)
       end
 
+   add_voice_ids (ids: AVL_SET[INTEGER]) is
+      do
+         music.add_voice_ids(ids)
+      end
+
 feature {}
    make (a_source: like source; a_tag: like tag; a_music: like music;
          a_start_event_factory: like start_event_factory; a_end_event_factory: like end_event_factory; a_event_modifier: like event_modifier) is

@@ -45,9 +45,9 @@ feature {}
          create Result.make("end_partitur".intern, [])
       end
 
-   set_instrument (name: ABSTRACT_STRING; a_staff_ids: TRAVERSABLE[INTEGER]): AUX_MIXUP_MOCK_EVENT is
+   set_instrument (name: ABSTRACT_STRING; a_voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]): AUX_MIXUP_MOCK_EVENT is
       do
-         create Result.make("set_instrument".intern, [name.intern, a_staff_ids])
+         create Result.make("set_instrument".intern, [name.intern, a_voice_staff_ids])
       end
 
    set_dynamics (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; dynamics, position: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is

@@ -67,7 +67,7 @@ feature {ANY}
          pop_section
       end
 
-   set_instrument (name: ABSTRACT_STRING; staff_ids: TRAVERSABLE[INTEGER]) is
+   set_instrument (name: ABSTRACT_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
       do
          instruments.put(create {MIXUP_MUSIXTEX_INSTRUMENT}.make(instruments.count + 1, name.intern), name.intern)
       end

@@ -76,7 +76,7 @@ feature {MIXUP_INSTRUMENT}
       do
          current_player.set_context(a_instrument)
          a_instrument.run_hook(current_player, once "at_start")
-         current_player.play(create {MIXUP_EVENT_SET_INSTRUMENT}.make(a_instrument.source, 0, a_instrument.name, a_instrument.staff_ids))
+         current_player.play(create {MIXUP_EVENT_SET_INSTRUMENT}.make(a_instrument.source, 0, a_instrument.name, a_instrument.voice_staff_ids))
          a_instrument.run_hook(current_player, once "at_end")
       end
 

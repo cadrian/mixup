@@ -25,59 +25,59 @@ feature {ANY}
    id: INTEGER
 
 feature {MIXUP_LILYPOND_INSTRUMENT}
-   set_dynamics (dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
       do
-         current_voice.set_dynamics(dynamics, position)
+         voice(a_voice_id).set_dynamics(dynamics, position)
       end
 
-   set_note (note: MIXUP_NOTE) is
+   set_note (a_voice_id: INTEGER; note: MIXUP_NOTE) is
       do
-         current_voice.set_note(note)
+         voice(a_voice_id).set_note(note)
       end
 
-   next_bar (style: ABSTRACT_STRING) is
+   next_bar (a_voice_id: INTEGER; style: ABSTRACT_STRING) is
       do
-         current_voice.next_bar(style)
+         voice(a_voice_id).next_bar(style)
       end
 
-   start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_beam (a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         current_voice.start_beam(xuplet_numerator, xuplet_denominator, text)
+         voice(a_voice_id).start_beam(xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_beam is
+   end_beam (a_voice_id: INTEGER) is
       do
-         current_voice.end_beam
+         voice(a_voice_id).end_beam
       end
 
-   start_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_slur (a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         current_voice.start_slur(xuplet_numerator, xuplet_denominator, text)
+         voice(a_voice_id).start_slur(xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_slur is
+   end_slur (a_voice_id: INTEGER) is
       do
-         current_voice.end_slur
+         voice(a_voice_id).end_slur
       end
 
-   start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_phrasing_slur (a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         current_voice.start_phrasing_slur(xuplet_numerator, xuplet_denominator, text)
+         voice(a_voice_id).start_phrasing_slur(xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_phrasing_slur is
+   end_phrasing_slur (a_voice_id: INTEGER) is
       do
-         current_voice.end_phrasing_slur
+         voice(a_voice_id).end_phrasing_slur
       end
 
-   start_repeat (volte: INTEGER_64) is
+   start_repeat (a_voice_id: INTEGER; volte: INTEGER_64) is
       do
-         current_voice.start_repeat(volte)
+         voice(a_voice_id).start_repeat(volte)
       end
 
-   end_repeat is
+   end_repeat (a_voice_id: INTEGER) is
       do
-         current_voice.end_repeat
+         voice(a_voice_id).end_repeat
       end
 
 feature {MIXUP_LILYPOND_INSTRUMENT}
@@ -94,7 +94,7 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
       end
 
 feature {}
-   make (a_player: like player; a_instrument: like instrument; a_id: like id; a_reference: MIXUP_NOTE_HEAD) is
+   make (a_player: like player; a_instrument: like instrument; a_id: like id; a_voice_ids: TRAVERSABLE[INTEGER]; a_reference: MIXUP_NOTE_HEAD) is
       require
          a_player /= Void
          a_instrument /= Void
@@ -103,21 +103,27 @@ feature {}
          player := a_player
          instrument := a_instrument
          id := a_id
-         create voices.with_capacity(4)
-         voices.add_last(create {MIXUP_LILYPOND_VOICE}.make(Current, 1, a_reference));
+         create voices.make
+         a_voice_ids.do_all(agent (a_id: INTEGER; a_reference: MIXUP_NOTE_HEAD) is
+                               do
+                                  voices.add(create {MIXUP_LILYPOND_VOICE}.make(Current, a_id, a_reference), a_id);
+                               end(?, a_reference))
       ensure
          player = a_player
          instrument = a_instrument
          id = a_id
+         voices.count = a_voice_ids.count
+         a_voice_ids.for_all(agent (a_id: INTEGER): BOOLEAN is do Result := voices.fast_has(a_id) and then voices.fast_reference_at(a_id).id = a_id end)
       end
 
    player: MIXUP_LILYPOND_PLAYER
-   voices: FAST_ARRAY[MIXUP_LILYPOND_VOICE]
-   current_voice_index: INTEGER
+   voices: AVL_DICTIONARY[MIXUP_LILYPOND_VOICE, INTEGER]
 
-   current_voice: MIXUP_LILYPOND_VOICE is
+   voice (a_voice_id: INTEGER): MIXUP_LILYPOND_VOICE is
+      require
+         voices.fast_has(a_voice_id)
       do
-         Result := voices.item(current_voice_index)
+         Result := voices.fast_reference_at(a_voice_id)
       end
 
    context_name: FIXED_STRING is
@@ -129,6 +135,5 @@ invariant
    player /= Void
    instrument /= Void
    id > 0
-   voices.valid_index(current_voice_index)
 
 end -- class MIXUP_LILYPOND_STAFF

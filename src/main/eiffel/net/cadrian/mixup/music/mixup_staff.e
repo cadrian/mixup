@@ -57,6 +57,11 @@ feature {ANY}
          Result := voices.bars
       end
 
+   voice_ids: TRAVERSABLE[INTEGER] is
+      do
+         Result := voices.voice_ids
+      end
+
    out_in_tagged_out_memory is
       do
          tagged_out_memory.append(once "[staff#")
@@ -70,6 +75,11 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
    consolidate_bars (a_bars: SET[INTEGER_64]; duration_offset: like duration) is
       do
          voices.consolidate_bars(a_bars, duration_offset)
+      end
+
+   add_voice_ids (ids: AVL_SET[INTEGER]) is
+      do
+         check False end
       end
 
 feature {}

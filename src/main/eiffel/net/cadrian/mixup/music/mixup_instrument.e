@@ -112,15 +112,15 @@ feature {ANY}
          Result := staves.first.bars
       end
 
-   staff_ids: TRAVERSABLE[INTEGER] is
+   voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER] is
       local
-         ids: AVL_SET[INTEGER]
+         ids: AVL_DICTIONARY[TRAVERSABLE[INTEGER], INTEGER]
       do
          create ids.make
          Result := ids
-         staves.do_all(agent (a_staff: MIXUP_STAFF; a_ids: SET[INTEGER]) is
+         staves.do_all(agent (a_staff: MIXUP_STAFF; a_ids: AVL_DICTIONARY[TRAVERSABLE[INTEGER], INTEGER]) is
                           do
-                             a_ids.add(a_staff.id)
+                             a_ids.add(a_staff.voice_ids, a_staff.id)
                           end (?, ids))
       end
 

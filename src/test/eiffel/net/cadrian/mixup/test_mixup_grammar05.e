@@ -108,7 +108,7 @@ feature {}
          <<
 
            set_partitur   ("sample"                                                          ),
-           set_instrument ("singer", set(1|..|1)                                             ),
+           set_instrument ("singer", map(1, 1|..|5)                                          ),
 
            set_note       ("singer", 1, {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
            next_bar       ("singer", 1, ":||"                                                ),

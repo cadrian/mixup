@@ -42,4 +42,8 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
       do
       end
 
+   frozen add_voice_ids (ids: AVL_SET[INTEGER]) is
+      do
+      end
+
 end -- class MIXUP_NOTE

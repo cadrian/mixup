@@ -31,14 +31,18 @@ feature {}
          Result.set(source, a_note, a_octave)
       end
 
-   set (ints: TRAVERSABLE[INTEGER]): SET[INTEGER] is
+   map (staff: INTEGER; voices: TRAVERSABLE[INTEGER]): MAP[TRAVERSABLE[INTEGER], INTEGER] is
+      local
+         ids: AVL_DICTIONARY[TRAVERSABLE[INTEGER], INTEGER]
       do
-         create {AVL_SET[INTEGER]} Result.from_collection(ints)
+         create ids.make
+         ids.add(create {AVL_SET[INTEGER]}.from_collection(voices), staff)
+         Result := ids
       end
 
-   event_data (instr: STRING; staff_id: INTEGER): MIXUP_EVENT_DATA is
+   event_data (instr: STRING; time: INTEGER_64; staff_id, voice_id: INTEGER): MIXUP_EVENT_DATA is
       do
-         Result.set(source, 0, instr.intern, staff_id, 1)
+         Result.set(source, time, instr.intern, staff_id, voice_id)
       end
 
    make is
@@ -55,8 +59,9 @@ feature {}
          lilypond.set_context(context)
 
          lilypond.play_set_partitur("test")
-         lilypond.play_set_instrument("MyInstr", set(1|..|1))
-         lilypond.play_set_note(event_data("MyInstr", 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("c", 4) >> }, source, << "doe", "do" >> });
+         lilypond.play_set_instrument("MyInstr", map(1, 1|..|1))
+         lilypond.play_set_note(event_data("MyInstr",          0, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("c", 4) >> }, source, << "doe", "do" >> });
+         lilypond.play_set_note(event_data("MyInstr", duration_4, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("d", 4) >> }, source, << "ray", "re" >> });
          lilypond.play_end_partitur
 
          expected := "[
@@ -76,14 +81,14 @@ feature {}
             \set Staff.shortInstrumentName = "M."
             \new Voice = "MyInstr1v1" {
                <<
-                   c4
+                   c4 d4
                >>
             }
             \new Lyrics = "MyInstr1v1x1" \lyricsto "MyInstr1v1" {
-                "doe"
+                "doe" "ray"
             }
             \new AltLyrics = "MyInstr1v1x2" \lyricsto "MyInstr1v1" {
-                "do"
+                "do" "re"
             }
          >>
       >>

@@ -23,7 +23,7 @@ create {ANY}
 feature {ANY}
    time: INTEGER_64
    name: FIXED_STRING
-   staff_ids: TRAVERSABLE[INTEGER]
+   voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]
 
    out_in_tagged_out_memory is
       do
@@ -33,8 +33,8 @@ feature {ANY}
          time.append_in(tagged_out_memory)
          tagged_out_memory.append(once ", instrument=")
          name.out_in_tagged_out_memory
-         tagged_out_memory.append(once ", staffs=")
-         staff_ids.out_in_tagged_out_memory
+         tagged_out_memory.append(once ", voice_staffs=")
+         voice_staff_ids.out_in_tagged_out_memory
          tagged_out_memory.extend(']')
       end
 
@@ -44,29 +44,29 @@ feature {MIXUP_PLAYER}
          p: MIXUP_EVENT_SET_INSTRUMENT_PLAYER
       do
          p ::= player
-         p.play_set_instrument(name, staff_ids)
+         p.play_set_instrument(name, voice_staff_ids)
       end
 
 feature {}
-   make (a_source: like source; a_time: like time; a_name: ABSTRACT_STRING; a_staff_ids: like staff_ids) is
+   make (a_source: like source; a_time: like time; a_name: ABSTRACT_STRING; a_voice_staff_ids: like voice_staff_ids) is
       require
          a_source /= Void
          a_name /= Void
-         a_staff_ids /= Void
+         a_voice_staff_ids /= Void
       do
          source := a_source
          time := a_time
          name := a_name.intern
-         staff_ids := a_staff_ids
+         voice_staff_ids := a_voice_staff_ids
       ensure
          source = a_source
          time = a_time
          name = a_name.intern
-         staff_ids = a_staff_ids
+         voice_staff_ids = a_voice_staff_ids
       end
 
 invariant
    name /= Void
-   staff_ids /= Void
+   voice_staff_ids /= Void
 
 end -- class MIXUP_EVENT_SET_INSTRUMENT

@@ -47,6 +47,12 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
       deferred
       end
 
+   add_voice_ids (a_ids: AVL_SET[INTEGER]) is
+      require
+         a_ids /= Void
+      deferred
+      end
+
 invariant
    source /= Void
 

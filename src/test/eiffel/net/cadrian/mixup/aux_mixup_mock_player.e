@@ -104,9 +104,9 @@ feature {ANY}
          add_event(end_partitur_event)
       end
 
-   play_set_instrument (name: STRING; staff_ids: TRAVERSABLE[INTEGER]) is
+   play_set_instrument (name: STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
       do
-         add_event(set_instrument_event(name, staff_ids))
+         add_event(set_instrument_event(name, voice_staff_ids))
       end
 
    play_set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING) is

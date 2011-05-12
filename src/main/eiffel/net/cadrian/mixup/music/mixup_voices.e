@@ -124,6 +124,15 @@ feature {ANY}
          create {MIXUP_EVENTS_ITERATOR_ON_VOICES} Result.make(a_context, voices)
       end
 
+   voice_ids: TRAVERSABLE[INTEGER] is
+      local
+         ids: AVL_SET[INTEGER]
+      do
+         create ids.make
+         Result := ids
+         add_voice_ids(ids)
+      end
+
    out_in_tagged_out_memory is
       do
          tagged_out_memory.append(once "<<")
@@ -143,6 +152,14 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
       end
 
    consolidating: BOOLEAN
+
+   add_voice_ids (ids: AVL_SET[INTEGER]) is
+      do
+         voices.do_all(agent (a_voice: MIXUP_VOICE; a_ids: AVL_SET[INTEGER]) is
+                          do
+                             a_voice.add_voice_ids(a_ids)
+                          end(?, ids))
+      end
 
 feature {}
    make (a_source: like source; a_reference: like reference_) is

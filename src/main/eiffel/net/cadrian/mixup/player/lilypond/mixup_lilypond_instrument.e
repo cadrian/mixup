@@ -24,59 +24,59 @@ feature {ANY}
    name: FIXED_STRING
 
 feature {MIXUP_LILYPOND_PLAYER}
-   set_dynamics (a_staff_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (a_staff_id, a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
       do
-         staffs.reference_at(a_staff_id).set_dynamics(dynamics, position)
+         staffs.reference_at(a_staff_id).set_dynamics(a_voice_id, dynamics, position)
       end
 
-   set_note (a_staff_id: INTEGER; note: MIXUP_NOTE) is
+   set_note (a_staff_id, a_voice_id: INTEGER; note: MIXUP_NOTE) is
       do
-         staffs.reference_at(a_staff_id).set_note(note)
+         staffs.reference_at(a_staff_id).set_note(a_voice_id, note)
       end
 
-   next_bar (a_staff_id: INTEGER; style: ABSTRACT_STRING) is
+   next_bar (a_staff_id, a_voice_id: INTEGER; style: ABSTRACT_STRING) is
       do
-         staffs.reference_at(a_staff_id).next_bar(style)
+         staffs.reference_at(a_staff_id).next_bar(a_voice_id, style)
       end
 
-   start_beam (a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_beam (a_staff_id, a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         staffs.reference_at(a_staff_id).start_beam(xuplet_numerator, xuplet_denominator, text)
+         staffs.reference_at(a_staff_id).start_beam(a_voice_id, xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_beam (a_staff_id: INTEGER) is
+   end_beam (a_staff_id, a_voice_id: INTEGER) is
       do
-         staffs.reference_at(a_staff_id).end_beam
+         staffs.reference_at(a_staff_id).end_beam(a_voice_id)
       end
 
-   start_slur (a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_slur (a_staff_id, a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         staffs.reference_at(a_staff_id).start_slur(xuplet_numerator, xuplet_denominator, text)
+         staffs.reference_at(a_staff_id).start_slur(a_voice_id, xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_slur (a_staff_id: INTEGER) is
+   end_slur (a_staff_id, a_voice_id: INTEGER) is
       do
-         staffs.reference_at(a_staff_id).end_slur
+         staffs.reference_at(a_staff_id).end_slur(a_voice_id)
       end
 
-   start_phrasing_slur (a_staff_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_phrasing_slur (a_staff_id, a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         staffs.reference_at(a_staff_id).start_phrasing_slur(xuplet_numerator, xuplet_denominator, text)
+         staffs.reference_at(a_staff_id).start_phrasing_slur(a_voice_id, xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_phrasing_slur (a_staff_id: INTEGER) is
+   end_phrasing_slur (a_staff_id, a_voice_id: INTEGER) is
       do
-         staffs.reference_at(a_staff_id).end_phrasing_slur
+         staffs.reference_at(a_staff_id).end_phrasing_slur(a_voice_id)
       end
 
-   start_repeat (a_staff_id: INTEGER; volte: INTEGER_64) is
+   start_repeat (a_staff_id, a_voice_id: INTEGER; volte: INTEGER_64) is
       do
-         staffs.reference_at(a_staff_id).start_repeat(volte)
+         staffs.reference_at(a_staff_id).start_repeat(a_voice_id, volte)
       end
 
-   end_repeat (a_staff_id: INTEGER) is
+   end_repeat (a_staff_id, a_voice_id: INTEGER) is
       do
-         staffs.reference_at(a_staff_id).end_repeat
+         staffs.reference_at(a_staff_id).end_repeat(a_voice_id)
       end
 
 feature {MIXUP_LILYPOND_PLAYER}
@@ -104,25 +104,27 @@ feature {MIXUP_LILYPOND_PLAYER}
       end
 
 feature {}
-   make (a_context: like context; a_player: like player; a_name: like name; a_staff_ids: TRAVERSABLE[INTEGER]) is
+   make (a_context: like context; a_player: like player; a_name: like name; a_voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
       require
          a_context /= Void
          a_player /= Void
          a_name /= Void
-         a_staff_ids /= Void
+         a_voice_staff_ids /= Void
       do
          context := a_context
          player := a_player
          name := a_name
          create staffs.make
-         a_staff_ids.do_all(agent (id: INTEGER) is
-                               do
-                                  staffs.add(create {MIXUP_LILYPOND_STAFF}.make(player, Current, id, absolute_reference), id);
-                               end)
+         a_voice_staff_ids.do_all(agent (voice_ids: TRAVERSABLE[INTEGER]; id: INTEGER) is
+                                     do
+                                        staffs.add(create {MIXUP_LILYPOND_STAFF}.make(player, Current, id, voice_ids, absolute_reference), id);
+                                     end)
       ensure
          context = a_context
          player = a_player
          name = a_name
+         staffs.count = a_voice_staff_ids.count
+         a_voice_staff_ids.for_all(agent (a_voice_ids: TRAVERSABLE[INTEGER]; a_id: INTEGER): BOOLEAN is do Result := staffs.fast_has(a_id) and then staffs.fast_reference_at(a_id).id = a_id end)
       end
 
    player: MIXUP_LILYPOND_PLAYER

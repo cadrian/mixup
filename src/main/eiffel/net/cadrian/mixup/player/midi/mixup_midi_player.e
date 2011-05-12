@@ -55,7 +55,7 @@ feature {ANY}
       do
       end
 
-   play_set_instrument (name: ABSTRACT_STRING; staff_ids: TRAVERSABLE[INTEGER]) is
+   play_set_instrument (name: ABSTRACT_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
       do
       end
 

@@ -68,9 +68,13 @@ feature {}
          Result := [node, (a_name.out + ".mix").intern]
       end
 
-   set (ints: TRAVERSABLE[INTEGER]): SET[INTEGER] is
+   map (staff: INTEGER; voices: TRAVERSABLE[INTEGER]): MAP[TRAVERSABLE[INTEGER], INTEGER] is
+      local
+         ids: AVL_DICTIONARY[TRAVERSABLE[INTEGER], INTEGER]
       do
-         create {AVL_SET[INTEGER]} Result.from_collection(ints)
+         create ids.make
+         ids.add(create {AVL_SET[INTEGER]}.from_collection(voices), staff)
+         Result := ids
       end
 
 end -- class AUX_MIXUP_TESTS

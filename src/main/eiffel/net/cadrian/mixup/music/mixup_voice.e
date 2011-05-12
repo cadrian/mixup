@@ -184,6 +184,17 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
          end
       end
 
+   add_voice_ids (ids: AVL_SET[INTEGER]) is
+      do
+         if not ids.fast_has(id) then
+            ids.add(id)
+            music.do_all(agent (a_music: MIXUP_MUSIC; a_ids: AVL_SET[INTEGER]) is
+                            do
+                               a_music.add_voice_ids(a_ids)
+                            end(?, ids))
+         end
+      end
+
 feature {}
    make (a_source: like source; a_reference: like reference) is
       require
