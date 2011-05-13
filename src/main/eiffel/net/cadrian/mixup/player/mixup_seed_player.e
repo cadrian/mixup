@@ -47,7 +47,7 @@ feature {}
          mixer = a_mixer
       end
 
-   mixer: MIXUP_MIXER_IMPL
+   mixer: MIXUP_MIXER
 
 invariant
    mixer /= Void

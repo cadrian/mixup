@@ -17,7 +17,6 @@ class TEST_MUSIXTEX_PLAYER
 insert
    EIFFELTEST_TOOLS
    MIXUP_NOTE_DURATIONS
-   MIXUP_MIXER
 
 create {}
    make

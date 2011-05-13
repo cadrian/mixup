@@ -31,7 +31,7 @@ feature {}
          parser_buffer: MINI_PARSER_BUFFER
          evaled: BOOLEAN
          player: AUX_MIXUP_MOCK_PLAYER
-         mixer: MIXUP_MIXER_IMPL
+         mixer: MIXUP_MIXER
 
          expected: COLLECTION[AUX_MIXUP_MOCK_EVENT]; i: INTEGER
 

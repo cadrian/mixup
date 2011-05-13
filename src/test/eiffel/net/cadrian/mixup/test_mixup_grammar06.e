@@ -66,7 +66,7 @@ feature {}
       local
          factory: AUX_MIXUP_GRAMMAR_NODE_FACTORY
          player: AUX_MIXUP_MOCK_PLAYER
-         mixer: MIXUP_MIXER_IMPL
+         mixer: MIXUP_MIXER
 
          expected: COLLECTION[AUX_MIXUP_MOCK_EVENT]; i: INTEGER
 

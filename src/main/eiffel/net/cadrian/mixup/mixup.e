@@ -27,7 +27,7 @@ create {}
 feature {}
    mixup_suffix: STRING is ".mix"
 
-   mixer: MIXUP_MIXER_IMPL
+   mixer: MIXUP_MIXER
    grammar: MIXUP_GRAMMAR
 
    make is

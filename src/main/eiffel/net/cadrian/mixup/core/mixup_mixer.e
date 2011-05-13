@@ -12,10 +12,9 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_MIXER_IMPL
+class MIXUP_MIXER
 
 inherit
-   MIXUP_MIXER
    MIXUP_NATIVE_PROVIDER
 
 insert
@@ -246,4 +245,4 @@ invariant
    contexts /= Void
    file_reader /= Void
 
-end -- class MIXUP_MIXER_IMPL
+end -- class MIXUP_MIXER
