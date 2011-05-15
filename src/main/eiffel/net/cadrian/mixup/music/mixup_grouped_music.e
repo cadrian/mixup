@@ -70,6 +70,7 @@ feature {ANY}
       local
          lyrics_manager: MIXUP_GROUPED_MUSIC_LYRICS_MANAGER
       do
+         a_context.set_voice_id(id)
          if xuplet_text /= Void then
             a_context.set_xuplet(xuplet_numerator, xuplet_denominator, xuplet_text)
          end
