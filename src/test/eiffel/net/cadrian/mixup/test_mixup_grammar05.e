@@ -110,17 +110,37 @@ feature {}
            set_partitur   ("sample"                                                          ),
            set_instrument ("singer", map(1, 1|..|5)                                          ),
 
+           start_voices   ("singer", 1, {FAST_ARRAY[INTEGER] << 2 >>}                        ),
+           start_voices   ("singer", 1, {FAST_ARRAY[INTEGER] << 3 >>}                        ),
+           start_voices   ("singer", 1, {FAST_ARRAY[INTEGER] << 1 >>}                        ),
            set_note       ("singer", 1, {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
+           end_voices     ("singer", 1                                                       ),
            next_bar       ("singer", 1, ":||"                                                ),
+           end_voices     ("singer", 1                                                       ),
            next_bar       ("singer", 1, Void                                                 ),
+           start_voices   ("singer", 1, {FAST_ARRAY[INTEGER] << 4 >>}                        ),
            next_bar       ("singer", 1, "||:"                                                ),
+           start_voices   ("singer", 1, {FAST_ARRAY[INTEGER] << 1 >>}                        ),
            set_note       ("singer", 1, {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
+           end_voices     ("singer", 1                                                       ),
            next_bar       ("singer", 1, ":||"                                                ),
+           end_voices     ("singer", 1                                                       ),
            next_bar       ("singer", 1, "||"                                                 ),
+           start_voices   ("singer", 1, {FAST_ARRAY[INTEGER] << 5 >>}                        ),
+           start_voices   ("singer", 1, {FAST_ARRAY[INTEGER] << 1 >>}                        ),
            set_note       ("singer", 1, {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
+           end_voices     ("singer", 1                                                       ),
+           start_voices   ("singer", 1, {FAST_ARRAY[INTEGER] << 1 >>}                        ),
            set_note       ("singer", 1, {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
+           end_voices     ("singer", 1                                                       ),
+           start_voices   ("singer", 1, {FAST_ARRAY[INTEGER] << 1 >>}                        ),
            set_note       ("singer", 1, {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
+           end_voices     ("singer", 1                                                       ),
+           start_voices   ("singer", 1, {FAST_ARRAY[INTEGER] << 1 >>}                        ),
            set_note       ("singer", 1, {MIXUP_CHORD duration_4, source, << note("c", 3) >> }),
+           end_voices     ("singer", 1                                                       ),
+           end_voices     ("singer", 1                                                       ),
+           end_voices     ("singer", 1                                                       ),
 
            end_partitur
 
@@ -131,7 +151,6 @@ feature {}
          player.events.do_all(agent (event: AUX_MIXUP_MOCK_EVENT) is do log.info.put_line(event.out) end)
          log.info.put_line(once "----------------------------------------------------------------------")
 
-         assert(player.events.count.is_equal(expected.count))
          from
             i := expected.lower
          until
@@ -143,6 +162,7 @@ feature {}
             assert(played_event.is_equal(expected_event))
             i := i + 1
          end
+         assert(player.events.count.is_equal(expected.count))
       end
 
 end -- class TEST_MIXUP_GRAMMAR05

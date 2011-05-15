@@ -121,10 +121,14 @@ feature {}
            set_instrument     ("singer", map(1, {FAST_ARRAY[INTEGER] << 1, 2, 3, 7 >> })                                                       ),
            set_instrument     ("bass"  , map(2, 4|..|6)                                                                                        ),
 
-           start_phrasing_slur("singer", 1, 1, 1, ""                                                                                           ),
+           start_voices       ("singer", 1, {FAST_ARRAY[INTEGER] << 3 >>}                                                                      ),
+           start_voices       ("singer", 1, {FAST_ARRAY[INTEGER] << 7 >>}                                                                      ),
+           start_voices       ("singer", 1, {FAST_ARRAY[INTEGER] << 1 >>}                                                                      ),
+           start_phrasing_slur("singer", 1, 1, 1, 1, ""                                                                                        ),
            set_dynamics       ("singer", 1, "p", Void                                                                                          ),
            set_dynamics       ("singer", 1, "<", Void                                                                                          ),
            set_note           ("singer", 1, {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("c", 3) >> }, source, << "doe" , "do"  >> }), -- a deer, a female deer
+           start_voices       ("bass",   2, {FAST_ARRAY[INTEGER] << 4 >>}                                                                      ),
            set_dynamics       ("bass",   2, "p", Void                                                                                          ),
            set_note           ("bass",   2,               {MIXUP_CHORD duration_1 , source, << note("c", 2) >> }                               ),
            set_note           ("singer", 1, {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("d", 3) >> }, source, << "ray" , "re"  >> }), -- a drop of golden sun
@@ -140,19 +144,23 @@ feature {}
            set_dynamics       ("singer", 1, "f", Void                                                                                          ),
            set_note           ("singer", 1, {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("c", 4) >> }, source, << "doe,", "do," >> }),
            end_phrasing_slur  ("singer", 1                                                                                                    ),
+           end_voices         ("singer", 1                                                                                                    ),
 
            next_bar           ("singer", 1, ":||"                                                                                              ),
+           end_voices         ("singer", 1                                                                                                    ),
            set_dynamics       ("singer", 1, "mp", "hidden"                                                                                     ), -- that will bring us back to
            set_note           ("singer", 1, {MIXUP_LYRICS {MIXUP_CHORD duration_1 , source, << note("c", 3) >> }, source, << "_"   , "do." >> }),
+           end_voices         ("singer", 1                                                                                                    ),
            next_bar           ("bass",   2, Void                                                                                               ),
-           start_phrasing_slur("bass",   2, 1, 1, ""                                                                                           ),
-           start_beam         ("bass",   2, 3, 2, "3"                                                                                          ),
+           start_phrasing_slur("bass",   2, 4, 1, 1, ""                                                                                        ),
+           start_beam         ("bass",   2, 5, 3, 2, "3"                                                                                       ),
            set_note           ("bass",   2,                 {MIXUP_CHORD duration_8 , source, << note("c", 2) >> }                             ),
            set_note           ("bass",   2,                 {MIXUP_CHORD duration_8 , source, << note("e", 2) >> }                             ),
            set_note           ("bass",   2,                 {MIXUP_CHORD duration_8 , source, << note("g", 2) >> }                             ),
            end_beam           ("bass",   2                                                                                                     ),
            set_note           ("bass",   2,                 {MIXUP_CHORD duration_2p, source, << note("c", 3) >> }                             ),
            end_phrasing_slur  ("bass",   2                                                                                                     ),
+           end_voices         ("bass",   2                                                                                                    ),
 
            end_partitur
 
@@ -163,7 +171,6 @@ feature {}
          player.events.do_all(agent (event: AUX_MIXUP_MOCK_EVENT) is do log.info.put_line(event.out) end)
          log.info.put_line(once "----------------------------------------------------------------------")
 
-         assert(player.events.count.is_equal(expected.count))
          from
             i := expected.lower
          until
@@ -175,6 +182,7 @@ feature {}
             assert(played_event.is_equal(expected_event))
             i := i + 1
          end
+         assert(player.events.count.is_equal(expected.count))
       end
 
 end -- class TEST_MIXUP_GRAMMAR04

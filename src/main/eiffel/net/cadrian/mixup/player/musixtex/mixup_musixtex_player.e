@@ -72,6 +72,14 @@ feature {ANY}
          instruments.put(create {MIXUP_MUSIXTEX_INSTRUMENT}.make(instruments.count + 1, name.intern), name.intern)
       end
 
+   play_start_voices (a_data: MIXUP_EVENT_DATA; voice_ids: TRAVERSABLE[INTEGER]) is
+      do
+      end
+
+   play_end_voices (a_data: MIXUP_EVENT_DATA) is
+      do
+      end
+
    set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING) is
       do
       end

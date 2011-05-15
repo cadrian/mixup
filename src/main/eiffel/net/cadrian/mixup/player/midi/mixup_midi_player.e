@@ -59,6 +59,14 @@ feature {ANY}
       do
       end
 
+   play_start_voices (a_data: MIXUP_EVENT_DATA; voice_ids: TRAVERSABLE[INTEGER]) is
+      do
+      end
+
+   play_end_voices (a_data: MIXUP_EVENT_DATA) is
+      do
+      end
+
    play_set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING) is
       do
       end

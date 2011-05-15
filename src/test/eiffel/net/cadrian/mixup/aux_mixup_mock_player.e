@@ -38,6 +38,8 @@ insert
          end_phrasing_slur as end_phrasing_slur_event,
          start_repeat as start_repeat_event,
          end_repeat as end_repeat_event
+         start_voices as start_voices_event,
+         end_voices as end_voices_event
       end
 
 create {ANY}
@@ -109,6 +111,16 @@ feature {ANY}
          add_event(set_instrument_event(name, voice_staff_ids))
       end
 
+   play_start_voices (a_data: MIXUP_EVENT_DATA; voice_ids: TRAVERSABLE[INTEGER]) is
+      do
+         add_event(start_voices_event(a_data.instrument, a_data.staff_id, voice_ids))
+      end
+
+   play_end_voices (a_data: MIXUP_EVENT_DATA) is
+      do
+         add_event(end_voices_event(a_data.instrument, a_data.staff_id))
+      end
+
    play_set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING) is
       do
          add_event(set_dynamics_event(a_data.instrument, a_data.staff_id, dynamics, position))
@@ -126,7 +138,7 @@ feature {ANY}
 
    play_start_beam (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         add_event(start_beam_event(a_data.instrument, a_data.staff_id, xuplet_numerator, xuplet_denominator, text))
+         add_event(start_beam_event(a_data.instrument, a_data.staff_id, a_data.voice_id, xuplet_numerator, xuplet_denominator, text))
       end
 
    play_end_beam (a_data: MIXUP_EVENT_DATA) is
@@ -136,7 +148,7 @@ feature {ANY}
 
    play_start_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         add_event(start_slur_event(a_data.instrument, a_data.staff_id, xuplet_numerator, xuplet_denominator, text))
+         add_event(start_slur_event(a_data.instrument, a_data.staff_id, a_data.voice_id, xuplet_numerator, xuplet_denominator, text))
       end
 
    play_end_slur (a_data: MIXUP_EVENT_DATA) is
@@ -146,7 +158,7 @@ feature {ANY}
 
    play_start_phrasing_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         add_event(start_phrasing_slur_event(a_data.instrument, a_data.staff_id, xuplet_numerator, xuplet_denominator, text))
+         add_event(start_phrasing_slur_event(a_data.instrument, a_data.staff_id, a_data.voice_id, xuplet_numerator, xuplet_denominator, text))
       end
 
    play_end_phrasing_slur (a_data: MIXUP_EVENT_DATA) is

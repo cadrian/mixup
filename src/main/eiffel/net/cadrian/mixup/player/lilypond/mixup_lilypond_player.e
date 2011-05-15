@@ -82,6 +82,14 @@ feature {ANY}
          bar_number := 0
       end
 
+   play_start_voices (a_data: MIXUP_EVENT_DATA; voice_ids: TRAVERSABLE[INTEGER]) is
+      do
+      end
+
+   play_end_voices (a_data: MIXUP_EVENT_DATA) is
+      do
+      end
+
    play_set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING) is
       do
          log.info.put_line("Lilypond: playing dynamics: " + dynamics.out)

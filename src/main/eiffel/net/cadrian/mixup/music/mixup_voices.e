@@ -125,7 +125,7 @@ feature {ANY}
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
-         create {MIXUP_EVENTS_ITERATOR_ON_VOICES} Result.make(a_context, voices)
+         create {MIXUP_EVENTS_ITERATOR_ON_VOICES} Result.make(source, a_context, voices)
       end
 
    voice_ids: TRAVERSABLE[INTEGER] is
