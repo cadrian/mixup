@@ -25,14 +25,38 @@ feature {ANY}
    id: INTEGER
 
 feature {MIXUP_LILYPOND_INSTRUMENT}
+   start_voices (a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]) is
+      local
+         map: AVL_DICTIONARY[MIXUP_LILYPOND_VOICE, INTEGER]
+         v: like voices
+      do
+         create v.make(Current, voice_ids, reference, lyrics_gatherer)
+         create map.make
+         if voices = Void then
+            check paths.is_empty end
+            voices := v
+         else
+            check not paths.is_empty end
+            map.copy(paths.top)
+            voice(a_voice_id).add_item(v)
+         end
+         v.map_in(map)
+         paths.push(map)
+      end
+
+   end_voices (a_voice_id: INTEGER) is
+      do
+         paths.pop
+      end
+
    set_dynamics (a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
       do
          voice(a_voice_id).set_dynamics(dynamics, position)
       end
 
-   set_note (a_voice_id: INTEGER; note: MIXUP_NOTE) is
+   set_note (a_voice_id: INTEGER; time: INTEGER_64; note: MIXUP_NOTE) is
       do
-         voice(a_voice_id).set_note(note)
+         voice(a_voice_id).set_note(time, note)
       end
 
    next_bar (a_voice_id: INTEGER; style: ABSTRACT_STRING) is
@@ -84,56 +108,138 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
    generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM; generate_names: BOOLEAN) is
       require
          output.is_connected
+      local
+         iter_lyrics: ZIP[AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64], INTEGER]
       do
-         output.put_line("         \new " + context_name + " = %"" + instrument.name.out + id.out + "%" <<")
+         output.put_string(once "\new ")
+         output.put_string(context_name)
+         output.put_string(once " = %"")
+         output.put_string(instrument.name)
+         output.put_integer(id)
+         output.put_line(once "%" <<")
          if generate_names then
             generate_context(context, output, instrument)
          end
-         voices.do_all(agent {MIXUP_LILYPOND_VOICE}.generate(context, output))
-         output.put_line("         >>")
+         output.put_string(once "\new Voice = %"")
+         output.put_string(instrument.name)
+         output.put_integer(id)
+         output.put_line(once "voice%" {")
+         output.put_line(once "<<")
+         if voices /= Void then
+            voices.generate(context, output)
+         end
+         output.put_new_line
+         output.put_line(once ">>")
+         output.put_line(once "}")
+
+         create iter_lyrics.make(lyrics, 1 |..| lyrics.count)
+         iter_lyrics.do_all(agent generate_lyrics(?, ?, context, output))
+         output.put_line(once ">>")
       end
 
 feature {}
-   make (a_player: like player; a_instrument: like instrument; a_id: like id; a_voice_ids: TRAVERSABLE[INTEGER]; a_reference: MIXUP_NOTE_HEAD) is
+   gather_lyrics (a_lyrics: TRAVERSABLE[MIXUP_SYLLABLE]; a_time: INTEGER_64) is
+      local
+         zip: ZIP[AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64], MIXUP_SYLLABLE]
+      do
+         ensure_lyrics_count(a_lyrics.count)
+         create zip.make(lyrics, a_lyrics)
+         zip.do_all(agent {AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]}.put({MIXUP_SYLLABLE}, a_time))
+      end
+
+   ensure_lyrics_count (a_count: INTEGER) is
+      do
+         from
+         until
+            lyrics.count >= a_count
+         loop
+            lyrics.add_last(create {AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]}.make)
+         end
+      ensure
+         lyrics.count >= a_count
+      end
+
+   generate_lyrics (lyr: AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]; index: INTEGER; context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
+      require
+         lyr /= Void
+         index > 0
+         output.is_connected
+      do
+         if index \\ 2 = 0 then
+            output.put_string(once "\new AltLyrics = ")
+         else
+            output.put_string(once "\new Lyrics = ")
+         end
+         output.put_character('"')
+         output.put_string(instrument.name)
+         output.put_integer(id)
+         output.put_character('x')
+         output.put_integer(index)
+         output.put_string(once "%" \lyricsto %"")
+         output.put_string(instrument.name)
+         output.put_integer(id)
+         output.put_line(once "voice%" {")
+         lyr.do_all_items(agent (a_syllable: MIXUP_SYLLABLE; a_output: OUTPUT_STREAM) is
+                             do
+                                a_output.put_character(' ')
+                                if a_syllable.in_word then
+                                   a_output.put_string(once "-- ")
+                                end
+                                a_output.put_character('"')
+                                a_output.put_string(a_syllable.syllable)
+                                a_output.put_character('"')
+                             end(?, output))
+         output.put_new_line
+         output.put_line(once "}")
+      end
+
+feature {}
+   make (a_player: like player; a_instrument: like instrument; a_id: like id; a_voice_ids: TRAVERSABLE[INTEGER]; a_reference: like reference) is
       require
          a_player /= Void
          a_instrument /= Void
          a_id > 0
       do
+         reference := a_reference
          player := a_player
          instrument := a_instrument
          id := a_id
-         create voices.make
-         a_voice_ids.do_all(agent (a_id: INTEGER; a_reference: MIXUP_NOTE_HEAD) is
-                               do
-                                  voices.add(create {MIXUP_LILYPOND_VOICE}.make(Current, a_id, a_reference), a_id);
-                               end(?, a_reference))
+         create lyrics.make(0)
+         lyrics_gatherer := agent gather_lyrics
+         create paths.make
       ensure
+         reference = a_reference
          player = a_player
          instrument = a_instrument
          id = a_id
-         voices.count = a_voice_ids.count
-         a_voice_ids.for_all(agent (a_id: INTEGER): BOOLEAN is do Result := voices.fast_has(a_id) and then voices.fast_reference_at(a_id).id = a_id end)
       end
 
    player: MIXUP_LILYPOND_PLAYER
-   voices: AVL_DICTIONARY[MIXUP_LILYPOND_VOICE, INTEGER]
-
-   voice (a_voice_id: INTEGER): MIXUP_LILYPOND_VOICE is
-      require
-         voices.fast_has(a_voice_id)
-      do
-         Result := voices.fast_reference_at(a_voice_id)
-      end
 
    context_name: FIXED_STRING is
       once
          Result := "Staff".intern
       end
 
+   reference: MIXUP_NOTE_HEAD
+   lyrics: FAST_ARRAY[AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]]
+   lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]
+
+   voices: MIXUP_LILYPOND_VOICES
+   paths: STACK[AVL_DICTIONARY[MIXUP_LILYPOND_VOICE, INTEGER]]
+
+   voice (a_voice_id: INTEGER): MIXUP_LILYPOND_VOICE is
+      require
+         not paths.is_empty
+      do
+         Result := paths.top.reference_at(a_voice_id)
+      end
+
 invariant
    player /= Void
    instrument /= Void
    id > 0
+   lyrics /= Void
+   paths /= Void
 
 end -- class MIXUP_LILYPOND_STAFF

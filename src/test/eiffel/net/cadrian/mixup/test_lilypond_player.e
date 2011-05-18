@@ -57,10 +57,15 @@ feature {}
          create context.make(source, "test context", Void)
          lilypond.set_context(context)
 
-         lilypond.play_set_partitur("test")
-         lilypond.play_set_instrument("MyInstr", map(1, 1|..|1))
-         lilypond.play_set_note(event_data("MyInstr",          0, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("c", 4) >> }, source, << "doe", "do" >> });
-         lilypond.play_set_note(event_data("MyInstr", duration_4, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("d", 4) >> }, source, << "ray", "re" >> });
+         lilypond.play_set_partitur("test"                                                                                                                                 )
+         lilypond.play_set_instrument("MyInstr", map(1, 1|..|2)                                                                                                            )
+         lilypond.play_start_voices(event_data("MyInstr",        0, 1, 1), 1|..|1                                                                                          )
+         lilypond.play_set_note(event_data("MyInstr",            0, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("c", 4) >> }, source, << "doe", "do" >> })
+         lilypond.play_set_note(event_data("MyInstr",   duration_4, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("d", 4) >> }, source, << "ray", "re" >> })
+         lilypond.play_start_voices(event_data("MyInstr",        0, 1, 1), 2|..|2                                                                                          )
+         lilypond.play_set_note(event_data("MyInstr",   duration_2, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("e", 4) >> }, source, << "me" , "mi" >> })
+         lilypond.play_end_voices(event_data("MyInstr", duration_1, 1, 2)                                                                                                  )
+         lilypond.play_end_voices(event_data("MyInstr", duration_1, 1, 1)                                                                                                  )
          lilypond.play_end_partitur
 
          expected := "[
@@ -69,29 +74,29 @@ feature {}
 \include "mixup-partitur.ily"
 
 \header {
-   mixup-partitur = "test"
+mixup-partitur = "test"
 }
 
 \book {
-   \score {
-      <<
-         \new Staff = "MyInstr1" <<
-            \set Staff.instrumentName = "MyInstr"
-            \set Staff.shortInstrumentName = "M."
-            \new Voice = "MyInstr1v1" {
-               <<
-                   c4 d4
-               >>
-            }
-            \new Lyrics = "MyInstr1v1x1" \lyricsto "MyInstr1v1" {
-                "doe" "ray"
-            }
-            \new AltLyrics = "MyInstr1v1x2" \lyricsto "MyInstr1v1" {
-                "do" "re"
-            }
-         >>
-      >>
-   }
+\score {
+<<
+\new Staff = "MyInstr1" <<
+\set Staff.instrumentName = "MyInstr"
+\set Staff.shortInstrumentName = "M."
+\new Voice = "MyInstr1voice" {
+<<
+ c4 d4 e4
+>>
+}
+\new Lyrics = "MyInstr1x1" \lyricsto "MyInstr1voice" {
+ "doe" "ray" "me"
+}
+\new AltLyrics = "MyInstr1x2" \lyricsto "MyInstr1voice" {
+ "do" "re" "mi"
+}
+>>
+>>
+}
 }
 
 ]"

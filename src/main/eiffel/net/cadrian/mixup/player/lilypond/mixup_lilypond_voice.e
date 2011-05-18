@@ -14,12 +14,6 @@
 --
 class MIXUP_LILYPOND_VOICE
 
-inherit
-   MIXUP_NOTE_VISITOR
-
-insert
-   MIXUP_NOTE_DURATIONS
-
 create {ANY}
    make
 
@@ -28,6 +22,13 @@ feature {ANY}
    id: INTEGER
 
 feature {MIXUP_LILYPOND_STAFF}
+   add_item (a_item: MIXUP_LILYPOND_ITEM) is
+      require
+         a_item /= Void
+      do
+         items.add_last(a_item)
+      end
+
    set_dynamics (dynamics, position: ABSTRACT_STRING) is
       do
          if position = Void then
@@ -51,21 +52,26 @@ feature {MIXUP_LILYPOND_STAFF}
          end
       end
 
-   set_note (note: MIXUP_NOTE) is
+   set_note (a_time: INTEGER_64; a_note: MIXUP_NOTE) is
+      local
+         note: MIXUP_LILYPOND_NOTE
       do
-         note.accept(Current)
-         if note.valid_anchor then
-            reference := note.anchor
-         end
+         create note.make(last_dynamics, a_time, a_note, reference, lyrics_gatherer)
+         reference := note.anchor
+         last_dynamics := Void
+         add_item(note)
       end
 
    next_bar (style: ABSTRACT_STRING) is
+      local
+         str: STRING
       do
          if style = Void then
-            notes.append(" | ")
+            str := once " |"
          else
-            notes.append(" \bar %"" + style.out + "%"")
+            str := " \bar %"" + style.out + "%""
          end
+         add_item(create {MIXUP_LILYPOND_STRING}.make(str))
       end
 
    start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
@@ -100,156 +106,40 @@ feature {MIXUP_LILYPOND_STAFF}
       do
       end
 
-feature {MIXUP_CHORD}
-   visit_chord (a_chord: MIXUP_CHORD) is
-      local
-         anchor: like reference
-         i: INTEGER
-      do
-         anchor := reference
-         if a_chord.count > 1 then
-            notes.extend(' ')
-            notes.extend('<')
-         end
-         from
-            i := a_chord.lower
-         until
-            i > a_chord.upper
-         loop
-            append_note_head(anchor, a_chord.item(i))
-            anchor := a_chord.item(i)
-            i := i + 1
-         end
-         if a_chord.count > 1 then
-            notes.extend('>')
-         end
-         append_duration(a_chord.duration)
-      end
-
-feature {}
-   append_note_head (anchor, note: MIXUP_NOTE_HEAD) is
-      do
-         notes.extend(' ')
-         notes.append(note.note.out) -- TODO: octave skips
-      end
-
-   append_duration (duration: INTEGER_64) is
-      do
-         inspect duration
-         when duration_64   then notes.append("64"  )
-         when duration_64p  then notes.append("64." )
-         when duration_64pp then notes.append("64..")
-         when duration_32   then notes.append("32"  )
-         when duration_32p  then notes.append("32." )
-         when duration_32pp then notes.append("32..")
-         when duration_16   then notes.append("16"  )
-         when duration_16p  then notes.append("16." )
-         when duration_16pp then notes.append("16..")
-         when duration_8    then notes.append("8"   )
-         when duration_8p   then notes.append("8."  )
-         when duration_8pp  then notes.append("8.." )
-         when duration_4    then notes.append("4"   )
-         when duration_4p   then notes.append("4."  )
-         when duration_4pp  then notes.append("4.." )
-         when duration_2    then notes.append("2"   )
-         when duration_2p   then notes.append("2."  )
-         when duration_2pp  then notes.append("2.." )
-         when duration_1    then notes.append("1"   )
-         when duration_1p   then notes.append("1."  )
-         when duration_1pp  then notes.append("1.." )
-         end
-      end
-
-feature {MIXUP_LYRICS}
-   visit_lyrics (a_lyrics: MIXUP_LYRICS) is
-      local
-         zip: ZIP[STRING, FIXED_STRING]
-      do
-         a_lyrics.note.accept(Current)
-         ensure_lyrics_count(a_lyrics.count)
-         create zip.make(lyrics, a_lyrics)
-         zip.do_all(agent (lyr: STRING; a_lyr: FIXED_STRING) is
-                    do
-                       lyr.extend(' ')
-                       lyr.extend('"')
-                       lyr.append(a_lyr)
-                       lyr.extend('"')
-                    end)
-      end
-
-feature {MIXUP_LILYPOND_STAFF}
+feature {MIXUP_LILYPOND_VOICES}
    generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
-      require
-         output.is_connected
-      local
-         zip: ZIP[STRING, INTEGER]
       do
-         output.put_line("            \new Voice = %"" + staff.instrument.name.out + staff.id.out + "v" + id.out + "%" {")
-         output.put_line("               <<")
-         output.put_line("                  " + notes)
-         output.put_line("               >>")
-         output.put_line("            }")
-         if not lyrics.is_empty then
-            create zip.make(lyrics, 1 |..| lyrics.count)
-            zip.do_all(agent generate_lyrics(?, ?, context, output))
-         end
+         items.do_all(agent {MIXUP_LILYPOND_ITEM}.generate(context, output))
       end
 
 feature {}
-   make (a_staff: like staff; a_id: like id; a_reference: like reference) is
+   make (a_staff: like staff; a_id: like id; a_reference: like reference; a_lyrics_gatherer: like lyrics_gatherer) is
       require
          a_staff /= Void
          a_id > 0
+         a_lyrics_gatherer /= Void
       do
          staff := a_staff
          id := a_id
          reference := a_reference
-         notes := ""
-         create lyrics.make(0)
+         lyrics_gatherer := a_lyrics_gatherer
+         create items.make(0)
       ensure
          staff = a_staff
          id = a_id
+         lyrics_gatherer = a_lyrics_gatherer
       end
+
+   reference: MIXUP_NOTE_HEAD
+   items: FAST_ARRAY[MIXUP_LILYPOND_ITEM]
+   lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]
 
    last_dynamics: STRING
-   reference: MIXUP_NOTE_HEAD
-
-   notes: STRING
-   lyrics: FAST_ARRAY[STRING]
-
-   ensure_lyrics_count (a_count: INTEGER) is
-      do
-         from
-         until
-            lyrics.count >= a_count
-         loop
-            lyrics.add_last("")
-         end
-      ensure
-         lyrics.count >= a_count
-      end
-
-   generate_lyrics (lyr: STRING; index: INTEGER; context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
-      require
-         lyr /= Void
-         index > 0
-         output.is_connected
-      do
-         if index \\ 2 = 0 then
-            output.put_string("            \new AltLyrics = ")
-         else
-            output.put_string("            \new Lyrics = ")
-         end
-         output.put_line("%"" + staff.instrument.name.out + staff.id.out + "v" + id.out + "x" + index.out
-                         + "%" \lyricsto %"" + staff.instrument.name.out + staff.id.out + "v" + id.out + "%" {")
-         output.put_line("               " + lyr)
-         output.put_line("            }")
-      end
 
 invariant
    staff /= Void
-   lyrics /= Void
-   lyrics.for_all(agent (l: STRING): BOOLEAN is do Result := l /= Void end)
    id > 0
+   lyrics_gatherer /= Void
+   items /= Void
 
 end -- class MIXUP_LILYPOND_VOICE

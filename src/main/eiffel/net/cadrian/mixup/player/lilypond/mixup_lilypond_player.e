@@ -84,10 +84,12 @@ feature {ANY}
 
    play_start_voices (a_data: MIXUP_EVENT_DATA; voice_ids: TRAVERSABLE[INTEGER]) is
       do
+         instruments.reference_at(a_data.instrument).start_voices(a_data.staff_id, a_data.voice_id, voice_ids)
       end
 
    play_end_voices (a_data: MIXUP_EVENT_DATA) is
       do
+         instruments.reference_at(a_data.instrument).end_voices(a_data.staff_id, a_data.voice_id)
       end
 
    play_set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING) is
@@ -99,7 +101,7 @@ feature {ANY}
    play_set_note (a_data: MIXUP_EVENT_DATA; note: MIXUP_NOTE) is
       do
          log.info.put_line("Lilypond: playing note: " + note.out)
-         instruments.reference_at(a_data.instrument).set_note(a_data.staff_id, a_data.voice_id, note)
+         instruments.reference_at(a_data.instrument).set_note(a_data.staff_id, a_data.voice_id, a_data.start_time, note)
       end
 
    play_next_bar (a_data: MIXUP_EVENT_DATA; style: ABSTRACT_STRING) is
@@ -165,18 +167,18 @@ feature {} -- headers and footers
          section_output.put_line("\include %"mixup-" + section.out + ".ily%"")
          section_output.put_new_line
          section_output.put_line("\header {")
-         section_output.put_line("   mixup-" + section.out + " = %"" + name.out + "%"")
+         section_output.put_line("mixup-" + section.out + " = %"" + name.out + "%"")
          section_output.put_line("}")
          section_output.put_new_line
          section_output.put_line("\book {")
-         section_output.put_line("   \score {")
-         section_output.put_line("      <<")
+         section_output.put_line("\score {")
+         section_output.put_line("<<")
       end
 
    put_footer is
       do
-         section_output.put_line("      >>")
-         section_output.put_line("   }")
+         section_output.put_line(">>")
+         section_output.put_line("}")
          section_output.put_line("}")
       end
 

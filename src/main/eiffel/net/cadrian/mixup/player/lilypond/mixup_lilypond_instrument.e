@@ -24,14 +24,24 @@ feature {ANY}
    name: FIXED_STRING
 
 feature {MIXUP_LILYPOND_PLAYER}
+   start_voices (a_staff_id, a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]) is
+      do
+         staffs.reference_at(a_staff_id).start_voices(a_voice_id, voice_ids)
+      end
+
+   end_voices (a_staff_id, a_voice_id: INTEGER) is
+      do
+         staffs.reference_at(a_staff_id).end_voices(a_voice_id)
+      end
+
    set_dynamics (a_staff_id, a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
       do
          staffs.reference_at(a_staff_id).set_dynamics(a_voice_id, dynamics, position)
       end
 
-   set_note (a_staff_id, a_voice_id: INTEGER; note: MIXUP_NOTE) is
+   set_note (a_staff_id, a_voice_id: INTEGER; time: INTEGER_64; note: MIXUP_NOTE) is
       do
-         staffs.reference_at(a_staff_id).set_note(a_voice_id, note)
+         staffs.reference_at(a_staff_id).set_note(a_voice_id, time, note)
       end
 
    next_bar (a_staff_id, a_voice_id: INTEGER; style: ABSTRACT_STRING) is
@@ -96,10 +106,10 @@ feature {MIXUP_LILYPOND_PLAYER}
             end
             context_name := get_string(context, template_instrument_staff, staff_type)
 
-            output.put_line(once "         \new " + context_name.out + " = %"" + name.out + "%" <<")
+            output.put_line(once "\new " + context_name.out + " = %"" + name.out + "%" <<")
             generate_context(context, output, Current)
             staffs.do_all(agent {MIXUP_LILYPOND_STAFF}.generate(context, output, False))
-            output.put_line(once "         >>")
+            output.put_line(once ">>")
          end
       end
 

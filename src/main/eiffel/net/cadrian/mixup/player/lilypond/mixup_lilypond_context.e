@@ -60,7 +60,7 @@ feature {}
       do
          str := get_string(context, context_data_name, default_value)
          if str /= Void then
-            output.put_line("            \set " + context_name.out + "." + lilypond_variable_name + " = %"" + str.out + "%"")
+            output.put_line("\set " + context_name.out + "." + lilypond_variable_name + " = %"" + str.out + "%"")
          end
       end
 
