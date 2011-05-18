@@ -44,8 +44,8 @@ echo $log
                 mix=$(basename $example)
                 if ./build/bin/mixup $mix; then
                     ly=${mix%.mix}.ly
-                    if test -e $ly then
-                        if test -e $EXAMPLE_DIR/reference/$ly then
+                    if test -e $ly; then
+                        if test -e $EXAMPLE_DIR/reference/$ly; then
                             diff -u $EXAMPLE_DIR/reference/$ly $ly || failures=$((failures+1))
                         fi
                     else
