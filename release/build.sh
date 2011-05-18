@@ -218,7 +218,7 @@ default
     trace(no)
     no_style_warning(no)
     no_warning(no)
-    verbose(yes)
+    verbose(no)
     manifest_string_trace(no)
     high_memory_compiler(yes)
     profile(no)
