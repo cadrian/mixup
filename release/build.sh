@@ -29,17 +29,11 @@ usage() {
     echo
 }
 
-install() {
-    PKG_BIN=$1
-    PKG_SHARED=$2
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# log.rc file
 
-    mkdir -p ${PKG_BIN}
-    find . -name 'mixup*' -type f -executable -exec cp -a {} ${PKG_BIN}/ \;
-
-    mkdir -p ${PKG_SHARED}/modules
-    cp -a $INSTALL_DIR/src/mixup/* ${PKG_SHARED}/modules/
-
-    cat > ${PKG_SHARED}/log.rc <<EOF
+log_rc_release() {
+    cat <<EOF
 log configuration
 
 root IN_FILE
@@ -69,6 +63,63 @@ end
 
 EOF
 }
+
+log_rc_test() {
+    cat <<EOF
+log configuration
+
+root IN_FILE
+
+output
+        mixup_log is file "mixup.log"
+                rotated each day keeping 3
+                end
+
+        mixup_con is console
+                format "**** @C: @m%N"
+                end
+
+logger
+        ON_CONSOLE is
+                output mixup_con
+                level warning
+                end
+
+        IN_FILE is
+                like ON_CONSOLE with
+                output mixup_log
+                level trace
+                end
+
+end
+
+EOF
+}
+
+log_rc_ci() {
+    cat <<EOF
+log configuration
+
+root ON_CONSOLE
+
+output
+        mixup_con is console
+                format "**** @C: @m%N"
+                end
+
+logger
+        ON_CONSOLE is
+                output mixup_con
+                level trace
+                end
+
+end
+
+EOF
+}
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ace file
 
 ace_release() {
     cat <<EOF
@@ -198,9 +249,27 @@ end
 EOF
 }
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+install() {
+    PKG_BIN=$1
+    PKG_SHARED=$2
+    LOG_LEVEL=$3
+
+    mkdir -p ${PKG_BIN}
+    find . -name 'mixup*' -type f -executable -exec cp -a {} ${PKG_BIN}/ \;
+
+    mkdir -p ${PKG_SHARED}/modules
+    cp -a $INSTALL_DIR/src/mixup/* ${PKG_SHARED}/modules/
+
+    log_rc_${LOG_LEVEL} > ${PKG_SHARED}/log.rc
+}
+
 noecho() {
     :
 }
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 export PREFIX
 export LEVEL=release
@@ -246,9 +315,15 @@ while [ $# -gt 0 ]; do
             MUST_INSTALL=true
             ;;
         -test)
+            BUILD_DIR=${BUILD_DIR}/test
+            test -d ${BUILD_DIR} || mkdir ${BUILD_DIR}
+            cd ${BUILD_DIR}
             LEVEL=test
             ;;
         -ci)
+            BUILD_DIR=${BUILD_DIR}/ci
+            test -d ${BUILD_DIR} || mkdir ${BUILD_DIR}
+            cd ${BUILD_DIR}
             LEVEL=ci
             ECHO=noecho
             ;;
@@ -280,7 +355,7 @@ $ECHO '~~~~ Releasing'
 test -d ${PACKAGE_DIR} && rm -rf ${PACKAGE_DIR}
 PKG_BIN=${PACKAGE_DIR}/${PREFIX}/bin
 PKG_SHARED=${PACKAGE_DIR}/${PREFIX}/share/mixup
-install ${PKG_BIN} ${PKG_SHARED}
+install ${PKG_BIN} ${PKG_SHARED} ${LEVEL}
 
 cat > ${PKG_SHARED}/load_paths <<EOF
 ${PREFIX}/share/mixup/modules

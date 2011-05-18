@@ -37,9 +37,10 @@ echo $log
         test -d ./build && rm -rf ./build
         tar xfz $pkg
         if [ -d ./build ]; then
+            ln -s build/share/mixup/log.rc .
             for example in $EXAMPLES_DIR/*.mix; do
                 echo "======================================================================"
-                cp $example .
+                ln -s $example .
                 mix=$(basename $example)
                 if ./build/bin/mixup $mix; then
                     ly=${mix%.mix}.ly
