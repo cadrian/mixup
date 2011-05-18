@@ -184,6 +184,7 @@ feature {MIXUP_CONTEXT}
                      Result := parent.setup_value(identifier, False, a_value, is_const, is_public, is_local, a_tag)
                   end
                   if not Result and then assign_if_new then
+                     log.trace.put_line("Assigning new identifier '" + identifier.out + "' to {" + generating_type + "}." + name)
                      set_value(identifier, a_value, is_const, is_public, is_local)
                      Result := True
                   end
@@ -219,9 +220,7 @@ feature {MIXUP_CONTEXT}
 feature {}
    set_value (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN) is
       do
-         if is_local then
-            set_local(identifier, a_value)
-         else
+         if log.is_trace then
             log.trace.put_string("Setting ")
             if is_public then
                log.trace.put_string("public ")
@@ -229,7 +228,14 @@ feature {}
             if is_const then
                log.trace.put_string("const ")
             end
+            if is_local then
+               log.trace.put_string("local ")
+            end
             log.trace.put_line("identifier '" + identifier.out + "' to {" + generating_type + "}." + name)
+         end
+         if is_local then
+            set_local(identifier, a_value)
+         else
             values.put(create {MIXUP_VALUE_IN_CONTEXT}.make(a_value, is_const, is_public), identifier)
          end
       end
