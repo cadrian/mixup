@@ -34,14 +34,16 @@ echo $log
     echo "build"
     echo
     if pkg=$($RELEASE_DIR/build.sh -clean -ci -prefix build); then
-        test -d ./build && rm -rf ./build
+        TMPDIR=$(mktemp -d)
+        cd $TMPDIR
+
         tar xfz $pkg
         if [ -d ./build ]; then
             ln -s build/share/mixup/log.rc .
             for example in $EXAMPLES_DIR/*.mix; do
                 echo "======================================================================"
-                ln -s $example .
                 mix=$(basename $example)
+                ln -s $example $mix
                 if ./build/bin/mixup $mix; then
                     ly=${mix%.mix}.ly
                     if test -e $ly; then
@@ -60,6 +62,8 @@ echo $log
             echo "Missing build directory! Failed packaging?"
             failures=$((failures+1))
         fi
+
+        rm -rf $TMPDIR
     else
         failures=$((failures+1))
     fi
