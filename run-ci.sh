@@ -156,5 +156,5 @@ if git pull | grep -q 'up-to-date'; then
             ;;
     esac
 else
-    do_ci
+    exec ./run-ci.sh -force # should ensure that this script is correctly taken into account when modified
 fi
