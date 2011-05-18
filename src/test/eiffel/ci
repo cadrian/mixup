@@ -3,12 +3,16 @@
 
 cd $(dirname $0)
 
+export BASEDIR=$(cd ../../..; pwd)
+
 export SEDB=no
-export BASEDIR=$(pwd)/.ci
+export CI_DIR=$(pwd)/.ci
+export EXAMPLES_DIR=$BASEDIR/examples
+export RELEASE_DIR=$BASEDIR/release
 
-test -d $BASEDIR || mkdir -p $BASEDIR
+test -d $CI_DIR || mkdir -p $CI_DIR
 
-log=$BASEDIR/log-$(date +'%Y%m%d-%H%M%S')
+log=$CI_DIR/log-$(date +'%Y%m%d-%H%M%S')
 echo $log
 
 {
@@ -25,6 +29,39 @@ echo $log
     echo "test lily"
     echo
     ./test lily $CI_CLEAN || failures=$((failures+1))
+
+    echo "======================================================================"
+    echo "build"
+    echo
+    if pkg=$($RELEASE_DIR/build.sh -clean -ci -prefix build); then
+        test -d ./build && rm -rf ./build
+        tar xfz $pkg
+        if [ -d ./build ]; then
+            for example in $EXAMPLES_DIR/*.mix; do
+                echo "======================================================================"
+                cp $example .
+                mix=$(basename $example)
+                if ./build/bin/mixup $mix; then
+                    ly=${mix%.mix}.ly
+                    if test -e $ly then
+                        if test -e $EXAMPLE_DIR/reference/$ly then
+                            diff -u $EXAMPLE_DIR/reference/$ly $ly || failures=$((failures+1))
+                        fi
+                    else
+                        echo "Missing $ly! Failed execution?"
+                        failures=$((failures+1))
+                    fi
+                else
+                    failures=$((failures+1))
+                fi
+            done
+        else
+            echo "Missing build directory! Failed packaging?"
+            failures=$((failures+1))
+        fi
+    else
+        failures=$((failures+1))
+    fi
 
     echo "======================================================================"
     if [ $failures -eq 0 ]; then

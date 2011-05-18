@@ -18,6 +18,11 @@ usage() {
     echo "-test               compiles a test release (with assertions) instead of"
     echo "                    an optimized release"
     echo
+    echo "-ci                 compiles a test release (with assertions, but no sedb)"
+    echo "                    for Continuous Integration."
+    echo "                    Also reduces the output to only the generated package"
+    echo "                    file name."
+    echo
     echo "-prefix <prefix>    sets the package prefix (default is /usr/local)"
     echo
     echo "-help               this help (does not run any build)"
@@ -148,8 +153,58 @@ end
 EOF
 }
 
+ace_ci() {
+    cat <<EOF
+system "mixup"
+
+root
+    MIXUP: make
+
+default
+    assertion(all)
+    assertion_flat_check(yes)
+    debug(no)
+    trace(no)
+    no_style_warning(no)
+    no_warning(no)
+    verbose(no)
+    manifest_string_trace(no)
+    high_memory_compiler(yes)
+    profile(no)
+    relax(yes)
+
+cluster
+    liberty: "\${path_liberty}/src/loadpath.se"
+        option
+            assertion(require): COLLECTION_SORTER -- because there is a bug in the `slice_copy' build-in
+            debug(yes): ABSTRACT_STRING, FIXED_STRING, NATIVELY_STORED_STRING, STRING
+            debug("parse"): DESCENDING_PARSER, PARSE_TERMINAL, PARSE_NT_NODE, PARSE_NON_TERMINAL
+            debug("parse/eiffel/build"): EIFFEL_GRAMMAR
+        end
+
+    main: "${INSTALL_DIR}/src/main/eiffel/loadpath.se"
+        default
+            debug(yes)
+        end
+
+generate
+    no_strip(yes)
+    clean(no)
+    c_compiler_options: "-g -pipe"
+    split("legacy")
+
+end
+
+EOF
+}
+
+noecho() {
+    :
+}
+
 export PREFIX
 export LEVEL=release
+export ECHO=echo
 
 cd $(dirname $0)
 RELEASE_DIR=$(pwd)
@@ -193,6 +248,10 @@ while [ $# -gt 0 ]; do
         -test)
             LEVEL=test
             ;;
+        -ci)
+            LEVEL=ci
+            ECHO=noecho
+            ;;
         -prefix)
             shift
             PREFIX="$1"
@@ -210,14 +269,14 @@ PREFIX=${PREFIX:-/usr/local}
 ace_${LEVEL} > mixup.ace
 
 if ${MUST_CLEAN}; then
-    echo '~~~~ Cleaning'
+    $ECHO '~~~~ Cleaning'
     se clean mixup.ace
 fi
 
-echo '~~~~ Building'
+$ECHO '~~~~ Building'
 se c mixup.ace || exit 1
 
-echo '~~~~ Releasing'
+$ECHO '~~~~ Releasing'
 test -d ${PACKAGE_DIR} && rm -rf ${PACKAGE_DIR}
 PKG_BIN=${PACKAGE_DIR}/${PREFIX}/bin
 PKG_SHARED=${PACKAGE_DIR}/${PREFIX}/share/mixup
@@ -232,7 +291,7 @@ mkdir -p $PKG_SRC
 find . -name 'mixup*.[ch]' -type f -exec cp -a {} ${PKG_SRC}/ \;
 
 if $MUST_INSTALL; then
-    echo '~~~~ Installing'
+    $ECHO '~~~~ Installing'
     test -d ${HOME}/.mixup || mkdir ${HOME}/.mixup
     test -d ${HOME}/.mixup/modules && rm -rf ${HOME}/.mixup/modules
     install ${HOME}/.mixup ${HOME}/.mixup
@@ -242,11 +301,12 @@ ${HOME}/.mixup/modules
 EOF
 fi
 
-echo '~~~~ Packaging'
+$ECHO '~~~~ Packaging'
 cd ${PACKAGE_DIR}
 tar cfz ${PACKAGE_ARCHIVE} *
 rm -rf ${PACKAGE_DIR}
 
-echo '~~~~ Done: package is' ${PACKAGE_ARCHIVE}
+$ECHO '~~~~ Done: package is'
+echo ${PACKAGE_ARCHIVE}
 
-echo
+$ECHO
