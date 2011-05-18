@@ -19,7 +19,7 @@ inherit
       redefine
          is_equal, out_in_tagged_out_memory
       end
-   TRAVERSABLE[FIXED_STRING]
+   TRAVERSABLE[MIXUP_SYLLABLE]
       redefine
          is_equal, out_in_tagged_out_memory
       end
@@ -82,8 +82,11 @@ feature {ANY}
             if i > 0 then
                tagged_out_memory.append(once ", ")
             end
+            if storage.item(i).in_word then
+               tagged_out_memory.append(once "-- ")
+            end
             tagged_out_memory.extend('"')
-            tagged_out_memory.append(storage.item(i))
+            tagged_out_memory.append(storage.item(i).syllable)
             tagged_out_memory.extend('"')
             i := i + 1
          end
@@ -105,22 +108,22 @@ feature {ANY}
          Result := count - 1
       end
 
-   item (index: INTEGER): FIXED_STRING is
+   item (index: INTEGER): MIXUP_SYLLABLE is
       do
          Result := storage.item(index)
       end
 
-   first: FIXED_STRING is
+   first: MIXUP_SYLLABLE is
       do
          Result := storage.item(lower)
       end
 
-   last: FIXED_STRING is
+   last: MIXUP_SYLLABLE is
       do
          Result := storage.item(upper)
       end
 
-   new_iterator: ITERATOR[FIXED_STRING] is
+   new_iterator: ITERATOR[MIXUP_SYLLABLE] is
       do
          crash
       end
@@ -128,11 +131,11 @@ feature {ANY}
    is_empty: BOOLEAN is False
 
 feature {}
-   make (a_source: like source; a_note: MIXUP_NOTE; a_lyrics: TRAVERSABLE[ABSTRACT_STRING]) is
+   make (a_source: like source; a_note: MIXUP_NOTE; a_lyrics: TRAVERSABLE[MIXUP_SYLLABLE]) is
       require
          a_source /= Void
          not a_lyrics.is_empty
-         a_lyrics.for_all(agent (s: ABSTRACT_STRING): BOOLEAN is do Result := s /= Void end)
+         a_lyrics.for_all(agent (s: MIXUP_SYLLABLE): BOOLEAN is do Result := s.syllable /= Void end)
       local
          i: INTEGER
       do
@@ -142,12 +145,12 @@ feature {}
          until
             i = a_lyrics.count
          loop
-            manifest_put(i, a_lyrics.item(i + a_lyrics.lower))
+            storage.put(a_lyrics.item(i), i + a_lyrics.lower)
             i := i + 1
          end
       end
 
-feature {} -- Manifest create:
+feature {} -- Manifest create (for tests):
    manifest_make (a_capacity: INTEGER; a_note: MIXUP_NOTE; a_source: like source) is
       require
          a_capacity > 0
@@ -161,14 +164,22 @@ feature {} -- Manifest create:
       end
 
    manifest_put (index: INTEGER; syllable: ABSTRACT_STRING) is
+      local
+         syl: MIXUP_SYLLABLE
       do
-         storage.put(syllable.intern, index)
+         syl.set(unknown_source, syllable.intern, False)
+         storage.put(syl, index)
       end
 
    manifest_semicolon_check: BOOLEAN is False
 
+   unknown_source: MIXUP_SOURCE is
+      once
+         create {MIXUP_SOURCE_UNKNOWN} Result
+      end
+
 feature {MIXUP_LYRICS}
-   storage: NATIVE_ARRAY[FIXED_STRING]
+   storage: NATIVE_ARRAY[MIXUP_SYLLABLE]
 
 invariant
    note /= Void

@@ -168,6 +168,8 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             read_xuplet_spec(node)
          when "Strophe" then
             build_strophe(node)
+         when "Word" then
+            build_word(node)
          when "Syllable" then
             build_syllable(node)
          when "Identifier_Part" then
@@ -289,6 +291,8 @@ feature {}
    last_xuplet_text:        FIXED_STRING
    last_voices:             MIXUP_VOICES
    staves:                  FAST_ARRAY[MIXUP_STAFF]
+   current_instrument:      MIXUP_INSTRUMENT
+   in_word:                 BOOLEAN
 
    build_identifier_list (identifiers: MIXUP_LIST_NODE_IMPL) is
       do
@@ -1049,8 +1053,6 @@ feature {} -- Dynamics
       end
 
 feature {}
-   current_instrument: MIXUP_INSTRUMENT
-
    play_notes (notes: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          notes.accept_all(Current)
@@ -1062,10 +1064,17 @@ feature {}
          strophe.node_at(1).accept(Current)
       end
 
+   build_word (word: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         in_word := False
+         word.accept_all(Current)
+      end
+
    build_syllable (syllable: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          syllable.accept_all(Current)
-         current_instrument.add_syllable(last_string)
+         current_instrument.add_syllable(new_source(syllable), last_string, in_word)
+         in_word := True
       end
 
    build_extern_syllables (syllables: MIXUP_NON_TERMINAL_NODE_IMPL) is

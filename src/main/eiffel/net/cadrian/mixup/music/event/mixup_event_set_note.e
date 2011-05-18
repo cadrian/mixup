@@ -42,7 +42,7 @@ feature {ANY}
          lyrics := a_lyrics
       end
 
-   lyrics: TRAVERSABLE[FIXED_STRING]
+   lyrics: TRAVERSABLE[MIXUP_SYLLABLE]
 
 feature {MIXUP_PLAYER}
    fire (player: MIXUP_PLAYER) is

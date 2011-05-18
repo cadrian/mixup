@@ -37,10 +37,18 @@ feature {ANY}
       end
 
 feature {}
+   empty_syllable: MIXUP_SYLLABLE is
+      local
+         unknown_source: MIXUP_SOURCE_UNKNOWN
+      once
+         create unknown_source
+         Result.set(unknown_source, "".intern, False)
+      end
+
    fetch_item: MIXUP_EVENT is
       local
-         lyrics: FAST_ARRAY[FIXED_STRING]
-         strophe: COLLECTION[FIXED_STRING]
+         lyrics: FAST_ARRAY[MIXUP_SYLLABLE]
+         strophe: COLLECTION[MIXUP_SYLLABLE]
          i: INTEGER
       do
          Result := voices_iterator.item
@@ -55,7 +63,7 @@ feature {}
                if index < strophe.count then
                   lyrics.add_last(strophe.item(index + strophe.lower))
                else
-                  lyrics.add_last((once "").intern)
+                  lyrics.add_last(empty_syllable)
                end
                i := i + 1
             end
@@ -90,7 +98,7 @@ feature {}
       end
 
    voices_iterator: MIXUP_EVENTS_ITERATOR
-   strophes: COLLECTION[COLLECTION[FIXED_STRING]]
+   strophes: COLLECTION[COLLECTION[MIXUP_SYLLABLE]]
    index: INTEGER
 
 invariant

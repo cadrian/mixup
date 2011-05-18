@@ -66,7 +66,7 @@ feature {ANY}
          lyrics = a_lyrics
       end
 
-   lyrics: TRAVERSABLE[FIXED_STRING] is
+   lyrics: TRAVERSABLE[MIXUP_SYLLABLE] is
       require
          allow_lyrics
       deferred

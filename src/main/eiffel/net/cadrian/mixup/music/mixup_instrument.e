@@ -52,18 +52,22 @@ feature {ANY}
 
    next_strophe is
       do
-         create {FAST_ARRAY[FIXED_STRING]} current_strophe.make(0)
+         create current_strophe.make(0)
          strophes.add_last(current_strophe)
       end
 
-   add_syllable (a_syllable: ABSTRACT_STRING) is
+   add_syllable (a_source: MIXUP_SOURCE; a_syllable: ABSTRACT_STRING; in_word: BOOLEAN) is
       require
          a_syllable /= Void
+      local
+         syllable: MIXUP_SYLLABLE
       do
-         current_strophe.add_last(a_syllable.intern)
+         syllable.set(a_source, a_syllable.intern, in_word)
+         current_strophe.add_last(syllable)
       ensure
          current_strophe.count = old current_strophe.count + 1
-         current_strophe.last = a_syllable.intern
+         current_strophe.last.syllable = a_syllable.intern
+         current_strophe.last.in_word = in_word
       end
 
    add_extern_syllables (a_syllables: MIXUP_IDENTIFIER) is
@@ -145,7 +149,7 @@ feature {}
 feature {}
    make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent) is
       do
-         create {FAST_ARRAY[COLLECTION[FIXED_STRING]]} strophes.make(0)
+         create strophes.make(0)
          context_make(a_source, a_name, a_parent)
 
          if a_parent /= Void then
@@ -153,8 +157,8 @@ feature {}
          end
       end
 
-   strophes: COLLECTION[COLLECTION[FIXED_STRING]]
-   current_strophe: COLLECTION[FIXED_STRING]
+   strophes: FAST_ARRAY[COLLECTION[MIXUP_SYLLABLE]]
+   current_strophe: FAST_ARRAY[MIXUP_SYLLABLE]
    staves: COLLECTION[MIXUP_STAFF]
 
 invariant

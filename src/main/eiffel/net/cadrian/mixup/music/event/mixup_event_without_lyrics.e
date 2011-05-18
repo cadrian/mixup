@@ -31,7 +31,7 @@ feature {ANY}
          crash
       end
 
-   lyrics: TRAVERSABLE[FIXED_STRING] is
+   lyrics: TRAVERSABLE[MIXUP_SYLLABLE] is
       do
          check Result = Void end
       end
