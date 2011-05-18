@@ -227,7 +227,7 @@ default
 cluster
     liberty: "\${path_liberty}/src/loadpath.se"
         option
-            assertion(require): COLLECTION_SORTER -- because there is a bug in the `slice_copy' build-in
+            assertion(require): COLLECTION_SORTER -- because there is a bug in the 'slice_copy' build-in
             debug(yes): ABSTRACT_STRING, FIXED_STRING, NATIVELY_STORED_STRING, STRING
             debug("parse"): DESCENDING_PARSER, PARSE_TERMINAL, PARSE_NT_NODE, PARSE_NON_TERMINAL
             debug("parse/eiffel/build"): EIFFEL_GRAMMAR
