@@ -122,6 +122,10 @@ build_site() {
 do_ci() {
     git clean -d -f -q -x
 
+    lockfile-create --use-pid --lock-name $OUTDIR/ci.lock
+    lockfile-touch --lock-name $OUTDIR/ci.lock &
+    BADGER="$!"
+
     test -d $OUTDIR/ci && rm -rf $OUTDIR/ci
     cp -R $(pwd)/src/test/ci $OUTDIR/ci
     build_site true > $OUTDIR/ci.html
@@ -144,7 +148,12 @@ do_ci() {
         echo 'Build failed' >> $OUTDIR/$(basename $log)
     fi
     build_site false > $OUTDIR/ci.html
+
+    kill "$BADGER"
+    lockfile-remove --lock-name $OUTDIR/ci.lock
 }
+
+lockfile-check --use-pid --lock-name $OUTDIR/ci.lock || exit 0
 
 if git pull | grep -q 'up-to-date'; then
     case x$1 in
