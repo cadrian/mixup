@@ -369,7 +369,7 @@ if $MUST_INSTALL; then
     $ECHO '~~~~ Installing'
     test -d ${HOME}/.mixup || mkdir ${HOME}/.mixup
     test -d ${HOME}/.mixup/modules && rm -rf ${HOME}/.mixup/modules
-    install ${HOME}/.mixup ${HOME}/.mixup
+    install ${HOME}/.mixup ${HOME}/.mixup ${LEVEL}
 
     cat > ${HOME}/.mixup/load_paths <<EOF
 ${HOME}/.mixup/modules
