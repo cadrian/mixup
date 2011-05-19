@@ -153,7 +153,7 @@ do_ci() {
     lockfile-remove --lock-name $OUTDIR/ci.lock
 }
 
-lockfile-check --use-pid --lock-name $OUTDIR/ci.lock || exit 0
+lockfile-check --use-pid --lock-name $OUTDIR/ci.lock && exit 0
 
 if git pull | grep -q 'up-to-date'; then
     case x$1 in
