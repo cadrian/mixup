@@ -99,7 +99,7 @@ build_site() {
             echo '<td><i>(git log not available)</i></td>'
         fi
         echo '<td>&nbsp;|&nbsp;</td>'
-        echo '<td><a href="'$(basename $log)'">test log</a></td>'
+        echo '<td><a href="log/'$(basename $log)'">test log</a></td>'
         echo '<td>&nbsp;|&nbsp;</td>'
         if [ -e $OUTDIR/$buildlog ]; then
             echo '<td><a href="'$buildlog'">release build log</a></td>'
@@ -143,9 +143,9 @@ do_ci() {
 
     if $(pwd)/release/build.sh -clean > $buildlog; then
         pkg=$(grep Done: $buildlog | awk '{print $5}')
-        cp $pkg $OUTDIR/release/mixup$(basename $log | cut -c4-).tgz
+        test -e $pkg && cp $pkg $OUTDIR/release/mixup$(basename $log | cut -c4-).tgz
     else
-        echo 'Build failed' >> $OUTDIR/$(basename $log)
+        echo 'Build failed' >> $OUTDIR/log/$(basename $log)
     fi
     build_site false > $OUTDIR/ci.html
 

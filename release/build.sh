@@ -381,7 +381,7 @@ cd ${PACKAGE_DIR}
 tar cfz ${PACKAGE_ARCHIVE} *
 rm -rf ${PACKAGE_DIR}
 
-$ECHO -n '~~~~ Done: package is'
+$ECHO -n '~~~~ Done: package is '
 echo ${PACKAGE_ARCHIVE}
 
 $ECHO

@@ -76,4 +76,4 @@ echo $log
     fi
 } >$log 2>&1
 
-tail -n 1 $log | grep SUCCESS || echo 'FAILED!'
+tail -n 1 $log | grep SUCCESS || echo 'FAILED!' >&2
