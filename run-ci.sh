@@ -130,7 +130,7 @@ do_ci() {
     cp -R $(pwd)/src/test/ci $OUTDIR/ci
     build_site true > $OUTDIR/ci.html
 
-    test -d $OUTDIR/log || mkdir $OUTDIR/lig
+    test -d $OUTDIR/log || mkdir $OUTDIR/log
     test -d $OUTDIR/release || mkdir $OUTDIR/release
 
     export CI_CLEAN=clean
