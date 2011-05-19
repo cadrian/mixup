@@ -18,7 +18,7 @@ status() {
 }
 
 status_failures_count() {
-    ls -1 $OUTDIR/log-* | tail -n 5 | while read log; do
+    ls -1 $OUTDIR/log/log-* | tail -n 5 | while read log; do
         $(status $log) || echo failed
     done | wc -l
 }
@@ -80,12 +80,12 @@ build_site() {
         echo '<td colspan="9"><i>Continuous Integration is running</i></td>'
         echo '</tr>'
     fi
-    ls -r -1 $OUTDIR/log-* | while read log; do
+    ls -r -1 $OUTDIR/log/log-* | while read log; do
         echo '<tr>'
         time=$(basename $log | cut -c5- | sed -r 's/^([0-9]{4})([0-9]{2})([0-9]{2})-([0-9]{2})([0-9]{2})([0-9]{2})$/\1-\2-\3 \4:\5:\6/')
-        buildlog=build-$(basename $log)
-        gitlog=git-$(basename $log)
-        pkg=mixup$(basename $log | cut -c4-).tgz
+        buildlog=log/build-$(basename $log)
+        gitlog=log/git-$(basename $log)
+        pkg=release/mixup$(basename $log | cut -c4-).tgz
         if $(status $log); then
             echo '<td><img src="ci/ok.png"></td>'
         else
@@ -126,17 +126,20 @@ do_ci() {
     cp -R $(pwd)/src/test/ci $OUTDIR/ci
     build_site true > $OUTDIR/ci.html
 
+    test -d $OUTDIR/log || mkdir $OUTDIR/lig
+    test -d $OUTDIR/release || mkdir $OUTDIR/release
+
     export CI_CLEAN=clean
     log=$($(pwd)/src/test/eiffel/ci)
-    cp $log $OUTDIR/
-    buildlog=$OUTDIR/build-$(basename $log)
-    gitlog=$OUTDIR/git-$(basename $log)
+    cp $log $OUTDIR/log/
+    buildlog=$OUTDIR/log/build-$(basename $log)
+    gitlog=$OUTDIR/log/git-$(basename $log)
 
     git log > $gitlog
 
     if $(pwd)/release/build.sh -clean > $buildlog; then
         pkg=$(grep Done: $buildlog | awk '{print $5}')
-        cp $pkg $OUTDIR/mixup$(basename $log | cut -c4-).tgz
+        cp $pkg $OUTDIR/release/mixup$(basename $log | cut -c4-).tgz
     else
         echo 'Build failed' >> $OUTDIR/$(basename $log)
     fi
