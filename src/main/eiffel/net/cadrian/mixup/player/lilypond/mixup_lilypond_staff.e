@@ -131,12 +131,10 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
          output.put_string(instrument.name)
          output.put_integer(id)
          output.put_line(once "voice%" {")
-         output.put_line(once "<<")
          if voices /= Void then
             voices.generate(context, output)
          end
          output.put_new_line
-         output.put_line(once ">>")
          output.put_line(once "}")
 
          if not lyrics.is_empty then
@@ -189,6 +187,7 @@ feature {}
          output.put_string(instrument.name)
          output.put_integer(id)
          output.put_line(once "voice%" {")
+         output.put_line(once "\lyricmode {")
          lyr.do_all_items(agent (a_syllable: MIXUP_SYLLABLE; a_output: OUTPUT_STREAM) is
                              do
                                 a_output.put_character(' ')
@@ -200,6 +199,7 @@ feature {}
                                 a_output.put_character('"')
                              end(?, output))
          output.put_new_line
+         output.put_line(once "}")
          output.put_line(once "}")
       end
 

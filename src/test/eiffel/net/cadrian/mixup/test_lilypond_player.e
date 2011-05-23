@@ -84,15 +84,17 @@ mixup-partitur = "test"
 \set Staff.instrumentName = "MyInstr"
 \set Staff.shortInstrumentName = "M."
 \new Voice = "MyInstr1voice" {
-<<
  c4 d4 e4
->>
 }
 \new Lyrics = "MyInstr1x1" \lyricsto "MyInstr1voice" {
+\lyricmode {
  "doe" "ray" "me"
 }
+}
 \new AltLyrics = "MyInstr1x2" \lyricsto "MyInstr1voice" {
+\lyricmode {
  "do" "re" "mi"
+}
 }
 >>
 >>
