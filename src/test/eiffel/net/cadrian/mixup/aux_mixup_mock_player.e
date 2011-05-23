@@ -46,23 +46,28 @@ create {ANY}
    make
 
 feature {ANY}
+   name: FIXED_STRING is
+      once
+         Result := "mock player".intern
+      end
+
    events: TRAVERSABLE[AUX_MIXUP_MOCK_EVENT] is
       do
          Result := events_list
       end
 
-   when_native (name: STRING; then_call: FUNCTION[TUPLE[MIXUP_CONTEXT, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE]) is
+   when_native (a_name: STRING; then_call: FUNCTION[TUPLE[MIXUP_CONTEXT, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE]) is
       require
-         name /= Void
+         a_name /= Void
       do
-         native_map.put(then_call, name.intern)
+         native_map.put(then_call, a_name.intern)
       end
 
-   native (a_source: MIXUP_SOURCE; name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native (a_source: MIXUP_SOURCE; a_name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       local
          fun: FUNCTION[TUPLE[MIXUP_CONTEXT, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE]
       do
-         fun := native_map.reference_at(name.intern)
+         fun := native_map.reference_at(a_name.intern)
          if fun /= Void then
             Result := fun.item([a_context, args])
          end
@@ -76,9 +81,9 @@ feature {ANY}
          context := a_context
       end
 
-   play_set_book (name: STRING) is
+   play_set_book (a_name: STRING) is
       do
-         add_event(set_book_event(name))
+         add_event(set_book_event(a_name))
       end
 
    play_end_book is
@@ -86,9 +91,9 @@ feature {ANY}
          add_event(end_book_event)
       end
 
-   play_set_score (name: STRING) is
+   play_set_score (a_name: STRING) is
       do
-         add_event(set_score_event(name))
+         add_event(set_score_event(a_name))
       end
 
    play_end_score is
@@ -96,9 +101,9 @@ feature {ANY}
          add_event(end_score_event)
       end
 
-   play_set_partitur (name: STRING) is
+   play_set_partitur (a_name: STRING) is
       do
-         add_event(set_partitur_event(name))
+         add_event(set_partitur_event(a_name))
       end
 
    play_end_partitur is
@@ -106,9 +111,9 @@ feature {ANY}
          add_event(end_partitur_event)
       end
 
-   play_set_instrument (name: STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
+   play_set_instrument (a_name: STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
       do
-         add_event(set_instrument_event(name, voice_staff_ids))
+         add_event(set_instrument_event(a_name, voice_staff_ids))
       end
 
    play_start_voices (a_data: MIXUP_EVENT_DATA; voice_ids: TRAVERSABLE[INTEGER]) is
