@@ -3,7 +3,13 @@
 root=$(dirname $(pwd))
 root=$(dirname $root)
 cd $(dirname $0)
-BASEDIR=${BASEDIR:-$(pwd)/.test}
+if [ -n "$CI_DIR" ]; then
+    BASEDIR=$CI_DIR
+else
+    BASEDIR=${BASEDIR:-$(pwd)/.test}
+fi
+
+echo basedir=$BASEDIR
 
 generate_ace_file() {
         cat <<EOF
