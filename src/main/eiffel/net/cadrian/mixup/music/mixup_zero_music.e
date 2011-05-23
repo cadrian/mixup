@@ -12,49 +12,55 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-deferred class MIXUP_TYPED_VALUE[E_]
+class MIXUP_ZERO_MUSIC
 
 inherit
-   MIXUP_VALUE
+   MIXUP_MUSIC
       redefine
-         out_in_tagged_out_memory, is_equal
+         out_in_tagged_out_memory
       end
 
-insert
-   SAFE_EQUAL[E_]
-      redefine
-         out_in_tagged_out_memory, is_equal
-      end
+create {ANY}
+   make
 
 feature {ANY}
-   value: E_
+   valid_anchor: BOOLEAN is False
 
-   is_callable: BOOLEAN is False
+   duration: INTEGER_64 is 0
+   anchor: MIXUP_NOTE_HEAD is do end
+
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
+      do
+         Result := start_bar_number
+      end
+
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+      do
+         create {MIXUP_ZERO_EVENTS_ITERATOR} Result.make
+      end
 
    out_in_tagged_out_memory is
       do
-         if value = Void then
-            tagged_out_memory.append(once "Void")
-         else
-            value.out_in_tagged_out_memory
-         end
+         tagged_out_memory.append(once "zero")
       end
 
-   is_equal (other: like Current): BOOLEAN is
+feature {MIXUP_MUSIC, MIXUP_VOICE}
+   frozen consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
       do
-         Result := safe_equal(value, other.value)
+      end
+
+   frozen add_voice_ids (ids: AVL_SET[INTEGER]) is
+      do
       end
 
 feature {}
-   make (a_source: like source; a_value: like value) is
+   make (a_source: like source) is
       require
          a_source /= Void
       do
          source := a_source
-         value := a_value
       ensure
          source = a_source
-         value = a_value
       end
 
-end -- class MIXUP_TYPED_VALUE
+end -- class MIXUP_ZERO_MUSIC

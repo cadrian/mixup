@@ -47,8 +47,9 @@ export tempo.per_minute := 90
 export tempo.print := false
 
 
-export const trebble := 1
-export const bass := 2
+export const trebble := "G"
+export const trebble_8 := "G_8"
+export const bass := "F"
 
 
 

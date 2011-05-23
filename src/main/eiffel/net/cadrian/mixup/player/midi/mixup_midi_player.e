@@ -21,17 +21,26 @@ create {ANY}
    make
 
 feature {ANY}
+   name: FIXED_STRING is
+      once
+         Result := "midi".intern
+      end
+
    set_context (a_context: MIXUP_CONTEXT) is
       do
       end
 
-   native (a_source: MIXUP_SOURCE; name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native (a_source: MIXUP_SOURCE; fn_name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
-         warning_at(a_source, "MIDI: unknown native function: " + name)
+         inspect
+            fn_name
+         else
+            warning_at(a_source, "MIDI: unknown native function: " + fn_name)
+         end
       end
 
 feature {ANY}
-   play_set_score (name: ABSTRACT_STRING) is
+   play_set_score (a_name: ABSTRACT_STRING) is
       do
       end
 
@@ -39,7 +48,7 @@ feature {ANY}
       do
       end
 
-   play_set_book (name: ABSTRACT_STRING) is
+   play_set_book (a_name: ABSTRACT_STRING) is
       do
       end
 
@@ -47,7 +56,7 @@ feature {ANY}
       do
       end
 
-   play_set_partitur (name: ABSTRACT_STRING) is
+   play_set_partitur (a_name: ABSTRACT_STRING) is
       do
       end
 
@@ -55,7 +64,7 @@ feature {ANY}
       do
       end
 
-   play_set_instrument (name: ABSTRACT_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
+   play_set_instrument (a_name: ABSTRACT_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
       do
       end
 

@@ -42,6 +42,7 @@ feature {ANY}
    commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
       do
          music := music_evaluator.eval(a_context, a_player)
+         Result := music.commit(a_context, a_player, start_bar_number)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is

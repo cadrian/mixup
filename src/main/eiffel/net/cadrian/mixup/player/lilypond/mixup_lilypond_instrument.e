@@ -89,6 +89,13 @@ feature {MIXUP_LILYPOND_PLAYER}
          staffs.reference_at(a_staff_id).end_repeat(a_voice_id)
       end
 
+   string_event (a_staff_id, a_voice_id: INTEGER; a_string: FIXED_STRING) is
+      require
+         a_string /= Void
+      do
+         staffs.reference_at(a_staff_id).string_event(a_voice_id, a_string)
+      end
+
 feature {MIXUP_LILYPOND_PLAYER}
    generate (output: OUTPUT_STREAM) is
       require

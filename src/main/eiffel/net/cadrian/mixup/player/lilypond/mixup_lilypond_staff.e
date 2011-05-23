@@ -104,6 +104,13 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
          voice(a_voice_id).end_repeat
       end
 
+   string_event (a_voice_id: INTEGER; a_string: FIXED_STRING) is
+      require
+         a_string /= Void
+      do
+         voice(a_voice_id).string_event(a_string)
+      end
+
 feature {MIXUP_LILYPOND_INSTRUMENT}
    generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM; generate_names: BOOLEAN) is
       require
@@ -132,8 +139,11 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
          output.put_line(once ">>")
          output.put_line(once "}")
 
-         create iter_lyrics.make(lyrics, 1 |..| lyrics.count)
-         iter_lyrics.do_all(agent generate_lyrics(?, ?, context, output))
+         if not lyrics.is_empty then
+            create iter_lyrics.make(lyrics, 1 |..| lyrics.count)
+            iter_lyrics.do_all(agent generate_lyrics(?, ?, context, output))
+         end
+
          output.put_line(once ">>")
       end
 

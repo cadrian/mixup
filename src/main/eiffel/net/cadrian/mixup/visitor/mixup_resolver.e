@@ -18,7 +18,7 @@ inherit
    MIXUP_VALUE_VISITOR
 
 insert
-   LOGGING
+   MIXUP_ERRORS
 
 create {ANY}
    make
@@ -73,7 +73,11 @@ feature {}
             i > args.upper
          loop
             arg := args.item(i).eval(context, current_player)
-            arg.accept(Current)
+            if arg /= Void then
+               arg.accept(Current)
+            else
+               fatal_at(args.item(i).source, "Missing value")
+            end
             Result.add_last(value)
             i := i + 1
          end

@@ -21,14 +21,19 @@ create {ANY}
    make
 
 feature {ANY}
+   name: FIXED_STRING is
+      once
+         Result := "seed".intern
+      end
+
    set_context (a_context: MIXUP_CONTEXT) is
       do
       end
 
-   native (a_source: MIXUP_SOURCE; name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native (a_source: MIXUP_SOURCE; fn_name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
          inspect
-            name
+            fn_name
          when "playback_midi" then
             mixer.add_player(create {MIXUP_MIDI_PLAYER}.make)
          when "playback_lilypond" then

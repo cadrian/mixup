@@ -21,6 +21,11 @@ create {ANY}
    make, connect_to
 
 feature {ANY}
+   name: FIXED_STRING is
+      once
+         Result := "lilypond".intern
+      end
+
    set_context (a_context: MIXUP_CONTEXT) is
       do
          context := a_context
@@ -28,21 +33,33 @@ feature {ANY}
          context = a_context
       end
 
-   native (a_source: MIXUP_SOURCE; name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native (a_source: MIXUP_SOURCE; fn_name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      local
+         str: MIXUP_STRING
       do
          inspect
-            name
+            fn_name
          when "current_bar_number" then
             create {MIXUP_INTEGER} Result.make(a_source, bar_number)
+         when "string_event" then
+            if args.count /= 1 then
+               error_at(a_source, "Lilypond: bad argument count")
+            elseif str ?:= args.first then
+               str ::= args.first
+               check str.value /= Void end
+               create {MIXUP_LILYPOND_STRING_EVENT_FACTORY} Result.make(str.source, str.value)
+            else
+               error_at(args.first.source, "Lilypond: expected a string")
+            end
          else
-            warning_at(a_source, "Lilypond: unknown native function: " + name)
+            warning_at(a_source, "Lilypond: unknown native function: " + fn_name)
          end
       end
 
 feature {ANY}
-   play_set_score (name: ABSTRACT_STRING) is
+   play_set_score (a_name: ABSTRACT_STRING) is
       do
-         push_section(once "score", name)
+         push_section(once "score", a_name)
       end
 
    play_end_score is
@@ -50,9 +67,9 @@ feature {ANY}
          pop_section
       end
 
-   play_set_book (name: ABSTRACT_STRING) is
+   play_set_book (a_name: ABSTRACT_STRING) is
       do
-         push_section(once "book", name)
+         push_section(once "book", a_name)
       end
 
    play_end_book is
@@ -60,9 +77,9 @@ feature {ANY}
          pop_section
       end
 
-   play_set_partitur (name: ABSTRACT_STRING) is
+   play_set_partitur (a_name: ABSTRACT_STRING) is
       do
-         push_section(once "partitur", name)
+         push_section(once "partitur", a_name)
       end
 
    play_end_partitur is
@@ -70,14 +87,14 @@ feature {ANY}
          pop_section
       end
 
-   play_set_instrument (name: ABSTRACT_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
+   play_set_instrument (a_name: ABSTRACT_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
       local
          inst_name: FIXED_STRING
          instrument: MIXUP_LILYPOND_INSTRUMENT
       do
-         inst_name := name.intern
+         inst_name := a_name.intern
          create instrument.make(context, Current, inst_name, voice_staff_ids)
-         log.info.put_line("Lilypond: adding instrument: " + name.out)
+         log.info.put_line("Lilypond: adding instrument: " + a_name.out)
          instruments.add(instrument, inst_name)
          bar_number := 0
       end
@@ -159,15 +176,24 @@ feature {ANY}
          instruments.reference_at(a_data.instrument).end_repeat(a_data.staff_id, a_data.voice_id)
       end
 
+   play_string_event (a_data: MIXUP_EVENT_DATA; a_string: FIXED_STRING) is
+         -- Lilypond-specific
+      require
+         a_string /= Void
+      do
+         log.info.put_line("Lilypond: string event")
+         instruments.reference_at(a_data.instrument).string_event(a_data.staff_id, a_data.voice_id, a_string)
+      end
+
 feature {} -- headers and footers
-   put_header (section, name: ABSTRACT_STRING) is
+   put_header (section, a_name: ABSTRACT_STRING) is
       do
          section_output.put_line("%% ---------------- Generated using MiXuP ----------------")
          section_output.put_new_line
          section_output.put_line("\include %"mixup-" + section.out + ".ily%"")
          section_output.put_new_line
          section_output.put_line("\header {")
-         section_output.put_line("mixup-" + section.out + " = %"" + name.out + "%"")
+         section_output.put_line("mixup-" + section.out + " = %"" + a_name.out + "%"")
          section_output.put_line("}")
          section_output.put_new_line
          section_output.put_line("\book {")
@@ -183,9 +209,9 @@ feature {} -- headers and footers
       end
 
 feature {} -- section files management
-   push_section (section, name: ABSTRACT_STRING) is
+   push_section (section, a_name: ABSTRACT_STRING) is
       require
-         name /= Void
+         a_name /= Void
       local
          filename: STRING
          tfr: TEXT_FILE_WRITE
@@ -194,23 +220,23 @@ feature {} -- section files management
             check
                opus_name = Void
             end
-            opus_name := name.intern
+            opus_name := a_name.intern
             if managed_output then
                check
                   opus_output = Void
                end
-               create tfr.connect_to(name + ".ly")
+               create tfr.connect_to(a_name + ".ly")
                outputs_stack.push(tfr)
                opus_output := tfr
             end
          elseif managed_output then
-            filename := opus_name.out + "-" + name.out
+            filename := opus_name.out + "-" + a_name.out
             create tfr.connect_to(filename)
             section_output.put_line("\include %"" + filename + "%"")
             outputs_stack.push(tfr)
          end
-         put_header(section, name)
-         section_stack.push(name.intern)
+         put_header(section, a_name)
+         section_stack.push(a_name.intern)
       end
 
    pop_section is

@@ -21,25 +21,30 @@ create {ANY}
    make, connect_to
 
 feature {ANY}
+   name: FIXED_STRING is
+      once
+         Result := "musixtex".intern
+      end
+
    set_context (a_context: MIXUP_CONTEXT) is
       do
       end
 
-   native (a_source: MIXUP_SOURCE; name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native (a_source: MIXUP_SOURCE; fn_name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
          inspect
-            name
+            fn_name
          when "current_bar_number" then
             create {MIXUP_INTEGER} Result.make(bar_number)
          else
-            warning_at(a_source, "MusixTeX: unknown native function: " + name)
+            warning_at(a_source, "MusixTeX: unknown native function: " + fn_name)
          end
       end
 
 feature {ANY}
-   set_score (name: ABSTRACT_STRING) is
+   set_score (a_name: ABSTRACT_STRING) is
       do
-         push_section(name)
+         push_section(a_name)
       end
 
    end_score is
@@ -47,9 +52,9 @@ feature {ANY}
          pop_section
       end
 
-   set_book (name: ABSTRACT_STRING) is
+   set_book (a_name: ABSTRACT_STRING) is
       do
-         push_section(name)
+         push_section(a_name)
       end
 
    end_book is
@@ -57,9 +62,9 @@ feature {ANY}
          pop_section
       end
 
-   set_partitur (name: ABSTRACT_STRING) is
+   set_partitur (a_name: ABSTRACT_STRING) is
       do
-         push_section(name)
+         push_section(a_name)
       end
 
    end_partitur is
@@ -67,9 +72,9 @@ feature {ANY}
          pop_section
       end
 
-   set_instrument (name: ABSTRACT_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
+   set_instrument (a_name: ABSTRACT_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
       do
-         instruments.put(create {MIXUP_MUSIXTEX_INSTRUMENT}.make(instruments.count + 1, name.intern), name.intern)
+         instruments.put(create {MIXUP_MUSIXTEX_INSTRUMENT}.make(instruments.count + 1, a_name.intern), a_name.intern)
       end
 
    play_start_voices (a_data: MIXUP_EVENT_DATA; voice_ids: TRAVERSABLE[INTEGER]) is
@@ -148,20 +153,20 @@ feature {}
                                  ]")
       end
 
-   push_section (name: ABSTRACT_STRING) is
+   push_section (a_name: ABSTRACT_STRING) is
       require
-         name /= Void
+         a_name /= Void
       do
          if section_stack.is_empty then
             if output = Void then
                check
                   local_output
                end
-               create {TEXT_FILE_WRITE} output.connect_to(name + ".tex")
+               create {TEXT_FILE_WRITE} output.connect_to(a_name + ".tex")
             end
             put_header
          end
-         section_stack.push(name.intern)
+         section_stack.push(a_name.intern)
       end
 
    pop_section is

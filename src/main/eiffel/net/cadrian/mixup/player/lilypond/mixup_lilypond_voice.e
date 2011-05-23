@@ -106,6 +106,13 @@ feature {MIXUP_LILYPOND_STAFF}
       do
       end
 
+   string_event (a_string: FIXED_STRING) is
+      require
+         a_string /= Void
+      do
+         add_item(create {MIXUP_LILYPOND_STRING}.make(a_string))
+      end
+
 feature {MIXUP_LILYPOND_VOICES}
    generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
       do

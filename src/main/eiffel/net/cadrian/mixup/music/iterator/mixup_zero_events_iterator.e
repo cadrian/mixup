@@ -12,39 +12,44 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-deferred class MIXUP_PLAYER
-   -- Just a VISITOR with a fancy name (viz. an Acyclic Visitor)
+class MIXUP_ZERO_EVENTS_ITERATOR
    --
-   -- See also MIXUP_CORE_PLAYER, MIXUP_EVENT
+   -- Trivial iterator: always `is_off'.
+   --
+
+inherit
+   MIXUP_EVENTS_ITERATOR
 
 insert
-   MIXUP_ERRORS
+   LOGGING
+      undefine is_equal
+      end
+
+create {ANY}
+   make
 
 feature {ANY}
-   name: FIXED_STRING is
-      deferred
-      end
-
-   play (a_event: MIXUP_EVENT) is
-      require
-         a_event /= Void
+   start is
       do
-         a_event.fire(Current)
       end
 
-   native (a_source: MIXUP_SOURCE; fn_name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
-      require
-         a_source /= Void
-         fn_name /= Void
-         a_context /= Void
-         args /= Void
-      deferred
+   is_off: BOOLEAN is True
+
+   item: MIXUP_EVENT is
+      do
+         crash
       end
 
-   set_context (a_context: MIXUP_CONTEXT) is
-      require
-         a_context /= Void
-      deferred
+   next is
+      do
       end
 
-end -- class MIXUP_PLAYER
+feature {}
+   make is
+      do
+      end
+
+invariant
+   is_off
+
+end -- class MIXUP_ZERO_EVENTS_ITERATOR

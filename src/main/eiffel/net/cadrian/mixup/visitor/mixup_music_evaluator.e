@@ -42,6 +42,8 @@ feature {ANY}
             value.accept(Current)
             Result := music
          end
+      ensure
+         Result /= Void
       end
 
 feature {MIXUP_BOOLEAN}
@@ -131,7 +133,7 @@ feature {MIXUP_YIELD_ITERATOR}
 feature {MIXUP_NO_VALUE}
    visit_no_value (a_no_value: MIXUP_NO_VALUE) is
       do
-         fatal("not a value")
+         create {MIXUP_ZERO_MUSIC} music.make(source)
       end
 
 feature {}

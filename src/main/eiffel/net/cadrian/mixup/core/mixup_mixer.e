@@ -193,6 +193,11 @@ feature {}
       do
       end
 
+   native_current_player (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      do
+         create {MIXUP_STRING} Result.make(a_source, player.name, player.name)
+      end
+
    native_in_player (a_source: MIXUP_SOURCE; name: STRING; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
          Result := player.native(a_source, name, context, args)
@@ -216,6 +221,8 @@ feature {ANY}
             Result := agent native_store_music(a_source, ?, ?, ?)
          when "store_text" then
             Result := agent native_store_text(a_source, ?, ?, ?)
+         when "current_player" then
+            Result := agent native_current_player(a_source, ?, ?, ?)
          else
             Result := agent native_in_player(a_source, name, ?, ?, ?)
          end

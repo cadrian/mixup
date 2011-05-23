@@ -25,7 +25,7 @@ feature {ANY}
       do
          create {RING_ARRAY[MIXUP_EVENTS_ITERATOR]} notes.with_capacity(0, count)
          add_notes_iterator
-         sorter.sort(notes)
+         remove_off
       end
 
    is_off: BOOLEAN is
@@ -54,15 +54,23 @@ feature {}
    go_next is
       do
          notes.first.next
-         if notes.first.is_off then
-            notes.remove_first
-         end
-         sorter.sort(notes)
+         remove_off
       end
 
 feature {}
    notes:  COLLECTION[MIXUP_EVENTS_ITERATOR]
    sorter: COLLECTION_SORTER[MIXUP_EVENTS_ITERATOR]
+
+   remove_off is
+      do
+         from
+            sorter.sort(notes)
+         until
+            notes.is_empty or else not notes.first.is_off
+         loop
+            notes.remove_first
+         end
+      end
 
    add_notes_iterator is
       require

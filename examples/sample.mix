@@ -2,7 +2,7 @@ partitur sample
 
 from core import *
 from style.standard import *
-import playback.lilypond
+from playback.lilypond import *
 from playback.midi import violin, viola
 
 set time := common_time
@@ -16,13 +16,15 @@ set template.show_empty_staves := false
 
 
 instrument soprano
-    set staff.clef := trebble
     set midi.inst := violin
     set midi.playback_style := legato
     set template.instrument_name := "Soprano"
     set template.instrument_abbrev := "S."
     music
-        << c4 d e f | g a b c | c,1 >>
+        <<
+            \set_clef(trebble) \set_key(c_dur) \set_time(common_time)
+            c4 d e f | g a b c | c,1
+        >>
     lyrics
         << doe ray me far sew la tea doe, doe... >>
         << do re mi fa so la ti do, do. >>
@@ -30,13 +32,15 @@ instrument soprano
 
 
 instrument alto
-    set staff.clef := trebble
     set midi.inst := viola
     set midi.playback_style := legato
     set template.instrument_name := "Alto"
     set template.instrument_abbrev := "A."
     music
-        << r1 | c4 d e f | e1 >>
+        <<
+            \set_clef(trebble) \set_key(c_dur) \set_time(common_time)
+            r1 | c4 d e f | e1
+        >>
     lyrics
         << do re mi fa so la ti do, do. >>
     end

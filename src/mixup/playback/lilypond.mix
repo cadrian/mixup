@@ -1,5 +1,67 @@
 module lilypond
 
 set hook.at_load := function native "playback_lilypond"
+set string_event := function(str) native "string_event"
+set current_player := function native "current_player"
+
+export set_clef := function(clef)
+                   do
+                       if current_player = "lilypond" then
+                           Result := string_event(" \clef %"" + clef + "%"%N")
+                       end
+                   end
+
+export set_key := function(key)
+                  do
+                      if current_player = "lilypond" then
+                          inspect key
+                          when ges_dur then Result := string_event(" \key ges \major%N")
+                          when des_dur then Result := string_event(" \key des \major%N")
+                          when aes_dur then Result := string_event(" \key aes \major%N")
+                          when ees_dur then Result := string_event(" \key ees \major%N")
+                          when bes_dur then Result := string_event(" \key bes \major%N")
+                          when f_dur   then Result := string_event(" \key f \major%N")
+                          when c_dur   then Result := string_event(" \key c \major%N")
+                          when g_dur   then Result := string_event(" \key g \major%N")
+                          when d_dur   then Result := string_event(" \key d \major%N")
+                          when a_dur   then Result := string_event(" \key a \major%N")
+                          when e_dur   then Result := string_event(" \key e \major%N")
+                          when b_dur   then Result := string_event(" \key b \major%N")
+                          when fis_dur then Result := string_event(" \key fis \major%N")
+                          when cis_dur then Result := string_event(" \key cis \major%N")
+                          when gis_dur then Result := string_event(" \key gis \major%N")
+                          when dis_dur then Result := string_event(" \key dis \major%N")
+                          when ais_dur then Result := string_event(" \key ais \major%N")
+                          when eis_dur then Result := string_event(" \key eis \major%N")
+                          when ees_mol then Result := string_event(" \key ees \minor%N")
+                          when bes_mol then Result := string_event(" \key bes \minor%N")
+                          when f_mol   then Result := string_event(" \key f \minor%N")
+                          when c_mol   then Result := string_event(" \key c \minor%N")
+                          when g_mol   then Result := string_event(" \key g \minor%N")
+                          when d_mol   then Result := string_event(" \key d \minor%N")
+                          when a_mol   then Result := string_event(" \key a \minor%N")
+                          when e_mol   then Result := string_event(" \key e \minor%N")
+                          when b_mol   then Result := string_event(" \key b \minor%N")
+                          when fis_mol then Result := string_event(" \key fis \minor%N")
+                          when cis_mol then Result := string_event(" \key cis \minor%N")
+                          when gis_mol then Result := string_event(" \key gis \minor%N")
+                          when dis_mol then Result := string_event(" \key dis \minor%N")
+                          when ais_mol then Result := string_event(" \key ais \minor%N")
+                          when eis_mol then Result := string_event(" \key eis \minor%N")
+                          end
+                      end
+                  end
+
+export set_time := function(time)
+                   do
+                       if current_player = "lilypond" then
+                           inspect
+                               time
+                           when "C"  then Result := string_event(" \override Staff.TimeSignature #'style = #'default \time 4/4%N")
+                           when "C/" then Result := string_event(" \override Staff.TimeSignature #'style = #'default \time 2/2%N")
+                           else           Result := string_event(" \override Staff.TimeSignature #'style = #'() \time " + time + "%N")
+                           end
+                       end
+                   end
 
 end
