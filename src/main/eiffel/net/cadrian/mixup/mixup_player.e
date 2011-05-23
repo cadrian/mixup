@@ -23,6 +23,9 @@ insert
 feature {ANY}
    name: FIXED_STRING is
       deferred
+      ensure
+         exists: Result /= Void
+         constant: Result = name
       end
 
    play (a_event: MIXUP_EVENT) is
