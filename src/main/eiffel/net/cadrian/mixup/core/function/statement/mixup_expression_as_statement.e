@@ -16,6 +16,9 @@ class MIXUP_EXPRESSION_AS_STATEMENT
 
 inherit
    MIXUP_STATEMENT
+      redefine
+         out_in_tagged_out_memory
+      end
 
 create {ANY}
    make
@@ -36,6 +39,12 @@ feature {ANY}
       do
          v ::= visitor
          v.visit_expression_as_statement(Current)
+      end
+
+   out_in_tagged_out_memory is
+      do
+         tagged_out_memory.append(once "expression: ")
+         source.out_in_tagged_out_memory
       end
 
 feature {}

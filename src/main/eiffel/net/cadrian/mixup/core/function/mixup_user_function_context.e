@@ -95,6 +95,7 @@ feature {ANY}
          loop
             statement := statements.first
             statements.remove_first
+            log.trace.put_line("Calling statement: " + statement.out)
             statement.call(Current)
          end
       ensure

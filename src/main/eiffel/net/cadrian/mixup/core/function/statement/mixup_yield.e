@@ -16,6 +16,9 @@ class MIXUP_YIELD
 
 inherit
    MIXUP_STATEMENT
+      redefine
+         out_in_tagged_out_memory
+      end
 
 create {ANY}
    make
@@ -41,6 +44,12 @@ feature {ANY}
       do
          v ::= visitor
          v.visit_yield(Current)
+      end
+
+   out_in_tagged_out_memory is
+      do
+         tagged_out_memory.append(once "yield: ")
+         source.out_in_tagged_out_memory
       end
 
 feature {}

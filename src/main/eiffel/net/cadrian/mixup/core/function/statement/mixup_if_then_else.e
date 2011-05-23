@@ -16,6 +16,9 @@ class MIXUP_IF_THEN_ELSE
 
 inherit
    MIXUP_STATEMENT
+      redefine
+         out_in_tagged_out_memory
+      end
 
 create {ANY}
    make
@@ -24,6 +27,7 @@ feature {ANY}
    call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
       local
          i: INTEGER; done: BOOLEAN; execution_context: MIXUP_IF_THEN_ELSE_EXECUTION
+         branch: MIXUP_IF
       do
          from
             i := condition_list.lower
@@ -31,10 +35,17 @@ feature {ANY}
          until
             done or else i > condition_list.upper
          loop
-            done := execution_context.match(condition_list.item(i))
+            branch := condition_list.item(i)
+            done := execution_context.match(branch)
+            if done then
+               log.trace.put_line("Entering branch #" + i.out)
+               a_context.add_statements(branch.statements)
+            end
             i := i + 1
          end
          if not done and then otherwise /= Void then
+            log.trace.put_line("Entering branch #else")
+            sedb_breakpoint
             a_context.add_statements(otherwise.statements)
          end
       end
@@ -69,6 +80,12 @@ feature {ANY}
          otherwise := a_otherwise
       ensure
          otherwise = a_otherwise
+      end
+
+   out_in_tagged_out_memory is
+      do
+         tagged_out_memory.append(once "if-then-else: ")
+         source.out_in_tagged_out_memory
       end
 
 feature {}

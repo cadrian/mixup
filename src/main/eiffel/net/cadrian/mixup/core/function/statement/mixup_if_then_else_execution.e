@@ -25,16 +25,13 @@ feature {ANY}
       local
          value: MIXUP_VALUE
       do
-         match_ := False
          value := a_if.condition.eval(context, context.player)
          if value = Void then
             fatal("value could not be computed")
          else
+            match_ := False
             value.accept(Current)
-            if match_ then
-               Result := True
-               context.add_statements(a_if.statements)
-            end
+            Result := match_
          end
       end
 
