@@ -9,8 +9,6 @@ else
     BASEDIR=${BASEDIR:-$(pwd)/.test}
 fi
 
-echo basedir=$BASEDIR
-
 generate_ace_file() {
         cat <<EOF
 system "test"
