@@ -56,7 +56,8 @@ feature {ANY}
          identifier /= Void
          a_player /= Void
       do
-         Result := lookup_value(identifier, search_parent, lookup_tag #+ 1)
+         lookup_tag_counter.next
+         Result := lookup_value(identifier, search_parent, lookup_tag_counter.item)
          debug
             log.trace.put_string("Look-up of '" + identifier + "' returned ")
             if Result = Void then
@@ -75,7 +76,8 @@ feature {ANY}
       local
          done: BOOLEAN
       do
-         done := setup_value(identifier, True, a_value, is_const, is_public, is_local, lookup_tag #+ 1)
+         lookup_tag_counter.next
+         done := setup_value(identifier, True, a_value, is_const, is_public, is_local, lookup_tag_counter.item)
          if not done then
             fatal("Could not assign value to " + identifier.out)
          end
@@ -112,7 +114,7 @@ feature {ANY}
 feature {MIXUP_CONTEXT}
    lookup_value (identifier: FIXED_STRING; search_parent: BOOLEAN; a_tag: like lookup_tag): MIXUP_VALUE is
       require
-         a_tag /= lookup_tag
+         a_tag > lookup_tag
          identifier /= Void
       local
          val: MIXUP_VALUE_IN_CONTEXT
@@ -136,7 +138,7 @@ feature {MIXUP_CONTEXT}
                   log.trace.put_line("{" + generating_type + "}." + name + ": look-up identifier '" + identifier.out + "' in imports")
                end
                Result := lookup_in_imports(identifier)
-               if Result = Void and then search_parent and then parent /= Void and then parent.lookup_tag /= a_tag then
+               if Result = Void and then search_parent and then parent /= Void and then parent.lookup_tag < a_tag then
                   debug
                      log.trace.put_line("{" + generating_type + "}." + name + ": look-up identifier '" + identifier.out + "' in parent")
                   end
@@ -148,7 +150,7 @@ feature {MIXUP_CONTEXT}
 
    setup_value (identifier: FIXED_STRING; assign_if_new: BOOLEAN; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN; a_tag: like lookup_tag): BOOLEAN is
       require
-         a_tag /= lookup_tag
+         a_tag > lookup_tag
          identifier /= Void
          a_value /= Void
          is_local implies not is_const
@@ -180,7 +182,7 @@ feature {MIXUP_CONTEXT}
                Result := setup_in_children(identifier, a_value, is_const, is_public, is_local)
                if not Result then
                   Result := setup_in_imports(identifier, a_value, is_const, is_public, is_local)
-                  if not Result and then parent /= Void and then parent.lookup_tag /= a_tag then
+                  if not Result and then parent /= Void and then parent.lookup_tag < a_tag then
                      Result := parent.setup_value(identifier, False, a_value, is_const, is_public, is_local, a_tag)
                   end
                   if not Result and then assign_if_new then
@@ -269,7 +271,9 @@ feature {}
          until
             Result /= Void or else i > imports.upper
          loop
-            if imports.item(i).lookup_tag /= lookup_tag then
+            log.trace.put_line("TAG: " + name.out + "=" + lookup_tag.out
+                               + " - " + imports.item(i).name.out + "=" + imports.item(i).lookup_tag.out)
+            if imports.item(i).lookup_tag < lookup_tag then
                Result := imports.item(i).lookup_value(identifier, False, lookup_tag)
             end
             i := i + 1
@@ -288,11 +292,16 @@ feature {}
          until
             Result or else i > imports.upper
          loop
-            if imports.item(i).lookup_tag /= lookup_tag then
+            if imports.item(i).lookup_tag < lookup_tag then
                Result := imports.item(i).setup_value(identifier, False, a_value, is_const, is_public, is_local, lookup_tag)
             end
             i := i + 1
          end
+      end
+
+   lookup_tag_counter: COUNTER is
+      once
+         create Result
       end
 
 feature {}

@@ -72,7 +72,7 @@ feature {}
          if identifier.valid_index(i) then
             id_prefix := identifier.substring(identifier.lower, i - 1)
             child := children.reference_at(id_prefix)
-            if child /= Void and then child.lookup_tag /= lookup_tag then
+            if child /= Void and then child.lookup_tag < lookup_tag then
                Result := child.lookup_value(identifier.substring(i + 1, identifier.upper), False, lookup_tag)
             end
          end
@@ -87,7 +87,7 @@ feature {}
          if identifier.valid_index(i) then
             id_prefix := identifier.substring(identifier.lower, i - 1)
             child := children.reference_at(id_prefix)
-            if child /= Void and then child.lookup_tag /= lookup_tag then
+            if child /= Void and then child.lookup_tag < lookup_tag then
                Result := child.setup_value(identifier.substring(i + 1, identifier.upper), True, a_value, is_const, is_public, is_local, lookup_tag)
             end
          end

@@ -72,14 +72,14 @@ feature {}
 
    lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is
       do
-         if child.lookup_tag /= lookup_tag and then valid_identifier(identifier) then
+         if child.lookup_tag < lookup_tag and then valid_identifier(identifier) then
             Result := child.lookup_value(child_identifier(identifier), False, lookup_tag)
          end
       end
 
    setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN is
       do
-         if child.lookup_tag /= lookup_tag and then valid_identifier(identifier) then
+         if child.lookup_tag < lookup_tag and then valid_identifier(identifier) then
             Result := child.setup_value(child_identifier(identifier), False, a_value, is_const, is_public, is_local, lookup_tag)
          end
       end
