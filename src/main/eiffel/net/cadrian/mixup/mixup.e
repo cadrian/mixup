@@ -46,7 +46,7 @@ feature {}
 
          open_directory := current_directory
          file := find_file(argument(1).intern, mixup_suffix)
-         mixer.add_piece(parse(read_file(file)), file.path)
+         mixer.add_piece(parse(file.path, read_file(file)), file.path)
          check
             open_directory = current_directory
          end
@@ -68,8 +68,9 @@ feature {}
          set_log
       end
 
-   parse (a_source: MINI_PARSER_BUFFER): MIXUP_NODE is
+   parse (a_path: ABSTRACT_STRING; a_source: MINI_PARSER_BUFFER): MIXUP_NODE is
       require
+         a_path /= Void
          a_source /= Void
       local
          evaled: BOOLEAN
@@ -89,7 +90,7 @@ feature {}
             until
                error = Void
             loop
-               log.error.put_line(error.message + " (@" + error.index.out + ")")
+               log.error.put_line(a_path.out + ":" + error.index.out + ": " + error.message)
                error := error.next
             end
             die_with_code(1)
@@ -192,7 +193,7 @@ feature {}
       do
          old_directory := open_directory
          file := find_file(a_name, mixup_suffix)
-         Result := [parse(read_file(file)), file.path]
+         Result := [parse(file.path, read_file(file)), file.path]
          open_directory := old_directory
       ensure
          exists_or_dead: Result /= Void
