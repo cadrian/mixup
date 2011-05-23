@@ -192,6 +192,10 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             build_if(node)
          when "Else" then
             build_else(node)
+         when "Inspect" then
+            build_inspect(node)
+         when "Inspect_Branch" then
+            build_inspect_branch(node)
          when "Loop" then
             build_loop(node)
          when "Expression_Or_Assignment" then
@@ -442,6 +446,9 @@ feature {} -- Functions
    last_statements: FAST_ARRAY[MIXUP_STATEMENT]
    last_signature:  FAST_ARRAY[FIXED_STRING]
 
+   current_if_then_else: MIXUP_IF_THEN_ELSE
+   current_inspect:      MIXUP_INSPECT
+
    build_signature (signature: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          create last_signature.make(0)
@@ -462,9 +469,7 @@ feature {} -- Functions
       do
          function_native.node_at(1).accept(Current)
          string ::= last_expression
-         str := once ""
-         str.clear_count
-         str.append(string.value)
+         str := string.value.out
          source := new_source(function_native)
          create {MIXUP_NATIVE_FUNCTION} last_function.make(source, string.value, current_context, native_provider.item(source, str))
          last_expression := last_function
@@ -482,13 +487,13 @@ feature {} -- Functions
          last_statements := Void
       end
 
-   current_if_then_else: MIXUP_IF_THEN_ELSE
-
    build_if_then_else (a_if_then_else: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
          old_if_then_else: like current_if_then_else
+         old_inspect: like current_inspect
       do
          old_if_then_else := current_if_then_else
+         old_inspect := Void
 
          create current_if_then_else.make(new_source(a_if_then_else))
          a_if_then_else.node_at(0).accept(Current)
@@ -497,6 +502,7 @@ feature {} -- Functions
          last_statements.add_last(current_if_then_else)
 
          current_if_then_else := old_if_then_else
+         current_inspect := old_inspect
       end
 
    build_if (a_if: MIXUP_NON_TERMINAL_NODE_IMPL) is
@@ -504,9 +510,10 @@ feature {} -- Functions
          exp: like last_expression
          old_statements: like last_statements
       do
+         old_statements := last_statements
+         last_statements := Void
          a_if.node_at(1).accept(Current)
          exp := last_expression
-         old_statements := last_statements
          create last_statements.with_capacity(4)
          a_if.node_at(3).accept(Current)
          current_if_then_else.add_condition(create {MIXUP_IF}.make(new_source(a_if), exp, last_statements))
@@ -521,9 +528,47 @@ feature {} -- Functions
             old_statements := last_statements
             create last_statements.with_capacity(4)
             a_else.node_at(1).accept(Current)
-            current_if_then_else.set_otherwise(create {MIXUP_ELSE}.make(new_source(a_else), last_statements))
+            if current_if_then_else /= Void then
+               current_if_then_else.set_otherwise(create {MIXUP_ELSE}.make(new_source(a_else), last_statements))
+            else
+               current_inspect.set_otherwise(create {MIXUP_ELSE}.make(new_source(a_else), last_statements))
+            end
             last_statements := old_statements
          end
+      end
+
+   build_inspect (a_inspect: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         old_if_then_else: like current_if_then_else
+         old_inspect: like current_inspect
+      do
+         old_if_then_else := current_if_then_else
+         old_inspect := current_inspect
+         current_if_then_else := Void
+         current_inspect := Void
+
+         a_inspect.node_at(1).accept(Current)
+         create current_inspect.make(new_source(a_inspect), last_expression)
+         a_inspect.node_at(2).accept(Current)
+         a_inspect.node_at(3).accept(Current)
+         last_statements.add_last(current_inspect)
+
+         current_inspect := old_inspect
+         current_if_then_else := old_if_then_else
+      end
+
+   build_inspect_branch (a_inspect_branch: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         exp: like last_expression
+         old_statements: like last_statements
+      do
+         a_inspect_branch.node_at(1).accept(Current)
+         exp := last_expression
+         old_statements := last_statements
+         create last_statements.with_capacity(4)
+         a_inspect_branch.node_at(3).accept(Current)
+         current_inspect.add_branch(create {MIXUP_INSPECT_BRANCH}.make(new_source(a_inspect_branch), exp, last_statements))
+         last_statements := old_statements
       end
 
    build_loop (a_loop: MIXUP_NON_TERMINAL_NODE_IMPL) is
@@ -609,11 +654,13 @@ feature {} -- Functions
          source_ := new_source(import)
          ctx := context_factory.item([source_, ctx_name])
          if import.count = 2 then
+            log.trace.put_line("Adding import from " + ctx_name.out + " to " + current_context.name.out)
             create {MIXUP_IMPORT} ctx.make(source_, ctx_name, current_context, ctx)
          else
             check last_identifiers = Void end
             create last_identifiers.make(0)
             import.node_at(3).accept(Current)
+            log.trace.put_line("Adding imports from " + ctx_name.out + " to " + current_context.name.out)
             create {MIXUP_FROM_IMPORT} ctx.make(source_, ctx_name, current_context, ctx, last_identifiers)
             last_identifiers := Void
          end

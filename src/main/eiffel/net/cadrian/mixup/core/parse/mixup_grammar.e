@@ -318,6 +318,7 @@ feature {}
                                                                            >> };
                                    "Statement*", list_of("Statement", True, Void);
                                    "Statement", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "If_Then_Else" >> }, Void;
+                                                                       {FAST_ARRAY[STRING] << "Inspect" >> }, Void;
                                                                        {FAST_ARRAY[STRING] << "Loop" >> }, Void;
                                                                        {FAST_ARRAY[STRING] << "Expression_Or_Assignment" >> }, Void;
                                                                        {FAST_ARRAY[STRING] << "Yield" >> }, Void;
@@ -339,6 +340,11 @@ feature {}
                                    "Else", {PARSE_NON_TERMINAL << epsilon, Void;
                                                                   {FAST_ARRAY[STRING] << "KW else", "Statement*" >> }, Void;
                                                                   >> };
+                                   "Inspect", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW inspect", "Unary_Expression", "Inspect_Branch+", "Else", "KW end" >> }, Void;
+                                                                     >> };
+                                   "Inspect_Branch+", list_of("Inspect_Branch", False, Void);
+                                   "Inspect_Branch", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW when", "Expression", "KW then", "Statement*" >> }, Void;
+                                                                            >> };
 
                                    "Expression", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Collection" >> }, Void;
                                                                         {FAST_ARRAY[STRING] << "Unary_Expression" >> }, Void >> };
@@ -461,6 +467,7 @@ feature {}
                                    "KW implies",     create {PARSE_TERMINAL}.make(agent parse_keyword(?, "implies"),    Void);
                                    "KW import",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "import"),     Void);
                                    "KW in",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "in"),         Void);
+                                   "KW inspect",     create {PARSE_TERMINAL}.make(agent parse_keyword(?, "inspect"),    Void);
                                    "KW instrument",  create {PARSE_TERMINAL}.make(agent parse_keyword(?, "instrument"), Void);
                                    "KW lyrics",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "lyrics"),     Void);
                                    "KW module",      create {PARSE_TERMINAL}.make(agent parse_keyword(?, "module"),     Void);
@@ -475,6 +482,7 @@ feature {}
                                    "KW then",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "then"),       Void);
                                    "KW top",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "top"),        Void);
                                    "KW up",          create {PARSE_TERMINAL}.make(agent parse_keyword(?, "up"),         Void);
+                                   "KW when",        create {PARSE_TERMINAL}.make(agent parse_keyword(?, "when"),       Void);
                                    "KW xor",         create {PARSE_TERMINAL}.make(agent parse_keyword(?, "xor"),        Void);
                                    "KW yield",       create {PARSE_TERMINAL}.make(agent parse_keyword(?, "yield"),      Void);
 
@@ -1244,6 +1252,7 @@ feature {}
             "implies",
             "import",
             "in",
+            "inspect",
             "instrument",
             "lyrics",
             "module",
@@ -1257,6 +1266,7 @@ feature {}
             "then",
             "top",
             "up",
+            "when",
             "xor",
             "yield"
           then

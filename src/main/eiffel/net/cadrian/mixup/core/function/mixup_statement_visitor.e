@@ -38,6 +38,13 @@ feature {MIXUP_IF_THEN_ELSE}
       deferred
       end
 
+feature {MIXUP_INSPECT}
+   visit_inspect (a_inspect: MIXUP_INSPECT) is
+      require
+         a_inspect /= Void
+      deferred
+      end
+
 feature {MIXUP_LOOP}
    visit_loop (a_loop: MIXUP_LOOP) is
       require
