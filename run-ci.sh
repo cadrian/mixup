@@ -77,7 +77,7 @@ build_site() {
         echo '<tr>'
         echo '<td>'
         echo '<img src="ci/running.png"></td>'
-        echo '<td colspan="9"><i>Continuous Integration is running</i></td>'
+        echo '<td colspan="11"><i>Continuous Integration is running</i></td>'
         echo '</tr>'
     fi
     ls -r -1 $OUTDIR/log/log-* | while read log; do
@@ -85,6 +85,7 @@ build_site() {
         time=$(basename $log | cut -c5- | sed -r 's/^([0-9]{4})([0-9]{2})([0-9]{2})-([0-9]{2})([0-9]{2})([0-9]{2})$/\1-\2-\3 \4:\5:\6/')
         buildlog=log/build-$(basename $log)
         gitlog=log/git-$(basename $log)
+        examples=log/examples-$(basename $log)
         pkg=release/mixup$(basename $log | cut -c4-).tgz
         if $(status $log); then
             echo '<td><img src="ci/ok.png"></td>'
@@ -99,7 +100,13 @@ build_site() {
             echo '<td><i>(git log not available)</i></td>'
         fi
         echo '<td>&nbsp;|&nbsp;</td>'
-        echo '<td><a href="log/'$(basename $log)'">test log</a></td>'
+        if [ -d $examples ]; then
+            echo '<td><a href="log/'$(basename $log)'">test log</a></td>'
+            echo '<td>&nbsp;|&nbsp;</td>'
+            echo '<td><a href="'$examples'">failed examples</a></td>'
+        else
+            echo '<td colspan="3"><a href="log/'$(basename $log)'">test log</a></td>'
+        fi
         echo '<td>&nbsp;|&nbsp;</td>'
         if [ -e $OUTDIR/$buildlog ]; then
             echo '<td><a href="'$buildlog'">release build log</a></td>'
@@ -137,9 +144,15 @@ do_ci() {
     log=$($(pwd)/src/test/eiffel/ci)
     cp $log $OUTDIR/log/
     buildlog=$OUTDIR/log/build-$(basename $log)
-    gitlog=$OUTDIR/log/git-$(basename $log)
 
+    gitlog=$OUTDIR/log/git-$(basename $log)
     git log > $gitlog
+
+    buildir=$(grep ^TMPDIR= $log | awk -F= '{print $2}')
+    if [ -d "$buildir" ]; then
+        builddir=$OUTDIR/log/examples-$(basename $log)
+        mv $buildir $builddir
+    fi
 
     if $(pwd)/release/build.sh -clean > $buildlog; then
         pkg=$(grep Done: $buildlog | awk '{print $5}')

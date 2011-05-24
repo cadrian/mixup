@@ -48,7 +48,10 @@ echo $log
                     ly=${mix%.mix}.ly
                     if test -e $ly; then
                         if test -e $EXAMPLE_DIR/reference/$ly; then
-                            diff -u $EXAMPLE_DIR/reference/$ly $ly || failures=$((failures+1))
+                            diff -u $EXAMPLE_DIR/reference/$ly $ly || {
+                                echo "Different from reference!"
+                                failures=$((failures+1))
+                            }
                         fi
                     else
                         echo "Missing $ly! Failed execution?"
@@ -63,7 +66,8 @@ echo $log
             failures=$((failures+1))
         fi
 
-        rm -rf $TMPDIR
+        echo "======================================================================"
+        echo "TMPDIR=$TMPDIR"
     else
         failures=$((failures+1))
     fi
