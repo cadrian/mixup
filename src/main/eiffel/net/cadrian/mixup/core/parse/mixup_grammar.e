@@ -50,11 +50,17 @@ feature {ANY}
          buffer /= Void
       local
          parser: DESCENDING_PARSER
+         old_memory: like memory
       do
+         old_memory := memory
+         create memory.make
+
          create parser.make
          buffer.set_memory(Current)
          Result := parser.eval(buffer, table, once "File")
          parse_error := parser.error
+
+         memory := old_memory
       end
 
 feature {}
@@ -1881,7 +1887,6 @@ feature {}
          factory := a_factory
          create stack.make(0)
          create left_assoc_stack.make(0)
-         create memory.make
       ensure
          factory = a_factory
          stack.is_empty
@@ -1931,6 +1936,5 @@ feature {ANY}
 invariant
    stack /= Void
    left_assoc_stack /= Void
-   memory /= Void
 
 end -- class MIXUP_GRAMMAR
