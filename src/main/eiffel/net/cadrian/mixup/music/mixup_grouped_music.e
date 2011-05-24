@@ -67,15 +67,8 @@ feature {ANY}
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
-      local
-         lyrics_manager: MIXUP_GROUPED_MUSIC_LYRICS_MANAGER
       do
-         a_context.set_voice_id(id)
-         if xuplet_text /= Void then
-            a_context.set_xuplet(xuplet_numerator, xuplet_denominator, xuplet_text)
-         end
-         create lyrics_manager.make(not (is_slur or is_phrasing_slur))
-         create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_event_factory, end_event_factory, agent lyrics_manager.manage_lyrics, Precursor(a_context))
+         create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_voices, end_voices, Void, new_events_iterator_(a_context, Precursor(a_context)))
       end
 
    out_in_tagged_out_memory is
@@ -110,6 +103,18 @@ feature {ANY}
       end
 
 feature {}
+   new_events_iterator_ (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT; precursor_iterator: MIXUP_EVENTS_ITERATOR): MIXUP_EVENTS_ITERATOR is
+      local
+         lyrics_manager: MIXUP_GROUPED_MUSIC_LYRICS_MANAGER
+      do
+         a_context.set_voice_id(id)
+         if xuplet_text /= Void then
+            a_context.set_xuplet(xuplet_numerator, xuplet_denominator, xuplet_text)
+         end
+         create lyrics_manager.make(not (is_slur or is_phrasing_slur))
+         create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_event_factory, end_event_factory, agent lyrics_manager.manage_lyrics, precursor_iterator)
+      end
+
    as_beam (a_source: like source; a_reference: like reference) is
       require
          a_source /= Void
@@ -210,6 +215,26 @@ feature {}
    create_end_phrasing_slur (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
       do
          create {MIXUP_EVENT_END_PHRASING_SLUR} Result.make(a_context.event_data(source))
+      end
+
+   start_voices: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
+      do
+         Result := agent create_start_voices
+      end
+
+   create_start_voices (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
+      do
+         create {MIXUP_EVENT_START_VOICES} Result.make(a_context.event_data(source), {FAST_ARRAY[INTEGER] << id >> })
+      end
+
+   end_voices: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
+      do
+         Result := agent create_end_voices
+      end
+
+   create_end_voices (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENT is
+      do
+         create {MIXUP_EVENT_END_VOICES} Result.make(a_context.event_data(source))
       end
 
 feature {} -- tags

@@ -124,6 +124,7 @@ feature {}
            start_voices       ("singer", 1, {FAST_ARRAY[INTEGER] << 3 >>}                                                                      ),
            start_voices       ("singer", 1, {FAST_ARRAY[INTEGER] << 7 >>}                                                                      ),
            start_voices       ("singer", 1, {FAST_ARRAY[INTEGER] << 1 >>}                                                                      ),
+           start_voices       ("singer", 1, {FAST_ARRAY[INTEGER] << 2 >>}                                                                      ),
            start_phrasing_slur("singer", 1, 2, 1, 1, ""                                                                                        ),
            set_dynamics       ("singer", 1, "p", Void                                                                                          ),
            set_dynamics       ("singer", 1, "<", Void                                                                                          ),
@@ -143,24 +144,29 @@ feature {}
            set_note           ("singer", 1, {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("b", 4) >> }, source, << "tea" , "ti"  >> }), -- a drink with jam and bread
            set_dynamics       ("singer", 1, "f", Void                                                                                          ),
            set_note           ("singer", 1, {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("c", 4) >> }, source, << "doe,", "do," >> }),
-           end_phrasing_slur  ("singer", 1                                                                                                    ),
-           end_voices         ("singer", 1                                                                                                    ),
+           end_phrasing_slur  ("singer", 1                                                                                                     ),
+           end_voices         ("singer", 1                                                                                                     ),
+           end_voices         ("singer", 1                                                                                                     ),
 
            next_bar           ("singer", 1, ":||"                                                                                              ),
-           end_voices         ("singer", 1                                                                                                    ),
+           end_voices         ("singer", 1                                                                                                     ),
            set_dynamics       ("singer", 1, "mp", "hidden"                                                                                     ), -- that will bring us back to
            set_note           ("singer", 1, {MIXUP_LYRICS {MIXUP_CHORD duration_1 , source, << note("c", 3) >> }, source, << "_"   , "do." >> }),
-           end_voices         ("singer", 1                                                                                                    ),
+           end_voices         ("singer", 1                                                                                                     ),
            next_bar           ("bass",   2, Void                                                                                               ),
+           start_voices       ("bass",   2, {FAST_ARRAY[INTEGER] << 5 >>}                                                                      ),
            start_phrasing_slur("bass",   2, 5, 1, 1, ""                                                                                        ),
+           start_voices       ("bass",   2, {FAST_ARRAY[INTEGER] << 6 >>}                                                                      ),
            start_beam         ("bass",   2, 6, 3, 2, "3"                                                                                       ),
            set_note           ("bass",   2,                 {MIXUP_CHORD duration_8 , source, << note("c", 2) >> }                             ),
            set_note           ("bass",   2,                 {MIXUP_CHORD duration_8 , source, << note("e", 2) >> }                             ),
            set_note           ("bass",   2,                 {MIXUP_CHORD duration_8 , source, << note("g", 2) >> }                             ),
            end_beam           ("bass",   2                                                                                                     ),
+           end_voices         ("bass",   2                                                                                                     ),
            set_note           ("bass",   2,                 {MIXUP_CHORD duration_2p, source, << note("c", 3) >> }                             ),
            end_phrasing_slur  ("bass",   2                                                                                                     ),
-           end_voices         ("bass",   2                                                                                                    ),
+           end_voices         ("bass",   2                                                                                                     ),
+           end_voices         ("bass",   2                                                                                                     ),
 
            end_partitur
 
