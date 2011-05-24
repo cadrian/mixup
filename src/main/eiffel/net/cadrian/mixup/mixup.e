@@ -31,14 +31,18 @@ feature {}
    grammar: MIXUP_GRAMMAR
 
    make is
-      local
-         file: FILE
       do
          create grammar
          create mixer.make(agent parse_file)
          create {LINKED_HASHED_DICTIONARY[DIRECTORY, FIXED_STRING]} load_paths.make
 
-         configure
+         configure(agent when_configured)
+      end
+
+   when_configured is
+      local
+         file: FILE
+      do
          if argument_count /= 1 then
             usage(log.error)
             die_with_code(1)
@@ -62,10 +66,10 @@ feature {}
          output.put_new_line
       end
 
-   configure is
+   configure (a_when_configured: PROCEDURE[TUPLE]) is
       do
          set_load_paths
-         set_log
+         set_log(a_when_configured)
       end
 
    parse (a_path: ABSTRACT_STRING; a_source: MINI_PARSER_BUFFER): MIXUP_NODE is
@@ -287,7 +291,7 @@ feature {} -- Low-level files cuisine
       end
 
 feature {} -- Logs
-   set_log is
+   set_log (a_when_configured: PROCEDURE[TUPLE]) is
       local
          logrc: FILE
          conf: LOG_CONFIGURATION
@@ -295,7 +299,9 @@ feature {} -- Logs
          open_directory := current_directory
          logrc := find_file("log.rc".intern, Void)
          if logrc /= Void and then logrc.is_regular then
-            conf.load(logrc.as_regular.read, agent on_log_error, Void)
+            conf.load(logrc.as_regular.read, agent on_log_error, Void, agent disconnect_log_and_call(logrc, a_when_configured))
+         else
+            a_when_configured.call([])
          end
       end
 
@@ -303,6 +309,12 @@ feature {} -- Logs
       do
          log.error.put_line(msg)
          die_with_code(1)
+      end
+
+   disconnect_log_and_call (logrc: FILE; a_when_configured: PROCEDURE[TUPLE]) is
+      do
+         logrc.as_regular.read.disconnect
+         a_when_configured.call([])
       end
 
 feature {} -- Load paths
@@ -342,6 +354,7 @@ feature {} -- Load paths
                   end
                end
             end
+            input.disconnect
          end
       end
 
