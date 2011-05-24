@@ -46,8 +46,12 @@ feature {ANY}
          current_piece := a_piece
          old_file := current_file
          current_file := a_file
-         --a_piece.generate(log.trace)
-         --a_piece.display(log.trace, 0, "")
+         debug
+            log.trace.put_line(once "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            log.trace.put_line(a_file.out + ":")
+            a_piece.display(log.trace, 0, "")
+            log.trace.put_line(once "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+         end
          a_piece.accept(Current)
          Result := root_context
          root_context := old_root
