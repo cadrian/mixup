@@ -20,6 +20,7 @@ instrument soprano
     set midi.playback_style := legato
     set template.instrument_name := "Soprano"
     set template.instrument_abbrev := "S."
+    set lilypond.relative := "c'"
     music
         <<
             \set_clef(trebble) \set_key(c_dur) \set_time(common_time)
@@ -36,6 +37,7 @@ instrument alto
     set midi.playback_style := legato
     set template.instrument_name := "Alto"
     set template.instrument_abbrev := "A."
+    set lilypond.relative := "c'"
     music
         <<
             \set_clef(trebble) \set_key(c_dur) \set_time(common_time)

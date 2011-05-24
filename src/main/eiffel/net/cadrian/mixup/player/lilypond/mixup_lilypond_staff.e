@@ -117,6 +117,7 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
          output.is_connected
       local
          iter_lyrics: ZIP[AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64], INTEGER]
+         relative: FIXED_STRING
       do
          output.put_string(once "\new ")
          output.put_string(context_name)
@@ -132,9 +133,17 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
          output.put_integer(id)
          output.put_line(once "voice%" {")
          if voices /= Void then
-            voices.generate(context, output)
+            relative := get_string(context, lilypond_relative, Void)
+            if relative /= Void then
+               output.put_line("\relative " + relative.out + " {")
+               voices.generate(context, output)
+               output.put_new_line
+               output.put_line(once "}")
+            else
+               voices.generate(context, output)
+               output.put_new_line
+            end
          end
-         output.put_new_line
          output.put_line(once "}")
 
          if not lyrics.is_empty then
@@ -146,6 +155,11 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
       end
 
 feature {}
+   lilypond_relative: FIXED_STRING is
+      once
+         Result := "lilypond.relative".intern
+      end
+
    gather_lyrics (a_lyrics: TRAVERSABLE[MIXUP_SYLLABLE]; a_time: INTEGER_64) is
       local
          zip: ZIP[AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64], MIXUP_SYLLABLE]
