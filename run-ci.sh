@@ -100,7 +100,7 @@ build_site() {
             echo '<td><i>(git log not available)</i></td>'
         fi
         echo '<td>&nbsp;|&nbsp;</td>'
-        if [ -d $examples ]; then
+        if [ -d $OUTDIR/$examples ]; then
             echo '<td><a href="log/'$(basename $log)'">test log</a></td>'
             echo '<td>&nbsp;|&nbsp;</td>'
             echo '<td><a href="'$examples'">failed examples</a></td>'
