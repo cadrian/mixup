@@ -42,6 +42,9 @@ feature {MIXUP_CHORD}
             until
                i > a_chord.upper
             loop
+               if i > a_chord.lower then
+                  buffer.extend(' ')
+               end
                append_note_head(a_chord.item(i))
                i := i + 1
             end

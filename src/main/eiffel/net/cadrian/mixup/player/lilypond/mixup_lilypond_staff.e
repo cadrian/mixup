@@ -137,11 +137,9 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
             if relative /= Void then
                output.put_line("\relative " + relative.out + " {")
                voices.generate(context, output)
-               output.put_new_line
                output.put_line(once "}")
             else
                voices.generate(context, output)
-               output.put_new_line
             end
          end
          output.put_line(once "}")

@@ -36,7 +36,9 @@ feature {ANY}
                                if not first then
                                   a_output.put_line(once "\\")
                                end
+                               a_output.put_line(once "{")
                                voice.generate(a_context, a_output)
+                               a_output.put_line(once "}")
                             ensure
                                not_first: not Result
                             end(?, ?, context, output),

@@ -117,6 +117,7 @@ feature {MIXUP_LILYPOND_VOICES}
    generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
       do
          items.do_all(agent {MIXUP_LILYPOND_ITEM}.generate(context, output))
+         output.put_new_line
       end
 
 feature {}

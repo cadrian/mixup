@@ -2,7 +2,7 @@ partitur hymne
 
 from core import *
 from style.standard import *
-import playback.lilypond
+from playback.lilypond import *
 
 set time := common_time
 set signature := c_dur
@@ -15,27 +15,31 @@ set template.show_empty_staves := false
 
 
 instrument lied
-    set staff.clef := trebble
     set template.instrument_name := "Lied"
     set template.instrument_abbrev := ""
+    set lilypond.relative := "c'"
     music
-        << r4 | R1 | R1 | R1 | >>
+        <<
+            \set_clef(trebble) \set_key(c_dur) \set_time(common_time)
+            r4 | R1 | R1 | R1 |
+        >>
     end
 
 
 instrument piano
-    set staff(1).clef := bass
-    set staff(2).clef := trebble
     set template.instrument_name := "Piano"
     set template.instrument_abbrev := ""
     set template.instrument_staff := "PianoStaff"
+    set lilypond.relative := "c'"
     music
         <<
+            \set_clef(trebble) \set_key(c_dur) \set_time(common_time)
             r4 | {g2 fis} | {e a} | {ees4 ees, d r} |
         //
             r4 | R1 | r8 {[b e d] c2} | R1 |
         >>
         <<
+            \set_clef(bass) \set_key(c_dur) \set_time(common_time)
             r4 | r4 {d dis} r | R1 | R1 |
         //
             d'8 c | b4. b8 b4 <b b'>8 <a a'> | <g g'>2~ <g g'>8 <c e> <g c> <e g> | (<des g bes>2 <c fis a>4) d8 c |
