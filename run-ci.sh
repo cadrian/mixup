@@ -103,7 +103,7 @@ build_site() {
         if [ -d $OUTDIR/$examples ]; then
             echo '<td><a href="log/'$(basename $log)'">test log</a></td>'
             echo '<td>&nbsp;|&nbsp;</td>'
-            echo '<td><a href="'$examples'">failed examples</a></td>'
+            echo '<td><a href="'$examples'">examples log</a></td>'
         else
             echo '<td colspan="3"><a href="log/'$(basename $log)'">test log</a></td>'
         fi
