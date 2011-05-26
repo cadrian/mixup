@@ -46,7 +46,7 @@ feature {ANY}
    octave_shift (other: MIXUP_NOTE_HEAD): INTEGER is
          -- octave shift from Current to `other'
       do
-         Result := other.octave - octave + octave_deviation(other.note, -1)
+         Result := other.octave - octave - octave_deviation(other.note)
       end
 
    relative (a_source: like source; desc: FIXED_STRING): MIXUP_NOTE_HEAD is
@@ -66,7 +66,7 @@ feature {ANY}
          when 'r', 'R', 's' then
             Result.set(a_source, note_, 0)
          else
-            octave_shift_ := octave_deviation(note_, 1)
+            octave_shift_ := octave_deviation(note_)
 
             from
                i := note_.upper
@@ -123,11 +123,9 @@ feature {}
          Result := j - i
       end
 
-   octave_deviation (other_note: ABSTRACT_STRING; shift: INTEGER): INTEGER is
-         -- octave shift from Current to `other'
+   octave_deviation (other_note: ABSTRACT_STRING): INTEGER is
       require
          other_note /= Void
-         shift = 1 or else shift = -1
       local
          up_steps, down_steps, steps, a_steps: INTEGER
       do
@@ -139,13 +137,13 @@ feature {}
                steps := up_steps
                a_steps := steps_to('a', up_scale, 1)
                if a_steps <= steps then
-                  Result := shift
+                  Result := 1
                end
             else
                steps := down_steps
                a_steps := steps_to('a', down_scale, 0)
                if a_steps < steps then
-                  Result := -shift
+                  Result := -1
                end
             end
          end
