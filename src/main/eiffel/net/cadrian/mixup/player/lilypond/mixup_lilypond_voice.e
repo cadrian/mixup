@@ -57,7 +57,9 @@ feature {MIXUP_LILYPOND_STAFF}
          note: MIXUP_LILYPOND_NOTE
       do
          create note.make(last_dynamics, a_time, a_note, reference, lyrics_gatherer)
-         reference := note.anchor
+         if a_note.valid_anchor then
+            reference := a_note.anchor
+         end
          last_dynamics := Void
          add_item(note)
       end

@@ -25,7 +25,7 @@ create {ANY}
    make
 
 feature {ANY}
-   anchor: MIXUP_NOTE_HEAD
+   reference: MIXUP_NOTE_HEAD
 
 feature {MIXUP_CHORD}
    visit_chord (a_chord: MIXUP_CHORD) is
@@ -145,7 +145,7 @@ feature {}
       end
 
    start_time: INTEGER_64
-   reference: MIXUP_NOTE_HEAD
+   anchor: MIXUP_NOTE_HEAD
    buffer: STRING
    lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]
 
