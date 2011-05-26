@@ -18,6 +18,11 @@ echo $log
 {
     failures=0
 
+    echo "======================================================================"
+    echo "test note heads"
+    echo
+    ./test note $CI_CLEAN || failures=$((failures+1))
+
     for i in 1 2 4 5 6 7; do # test 3 was removed
         echo "======================================================================"
         echo "test $i"

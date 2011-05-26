@@ -72,6 +72,9 @@ case x$1 in
     xlily*)
         class=TEST_LILYPOND_PLAYER
         ;;
+    xnote*)
+        class=TEST_NOTE_HEAD
+        ;;
     *)
         echo "Unknown test: $1" >&2
         exit 1
