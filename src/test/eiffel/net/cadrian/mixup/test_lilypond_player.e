@@ -64,6 +64,7 @@ feature {}
          lilypond.play_set_note(event_data("MyInstr",   duration_4, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("d", 4) >> }, source, << "ray", "re" >> })
          lilypond.play_start_voices(event_data("MyInstr",        0, 1, 1), 2|..|2                                                                                          )
          lilypond.play_set_note(event_data("MyInstr",   duration_2, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("e", 4) >> }, source, << "me" , "mi" >> })
+         lilypond.play_set_note(event_data("MyInstr",   duration_2, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("e", 5) >> }, source, << "me" , "mi" >> })
          lilypond.play_end_voices(event_data("MyInstr", duration_1, 1, 2)                                                                                                  )
          lilypond.play_end_voices(event_data("MyInstr", duration_1, 1, 1)                                                                                                  )
          lilypond.play_end_partitur
@@ -84,7 +85,8 @@ mixup-partitur = "test"
 \set Staff.instrumentName = "MyInstr"
 \set Staff.shortInstrumentName = "M."
 \new Voice = "MyInstr1voice" {
- c4 d4 e4
+ c4 d4
+ e4 e'4
 }
 \new Lyrics = "MyInstr1x1" \lyricsto "MyInstr1voice" {
 \lyricmode {

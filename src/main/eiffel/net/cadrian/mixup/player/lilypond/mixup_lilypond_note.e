@@ -55,9 +55,29 @@ feature {MIXUP_CHORD}
 
 feature {}
    append_note_head (note: MIXUP_NOTE_HEAD) is
+      local
+         octave_shift: INTEGER
       do
-         buffer.append(note.note.out) -- TODO: octave skips
+         buffer.append(note.note.out)
          if not note.is_rest then
+            octave_shift := anchor.octave_shift(note)
+            if octave_shift < 0 then
+               from
+               until
+                  octave_shift = 0
+               loop
+                  buffer.extend(',')
+                  octave_shift := octave_shift + 1
+               end
+            elseif octave_shift > 0 then
+               from
+               until
+                  octave_shift = 0
+               loop
+                  buffer.extend('%'')
+                  octave_shift := octave_shift - 1
+               end
+            end
             anchor := note
          end
       end
