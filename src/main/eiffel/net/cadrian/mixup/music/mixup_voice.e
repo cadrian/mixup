@@ -37,9 +37,9 @@ feature {ANY}
          until
             found or else i > music.upper
          loop
-            if music.item(i).valid_anchor then
+            found := music.item(i).valid_anchor
+            if found then
                Result := music.item(i).anchor
-               found := True
             end
             i := i + 1
          end

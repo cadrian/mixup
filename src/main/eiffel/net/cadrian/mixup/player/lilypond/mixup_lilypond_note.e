@@ -127,8 +127,15 @@ feature {ANY}
          output.put_string(buffer)
       end
 
+   can_append: BOOLEAN is True
+
+   append_first, append_last (a_string: ABSTRACT_STRING) is
+      do
+         buffer.append(a_string)
+      end
+
 feature {}
-   make (a_dynamics: ABSTRACT_STRING; a_start_time: like start_time; a_note: MIXUP_NOTE; a_reference: like reference; a_lyrics_gatherer: like lyrics_gatherer) is
+   make (a_start_time: like start_time; a_note: MIXUP_NOTE; a_reference: like reference; a_lyrics_gatherer: like lyrics_gatherer) is
       require
          a_note /= Void
          a_lyrics_gatherer /= Void
@@ -139,9 +146,6 @@ feature {}
          lyrics_gatherer := a_lyrics_gatherer
          buffer := ""
          a_note.accept(Current)
-         if a_dynamics /= Void then
-            buffer.append(a_dynamics)
-         end
       ensure
          start_time = a_start_time
          a_note.valid_anchor implies reference = a_note.anchor

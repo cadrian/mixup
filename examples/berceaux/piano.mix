@@ -1,8 +1,11 @@
 instrument piano
 
-    set motif_RH_bes := music << bes4 f'8 bes4 f8 >>
-    set motif_RH_aes := music << aes4 f'8 aes4 f8 >>
-    set motif_RH_ges := music << ges4 f'8 ges4 f8 >>
+    set motif_RH_bes  := music << bes4 f'8 bes4 f8 >>
+    set motif_RH_aes  := music << aes4 f'8 aes4 f8 >>
+    set motif_RH_ges  := music << ges4 f'8 ges4 f8 >>
+    set motif_RH_des  := music << des4 f8 des'4 f,8 >>
+    set motif_RH_c    := music << c4 f8 c'4 f,8 >>
+    set motif_RH_c_g  := music << c4 g'8 c4 g8 >>
 
     set template.instrument_name := "Piano"
     set template.instrument_abbrev := ""
@@ -16,8 +19,23 @@ instrument piano
             {
                 \motif_RH_bes \motif_RH_bes |
                 \motif_RH_bes \motif_RH_bes |
+            }
+            {
                 \motif_RH_bes \motif_RH_aes |
                 \motif_RH_ges \motif_RH_aes |
+                \motif_RH_bes \motif_RH_des |
+            }
+            {
+                \motif_RH_c   \motif_RH_bes |
+                \motif_RH_bes \motif_RH_aes |
+                \motif_RH_ges \motif_RH_aes |
+            }
+            {
+                \motif_RH_bes \motif_RH_c   |
+                \motif_RH_c_g \motif_RH_c   |
+                \set_time("6/8")
+                \motif_RH_c   |
+                \set_time("12/8")
             }
         >>
 --        <<

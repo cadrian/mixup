@@ -35,11 +35,50 @@ feature {ANY}
          until
             found or else i > voices.upper
          loop
-            if voices.item(i).valid_reference then
+            found := voices.item(i).valid_reference
+            if found then
                Result := voices.item(i).reference
-               found := True
             end
             i := i + 1
+         end
+      end
+
+   can_append: BOOLEAN is
+      do
+         Result := voices.exists(agent (voice: MIXUP_LILYPOND_VOICE; id: INTEGER): BOOLEAN is do Result := voice.can_append end)
+      end
+
+   append_first (a_string: ABSTRACT_STRING) is
+      local
+         i: INTEGER; found: BOOLEAN
+      do
+         from
+            i := voices.lower
+         until
+            found
+         loop
+            found := voices.item(i).can_append
+            if found then
+               voices.item(i).append_first(a_string)
+            end
+            i := i + 1
+         end
+      end
+
+   append_last (a_string: ABSTRACT_STRING) is
+      local
+         i: INTEGER; found: BOOLEAN
+      do
+         from
+            i := voices.upper
+         until
+            found
+         loop
+            found := voices.item(i).can_append
+            if found then
+               voices.item(i).append_last(a_string)
+            end
+            i := i - 1
          end
       end
 

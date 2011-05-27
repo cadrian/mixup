@@ -38,9 +38,9 @@ feature {ANY}
          until
             found or else i > voices.upper
          loop
-            if voices.item(i).valid_anchor then
+            found := voices.item(i).valid_anchor
+            if found then
                Result := voices.item(i).anchor
-               found := True
             end
             i := i + 1
          end

@@ -24,35 +24,81 @@ feature {ANY}
    staff: MIXUP_LILYPOND_STAFF
    id: INTEGER
 
-   valid_reference: BOOLEAN
+   valid_reference: BOOLEAN is True
    reference: MIXUP_NOTE_HEAD
+
+   can_append: BOOLEAN is
+      do
+         Result := items.exists(agent {MIXUP_LILYPOND_ITEM}.can_append)
+      end
+
+   append_first (a_string: ABSTRACT_STRING) is
+      local
+         i: INTEGER; found: BOOLEAN
+      do
+         from
+            i := items.lower
+         until
+            found
+         loop
+            found := items.item(i).can_append
+            if found then
+               items.item(i).append_first(a_string)
+            end
+            i := i + 1
+         end
+      end
+
+   append_last (a_string: ABSTRACT_STRING) is
+      local
+         i: INTEGER; found: BOOLEAN
+      do
+         from
+            i := items.upper
+         until
+            found
+         loop
+            found := items.item(i).can_append
+            if found then
+               items.item(i).append_last(a_string)
+            end
+            i := i - 1
+         end
+      end
 
 feature {MIXUP_LILYPOND_STAFF}
    add_item (a_item: MIXUP_LILYPOND_ITEM) is
       require
          a_item /= Void
       do
+         if dynamics /= Void then
+            a_item.append_first(dynamics)
+            dynamics := Void
+         end
+         if tie /= Void then
+            a_item.append_first(tie)
+            tie := Void
+         end
          items.add_last(a_item)
          if a_item.valid_reference then
-            valid_reference := True
             reference := a_item.reference
             log.trace.put_line("Lilypond voice #" + id.out + ": anchor = " + reference.out)
          end
       end
 
-   set_dynamics (dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (a_dynamics, position: ABSTRACT_STRING) is
       do
          if position = Void then
-            last_dynamics := "-\" + dynamics
-         elseif dynamics.out.is_equal("end") then
-            last_dynamics := "-\!"
+            dynamics := "-\" + a_dynamics
+         elseif a_dynamics.out.is_equal("end") then
+            dynamics := "-\!"
          else
             inspect
                position.out
             when "up" then
-               last_dynamics := "^\" + dynamics
+               dynamics := "^\" + a_dynamics
             when "down" then
-               last_dynamics := "_\" + dynamics
+               dynamics := "_\" + a_dynamics
             when "top" then
                not_yet_implemented
             when "bottom" then
@@ -67,8 +113,7 @@ feature {MIXUP_LILYPOND_STAFF}
       local
          note: MIXUP_LILYPOND_NOTE
       do
-         create note.make(last_dynamics, a_time, a_note, reference, lyrics_gatherer)
-         last_dynamics := Void
+         create note.make(a_time, a_note, reference, lyrics_gatherer)
          add_item(note)
       end
 
@@ -94,18 +139,22 @@ feature {MIXUP_LILYPOND_STAFF}
 
    start_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
+         tie := once "("
       end
 
    end_slur is
       do
+         append_last(once ")")
       end
 
    start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
+         tie := once "\("
       end
 
    end_phrasing_slur is
       do
+         append_last(once "\)")
       end
 
    start_repeat (volte: INTEGER_64) is
@@ -151,7 +200,8 @@ feature {}
    items: FAST_ARRAY[MIXUP_LILYPOND_ITEM]
    lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]
 
-   last_dynamics: STRING
+   dynamics: STRING
+   tie: STRING
 
 invariant
    staff /= Void

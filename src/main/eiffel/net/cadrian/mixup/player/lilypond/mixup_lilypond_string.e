@@ -28,6 +28,13 @@ feature {ANY}
          crash
       end
 
+   can_append: BOOLEAN is False
+
+   append_first, append_last (a_string: ABSTRACT_STRING) is
+      do
+         crash
+      end
+
    string: FIXED_STRING
 
    generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is

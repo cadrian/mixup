@@ -27,6 +27,24 @@ feature {ANY}
          not Result.is_rest
       end
 
+   can_append: BOOLEAN is
+      deferred
+      end
+
+   append_first (a_string: ABSTRACT_STRING) is
+      require
+         can_append
+         a_string /= Void
+      deferred
+      end
+
+   append_last (a_string: ABSTRACT_STRING) is
+      require
+         can_append
+         a_string /= Void
+      deferred
+      end
+
    generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
       require
          output.is_connected
