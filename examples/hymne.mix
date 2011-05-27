@@ -4,13 +4,6 @@ from core import *
 from style.standard import *
 from playback.lilypond import *
 
-set time := common_time
-set signature := c_dur
-
-set tempo.tactus := 4
-set tempo.per_minute := 70
-set tempo.print := false
-
 set template.show_empty_staves := false
 
 

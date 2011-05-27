@@ -5,13 +5,6 @@ from style.standard import *
 from playback.lilypond import *
 from playback.midi import violin, viola
 
-set time := common_time
-set signature := c_dur
-
-set tempo.tactus := 4 -- a beat is a quarter
-set tempo.per_minute := 60 -- 60 beats per minute
-set tempo.print := true
-
 set template.show_empty_staves := false
 
 
