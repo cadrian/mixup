@@ -52,8 +52,8 @@ echo $log
                 if ./build/bin/mixup $mix; then
                     ly=${mix%.mix}.ly
                     if test -e $ly; then
-                        if test -e $EXAMPLE_DIR/reference/$ly; then
-                            diff -u $EXAMPLE_DIR/reference/$ly $ly || {
+                        if test -e $EXAMPLES_DIR/reference/$ly; then
+                            diff -u $EXAMPLES_DIR/reference/$ly $ly || {
                                 echo "Different from reference!"
                                 failures=$((failures+1))
                             }
