@@ -28,25 +28,53 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
    start_voices (a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]) is
       local
          map: AVL_DICTIONARY[MIXUP_LILYPOND_VOICE, INTEGER]
-         v: like voices
+         voices_: like root_voices
+         voice_: like voice
+         ref: like reference
       do
-         create v.make(Current, voice_ids, reference, lyrics_gatherer)
-         create map.make
-         if voices = Void then
-            check paths.is_empty end
-            voices := v
+         if paths.is_empty then
+            ref := reference
          else
-            check not paths.is_empty end
-            map.copy(paths.top)
-            voice(a_voice_id).add_item(v)
+            voice_ := voice(a_voice_id)
+            if voice_.valid_reference then
+               ref := voice_.reference
+            else
+               ref := reference
+            end
          end
-         v.map_in(map)
+         create voices_.make(Current, voice_ids, ref, lyrics_gatherer)
+         create map.make
+         if root_voices = Void then
+            check
+               a_voice_id = 0
+               paths.is_empty
+            end
+            root_voices := voices_
+         else
+            check
+               a_voice_id /= 0
+               not paths.is_empty
+            end
+            map.copy(paths.top)
+         end
+         voices_.map_in(map)
+         voices.push(voices_)
          paths.push(map)
       end
 
    end_voices (a_voice_id: INTEGER) is
+      local
+         voices_: like root_voices
       do
+         voices_ := voices.top
+         voices.pop
          paths.pop
+         if a_voice_id /= 0 then
+            check
+               not paths.is_empty
+            end
+            voice(a_voice_id).add_item(voices_)
+         end
       end
 
    set_dynamics (a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
@@ -132,14 +160,14 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
          output.put_string(instrument.name)
          output.put_integer(id)
          output.put_line(once "voice%" {")
-         if voices /= Void then
+         if root_voices /= Void then
             relative := get_string(context, lilypond_relative, Void)
             if relative /= Void then
                output.put_line("\relative " + relative.out + " {")
-               voices.generate(context, output)
+               root_voices.generate(context, output)
                output.put_line(once "}")
             else
-               voices.generate(context, output)
+               root_voices.generate(context, output)
             end
          end
          output.put_line(once "}")
@@ -228,6 +256,7 @@ feature {}
          id := a_id
          create lyrics.make(0)
          lyrics_gatherer := agent gather_lyrics
+         create voices.make
          create paths.make
       ensure
          reference = a_reference
@@ -247,7 +276,8 @@ feature {}
    lyrics: FAST_ARRAY[AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]]
    lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]
 
-   voices: MIXUP_LILYPOND_VOICES
+   root_voices: MIXUP_LILYPOND_VOICES
+   voices: STACK[MIXUP_LILYPOND_VOICES]
    paths: STACK[AVL_DICTIONARY[MIXUP_LILYPOND_VOICE, INTEGER]]
 
    voice (a_voice_id: INTEGER): MIXUP_LILYPOND_VOICE is
@@ -262,6 +292,8 @@ invariant
    instrument /= Void
    id > 0
    lyrics /= Void
+   voices /= Void
    paths /= Void
+   voices.count = paths.count
 
 end -- class MIXUP_LILYPOND_STAFF

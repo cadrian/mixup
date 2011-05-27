@@ -14,6 +14,9 @@
 --
 class MIXUP_LILYPOND_VOICE
 
+insert
+   LOGGING
+
 create {ANY}
    make
 
@@ -21,12 +24,20 @@ feature {ANY}
    staff: MIXUP_LILYPOND_STAFF
    id: INTEGER
 
+   valid_reference: BOOLEAN
+   reference: MIXUP_NOTE_HEAD
+
 feature {MIXUP_LILYPOND_STAFF}
    add_item (a_item: MIXUP_LILYPOND_ITEM) is
       require
          a_item /= Void
       do
          items.add_last(a_item)
+         if a_item.valid_reference then
+            valid_reference := True
+            reference := a_item.reference
+            log.trace.put_line("Lilypond voice #" + id.out + ": anchor = " + reference.out)
+         end
       end
 
    set_dynamics (dynamics, position: ABSTRACT_STRING) is
@@ -57,9 +68,6 @@ feature {MIXUP_LILYPOND_STAFF}
          note: MIXUP_LILYPOND_NOTE
       do
          create note.make(last_dynamics, a_time, a_note, reference, lyrics_gatherer)
-         if a_note.valid_anchor then
-            reference := a_note.anchor
-         end
          last_dynamics := Void
          add_item(note)
       end
@@ -140,7 +148,6 @@ feature {}
          lyrics_gatherer = a_lyrics_gatherer
       end
 
-   reference: MIXUP_NOTE_HEAD
    items: FAST_ARRAY[MIXUP_LILYPOND_ITEM]
    lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]
 

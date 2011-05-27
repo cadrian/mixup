@@ -21,6 +21,28 @@ create {ANY}
    make
 
 feature {ANY}
+   valid_reference: BOOLEAN is
+      do
+         Result := voices.exists(agent (voice: MIXUP_LILYPOND_VOICE; id: INTEGER): BOOLEAN is do Result := voice.valid_reference end)
+      end
+
+   reference: MIXUP_NOTE_HEAD is
+      local
+         i: INTEGER; found: BOOLEAN
+      do
+         from
+            i := voices.lower
+         until
+            found or else i > voices.upper
+         loop
+            if voices.item(i).valid_reference then
+               Result := voices.item(i).reference
+               found := True
+            end
+            i := i + 1
+         end
+      end
+
    generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
       local
          is_first: AGGREGATOR[MIXUP_LILYPOND_VOICE, BOOLEAN]
@@ -68,9 +90,9 @@ feature {}
          all_different: (create {AVL_SET[INTEGER]}.from_collection(a_ids)).count = a_ids.count
       do
          create voices.make
-         a_ids.do_all(agent (a_id: INTEGER; staff: MIXUP_LILYPOND_STAFF; reference: MIXUP_NOTE_HEAD; lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]) is
+         a_ids.do_all(agent (a_id: INTEGER; staff: MIXUP_LILYPOND_STAFF; a_reference: MIXUP_NOTE_HEAD; lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]) is
                          do
-                            voices.add(create {MIXUP_LILYPOND_VOICE}.make(staff, a_id, reference, lyrics_gatherer), a_id)
+                            voices.add(create {MIXUP_LILYPOND_VOICE}.make(staff, a_id, a_reference, lyrics_gatherer), a_id)
                          end(?, a_staff, a_reference, a_lyrics_gatherer))
       ensure
          voices.count = a_ids.count

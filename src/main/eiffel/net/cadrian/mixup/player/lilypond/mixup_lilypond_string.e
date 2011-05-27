@@ -21,6 +21,13 @@ create {ANY}
    make
 
 feature {ANY}
+   valid_reference: BOOLEAN is False
+
+   reference: MIXUP_NOTE_HEAD is
+      do
+         crash
+      end
+
    string: FIXED_STRING
 
    generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is

@@ -1,0 +1,11 @@
+instrument lied
+    set template.instrument_name := "Lied"
+    set template.instrument_abbrev := ""
+    set lilypond.relative := "c'"
+    music
+        <<
+            \set_clef(trebble) \set_key(bes_mol) \set_time("12/8")
+            R1 | R1
+        >>
+    end
+end

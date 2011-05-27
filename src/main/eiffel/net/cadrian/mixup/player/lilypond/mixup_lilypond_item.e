@@ -15,6 +15,18 @@
 deferred class MIXUP_LILYPOND_ITEM
 
 feature {ANY}
+   valid_reference: BOOLEAN is
+      deferred
+      end
+
+   reference: MIXUP_NOTE_HEAD is
+      require
+         valid_reference
+      deferred
+      ensure
+         not Result.is_rest
+      end
+
    generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
       require
          output.is_connected

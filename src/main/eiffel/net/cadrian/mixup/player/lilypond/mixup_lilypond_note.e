@@ -25,6 +25,7 @@ create {ANY}
    make
 
 feature {ANY}
+   valid_reference: BOOLEAN is True
    reference: MIXUP_NOTE_HEAD
 
 feature {MIXUP_CHORD}
@@ -51,6 +52,9 @@ feature {MIXUP_CHORD}
             buffer.extend('>')
          end
          append_duration(a_chord.duration)
+         if a_chord.valid_anchor then
+            reference := a_chord.anchor
+         end
       end
 
 feature {}
@@ -140,7 +144,8 @@ feature {}
          end
       ensure
          start_time = a_start_time
-         reference = a_reference
+         a_note.valid_anchor implies reference = a_note.anchor
+         not a_note.valid_anchor implies reference = a_reference
          lyrics_gatherer = a_lyrics_gatherer
       end
 

@@ -1,0 +1,28 @@
+instrument piano
+
+    set motif_RH_bes := music << bes4 f'8 bes4 f8 >>
+    set motif_RH_aes := music << aes4 f'8 aes4 f8 >>
+    set motif_RH_ges := music << ges4 f'8 ges4 f8 >>
+
+    set template.instrument_name := "Piano"
+    set template.instrument_abbrev := ""
+    set template.instrument_staff := "PianoStaff"
+    set lilypond.relative := "c'"
+
+    music
+        <<
+            \set_clef(trebble) \set_key(bes_mol) \set_time("12/8")
+            :p:
+            {
+                \motif_RH_bes \motif_RH_bes |
+                \motif_RH_bes \motif_RH_bes |
+                \motif_RH_bes \motif_RH_aes |
+                \motif_RH_ges \motif_RH_aes |
+            }
+        >>
+--        <<
+--            \set_clef(bass) \set_key(bes_mol) \set_time("12/8")
+--        >>
+    end
+
+end

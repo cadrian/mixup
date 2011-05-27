@@ -91,7 +91,7 @@ feature {}
          a_context /= Void
          a_player /= Void
       do
-         a_context.accept(create {MIXUP_MIXER_CONDUCTOR}.make(a_context, a_player, a_context.bar_number))
+         (create {MIXUP_MIXER_CONDUCTOR}.make(a_context, a_player, a_context.bar_number)).play
       end
 
 feature {}

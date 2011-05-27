@@ -1,0 +1,13 @@
+partitur berceaux
+
+from core import *
+from style.standard import *
+from playback.lilypond import *
+
+set template.show_empty_staves := false
+
+import berceaux.lied
+import berceaux.piano
+
+
+end
