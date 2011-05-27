@@ -53,11 +53,16 @@ echo $log
 
         tar xfz $pkg
         if [ -d ./build ]; then
-            ln -s build/share/mixup/log.rc .
-            for example in $EXAMPLES_DIR/*.mix; do
+            cp build/share/mixup/log.rc .
+            find $EXAMPLES_DIR -name \*.mix | while read example; do
+                relmix=${example#$EXAMPLES_DIR/}
+                dirmix=$(dirname $relmix)
+                test -d $dirmix || mkdir -p $dirmix
+                cp $example $relmix
+            done
+            for example in *.mix; do
                 echo "======================================================================"
                 mix=$(basename $example)
-                ln -s $example $mix
                 if ./build/bin/mixup $mix; then
                     ly=${mix%.mix}.ly
                     if test -e $ly; then
