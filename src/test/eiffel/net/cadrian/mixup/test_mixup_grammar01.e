@@ -56,7 +56,7 @@ feature {}
                                            end
                                         instrument bass
                                            music
-                                              << :p: c,,1 | g | {[3/2 c8 e g] c'2.} >>
+                                              << :p: c,,1 | g | {[3/2 c8 e g] c2.} >>
                                            end
                                         end
                                         ]")
