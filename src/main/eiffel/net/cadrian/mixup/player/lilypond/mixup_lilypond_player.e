@@ -246,11 +246,34 @@ feature {} -- section files management
          section_stack.pop
          if section_stack.is_empty then
             put_footer
-            opus_name := Void
          end
          if managed_output then
             section_output.disconnect
             outputs_stack.pop
+            if outputs_stack.is_empty then
+               call_lilypond
+            end
+         end
+         if section_stack.is_empty then
+            opus_name := Void
+         end
+      end
+
+feature {} -- System call to lilypond
+   call_lilypond is
+      require
+         opus_name /= Void
+         managed_output
+      local
+         command: STRING
+         sys: SYSTEM; status: INTEGER
+      do
+         command := "lilypond -dresolution=1200 " + opus_name.out + ".ly"
+         log.info.put_line("Calling command: %"" + command + "%"")
+         status := sys.execute_command(command)
+         if status /= 0 then
+            log.error.put_line("Error while calling Lilypond.")
+            die_with_code(status)
          end
       end
 
