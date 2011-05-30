@@ -38,7 +38,9 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
             voice_ := voice(a_voice_id)
             if voice_.valid_reference then
                ref := voice_.reference
+               log.info.put_line("Lilypond: Voice #" + a_voice_id.out + " (instrument " + instrument.name.out + "): giving reference " + ref.out + " to voices " + voice_ids.out)
             else
+               log.warning.put_line("Lilypond: Voice #" + a_voice_id.out + " (instrument " + instrument.name.out + "): no valid reference")
                ref := reference
             end
          end

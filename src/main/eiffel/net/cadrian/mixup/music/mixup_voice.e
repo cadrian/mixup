@@ -33,15 +33,15 @@ feature {ANY}
          i: INTEGER; found: BOOLEAN
       do
          from
-            i := music.lower
+            i := music.upper
          until
-            found or else i > music.upper
+            found or else i < music.lower
          loop
             found := music.item(i).valid_anchor
             if found then
                Result := music.item(i).anchor
             end
-            i := i + 1
+            i := i - 1
          end
          if not found then
             Result := reference

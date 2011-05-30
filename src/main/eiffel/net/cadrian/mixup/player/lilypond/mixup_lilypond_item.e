@@ -17,6 +17,8 @@ deferred class MIXUP_LILYPOND_ITEM
 feature {ANY}
    valid_reference: BOOLEAN is
       deferred
+      ensure
+         Result implies not reference.is_rest
       end
 
    reference: MIXUP_NOTE_HEAD is

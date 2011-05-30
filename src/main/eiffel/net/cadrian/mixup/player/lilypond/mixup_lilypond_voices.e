@@ -33,7 +33,7 @@ feature {ANY}
          from
             i := voices.lower
          until
-            found or else i > voices.upper
+            found
          loop
             found := voices.item(i).valid_reference
             if found then

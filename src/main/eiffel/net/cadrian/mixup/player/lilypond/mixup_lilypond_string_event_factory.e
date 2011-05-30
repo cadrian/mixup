@@ -16,7 +16,13 @@ class MIXUP_LILYPOND_STRING_EVENT_FACTORY
 
 inherit
    MIXUP_VALUE
+      redefine
+         out_in_tagged_out_memory
+      end
    MIXUP_MUSIC
+      redefine
+         out_in_tagged_out_memory
+      end
 
 create {MIXUP_LILYPOND_PLAYER}
    make
@@ -27,6 +33,13 @@ feature {ANY}
    accept (visitor: VISITOR) is
       do
          (create {MIXUP_MUSIC_VALUE}.make(source, Current)).accept(visitor)
+      end
+
+   out_in_tagged_out_memory is
+      do
+         tagged_out_memory.append(once "{MIXUP_LILYPOND_STRING_EVENT_FACTORY %"")
+         string.out_in_tagged_out_memory
+         tagged_out_memory.append(once "%"}")
       end
 
 feature {ANY}

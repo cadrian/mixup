@@ -74,6 +74,7 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
    add_voice_ids (ids: AVL_SET[INTEGER]) is
       do
          music.add_voice_ids(ids)
+         log.info.put_line("Identifier " + identifier.out + " is music " + music.out + " (voices " + ids.out + ")")
       end
 
 feature {}

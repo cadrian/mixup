@@ -24,7 +24,11 @@ feature {ANY}
    staff: MIXUP_LILYPOND_STAFF
    id: INTEGER
 
-   valid_reference: BOOLEAN is True
+   valid_reference: BOOLEAN is
+      do
+         Result := not reference.is_rest
+      end
+
    reference: MIXUP_NOTE_HEAD
 
    can_append: BOOLEAN is
@@ -75,12 +79,15 @@ feature {MIXUP_LILYPOND_STAFF}
             a_item.append_first(dynamics)
             dynamics := Void
          end
-         if tie /= Void then
-            a_item.append_first(tie)
-            tie := Void
+         if slur /= Void then
+            a_item.append_first(slur)
+            slur := Void
          end
          items.add_last(a_item)
          if a_item.valid_reference then
+            check
+               not a_item.reference.is_rest
+            end
             reference := a_item.reference
             log.trace.put_line("Lilypond voice #" + id.out + ": anchor = " + reference.out)
          end
@@ -139,7 +146,7 @@ feature {MIXUP_LILYPOND_STAFF}
 
    start_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         tie := once "("
+         slur := once "("
       end
 
    end_slur is
@@ -149,7 +156,7 @@ feature {MIXUP_LILYPOND_STAFF}
 
    start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         tie := once "\("
+         slur := once "\("
       end
 
    end_phrasing_slur is
@@ -188,7 +195,9 @@ feature {}
       do
          staff := a_staff
          id := a_id
-         reference := a_reference
+         if not a_reference.is_rest then
+            reference := a_reference
+         end
          lyrics_gatherer := a_lyrics_gatherer
          create items.make(0)
       ensure
@@ -201,7 +210,7 @@ feature {}
    lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]
 
    dynamics: STRING
-   tie: STRING
+   slur: STRING
 
 invariant
    staff /= Void

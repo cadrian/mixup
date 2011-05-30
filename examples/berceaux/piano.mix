@@ -1,11 +1,22 @@
 instrument piano
 
-    set motif_RH_bes  := music << bes4 f'8 bes4 f8 >>
-    set motif_RH_aes  := music << aes4 f'8 aes4 f8 >>
-    set motif_RH_ges  := music << ges4 f'8 ges4 f8 >>
-    set motif_RH_des  := music << des4 f8 des'4 f,8 >>
-    set motif_RH_c    := music << c4 f8 c'4 f,8 >>
-    set motif_RH_c_g  := music << c4 g'8 c4 g8 >>
+    set pattern_RH_bes  := music << bes4 f'8 bes4 f8 >>
+    set pattern_RH_aes  := music << aes4 f'8 aes4 f8 >>
+    set pattern_RH_ges  := music << ges4 f'8 ges4 f8 >>
+    set pattern_RH_des  := music << des4 f8 des'4 f,8 >>
+    set pattern_RH_c    := music << c4 f8 c'4 f,8 >>
+    set pattern_RH_c_g  := music << c4 g'8 c4 g8 >>
+
+    set pattern_LH_bes  := music << [bes,8 f' des'~] [des des f,] >>
+    set pattern_LH_bes9 := music << [bes,8 f' c'~] [c c f,] >>
+    set pattern_LH_bes_ := music << [bes,8 f' bes~] [bes bes f] >>
+    set pattern_LH_aes  := music << [aes,8 f' c'~] [c c f,] >>
+    set pattern_LH_ges  := music << [ges,8 f' des'~] [des des f,] >>
+    set pattern_LH_f    := music << [f,8 f' aes~] [aes aes f] >>
+    set pattern_LH_f_a  := music << [f,8 a' ees'~] [ees ees a] >>
+    set pattern_LH_g    := music << [g,8 f' des'~] [des des f,] >>
+    set pattern_LH_c7   := music << [c,8 bes' e~] [e e bes] >>
+    set pattern_LH_f_c  := music << [f,8 c' a'~] [a a c,] >>
 
     set template.instrument_name := "Piano"
     set template.instrument_abbrev := ""
@@ -17,30 +28,44 @@ instrument piano
             \set_clef(trebble) \set_key(bes_mol) \set_time("12/8")
             :p:
             {
-                \motif_RH_bes \motif_RH_bes |
-                \motif_RH_bes \motif_RH_bes |
+                \pattern_RH_bes  \pattern_RH_bes  |
+                \pattern_RH_bes  \pattern_RH_bes  |
             }
             {
-                \motif_RH_bes \motif_RH_aes |
-                \motif_RH_ges \motif_RH_aes |
-                \motif_RH_bes \motif_RH_des |
+                \pattern_RH_bes  \pattern_RH_aes  |
+                \pattern_RH_ges  \pattern_RH_aes  |
+                \pattern_RH_bes  \pattern_RH_des  |
             }
             {
-                \motif_RH_c   \motif_RH_bes |
-                \motif_RH_bes \motif_RH_aes |
-                \motif_RH_ges \motif_RH_aes |
+                \pattern_RH_c    \pattern_RH_bes  |
+                \pattern_RH_bes  \pattern_RH_aes  |
+                \pattern_RH_ges  \pattern_RH_aes  |
             }
             {
-                \motif_RH_bes \motif_RH_c   |
-                \motif_RH_c_g \motif_RH_c   |
+                \pattern_RH_bes  \pattern_RH_c    |
+                \pattern_RH_c_g  \pattern_RH_c    |
                 \set_time("6/8")
-                \motif_RH_c   |
+                \pattern_RH_c                     |
                 \set_time("12/8")
             }
         >>
---        <<
---            \set_clef(bass) \set_key(bes_mol) \set_time("12/8")
---        >>
+        <<
+            \set_clef(bass) \set_key(bes_mol) \set_time("12/8")
+            :hidden:p:
+            \pattern_LH_bes  \pattern_LH_bes  |
+            \pattern_LH_bes  \pattern_LH_bes  |
+            \pattern_LH_bes  \pattern_LH_bes9 |
+            \pattern_LH_bes_ \pattern_LH_aes  |
+            \pattern_LH_ges  \pattern_LH_f    |
+            \pattern_LH_f_a  \pattern_LH_bes  |
+            \pattern_LH_bes  \pattern_LH_bes9 |
+            \pattern_LH_bes_ \pattern_LH_aes  |
+            \pattern_LH_g    \pattern_LH_aes  |
+            \pattern_LH_c7   \pattern_LH_f_c  |
+            \set_time("6/8")
+            \pattern_LH_f_c                   |
+            \set_time("12/8")
+        >>
     end
 
 end
