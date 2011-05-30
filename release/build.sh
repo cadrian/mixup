@@ -283,9 +283,8 @@ PACKAGE_DIR=${RELEASE_DIR}/mixup-$(date +'%Y%m%d-%H%M%S')
 cd ..
 INSTALL_DIR=$(pwd)
 
-BUILD_DIR=${INSTALL_DIR}/target
-test -d ${BUILD_DIR} || mkdir ${BUILD_DIR}
-cd ${BUILD_DIR}
+BUILD_DIR0=${INSTALL_DIR}/target
+BUILD_DIR=${BUILD_DIR0}/release
 
 MUST_CLEAN=false
 MUST_INSTALL=false
@@ -315,15 +314,11 @@ while [ $# -gt 0 ]; do
             MUST_INSTALL=true
             ;;
         -test)
-            BUILD_DIR=${BUILD_DIR}/test
-            test -d ${BUILD_DIR} || mkdir ${BUILD_DIR}
-            cd ${BUILD_DIR}
+            BUILD_DIR=${BUILD_DIR0}/test
             LEVEL=test
             ;;
         -ci)
-            BUILD_DIR=${BUILD_DIR}/ci
-            test -d ${BUILD_DIR} || mkdir ${BUILD_DIR}
-            cd ${BUILD_DIR}
+            BUILD_DIR=${BUILD_DIR0}/ci
             LEVEL=ci
             ECHO=noecho
             ;;
@@ -339,6 +334,10 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
+
+test -d ${BUILD_DIR} || mkdir -p ${BUILD_DIR}
+cd ${BUILD_DIR}
+
 PREFIX=${PREFIX:-/usr/local}
 
 ace_${LEVEL} > mixup.ace
