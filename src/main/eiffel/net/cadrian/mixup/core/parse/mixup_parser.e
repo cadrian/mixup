@@ -254,8 +254,8 @@ feature {MIXUP_TERMINAL_NODE_IMPL}
             last_string := node.image.image
          when "KW string" then
             string_image ::= node.image
-            last_string := string_image.image
-            create {MIXUP_STRING} last_expression.make(new_source(node), string_image.decoded, last_string)
+            last_string := string_image.decoded
+            create {MIXUP_STRING} last_expression.make(new_source(node), last_string, string_image.image)
          when "KW number" then
             if integer_image ?:= node.image then
                integer_image ::= node.image

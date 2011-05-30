@@ -2,10 +2,33 @@ instrument lied
     set template.instrument_name := "Lied"
     set template.instrument_abbrev := ""
     set lilypond.relative := "c'"
+
     music
         <<
             \set_clef(trebble) \set_key(bes_mol) \set_time("12/8")
-            R1 | R1
+            R1. | R1. |
+            :p:
+            f4. bes4 bes8 aes4.~ aes4 aes8 |
+            ges4.~ ges4 ges8 f2. |
+            f4 des8 ees4 f8 aes4. f4 des8 |
+            c2. bes4.~ bes8 r f' |
+            f4. bes4 bes8 aes2. |
+            ges4.~ ges4 ges8 f2. |
+            -- TODO: ossia
+            f4 des8 ees4 f8 f4. ees4 des8 |
+            c2. c2.~ |
+            \set_time("6/8")
+            c4. r4 r8 |
+            \set_time("12/8")
         >>
+
+    lyrics
+        <<
+            Le long du Quai, les grands vais - seaux,
+            Que la hou - "le in" - cli - "ne en" si - len - ce,
+            Ne pren - nent pas gar - "de aux" ber - ceaux,
+            Que la main des fem - mes ba - lan - ce.
+        >>
+
     end
 end
