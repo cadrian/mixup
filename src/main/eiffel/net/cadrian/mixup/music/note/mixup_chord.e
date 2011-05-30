@@ -59,6 +59,7 @@ feature {ANY}
 
    capacity: INTEGER
    duration: INTEGER_64
+   tie: BOOLEAN
 
    is_equal (other: like Current): BOOLEAN is
       local
@@ -190,13 +191,16 @@ feature {ANY}
       end
 
 feature {}
-   make (a_source: like source; a_capacity: INTEGER; a_duration: INTEGER_64) is
+   make (a_source: like source; a_capacity: INTEGER; a_duration: INTEGER_64; a_tie: like tie) is
       require
          a_source /= Void
          a_duration > 0
          a_capacity > 0
       do
          manifest_make(a_capacity, a_duration, a_source)
+         tie := a_tie
+      ensure
+         tie = a_tie
       end
 
 feature {} -- Manifest create:

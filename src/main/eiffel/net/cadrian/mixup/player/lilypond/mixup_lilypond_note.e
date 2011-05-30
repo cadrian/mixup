@@ -52,6 +52,9 @@ feature {MIXUP_CHORD}
             buffer.extend('>')
          end
          append_duration(a_chord.duration)
+         if a_chord.tie then
+            buffer.extend('~')
+         end
          if a_chord.valid_anchor then
             reference := a_chord.anchor
          end

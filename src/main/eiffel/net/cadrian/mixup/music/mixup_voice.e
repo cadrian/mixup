@@ -92,9 +92,8 @@ feature {ANY}
          ref, note: MIXUP_NOTE_HEAD
          chord: MIXUP_CHORD
       do
-         -- TODO: manage tie
          from
-            create chord.make(a_source, note_heads.count, note_length)
+            create chord.make(a_source, note_heads.count, note_length, tie)
             ref := reference
             i := note_heads.lower
          until
