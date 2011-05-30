@@ -37,6 +37,8 @@ feature {}
          create {LINKED_HASHED_DICTIONARY[DIRECTORY, FIXED_STRING]} load_paths.make
 
          configure(agent when_configured)
+
+         log.info.put_line(once "Done.")
       end
 
    when_configured is
