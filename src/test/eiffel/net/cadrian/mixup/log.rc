@@ -1,0 +1,16 @@
+log configuration
+
+root ON_CONSOLE
+
+output
+        mixup_con is console
+                format "**** @C: @m%N"
+                end
+
+logger
+        ON_CONSOLE is
+                output mixup_con
+                level trace
+                end
+
+end
