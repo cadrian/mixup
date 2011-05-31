@@ -191,6 +191,7 @@ cluster
         option
             assertion(no): MIXUP_GRAMMAR
             debug(no): MIXUP_GRAMMAR, MIXUP_PARSER
+            debug(no): MIXUP_EVENTS_ITERATOR_ON_VOICES, MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS, MIXUP_EVENTS_ITERATOR_ON_STAVES
         end
 
 generate
