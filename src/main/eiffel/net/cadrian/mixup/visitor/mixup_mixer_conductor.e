@@ -44,11 +44,13 @@ feature {MIXUP_SCORE}
          level := level + 1
          a_score.run_hook(current_player, once "at_start")
          current_player.play(create {MIXUP_EVENT_SET_SCORE}.make(a_score.source, 0, a_score.name))
+         a_score.run_hook(current_player, once "at_score_start")
       end
 
    end_score (a_score: MIXUP_SCORE) is
       do
          (create {MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
+         a_score.run_hook(current_player, once "at_score_end")
          current_player.play(create {MIXUP_EVENT_END_SCORE}.make(a_score.source, 0))
          a_score.run_hook(current_player, once "at_end")
          level := level - 1
@@ -60,11 +62,13 @@ feature {MIXUP_BOOK}
          level := level + 1
          a_book.run_hook(current_player, once "at_start")
          current_player.play(create {MIXUP_EVENT_SET_BOOK}.make(a_book.source, 0, a_book.name))
+         a_book.run_hook(current_player, once "at_book_start")
       end
 
    end_book (a_book: MIXUP_BOOK) is
       do
          (create {MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
+         a_book.run_hook(current_player, once "at_book_end")
          current_player.play(create {MIXUP_EVENT_END_BOOK}.make(a_book.source, 0))
          a_book.run_hook(current_player, once "at_end")
          level := level - 1
@@ -76,11 +80,13 @@ feature {MIXUP_PARTITUR}
          level := level + 1
          a_partitur.run_hook(current_player, once "at_start")
          current_player.play(create {MIXUP_EVENT_SET_PARTITUR}.make(a_partitur.source, 0, a_partitur.name))
+         a_partitur.run_hook(current_player, once "at_partitur_start")
       end
 
    end_partitur (a_partitur: MIXUP_PARTITUR) is
       do
          (create {MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
+         a_partitur.run_hook(current_player, once "at_partitur_end")
          current_player.play(create {MIXUP_EVENT_END_PARTITUR}.make(a_partitur.source, 0))
          a_partitur.run_hook(current_player, once "at_end")
          level := level - 1

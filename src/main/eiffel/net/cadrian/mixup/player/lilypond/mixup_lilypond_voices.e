@@ -82,30 +82,30 @@ feature {ANY}
          end
       end
 
-   generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
       local
          is_first: AGGREGATOR[MIXUP_LILYPOND_VOICE, BOOLEAN]
          dummy: BOOLEAN
       do
          if voices.count = 1 then
-            voices.first.generate(context, output)
+            voices.first.generate(context, section)
          else
-            output.put_line(once "<<")
+            section.set_body(once "<<%N")
             dummy := is_first.map(voices,
-                         agent (voice: MIXUP_LILYPOND_VOICE; first: BOOLEAN; a_context: MIXUP_CONTEXT; a_output: OUTPUT_STREAM): BOOLEAN is
+                         agent (voice: MIXUP_LILYPOND_VOICE; first: BOOLEAN; a_context: MIXUP_CONTEXT; a_section: MIXUP_LILYPOND_SECTION): BOOLEAN is
                             do
                                if not first then
-                                  a_output.put_line(once "\\")
+                                  a_section.set_body(once "\\%N")
                                end
-                               a_output.put_line(once "{")
-                               voice.generate(a_context, a_output)
-                               a_output.put_line(once "}")
+                               a_section.set_body(once "{%N")
+                               voice.generate(a_context, a_section)
+                               a_section.set_body(once "}%N")
                             ensure
                                not_first: not Result
-                            end(?, ?, context, output),
+                            end(?, ?, context, section),
                             True)
             check not dummy end
-            output.put_line(once ">>")
+            section.set_body(once ">>%N")
          end
       end
 

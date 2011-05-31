@@ -6,6 +6,11 @@ from playback.lilypond import *
 
 set template.show_empty_staves := false
 
+set hook.at_partitur_start := function
+                              do
+                                  set_header("title = %"Les berceaux%"")
+                              end
+
 import berceaux.lied
 import berceaux.piano
 

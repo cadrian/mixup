@@ -64,4 +64,6 @@ export set_time := function(time)
                        end
                    end
 
+export set_header := function(string) native "set_header"
+
 end

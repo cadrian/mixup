@@ -97,14 +97,14 @@ feature {MIXUP_LILYPOND_PLAYER}
       end
 
 feature {MIXUP_LILYPOND_PLAYER}
-   generate (output: OUTPUT_STREAM) is
+   generate (section: MIXUP_LILYPOND_SECTION) is
       require
-         output.is_connected
+         section /= Void
       local
          staff_type: STRING
       do
          if staffs.count = 1 then
-            staffs.first.generate(context, output, True)
+            staffs.first.generate(context, section, True)
          else
             if staffs.count = 2 then
                staff_type := once "PianoStaff"
@@ -113,10 +113,14 @@ feature {MIXUP_LILYPOND_PLAYER}
             end
             context_name := get_string(context, template_instrument_staff, staff_type)
 
-            output.put_line(once "\new " + context_name.out + " = %"" + name.out + "%" <<")
-            generate_context(context, output, Current)
-            staffs.do_all(agent {MIXUP_LILYPOND_STAFF}.generate(context, output, False))
-            output.put_line(once ">>")
+            section.set_body(once "\new ")
+            section.set_body(context_name)
+            section.set_body(once " = %"")
+            section.set_body(name)
+            section.set_body(once "%" <<%N")
+            generate_context(context, section, Current)
+            staffs.do_all(agent {MIXUP_LILYPOND_STAFF}.generate(context, section, False))
+            section.set_body(once ">>%N")
          end
       end
 

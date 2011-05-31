@@ -51,6 +51,16 @@ feature {ANY}
             else
                error_at(args.first.source, "Lilypond: expected a string")
             end
+         when "set_header" then
+            if args.count /= 1 then
+               error_at(a_source, "Lilypond: bad argument count")
+            elseif str ?:= args.first then
+               str ::= args.first
+               check str.value /= Void end
+               current_section.set_header(str.value)
+            else
+               error_at(args.first.source, "Lilypond: expected a string")
+            end
          else
             warning_at(a_source, "Lilypond: unknown native function: " + fn_name)
          end
@@ -185,90 +195,69 @@ feature {ANY}
          instruments.reference_at(a_data.instrument).string_event(a_data.staff_id, a_data.voice_id, a_string)
       end
 
-feature {} -- headers and footers
-   put_header (section, a_name: ABSTRACT_STRING) is
-      do
-         section_output.put_line("%% ---------------- Generated using MiXuP ----------------")
-         section_output.put_new_line
-         section_output.put_line("\include %"mixup-" + section.out + ".ily%"")
-         section_output.put_new_line
-         section_output.put_line("\header {")
-         section_output.put_line("mixup-" + section.out + " = %"" + a_name.out + "%"")
-         section_output.put_line("}")
-         section_output.put_new_line
-         section_output.put_line("\book {")
-         section_output.put_line("\score {")
-         section_output.put_line("<<")
-      end
-
-   put_footer is
-      do
-         section_output.put_line(">>")
-         section_output.put_line("}")
-         section_output.put_line("}")
-      end
-
 feature {} -- section files management
    push_section (section, a_name: ABSTRACT_STRING) is
       require
          a_name /= Void
-      local
-         filename: STRING
-         tfr: TEXT_FILE_WRITE
       do
-         if section_stack.is_empty then
-            check
-               opus_name = Void
-            end
-            opus_name := a_name.intern
-            if managed_output then
-               check
-                  opus_output = Void
-               end
-               create tfr.connect_to(a_name + ".ly")
-               outputs_stack.push(tfr)
-               opus_output := tfr
-            end
-         elseif managed_output then
-            filename := opus_name.out + "-" + a_name.out
-            create tfr.connect_to(filename)
-            section_output.put_line("\include %"" + filename + "%"")
-            outputs_stack.push(tfr)
+         if current_section = Void then
+            create current_section.make_full(section, a_name)
+         else
+            create current_section.make_body(section, a_name, current_section)
          end
-         put_header(section, a_name)
-         section_stack.push(a_name.intern)
       end
 
    pop_section is
+      local
+         section: like current_section
+         filename: STRING
+         tfr: TEXT_FILE_WRITE
       do
-         instruments.do_all_items(agent {MIXUP_LILYPOND_INSTRUMENT}.generate(section_output))
+         instruments.do_all_items(agent {MIXUP_LILYPOND_INSTRUMENT}.generate(current_section))
          instruments.clear_count
-         section_stack.pop
-         if section_stack.is_empty then
-            put_footer
-         end
+
+         section := current_section
+         current_section := section.parent
+
          if managed_output then
-            section_output.disconnect
-            outputs_stack.pop
-            if outputs_stack.is_empty then
-               call_lilypond
+            filename := build_filename(section.name)
+            if current_section /= Void then
+               current_section.set_body(once "\include %"")
+               current_section.set_body(filename)
+               current_section.set_body(once "%"%N")
             end
-         end
-         if section_stack.is_empty then
-            opus_name := Void
+            create tfr.connect_to(filename)
+            if tfr.is_connected then
+               section.generate(tfr)
+               tfr.disconnect
+            end
+            if current_section = Void then
+               call_lilypond(filename)
+            end
+         else
+            section.generate(opus_output)
          end
       end
 
+   build_filename (a_name: ABSTRACT_STRING): STRING is
+      do
+         Result := a_name.out
+         if current_section /= Void then
+            current_section.filename_in(Result)
+         end
+         Result.append(once ".ly")
+      end
+
 feature {} -- System call to lilypond
-   call_lilypond is
+   call_lilypond (filename: STRING) is
       require
-         opus_name /= Void
+         filename /= Void
          managed_output
       local
          command: STRING
          sys: SYSTEM; status: INTEGER
       do
-         command := "lilypond -dresolution=1200 " + opus_name.out + ".ly"
+         command := "lilypond -dresolution=1200 " + filename.out
          log.info.put_line("Calling command: %"" + command + "%"")
          status := sys.execute_command(command)
          if status /= 0 then
@@ -293,8 +282,6 @@ feature {}
    make is
       do
          managed_output := True
-         create section_stack.make
-         create outputs_stack.make
          create instruments.make
       ensure
          opus_output = Void
@@ -303,27 +290,13 @@ feature {}
    opus_name: FIXED_STRING
    opus_output: OUTPUT_STREAM
    managed_output: BOOLEAN
-   section_stack: STACK[FIXED_STRING]
-   outputs_stack: STACK[OUTPUT_STREAM]
    instruments: LINKED_HASHED_DICTIONARY[MIXUP_LILYPOND_INSTRUMENT, FIXED_STRING]
    bar_number: INTEGER
    context: MIXUP_CONTEXT
 
-   section_output: OUTPUT_STREAM is
-         -- the output file for the current section.
-      do
-         if outputs_stack.is_empty then
-            Result := opus_output
-         else
-            Result := outputs_stack.top
-         end
-      end
+   current_section: MIXUP_LILYPOND_SECTION
 
 invariant
-   section_stack /= Void
-   outputs_stack /= Void
    instruments /= Void
-   managed_output implies (section_stack.count = outputs_stack.count)
-   (not managed_output) implies outputs_stack.is_empty
 
 end -- class MIXUP_LILYPOND_PLAYER

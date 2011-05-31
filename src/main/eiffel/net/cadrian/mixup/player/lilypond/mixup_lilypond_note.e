@@ -124,10 +124,10 @@ feature {MIXUP_LYRICS}
       end
 
 feature {ANY}
-   generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
       do
-         output.put_character(' ')
-         output.put_string(buffer)
+         section.set_body(once " ")
+         section.set_body(buffer)
       end
 
    can_append: BOOLEAN is True

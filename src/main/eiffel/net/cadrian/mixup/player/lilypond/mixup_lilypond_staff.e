@@ -142,44 +142,46 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
       end
 
 feature {MIXUP_LILYPOND_INSTRUMENT}
-   generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM; generate_names: BOOLEAN) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION; generate_names: BOOLEAN) is
       require
-         output.is_connected
+         section /= Void
       local
          iter_lyrics: ZIP[AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64], INTEGER]
          relative: FIXED_STRING
       do
-         output.put_string(once "\new ")
-         output.put_string(context_name)
-         output.put_string(once " = %"")
-         output.put_string(instrument.name)
-         output.put_integer(id)
-         output.put_line(once "%" <<")
+         section.set_body(once "\new ")
+         section.set_body(context_name)
+         section.set_body(once " = %"")
+         section.set_body(instrument.name)
+         section.set_body(id.out)
+         section.set_body(once "%" <<%N")
          if generate_names then
-            generate_context(context, output, instrument)
+            generate_context(context, section, instrument)
          end
-         output.put_string(once "\new Voice = %"")
-         output.put_string(instrument.name)
-         output.put_integer(id)
-         output.put_line(once "voice%" {")
+         section.set_body(once "\new Voice = %"")
+         section.set_body(instrument.name)
+         section.set_body(id.out)
+         section.set_body(once "voice%" {%N")
          if root_voices /= Void then
             relative := get_string(context, lilypond_relative, Void)
             if relative /= Void then
-               output.put_line("\relative " + relative.out + " {")
-               root_voices.generate(context, output)
-               output.put_line(once "}")
+               section.set_body(once "\relative ")
+               section.set_body(relative)
+               section.set_body(once " {%N")
+               root_voices.generate(context, section)
+               section.set_body(once "}%N")
             else
-               root_voices.generate(context, output)
+               root_voices.generate(context, section)
             end
          end
-         output.put_line(once "}")
+         section.set_body(once "}%N")
 
          if not lyrics.is_empty then
             create iter_lyrics.make(lyrics, 1 |..| lyrics.count)
-            iter_lyrics.do_all(agent generate_lyrics(?, ?, context, output))
+            iter_lyrics.do_all(agent generate_lyrics(?, ?, context, section))
          end
 
-         output.put_line(once ">>")
+         section.set_body(once ">>%N")
       end
 
 feature {}
@@ -209,40 +211,37 @@ feature {}
          lyrics.count >= a_count
       end
 
-   generate_lyrics (lyr: AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]; index: INTEGER; context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
+   generate_lyrics (lyr: AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]; index: INTEGER; context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
       require
          lyr /= Void
          index > 0
-         output.is_connected
+         section /= Void
       do
          if index \\ 2 = 0 then
-            output.put_string(once "\new AltLyrics = ")
+            section.set_body(once "\new AltLyrics = %"")
          else
-            output.put_string(once "\new Lyrics = ")
+            section.set_body(once "\new Lyrics = %"")
          end
-         output.put_character('"')
-         output.put_string(instrument.name)
-         output.put_integer(id)
-         output.put_character('x')
-         output.put_integer(index)
-         output.put_string(once "%" \lyricsto %"")
-         output.put_string(instrument.name)
-         output.put_integer(id)
-         output.put_line(once "voice%" {")
-         output.put_line(once "\lyricmode {")
-         lyr.do_all_items(agent (a_syllable: MIXUP_SYLLABLE; a_output: OUTPUT_STREAM) is
+         section.set_body(instrument.name)
+         section.set_body(id.out)
+         section.set_body(once "x")
+         section.set_body(index.out)
+         section.set_body(once "%" \lyricsto %"")
+         section.set_body(instrument.name)
+         section.set_body(id.out)
+         section.set_body(once "voice%" {%N")
+         section.set_body(once "\lyricmode {%N")
+         lyr.do_all_items(agent (a_syllable: MIXUP_SYLLABLE; a_section: MIXUP_LILYPOND_SECTION) is
                              do
-                                a_output.put_character(' ')
+                                a_section.set_body(once " ")
                                 if a_syllable.in_word then
-                                   a_output.put_string(once "-- ")
+                                   a_section.set_body(once "-- ")
                                 end
-                                a_output.put_character('"')
-                                a_output.put_string(a_syllable.syllable)
-                                a_output.put_character('"')
-                             end(?, output))
-         output.put_new_line
-         output.put_line(once "}")
-         output.put_line(once "}")
+                                a_section.set_body(once "%"")
+                                a_section.set_body(a_syllable.syllable)
+                                a_section.set_body(once "%"")
+                             end(?, section))
+         section.set_body(once "%N}%N}%N")
       end
 
 feature {}

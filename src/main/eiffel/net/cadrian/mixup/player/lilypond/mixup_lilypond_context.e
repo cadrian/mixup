@@ -22,13 +22,13 @@ feature {}
       deferred
       end
 
-   generate_context (context: MIXUP_CONTEXT; output: OUTPUT_STREAM; instrument: MIXUP_LILYPOND_INSTRUMENT) is
+   generate_context (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION; instrument: MIXUP_LILYPOND_INSTRUMENT) is
       require
          context_name /= Void
          instrument /= Void
       do
-         generate_context_string(context, output, template_instrument_name, once "instrumentName", instrument.name)
-         generate_context_string(context, output, template_instrument_abbrev, once "shortInstrumentName", instrument.name.first.out + ".")
+         generate_context_string(context, section, template_instrument_name, once "instrumentName", instrument.name)
+         generate_context_string(context, section, template_instrument_abbrev, once "shortInstrumentName", instrument.name.first.out + ".")
       end
 
    get_string (context: MIXUP_CONTEXT; context_data_name: FIXED_STRING; default_value: ABSTRACT_STRING): FIXED_STRING is
@@ -52,15 +52,22 @@ feature {}
          end
       end
 
-   generate_context_string (context: MIXUP_CONTEXT; output: OUTPUT_STREAM; context_data_name: FIXED_STRING; lilypond_variable_name, default_value: ABSTRACT_STRING) is
+   generate_context_string (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION; context_data_name: FIXED_STRING; lilypond_variable_name, default_value: ABSTRACT_STRING) is
       require
          context_name /= Void
+         section /= Void
       local
          str: FIXED_STRING
       do
          str := get_string(context, context_data_name, default_value)
          if str /= Void then
-            output.put_line("\set " + context_name.out + "." + lilypond_variable_name + " = %"" + str.out + "%"")
+            section.set_body(once "\set ")
+            section.set_body(context_name)
+            section.set_body(once ".")
+            section.set_body(lilypond_variable_name)
+            section.set_body(once " = %"")
+            section.set_body(str)
+            section.set_body(once "%"%N")
          end
       end
 
@@ -80,4 +87,4 @@ feature {}
          Result /= Void
       end
 
-end
+end -- class MIXUP_LILYPOND_CONTEXT

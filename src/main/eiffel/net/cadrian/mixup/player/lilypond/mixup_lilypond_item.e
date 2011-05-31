@@ -47,9 +47,9 @@ feature {ANY}
       deferred
       end
 
-   generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
       require
-         output.is_connected
+         section /= Void
       deferred
       end
 

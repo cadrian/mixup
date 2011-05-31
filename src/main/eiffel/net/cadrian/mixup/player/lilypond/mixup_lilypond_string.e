@@ -37,9 +37,9 @@ feature {ANY}
 
    string: FIXED_STRING
 
-   generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
       do
-         output.put_string(string)
+         section.set_body(string)
       end
 
 feature {}

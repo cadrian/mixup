@@ -180,10 +180,12 @@ feature {MIXUP_LILYPOND_STAFF}
       end
 
 feature {MIXUP_LILYPOND_VOICES}
-   generate (context: MIXUP_CONTEXT; output: OUTPUT_STREAM) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
+      require
+         section /= Void
       do
-         items.do_all(agent {MIXUP_LILYPOND_ITEM}.generate(context, output))
-         output.put_new_line
+         items.do_all(agent {MIXUP_LILYPOND_ITEM}.generate(context, section))
+         section.set_body(once "%N")
       end
 
 feature {}
