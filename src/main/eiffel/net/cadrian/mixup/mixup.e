@@ -18,7 +18,7 @@ class MIXUP
    --
 
 insert
-   ARGUMENTS
+   MIXUP_CONFIGURATION
    LOGGING
 
 create {}
@@ -45,13 +45,27 @@ feature {}
       local
          file: FILE
       do
-         if argument_count /= 1 then
+         if system /= Void then
+            lilypond_include_directories.add_last(system)
+         end
+         if home /= Void then
+            lilypond_include_directories.add_last(home)
+         end
+
+         if not args.parse_command_line then
             usage(log.error)
             die_with_code(1)
          end
 
+         if lilypond_exe.is_set then
+            lilypond_exe_path.set_item(lilypond_exe.item.path)
+         end
+         if lilypond_include.is_set then
+            lilypond_include_directories.add_last(lilypond_include.item.path)
+         end
+
          open_directory := current_directory
-         file := find_file(argument(1).intern, mixup_suffix)
+         file := find_file(mix_file.item, mixup_suffix)
          mixer.add_piece(parse(file.path, read_file(file)), file.path)
          check
             open_directory = current_directory
@@ -62,10 +76,7 @@ feature {}
 
    usage (output: OUTPUT_STREAM) is
       do
-         output.put_line("Usage: " + command_name + " <source>")
-         output.put_new_line
-         output.put_line("<source> is the name of the file containing the whole score.")
-         output.put_new_line
+         args.usage(output)
       end
 
    configure (a_when_configured: PROCEDURE[TUPLE]) is
@@ -368,6 +379,29 @@ feature {} -- Load paths
       end
 
    load_paths: DICTIONARY[DIRECTORY, FIXED_STRING]
+
+feature {} -- arguments
+   arg_factory: COMMAND_LINE_ARGUMENT_FACTORY
+
+   mix_file: COMMAND_LINE_TYPED_ARGUMENT[FIXED_STRING] is
+      once
+         Result := arg_factory.positional_string("mixfile", "The MiXuP file to read")
+      end
+
+   lilypond_exe: COMMAND_LINE_TYPED_ARGUMENT[REGULAR_FILE] is
+      once
+         Result := arg_factory.option_file("y", "lilypond_exe", "lilypond_exe", "The lilypond executable path")
+      end
+
+   lilypond_include: COMMAND_LINE_TYPED_ARGUMENT[DIRECTORY] is
+      once
+         Result := arg_factory.option_directory("I", "lilypond_include", "lilypond_include", "The lilypond include directory")
+      end
+
+   args: COMMAND_LINE_ARGUMENTS is
+      once
+         create Result.make(lilypond_exe and lilypond_include and mix_file)
+      end
 
 invariant
    load_paths /= Void

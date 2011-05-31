@@ -17,6 +17,9 @@ class MIXUP_LILYPOND_PLAYER
 inherit
    MIXUP_CORE_PLAYER
 
+insert
+   MIXUP_CONFIGURATION
+
 create {ANY}
    make, connect_to
 
@@ -268,7 +271,15 @@ feature {} -- System call to lilypond
          command: STRING
          sys: SYSTEM; status: INTEGER
       do
-         command := "lilypond -dresolution=1200 " + opus_name.out + ".ly"
+         command := lilypond_exe_path.item.out
+         lilypond_include_directories.do_all(agent (dir: FIXED_STRING; cmd: STRING) is
+                                                do
+                                                   cmd.append(once " -I ")
+                                                   cmd.append(dir)
+                                                end (?, command))
+         command.append(once " -dresolution=1200 ")
+         command.append(opus_name)
+         command.append(once ".ly")
          log.info.put_line("Calling command: %"" + command + "%"")
          status := sys.execute_command(command)
          if status /= 0 then
