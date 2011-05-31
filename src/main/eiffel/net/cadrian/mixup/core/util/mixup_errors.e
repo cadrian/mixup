@@ -50,7 +50,7 @@ feature {ANY}
          message /= Void
          a_source /= Void
       do
-         log.warning.put_line(header(a_source) + message)
+         log.warning.put_line(error_header(a_source) + message)
          a_source.display(log.warning)
          warning_count.next
          sedb_breakpoint
@@ -61,7 +61,7 @@ feature {ANY}
          message /= Void
          a_source /= Void
       do
-         log.error.put_line(header(a_source) + message)
+         log.error.put_line(error_header(a_source) + message)
          a_source.display(log.error)
          error_count.next
          sedb_breakpoint
@@ -83,7 +83,7 @@ feature {}
    display_counter (count: INTEGER; tag: STRING) is
       do
          if count > 0 then
-            log.error.put_string(header(Void) + count.out)
+            log.error.put_string(error_header(Void) + count.out)
             if count = 1 then
                log.error.put_line(" " + tag)
             else
@@ -102,7 +102,7 @@ feature {}
          create Result
       end
 
-   header (a_source: like source): STRING is
+   error_header (a_source: like source): STRING is
       do
          Result := ""
          if a_source /= Void then
