@@ -67,7 +67,7 @@ feature {ANY}
             a_output.put_string(once "\include %"mixup.ily%"")
             a_output.put_new_line
             a_output.put_line(once "\header {")
-            a_output.put_line(header)
+            a_output.put_string(header)
             a_output.put_line(once "}")
             a_output.put_new_line
             a_output.put_line(once "\book {")
@@ -79,13 +79,13 @@ feature {ANY}
          a_output.put_string(type)
          a_output.put_line(once ".ily%"")
          a_output.put_new_line
-         a_output.put_line(body)
+         a_output.put_string(body)
 
          if footer /= Void then
             a_output.put_line(once ">>")
             a_output.put_line(once "}")
             a_output.put_line(once "}")
-            a_output.put_line(footer)
+            a_output.put_string(footer)
          end
       end
 

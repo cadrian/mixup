@@ -71,9 +71,9 @@ feature {}
 
          expected := "[
 % ---------------- Generated using MiXuP ----------------
+\version "2.12.3"
 
-\include "mixup-partitur.ily"
-
+\include "mixup.ily"
 \header {
 mixup_partitur = "test"
 }
@@ -81,6 +81,8 @@ mixup_partitur = "test"
 \book {
 \score {
 <<
+\include "mixup-partitur.ily"
+
 \new Staff = "MyInstr1" <<
 \set Staff.instrumentName = "MyInstr"
 \set Staff.shortInstrumentName = "M."

@@ -205,6 +205,7 @@ feature {} -- section files management
       do
          if current_section = Void then
             create current_section.make_full(section, a_name)
+            current_section.set_header("mixup_" + section.out + " = %"" + a_name.out + "%"%N")
          else
             create current_section.make_body(section, a_name, current_section)
          end
@@ -271,8 +272,7 @@ feature {} -- System call to lilypond
          log.info.put_line("Calling command: %"" + command + "%"")
          status := sys.execute_command(command)
          if status /= 0 then
-            log.error.put_line("Error while calling Lilypond.")
-            die_with_code(status)
+            log.warning.put_line("Lilypond command failed (exited with status " + status.out + ")")
          end
       end
 
