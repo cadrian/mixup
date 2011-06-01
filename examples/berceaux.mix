@@ -8,7 +8,7 @@ set template.show_empty_staves := false
 
 set hook.at_partitur_start := function
                               do
-                                  set_header("title = %"Les berceaux%"")
+                                  set_title("Les Berceaux")
                               end
 
 import berceaux.lied

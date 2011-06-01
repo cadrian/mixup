@@ -261,7 +261,10 @@ install() {
     find . -name 'mixup*' -type f -executable -exec cp -a {} ${PKG_BIN}/ \;
 
     mkdir -p ${PKG_SHARED}/modules
-    cp -a $INSTALL_DIR/src/mixup/* ${PKG_SHARED}/modules/
+    cp -a $INSTALL_DIR/src/mixup/modules/* ${PKG_SHARED}/modules/
+
+    mkdir -p ${PKG_SHARED}/lilypond
+    cp -a $INSTALL_DIR/src/mixup/lilypond/* ${PKG_SHARED}/lilypond/
 
     log_rc_${LOG_LEVEL} > ${PKG_SHARED}/log.rc
 }
@@ -361,6 +364,10 @@ cat > ${PKG_SHARED}/load_paths <<EOF
 ${PREFIX}/share/mixup/modules
 EOF
 
+cat > ${PKG_SHARED}/lilypond_include_paths <<EOF
+${PREFIX}/share/mixup/lilypond
+EOF
+
 PKG_SRC=${PACKAGE_DIR}/${PREFIX}/src/mixup
 mkdir -p $PKG_SRC
 find . -name 'mixup*.[ch]' -type f -exec cp -a {} ${PKG_SRC}/ \;
@@ -373,6 +380,10 @@ if $MUST_INSTALL; then
 
     cat > ${HOME}/.mixup/load_paths <<EOF
 ${HOME}/.mixup/modules
+EOF
+
+    cat > ${HOME}/.mixup/lilypond_include_paths <<EOF
+${HOME}/.mixup/lilypond
 EOF
 fi
 

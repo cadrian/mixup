@@ -75,7 +75,7 @@ feature {}
 
 \include "mixup.ily"
 \header {
-mixup_partitur = "test"
+mixuppartitur = "test"
 }
 
 \book {

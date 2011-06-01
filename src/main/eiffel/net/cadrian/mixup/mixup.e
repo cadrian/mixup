@@ -45,13 +45,6 @@ feature {}
       local
          file: FILE
       do
-         if system /= Void then
-            lilypond_include_directories.add_last(system)
-         end
-         if home /= Void then
-            lilypond_include_directories.add_last(home)
-         end
-
          if not args.parse_command_line then
             usage(log.error)
             die_with_code(1)
@@ -81,7 +74,7 @@ feature {}
 
    configure (a_when_configured: PROCEDURE[TUPLE]) is
       do
-         set_load_paths
+         set_paths
          set_log(a_when_configured)
       end
 
@@ -331,28 +324,52 @@ feature {} -- Logs
       end
 
 feature {} -- Load paths
-   set_load_paths is
+   set_paths is
       do
-         load_paths.clear_count
          if user_directory /= Void then
-            add_load_path(user_directory)
-            set_load_paths_from(user_directory)
+            set_path(user_directory)
          end
          if system_directory /= Void then
-            add_load_path(system_directory)
-            set_load_paths_from(system_directory)
+            set_path(system_directory)
          end
       end
 
-   set_load_paths_from (a_directory: DIRECTORY) is
+   set_path (a_directory: DIRECTORY) is
+      require
+         a_directory.exists
+      do
+         add_load_path(a_directory)
+         set_paths_from(a_directory, once "load_paths", agent add_load_path)
+         add_lilypond_include_directory(a_directory)
+         set_paths_from(a_directory, once "lilypond_include_paths", agent add_lilypond_include_directory)
+      end
+
+   add_load_path (a_directory: DIRECTORY) is
+      require
+         a_directory.exists
+      do
+         load_paths.add(a_directory, a_directory.path)
+      end
+
+   load_paths: DICTIONARY[DIRECTORY, FIXED_STRING]
+
+   add_lilypond_include_directory (a_directory: DIRECTORY) is
+      require
+         a_directory.exists
+      do
+         lilypond_include_directories.add_last(a_directory.path)
+      end
+
+feature {}
+   set_paths_from (a_directory: DIRECTORY; a_file_name: STRING; a_path_setter: PROCEDURE[TUPLE[DIRECTORY]]) is
       local
          input: INPUT_STREAM
          path: FIXED_STRING
          dir: DIRECTORY
       do
-         if a_directory.has_file(once "load_paths") then
+         if a_directory.has_file(a_file_name) then
             from
-               input := a_directory.file(once "load_paths").as_regular.read
+               input := a_directory.file(a_file_name).as_regular.read
             until
                input.end_of_input
             loop
@@ -362,7 +379,7 @@ feature {} -- Load paths
                   if not load_paths.fast_has(path) then
                      create dir.scan(path)
                      if dir.exists then
-                        add_load_path(dir)
+                        a_path_setter.call([dir])
                      end
                   end
                end
@@ -370,15 +387,6 @@ feature {} -- Load paths
             input.disconnect
          end
       end
-
-   add_load_path (a_dir: DIRECTORY) is
-      require
-         a_dir.exists
-      do
-         load_paths.add(a_dir, a_dir.path)
-      end
-
-   load_paths: DICTIONARY[DIRECTORY, FIXED_STRING]
 
 feature {} -- arguments
    arg_factory: COMMAND_LINE_ARGUMENT_FACTORY

@@ -205,7 +205,7 @@ feature {} -- section files management
       do
          if current_section = Void then
             create current_section.make_full(section, a_name)
-            current_section.set_header("mixup_" + section.out + " = %"" + a_name.out + "%"%N")
+            current_section.set_header("mixup" + section.out + " = %"" + a_name.out + "%"%N")
          else
             create current_section.make_body(section, a_name, current_section)
          end

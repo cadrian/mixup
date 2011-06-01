@@ -64,6 +64,11 @@ export set_time := function(time)
                        end
                    end
 
-export set_header := function(string) native "set_header"
+set set_header := function(string) native "set_header"
+
+export set_title := function(title)
+                    do
+                        set_header("title = \markup{\huge{\bold %"" + title + "%"}}%N")
+                    end
 
 end
