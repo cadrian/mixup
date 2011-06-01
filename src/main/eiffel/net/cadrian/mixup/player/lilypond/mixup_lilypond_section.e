@@ -64,21 +64,19 @@ feature {ANY}
             a_output.put_line(once "%% ---------------- Generated using MiXuP ----------------")
             a_output.put_line(once "\version %"2.12.3%"")
             a_output.put_new_line
-            a_output.put_string(once "\include %"mixup.ily%"")
-            a_output.put_new_line
+            a_output.put_line(once "\include %"mixup.ily%"")
             a_output.put_line(once "\header {")
             a_output.put_string(header)
             a_output.put_line(once "}")
             a_output.put_new_line
             a_output.put_line(once "\book {")
+            a_output.put_string(once "\include %"mixup-")
+            a_output.put_string(type)
+            a_output.put_line(once ".ily%"")
             a_output.put_line(once "\score {")
             a_output.put_line(once "<<")
          end
 
-         a_output.put_string(once "\include %"mixup-")
-         a_output.put_string(type)
-         a_output.put_line(once ".ily%"")
-         a_output.put_new_line
          a_output.put_string(body)
 
          if footer /= Void then

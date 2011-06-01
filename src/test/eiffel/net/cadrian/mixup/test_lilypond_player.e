@@ -79,10 +79,9 @@ mixuppartitur = "test"
 }
 
 \book {
+\include "mixup-partitur.ily"
 \score {
 <<
-\include "mixup-partitur.ily"
-
 \new Staff = "MyInstr1" <<
 \set Staff.instrumentName = "MyInstr"
 \set Staff.shortInstrumentName = "M."
