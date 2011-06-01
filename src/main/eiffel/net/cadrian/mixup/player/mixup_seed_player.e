@@ -35,11 +35,22 @@ feature {ANY}
          inspect
             fn_name
          when "playback_midi" then
-            mixer.add_player(create {MIXUP_MIDI_PLAYER}.make)
+            native_playback_midi
          when "playback_lilypond" then
-            mixer.add_player(create {MIXUP_LILYPOND_PLAYER}.make)
+            native_playback_lilypond
          else
          end
+      end
+
+feature {}
+   native_playback_midi is
+      once
+         mixer.add_player(create {MIXUP_MIDI_PLAYER}.make)
+      end
+
+   native_playback_lilypond is
+      once
+         mixer.add_player(create {MIXUP_LILYPOND_PLAYER}.make)
       end
 
 feature {}
