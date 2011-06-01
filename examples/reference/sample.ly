@@ -1,12 +1,13 @@
 % ---------------- Generated using MiXuP ----------------
+\version "2.12.3"
 
-\include "mixup-partitur.ily"
-
+\include "mixup.ily"
 \header {
-mixup-partitur = "sample"
+mixuppartitur = "sample"
 }
 
 \book {
+\include "mixup-partitur.ily"
 \score {
 <<
 \new Staff = "soprano1" <<
