@@ -9,9 +9,7 @@ usage() {
     echo "-clean              to call smarteiffel's clean (ensures a fresh build)"
     echo
     echo "-version <version>  to name the archive with a specific version number"
-    echo "                    (instead of a date tag)"
-    echo "                    This also forces -clean, and sets the default prefix"
-    echo "                    to /usr instead of /usr/local"
+    echo "                    (instead of a date tag)."
     echo
     echo "-install            installs a local version in $HOME/.mixup"
     echo
@@ -306,9 +304,7 @@ while [ $# -gt 0 ]; do
                 echo "     Press Return to continue, or ^C to abort."
                 read
             fi
-            MUST_CLEAN=true
             LEVEL=release
-            PREFIX=${PREFIX:-/usr}
             ;;
         -h*)
             usage
