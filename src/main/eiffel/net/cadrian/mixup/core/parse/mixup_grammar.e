@@ -848,7 +848,14 @@ feature {}
                      image.extend(c)
                      state := 12
                      t := end_tag.lower
+                  when '%%' then
+                     parsed.extend('[')
+                     image.extend('[')
+                     image.extend('%%')
+                     state := 1
                   when '"' then
+                     parsed.extend('[')
+                     image.extend('[')
                      image.extend('"')
                      state := -1
                   else
@@ -873,7 +880,14 @@ feature {}
                      image.extend(c)
                      state := 12
                      t := end_tag.lower
+                  when '%%' then
+                     parsed.extend('{')
+                     image.extend('{')
+                     image.extend('%%')
+                     state := 1
                   when '"' then
+                     parsed.extend('{')
+                     image.extend('{')
                      image.extend('"')
                      state := -1
                   else
