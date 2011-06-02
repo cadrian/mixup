@@ -4,7 +4,10 @@
 \include "mixup.ily"
 \header {
 mixuppartitur = "berceaux"
-title = \markup{\huge{\bold "Les Berceaux"}}
+title = \markup{\huge{\sans "Les Berceaux"}}
+subtitle = \markup{\small{\italic "Mélodie"}}
+poet = \markup{"Sully" \sans "Prudhomme"}
+composer = \markup{"Gabriel" \sans "Fauré"}
 }
 
 \book {
