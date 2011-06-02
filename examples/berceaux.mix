@@ -9,6 +9,9 @@ set template.show_empty_staves := false
 set hook.at_partitur_start := function
                               do
                                   set_title("Les Berceaux")
+                                  set_subtitle("Mélodie")
+                                  set_poet("Sully", "Prudhomme")
+                                  set_composer("Gabriel", "Fauré")
                               end
 
 import berceaux.lied

@@ -68,7 +68,22 @@ set set_header := function(string) native "set_header"
 
 export set_title := function(title)
                     do
-                        set_header("title = \markup{\huge{\bold %"" + title + "%"}}%N")
+                        set_header("title = \markup{\huge{\sans %"" + title + "%"}}%N")
                     end
+
+export set_subtitle := function(title)
+                       do
+                           set_header("subtitle = \markup{\small{\italic %"" + title + "%"}}%N")
+                       end
+
+export set_composer := function(firstname, surname)
+                       do
+                           set_header("composer = \markup{%"" + firstname + "%"" + " \sans %"" + surname + "%"}%N")
+                       end
+
+export set_poet := function(firstname, surname)
+                   do
+                       set_header("poet = \markup{%"" + firstname + "%"" + " \sans %"" + surname + "%"}%N")
+                   end
 
 end
