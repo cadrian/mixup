@@ -25,7 +25,7 @@ feature {ANY}
       local
          value: MIXUP_VALUE
       do
-         value := a_if.condition.eval(context, context.player)
+         value := a_if.condition.eval(context, context.player, True)
          if value = Void then
             fatal("value could not be computed")
          else
@@ -37,6 +37,12 @@ feature {ANY}
 
 feature {}
    match_: BOOLEAN
+
+feature {MIXUP_AGENT}
+   visit_agent (a_agent: MIXUP_AGENT) is
+      do
+         fatal("cannot match on an agent")
+      end
 
 feature {MIXUP_BOOLEAN}
    visit_boolean (a_boolean: MIXUP_BOOLEAN) is

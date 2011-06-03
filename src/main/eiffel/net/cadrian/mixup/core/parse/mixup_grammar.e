@@ -182,6 +182,11 @@ feature {}
                                                                    {FAST_ARRAY[STRING] << "Music_Value" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Lyrics" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Function" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Agent" >> }, Void;
+                                                                   >> };
+
+                                   "Agent", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW '", "Identifier" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "KW '", "Function" >> }, Void; -- TODO: add optional arguments to be merged
                                                                    >> };
 
                                    "Identifier", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Identifier_Part" >> }, agent build_new_list("Identifier_Part", "Identifier");

@@ -17,9 +17,15 @@ deferred class MIXUP_COMPARISON_OPERATOR
 inherit
    MIXUP_BINARY_EXPRESSION
    MIXUP_VALUE_VISITOR
+      undefine
+         out_in_tagged_out_memory
+      end
 
-insert
-   MIXUP_ERRORS
+feature {MIXUP_AGENT}
+   visit_agent (a_agent: MIXUP_AGENT) is
+      do
+         fatal("bad type")
+      end
 
 feature {MIXUP_BOOLEAN}
    visit_boolean (a_boolean: MIXUP_BOOLEAN) is
@@ -83,6 +89,12 @@ feature {MIXUP_NATIVE_FUNCTION}
 
 feature {MIXUP_USER_FUNCTION}
    visit_user_function (a_function: MIXUP_USER_FUNCTION) is
+      do
+         fatal("bad type")
+      end
+
+feature {MIXUP_AGENT_FUNCTION}
+   visit_agent_function (a_function: MIXUP_AGENT_FUNCTION) is
       do
          fatal("bad type")
       end

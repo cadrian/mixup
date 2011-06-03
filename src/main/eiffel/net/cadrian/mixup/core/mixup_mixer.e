@@ -95,28 +95,28 @@ feature {}
       end
 
 feature {}
-   native_with_lyrics (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_with_lyrics (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       local
          music: MIXUP_MUSIC_VALUE
          decorated: MIXUP_DECORATED_MUSIC
          bar_number: INTEGER
       do
          if args.count /= 1 then
-            error_at(a_source, "bad argument count")
+            error_at(a_call_source, "bad argument count")
          elseif not (music ?:= args.first) then
             error_at(args.first.source, "bad argument type")
          else
             music ::= args.first
-            create decorated.make(a_source, once "with_lyrics", music.value,
+            create decorated.make(a_call_source, once "with_lyrics", music.value,
                                   Void, Void,
-                                  agent force_lyrics(a_source, ?, ?))
+                                  agent force_lyrics(a_def_source, a_call_source, ?, ?))
             bar_number := decorated.commit(context, player, context.bar_number)
             context.set_bar_number(bar_number)
-            create {MIXUP_MUSIC_VALUE} Result.make(a_source, decorated)
+            create {MIXUP_MUSIC_VALUE} Result.make(a_call_source, decorated)
          end
       end
 
-   force_lyrics (a_source: MIXUP_SOURCE; context: MIXUP_EVENTS_ITERATOR_CONTEXT; event: MIXUP_EVENT): MIXUP_EVENT is
+   force_lyrics (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_EVENTS_ITERATOR_CONTEXT; event: MIXUP_EVENT): MIXUP_EVENT is
       do
          Result := event
          if Result.allow_lyrics then
@@ -124,31 +124,31 @@ feature {}
          end
       end
 
-   native_bar (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_bar (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       local
          string: MIXUP_STRING
          bar: MIXUP_BAR
          bar_number: INTEGER
       do
          if args.count /= 1 then
-            error_at(a_source, "bad argument count")
+            error_at(a_call_source, "bad argument count")
          elseif not (string ?:= args.first) then
             error_at(args.first.source, "bad argument type")
          else
             string ::= args.first
-            create bar.make(a_source, string.value)
+            create bar.make(a_call_source, string.value)
             bar_number := bar.commit(context, player, context.bar_number)
             context.set_bar_number(bar_number)
-            create {MIXUP_MUSIC_VALUE} Result.make(a_source, bar)
+            create {MIXUP_MUSIC_VALUE} Result.make(a_call_source, bar)
          end
       end
 
-   native_seq (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_seq (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       local
          low, up: MIXUP_INTEGER
       do
          if args.count /= 2 then
-            error_at(a_source, "bad argument count")
+            error_at(a_call_source, "bad argument count")
          elseif not (low ?:= args.first) then
             error_at(args.first.source, "bad argument")
          elseif not (up ?:= args.last) then
@@ -156,23 +156,23 @@ feature {}
          else
             low ::= args.first
             up ::= args.last
-            create {MIXUP_SEQ} Result.make(a_source, low, up)
+            create {MIXUP_SEQ} Result.make(a_call_source, low, up)
          end
       end
 
-   native_new_music_store (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_new_music_store (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
-         create {MIXUP_MUSIC_STORE} Result.make(a_source)
+         create {MIXUP_MUSIC_STORE} Result.make(a_call_source)
       end
 
-   native_store_music (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_store_music (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       local
          music_store: MIXUP_MUSIC_STORE
          music: MIXUP_MUSIC_VALUE
          bar_number: INTEGER
       do
          if args.count /= 2 then
-            error_at(a_source, "bad argument count")
+            error_at(a_call_source, "bad argument count")
          elseif not (music_store ?:= args.first) then
             error_at(args.first.source, "bad argument")
          elseif not (music ?:= args.last) then
@@ -180,7 +180,7 @@ feature {}
          else
             music_store ::= args.first
             if not music_store.has_voice then
-               music_store.next_voice(a_source)
+               music_store.next_voice(a_call_source)
             end
             music ::= args.last
             music_store.add_music(music.value)
@@ -189,42 +189,63 @@ feature {}
          end
       end
 
-   native_store_text (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_store_text (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
       end
 
-   native_current_player (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_current_player (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
-         create {MIXUP_STRING} Result.make(a_source, player.name, player.name)
+         create {MIXUP_STRING} Result.make(a_call_source, player.name, player.name)
       end
 
-   native_in_player (a_source: MIXUP_SOURCE; name: STRING; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_map (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      local
+         sequence, seed: MIXUP_VALUE
+         mapper: MIXUP_AGENT
+         executor: MIXUP_AGENT_EXECUTOR
       do
-         Result := player.native(a_source, name, context, args)
+         if args.count /= 3 then
+            error_at(a_call_source, "bad argument count")
+         elseif not (mapper ?:= args.first) then
+            error_at(args.first.source, "bad argument")
+         else
+            mapper ::= args.first
+            seed := args.item(args.lower+1)
+            sequence := args.last
+            create executor.make(a_call_source, sequence, mapper.expression.eval(context, player, False), seed)
+            Result := executor.call(context, player)
+         end
+      end
+
+   native_in_player (a_def_source, a_call_source: MIXUP_SOURCE; name: STRING; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      do
+         Result := player.native(a_def_source, a_call_source, name, context, args)
       end
 
 feature {ANY}
-   item (a_source: like source; name: STRING): FUNCTION[TUPLE[MIXUP_CONTEXT, MIXUP_PLAYER, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE] is
+   item (a_source: like source; name: STRING): FUNCTION[TUPLE[MIXUP_SOURCE, MIXUP_CONTEXT, MIXUP_PLAYER, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE] is
       do
          log.trace.put_line("Preparing native function: " + name)
          inspect
             name
          when "bar" then
-            Result := agent native_bar(a_source, ?, ?, ?)
+            Result := agent native_bar(a_source, ?, ?, ?, ?)
          when "with_lyrics" then
-            Result := agent native_with_lyrics(a_source, ?, ?, ?)
+            Result := agent native_with_lyrics(a_source, ?, ?, ?, ?)
          when "seq" then
-            Result := agent native_seq(a_source, ?, ?, ?)
+            Result := agent native_seq(a_source, ?, ?, ?, ?)
+         when "map" then
+            Result := agent native_map(a_source, ?, ?, ?, ?)
          when "new_music_store" then
-            Result := agent native_new_music_store(a_source, ?, ?, ?)
+            Result := agent native_new_music_store(a_source, ?, ?, ?, ?)
          when "store_music" then
-            Result := agent native_store_music(a_source, ?, ?, ?)
+            Result := agent native_store_music(a_source, ?, ?, ?, ?)
          when "store_text" then
-            Result := agent native_store_text(a_source, ?, ?, ?)
+            Result := agent native_store_text(a_source, ?, ?, ?, ?)
          when "current_player" then
-            Result := agent native_current_player(a_source, ?, ?, ?)
+            Result := agent native_current_player(a_source, ?, ?, ?, ?)
          else
-            Result := agent native_in_player(a_source, name, ?, ?, ?)
+            Result := agent native_in_player(a_source, ?, name, ?, ?, ?)
          end
       end
 

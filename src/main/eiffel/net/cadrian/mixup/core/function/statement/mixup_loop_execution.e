@@ -28,6 +28,12 @@ feature {ANY}
       end
 
 
+feature {MIXUP_AGENT}
+   visit_agent (a_agent: MIXUP_AGENT) is
+      do
+         fatal("cannot iterate on an agent")
+      end
+
 feature {MIXUP_BOOLEAN}
    visit_boolean (a_boolean: MIXUP_BOOLEAN) is
       do
@@ -82,7 +88,7 @@ feature {}
          item: MIXUP_VALUE
       do
          if iterable = Void then
-            iterable ::= a_iterable.eval(context, context.player)
+            iterable ::= a_iterable.eval(context, context.player, True)
             if iterable = Void then
                fatal("could not compute value")
             else

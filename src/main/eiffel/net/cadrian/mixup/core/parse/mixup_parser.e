@@ -59,7 +59,7 @@ feature {ANY}
          current_file := old_file
          current_piece := old_piece
 
-         Result.run_hook(seed_player, once "at_load")
+         Result.run_hook(create {MIXUP_SOURCE_UNKNOWN}, seed_player, once "at_load")
       end
 
    current_piece: MIXUP_NODE
@@ -186,6 +186,8 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             build_signature_arg(node)
          when "Value" then
             build_value(node)
+         when "Agent" then
+            build_agent(node)
          when "Function_Native" then
             build_function_native(node)
          when "Function_User" then
@@ -465,6 +467,14 @@ feature {} -- Functions
       do
          arg.node_at(0).accept(Current)
          last_signature.add_last(name)
+      end
+
+   build_agent (a_agent: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         a_agent.node_at(1).accept(Current)
+         create {MIXUP_AGENT} last_expression.make(new_source(a_agent), last_expression)
+         last_function := Void
+         last_identifier := Void
       end
 
    build_function_native (function_native: MIXUP_NON_TERMINAL_NODE_IMPL) is

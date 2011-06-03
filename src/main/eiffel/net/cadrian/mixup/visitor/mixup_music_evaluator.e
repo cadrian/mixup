@@ -46,6 +46,12 @@ feature {ANY}
          Result /= Void
       end
 
+feature {MIXUP_AGENT}
+   visit_agent (a_agent: MIXUP_AGENT) is
+      do
+         fatal("an agent is not music!")
+      end
+
 feature {MIXUP_BOOLEAN}
    visit_boolean (a_boolean: MIXUP_BOOLEAN) is
       do
@@ -110,6 +116,12 @@ feature {MIXUP_USER_FUNCTION}
    visit_user_function (a_function: MIXUP_USER_FUNCTION) is
       do
          fatal("unexpected user function")
+      end
+
+feature {MIXUP_AGENT_FUNCTION}
+   visit_agent_function (a_function: MIXUP_AGENT_FUNCTION) is
+      do
+         fatal("unexpected agent function")
       end
 
 feature {MIXUP_MUSIC_VALUE}

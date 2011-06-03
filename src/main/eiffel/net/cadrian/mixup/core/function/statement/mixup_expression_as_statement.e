@@ -30,7 +30,7 @@ feature {ANY}
       local
          ignored_value: MIXUP_VALUE
       do
-         ignored_value := expression.eval(a_context, a_context.player)
+         ignored_value := expression.eval(a_context, a_context.player, True)
       end
 
    accept (visitor: VISITOR) is

@@ -56,7 +56,7 @@ feature {ANY}
          v.visit_identifier(Current)
       end
 
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): MIXUP_VALUE is
+   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN): MIXUP_VALUE is
       local
          context: MIXUP_CONTEXT
          i: INTEGER; name_buffer: STRING
@@ -79,7 +79,11 @@ feature {ANY}
             if value /= Void then
                if value.is_callable then
                   args := parts.item(i).eval_args(a_context, a_player)
-                  Result := value.call(a_player, args)
+                  if do_call then
+                     Result := value.call(parts.item(i).source, a_player, args)
+                  else
+                     create {MIXUP_AGENT_FUNCTION} Result.make(parts.item(i).source, value, args)
+                  end
                else
                   Result := value
                end

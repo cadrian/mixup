@@ -51,12 +51,18 @@ feature {MIXUP_USER_FUNCTION}
          call_function(a_function)
       end
 
+feature {MIXUP_AGENT_FUNCTION}
+   visit_agent_function (a_function: MIXUP_AGENT_FUNCTION) is
+      do
+         call_function(a_function)
+      end
+
 feature {}
    call_function (a_function: MIXUP_FUNCTION) is
       local
          value: MIXUP_VALUE
       do
-         value := a_function.call(context.player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
+         value := a_function.call(source, context.player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
          if value = Void then
             error("value could not be computed")
          else

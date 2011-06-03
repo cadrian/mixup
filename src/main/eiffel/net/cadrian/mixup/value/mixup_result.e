@@ -34,7 +34,7 @@ feature {ANY}
          v.visit_result(Current)
       end
 
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): MIXUP_VALUE is
+   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN): MIXUP_VALUE is
       local
          user_function: MIXUP_USER_FUNCTION_CONTEXT
       do

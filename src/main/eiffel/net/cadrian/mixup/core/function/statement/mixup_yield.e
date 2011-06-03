@@ -30,7 +30,7 @@ feature {ANY}
       local
          value: MIXUP_VALUE
       do
-         value := expression.eval(a_context, a_context.player)
+         value := expression.eval(a_context, a_context.player, True)
          if value = Void then
             error("value could not be computed")
          else

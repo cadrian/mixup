@@ -32,11 +32,11 @@ feature {ANY}
          v.visit_user_function(Current)
       end
 
-   call (a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   call (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       local
          fn_context: MIXUP_USER_FUNCTION_CONTEXT
       do
-         fn_context := prepare(a_player, a_args)
+         fn_context := prepare(a_source, a_player, a_args)
          fn_context.execute
          if fn_context.yielded then
             create {MIXUP_YIELD_ITERATOR} Result.make(source, fn_context) -- TODO: wrong! must get the yield instruction source!
@@ -73,13 +73,13 @@ feature {}
    statements: TRAVERSABLE[MIXUP_STATEMENT]
    signature: TRAVERSABLE[FIXED_STRING]
 
-   prepare (a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_USER_FUNCTION_CONTEXT is
+   prepare (a_source: like source; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_USER_FUNCTION_CONTEXT is
       local
          args: DICTIONARY[MIXUP_VALUE, FIXED_STRING]
          zip: ZIP[MIXUP_VALUE, FIXED_STRING]
       do
          if a_args.count /= signature.count then
-            fatal("incorrect arguments number")
+            fatal_at(a_source, "incorrect arguments number")
          else
             if signature.count = 0 then
                create {ARRAY_DICTIONARY[MIXUP_VALUE, FIXED_STRING]} args.with_capacity(0)

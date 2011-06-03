@@ -30,12 +30,12 @@ feature {ANY}
       do
       end
 
-   native (a_source: MIXUP_SOURCE; fn_name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native (a_def_source, a_call_source: MIXUP_SOURCE; fn_name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
          inspect
             fn_name
          else
-            warning_at(a_source, "MIDI: unknown native function: " + fn_name)
+            warning_at(a_call_source, "MIDI: unknown native function: " + fn_name)
          end
       end
 

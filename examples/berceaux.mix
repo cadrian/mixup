@@ -17,5 +17,4 @@ set hook.at_partitur_start := function
 import berceaux.lied
 import berceaux.piano
 
-
 end

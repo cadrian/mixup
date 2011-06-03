@@ -35,7 +35,7 @@ feature {ANY}
                Result := context.get_local(identifier.simple_name)
             end
             if Result = Void then
-               Result := identifier.eval(context, a_player)
+               Result := identifier.eval(context, a_player, True)
             end
          end
       end
@@ -72,7 +72,7 @@ feature {}
          until
             i > args.upper
          loop
-            arg := args.item(i).eval(context, current_player)
+            arg := args.item(i).eval(context, current_player, True)
             if arg /= Void then
                arg.accept(Current)
             else
@@ -89,6 +89,12 @@ feature {MIXUP_YIELD_ITERATOR}
    visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR) is
       do
          value := a_yield_iterator
+      end
+
+feature {MIXUP_AGENT}
+   visit_agent (a_agent: MIXUP_AGENT) is
+      do
+         value := a_agent
       end
 
 feature {MIXUP_BOOLEAN}
@@ -153,6 +159,12 @@ feature {MIXUP_NATIVE_FUNCTION}
 
 feature {MIXUP_USER_FUNCTION}
    visit_user_function (a_function: MIXUP_USER_FUNCTION) is
+      do
+         value := a_function
+      end
+
+feature {MIXUP_AGENT_FUNCTION}
+   visit_agent_function (a_function: MIXUP_AGENT_FUNCTION) is
       do
          value := a_function
       end

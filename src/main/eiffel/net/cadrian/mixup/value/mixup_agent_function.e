@@ -12,10 +12,10 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_RESULT_ASSIGNMENT
+class MIXUP_AGENT_FUNCTION
 
 inherit
-   MIXUP_STATEMENT
+   MIXUP_FUNCTION
       redefine
          out_in_tagged_out_memory
       end
@@ -24,48 +24,47 @@ create {ANY}
    make
 
 feature {ANY}
-   expression: MIXUP_EXPRESSION
-
-   call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
-      local
-         value: MIXUP_VALUE
-      do
-         value := expression.eval(a_context, a_context.player, True)
-         if value = Void then
-            error("value could not be computed")
-         else
-            a_context.set_result(value)
-         end
-      end
-
    accept (visitor: VISITOR) is
       local
-         v: MIXUP_STATEMENT_VISITOR
+         v: MIXUP_VALUE_VISITOR
       do
          v ::= visitor
-         v.visit_result_assignment(Current)
+         v.visit_agent_function(Current)
+      end
+
+   call (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      do
+         Result := value.call(a_source, a_player, a_args) -- TODO: merge arguments (allow open args)
       end
 
    out_in_tagged_out_memory is
       do
-         tagged_out_memory.append(once "Result-assign: ")
-         source.out_in_tagged_out_memory
+         tagged_out_memory.append(once "<agent function>")
       end
 
 feature {}
-   make (a_source: like source; a_expression: like expression) is
+   make (a_source: like source; a_value: like value; a_args: like args) is
       require
          a_source /= Void
-         a_expression /= Void
+         a_value /= Void
+         a_args /= Void
+         a_value.is_callable
       do
          source := a_source
-         expression := a_expression
+         value := a_value
+         args := a_args
       ensure
          source = a_source
-         expression = a_expression
+         value = a_value
+         args = a_args
       end
 
-invariant
-   expression /= Void
+   value: MIXUP_VALUE
+   args: TRAVERSABLE[MIXUP_VALUE]
 
-end -- class MIXUP_RESULT_ASSIGNMENT
+invariant
+   value /= Void
+   args /= Void
+   value.is_callable
+
+end -- class MIXUP_AGENT_FUNCTION

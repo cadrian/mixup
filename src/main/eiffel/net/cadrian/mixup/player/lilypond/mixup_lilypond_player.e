@@ -36,17 +36,17 @@ feature {ANY}
          context = a_context
       end
 
-   native (a_source: MIXUP_SOURCE; fn_name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native (a_def_source, a_call_source: MIXUP_SOURCE; fn_name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       local
          str: MIXUP_STRING
       do
          inspect
             fn_name
          when "current_bar_number" then
-            create {MIXUP_INTEGER} Result.make(a_source, bar_number)
+            create {MIXUP_INTEGER} Result.make(a_call_source, bar_number)
          when "string_event" then
             if args.count /= 1 then
-               error_at(a_source, "Lilypond: bad argument count")
+               error_at(a_call_source, "Lilypond: bad argument count")
             elseif str ?:= args.first then
                str ::= args.first
                check str.value /= Void end
@@ -56,7 +56,7 @@ feature {ANY}
             end
          when "set_header" then
             if args.count /= 1 then
-               error_at(a_source, "Lilypond: bad argument count")
+               error_at(a_call_source, "Lilypond: bad argument count")
             elseif str ?:= args.first then
                str ::= args.first
                check str.value /= Void end
@@ -65,7 +65,7 @@ feature {ANY}
                error_at(args.first.source, "Lilypond: expected a string")
             end
          else
-            warning_at(a_source, "Lilypond: unknown native function: " + fn_name)
+            warning_at(a_call_source, "Lilypond: unknown native function: " + fn_name)
          end
       end
 

@@ -16,16 +16,27 @@ deferred class MIXUP_EXPRESSION
 
 inherit
    VISITABLE
+      redefine
+         out_in_tagged_out_memory
+      end
 
 insert
    MIXUP_ERRORS
+      redefine
+         out_in_tagged_out_memory
+      end
 
 feature {ANY}
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): MIXUP_VALUE is
+   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN): MIXUP_VALUE is
       require
          a_context /= Void
          a_player /= Void
       deferred
+      end
+
+   out_in_tagged_out_memory is
+      do
+         as_name_in(tagged_out_memory)
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}

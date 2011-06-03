@@ -12,65 +12,48 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_ASSIGNMENT
+class MIXUP_AGENT
 
 inherit
-   MIXUP_STATEMENT
-      redefine
-         out_in_tagged_out_memory
-      end
+   MIXUP_VALUE
 
 create {ANY}
    make
 
 feature {ANY}
-   identifier: MIXUP_IDENTIFIER
    expression: MIXUP_EXPRESSION
 
-   call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
-      local
-         value: MIXUP_VALUE
-      do
-         value := expression.eval(a_context, a_context.player, True)
-         if value = Void then
-            error("value could not be computed")
-         else
-            a_context.setup(identifier.as_name.intern, value, False, True, True)
-         end
-      end
+   is_callable: BOOLEAN is False
 
    accept (visitor: VISITOR) is
       local
-         v: MIXUP_STATEMENT_VISITOR
+         v: MIXUP_VALUE_VISITOR
       do
          v ::= visitor
-         v.visit_assignment(Current)
+         v.visit_agent(Current)
       end
 
-   out_in_tagged_out_memory is
+feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
+   as_name_in (a_name: STRING) is
       do
-         tagged_out_memory.append(once "assign: ")
-         source.out_in_tagged_out_memory
+         a_name.extend('%'')
+         expression.as_name_in(a_name)
       end
 
 feature {}
-   make (a_source: like source; a_identifier: like identifier; a_expression: like expression) is
+   make (a_source: like source; a_expression: like expression) is
       require
          a_source /= Void
-         a_identifier /= Void
          a_expression /= Void
       do
          source := a_source
-         identifier := a_identifier
          expression := a_expression
       ensure
          source = a_source
-         identifier = a_identifier
          expression = a_expression
       end
 
 invariant
-   identifier /= Void
    expression /= Void
 
-end -- class MIXUP_ASSIGNMENT
+end -- class MIXUP_AGENT

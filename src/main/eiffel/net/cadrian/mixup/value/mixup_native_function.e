@@ -34,9 +34,9 @@ feature {ANY}
          v.visit_native_function(Current)
       end
 
-   call (a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   call (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       do
-         Result := native_caller.item([context, a_player, a_args])
+         Result := native_caller.item([a_source, context, a_player, a_args])
       end
 
    out_in_tagged_out_memory is
@@ -66,7 +66,7 @@ feature {}
       end
 
    context: MIXUP_CONTEXT
-   native_caller: FUNCTION[TUPLE[MIXUP_CONTEXT, MIXUP_PLAYER, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE]
+   native_caller: FUNCTION[TUPLE[MIXUP_SOURCE, MIXUP_CONTEXT, MIXUP_PLAYER, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE]
 
 invariant
    name /= Void

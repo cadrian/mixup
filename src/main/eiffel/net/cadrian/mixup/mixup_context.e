@@ -94,7 +94,7 @@ feature {ANY}
       deferred
       end
 
-   run_hook (a_player: MIXUP_PLAYER; hook_name: STRING) is
+   run_hook (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; hook_name: STRING) is
       local
          h, res: MIXUP_VALUE
       do
@@ -102,7 +102,7 @@ feature {ANY}
          if h = Void then
             -- nothing to do
          elseif h.is_callable then
-            res := h.call(a_player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
+            res := h.call(a_source, a_player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
             if res /= Void then
                warning("lost result")
             end

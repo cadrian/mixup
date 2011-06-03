@@ -60,6 +60,7 @@ feature {MIXUP_IDENTIFIER}
    eval_args (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): TRAVERSABLE[MIXUP_VALUE] is
       local
          actual_args: FAST_ARRAY[MIXUP_VALUE]
+         arg: MIXUP_VALUE
          i: INTEGER
       do
          if args = Void then
@@ -71,7 +72,11 @@ feature {MIXUP_IDENTIFIER}
             until
                i > args.upper
             loop
-               actual_args.add_last(args.item(i).eval(a_context, a_player))
+               arg := args.item(i).eval(a_context, a_player, True)
+               if arg = Void then
+                  sedb_breakpoint
+               end
+               actual_args.add_last(arg)
                i := i + 1
             end
          end

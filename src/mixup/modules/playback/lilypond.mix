@@ -57,23 +57,26 @@ export set_time := function(time)
                        if current_player = "lilypond" then
                            inspect
                                time
-                           when "C"  then Result := string_event(" \override Staff.TimeSignature #'style = #'default \time 4/4%N")
-                           when "C/" then Result := string_event(" \override Staff.TimeSignature #'style = #'default \time 2/2%N")
-                           else           Result := string_event(" \override Staff.TimeSignature #'style = #'() \time " + time + "%N")
+                           when common_time then Result := string_event(" \override Staff.TimeSignature #'style = #'default \time 4/4%N")
+                           when alla_breve  then Result := string_event(" \override Staff.TimeSignature #'style = #'default \time 2/2%N")
+                           else                  Result := string_event(" \override Staff.TimeSignature #'style = #'() \time " + time + "%N")
                            end
                        end
                    end
 
 set set_header := function(string) native "set_header"
+set map := function(agent, seed, sequence) native "map"
+
+set cat_header := function(s1, s2) do Result := s1 + "\line{%"" + s2 + "%"}%N" end
 
 export set_title := function(title)
                     do
-                        set_header("title = \markup{\huge{\sans %"" + title + "%"}}%N")
+                        set_header("title = \markup{\sans\huge\center-column{{" + map('cat_header, "", title) + "}}}%N")
                     end
 
 export set_subtitle := function(title)
                        do
-                           set_header("subtitle = \markup{\small{\italic %"" + title + "%"}}%N")
+                           set_header("subtitle = \markup{\override #'(box-padding . 1.0) \override #'(baseline-skip . 2)%N\small{\italic\center-column{" + map('cat_header, "", title) + "}}}%N")
                        end
 
 export set_composer := function(firstname, surname)
