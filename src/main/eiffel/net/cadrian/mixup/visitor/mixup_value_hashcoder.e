@@ -46,6 +46,12 @@ feature {MIXUP_AGENT}
          fatal("no hashcode")
       end
 
+feature {MIXUP_OPEN_ARGUMENT}
+   visit_open_argument (a_open_argument: MIXUP_OPEN_ARGUMENT) is
+      do
+         fatal("no hashcode")
+      end
+
 feature {MIXUP_BOOLEAN}
    visit_boolean (a_boolean: MIXUP_BOOLEAN) is
       do

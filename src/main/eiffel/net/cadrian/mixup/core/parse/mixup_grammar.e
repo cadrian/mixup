@@ -178,6 +178,7 @@ feature {}
                                                                    {FAST_ARRAY[STRING] << "KW number" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "KW boolean" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "KW Result" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Open_Argument" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Identifier" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Music_Value" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Lyrics" >> }, Void;
@@ -186,8 +187,11 @@ feature {}
                                                                    >> };
 
                                    "Agent", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW '", "Identifier" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "KW '", "Function" >> }, Void; -- TODO: add optional arguments to be merged
+                                                                   {FAST_ARRAY[STRING] << "KW '", "Function", "Identifier_Args" >> }, Void;
                                                                    >> };
+
+                                   "Open_Argument", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW ?" >> }, Void;
+                                                                           >> };
 
                                    "Identifier", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Identifier_Part" >> }, agent build_new_list("Identifier_Part", "Identifier");
                                                                         {FAST_ARRAY[STRING] << "Identifier_Part", "KW .", "Identifier" >> }, agent build_continue_list("Identifier_Part", 1, "Identifier")
@@ -443,6 +447,7 @@ feature {}
                                    "KW :=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":=" , ""),     Void);
                                    "KW :",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, ":" , "="),     Void);
                                    "KW !=",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "!=" , ""),     Void);
+                                   "KW ?",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "?" , ""),      Void);
                                    "KW //",          create {PARSE_TERMINAL}.make(agent parse_symbol(?, "//" , ""),     Void);
                                    "KW /",           create {PARSE_TERMINAL}.make(agent parse_symbol(?, "/" , "/"),     Void);
                                    "KW ...",         create {PARSE_TERMINAL}.make(agent parse_symbol(?, "..." , ""),    Void);

@@ -41,12 +41,6 @@ feature {}
    match_: BOOLEAN
    value: MIXUP_VALUE
 
-feature {MIXUP_AGENT}
-   visit_agent (a_agent: MIXUP_AGENT) is
-      do
-         fatal("cannot match on an agent")
-      end
-
 feature {MIXUP_BOOLEAN}
    visit_boolean (a_boolean: MIXUP_BOOLEAN) is
       local

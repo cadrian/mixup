@@ -188,6 +188,8 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             build_value(node)
          when "Agent" then
             build_agent(node)
+         when "Open_Argument" then
+            build_open_argument(node)
          when "Function_Native" then
             build_function_native(node)
          when "Function_User" then
@@ -285,6 +287,7 @@ feature {}
    root_context:            MIXUP_CONTEXT
    name:                    FIXED_STRING
    current_identifier:      MIXUP_IDENTIFIER
+   current_agent:           MIXUP_AGENT
    last_identifier:         MIXUP_IDENTIFIER
    last_identifiers:        FAST_ARRAY[MIXUP_IDENTIFIER]
    last_expression:         MIXUP_EXPRESSION
@@ -316,9 +319,12 @@ feature {}
    build_identifier (dot_identifier: MIXUP_LIST_NODE_IMPL) is
       local
          old_identifier: like current_identifier
+         old_agent: like current_agent
       do
          old_identifier := current_identifier
+         old_agent := current_agent
          create current_identifier.make(new_source(dot_identifier))
+         current_agent := Void
          dot_identifier.accept_all(Current)
          last_expression := current_identifier
          last_identifier := current_identifier
@@ -326,6 +332,7 @@ feature {}
             last_identifiers.add_last(last_identifier)
          end
          current_identifier := old_identifier
+         current_agent := old_agent
       end
 
    build_identifier_part (identifier_part: MIXUP_NON_TERMINAL_NODE_IMPL) is
@@ -343,7 +350,11 @@ feature {}
             old_expressions := last_expressions
             create last_expressions.make(0)
             identifier_args.node_at(1).accept(Current)
-            current_identifier.set_args(last_expressions)
+            if current_identifier /= Void then
+               current_identifier.set_args(last_expressions)
+            else
+               current_agent.set_args(last_expressions)
+            end
             last_expressions := old_expressions
          end
       end
@@ -470,11 +481,29 @@ feature {} -- Functions
       end
 
    build_agent (a_agent: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         old_identifier: like current_identifier
+         old_agent: like current_agent
       do
+         old_identifier := current_identifier
+         old_agent := current_agent
+         current_identifier := Void
+         current_agent := Void
          a_agent.node_at(1).accept(Current)
-         create {MIXUP_AGENT} last_expression.make(new_source(a_agent), last_expression)
+         create current_agent.make(new_source(a_agent), last_expression)
+         last_expression := current_agent
          last_function := Void
          last_identifier := Void
+         if a_agent.count = 3 then
+            a_agent.node_at(2).accept(Current)
+         end
+         current_identifier := old_identifier
+         current_agent := old_agent
+      end
+
+   build_open_argument (a_open_argument: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      do
+         create {MIXUP_OPEN_ARGUMENT} last_expression.make(new_source(a_open_argument))
       end
 
    build_function_native (function_native: MIXUP_NON_TERMINAL_NODE_IMPL) is

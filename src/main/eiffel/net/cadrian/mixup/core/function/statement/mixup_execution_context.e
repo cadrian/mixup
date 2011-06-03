@@ -33,6 +33,36 @@ feature {MIXUP_IDENTIFIER}
          end
       end
 
+feature {MIXUP_AGENT}
+   visit_agent (a_agent: MIXUP_AGENT) is
+      local
+         fun: MIXUP_AGENT_FUNCTION
+         args: FAST_ARRAY[MIXUP_VALUE]
+         i: INTEGER
+      do
+         if a_agent.args = Void then
+            create args.make(0)
+         else
+            from
+               create args.with_capacity(a_agent.args.count)
+               i := a_agent.args.lower
+            until
+               i > a_agent.args.upper
+            loop
+               args.add_last(a_agent.args.item(i).eval(context, context.player, True))
+               i := i + 1
+            end
+         end
+         create fun.make(a_agent.source, a_agent.expression.eval(context, context.player, True), args)
+         fun.accept(Current)
+      end
+
+feature {MIXUP_OPEN_ARGUMENT}
+   visit_open_argument (a_open_argument: MIXUP_OPEN_ARGUMENT) is
+      do
+         error("unexpected open argument")
+      end
+
 feature {MIXUP_RESULT}
    visit_result (a_result: MIXUP_RESULT) is
       do

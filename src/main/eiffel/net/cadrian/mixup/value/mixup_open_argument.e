@@ -12,34 +12,39 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_LE
+class MIXUP_OPEN_ARGUMENT
 
 inherit
-   MIXUP_COMPARISON_OPERATOR
+   MIXUP_VALUE
 
 create {ANY}
    make
 
 feature {ANY}
+   is_callable: BOOLEAN is False
+
    accept (visitor: VISITOR) is
       local
-         v: MIXUP_EXPRESSION_VISITOR
+         v: MIXUP_VALUE_VISITOR
       do
          v ::= visitor
-         v.visit_le(Current)
+         v.visit_open_argument(Current)
+      end
+
+feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
+   as_name_in (a_name: STRING) is
+      do
+         a_name.extend('?')
       end
 
 feature {}
-   compute (left_val, right_val: MIXUP_VALUE): MIXUP_VALUE is
-      local
-         left_value: COMPARABLE
+   make (a_source: like source) is
+      require
+         a_source /= Void
       do
-         left_val.accept(Current)
-         left_value := value
-         right_val.accept(Current)
-         create {MIXUP_BOOLEAN} Result.make(source, left_value <= value)
+         source := a_source
+      ensure
+         source = a_source
       end
 
-   operator: STRING is "<="
-
-end -- class MIXUP_LE
+end -- class MIXUP_OPEN_ARGUMENT

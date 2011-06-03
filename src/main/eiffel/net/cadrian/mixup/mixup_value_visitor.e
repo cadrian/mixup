@@ -122,6 +122,13 @@ feature {MIXUP_MUSIC_STORE}
       deferred
       end
 
+feature {MIXUP_OPEN_ARGUMENT}
+   visit_open_argument (a_open_argument: MIXUP_OPEN_ARGUMENT) is
+      require
+         a_open_argument /= Void
+      deferred
+      end
+
 feature {MIXUP_YIELD_ITERATOR}
    visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR) is
       require

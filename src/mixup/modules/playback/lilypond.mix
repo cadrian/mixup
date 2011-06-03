@@ -67,16 +67,20 @@ export set_time := function(time)
 set set_header := function(string) native "set_header"
 set map := function(agent, seed, sequence) native "map"
 
-set cat_header := function(s1, s2) do Result := s1 + "\line{%"" + s2 + "%"}%N" end
+set cat_header := function(s1, s2, s3, s4) do Result := s1 + s2 + s3 + s4 end
 
 export set_title := function(title)
                     do
-                        set_header("title = \markup{\sans\huge\center-column{{" + map('cat_header, "", title) + "}}}%N")
+                        set_header("title = \markup{\sans\huge\center-column{{"
+                                   + map('cat_header(?, "\line{%"", ?, "%"}%N"), "", title)
+                                   + "}}}%N")
                     end
 
 export set_subtitle := function(title)
                        do
-                           set_header("subtitle = \markup{\override #'(box-padding . 1.0) \override #'(baseline-skip . 2)%N\small{\italic\center-column{" + map('cat_header, "", title) + "}}}%N")
+                           set_header("subtitle = \markup{\override #'(box-padding . 1.0) \override #'(baseline-skip . 2)%N\small{\italic\center-column{"
+                                      + map('cat_header(?, "\line{%"", ?, "%"}%N"), "", title)
+                                      + "}}}%N")
                        end
 
 export set_composer := function(firstname, surname)

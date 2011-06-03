@@ -33,8 +33,11 @@ feature {ANY}
       end
 
    call (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+      local
+         merger: MIXUP_ARGUMENTS_MERGER
       do
-         Result := value.call(a_source, a_player, a_args) -- TODO: merge arguments (allow open args)
+         create merger.make(a_source, args)
+         Result := value.call(a_source, a_player, merger.merge(a_args))
       end
 
    out_in_tagged_out_memory is

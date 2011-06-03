@@ -52,6 +52,12 @@ feature {MIXUP_AGENT}
          fatal("an agent is not music!")
       end
 
+feature {MIXUP_OPEN_ARGUMENT}
+   visit_open_argument (a_open_argument: MIXUP_OPEN_ARGUMENT) is
+      do
+         fatal("an open argument is not music!")
+      end
+
 feature {MIXUP_BOOLEAN}
    visit_boolean (a_boolean: MIXUP_BOOLEAN) is
       do

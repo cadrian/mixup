@@ -97,6 +97,12 @@ feature {MIXUP_AGENT}
          value := a_agent
       end
 
+feature {MIXUP_OPEN_ARGUMENT}
+   visit_open_argument (a_open_argument: MIXUP_OPEN_ARGUMENT) is
+      do
+         value := a_open_argument
+      end
+
 feature {MIXUP_BOOLEAN}
    visit_boolean (a_boolean: MIXUP_BOOLEAN) is
       do

@@ -12,7 +12,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_OPERATIONS
+class MIXUP_ARGUMENTS_MERGER
 
 inherit
    MIXUP_VALUE_VISITOR
@@ -24,13 +24,41 @@ create {ANY}
    make
 
 feature {ANY}
-   item (a_source: like source; a_value: MIXUP_VALUE): MIXUP_OPERATION is
+   merge (call_args: like agent_args): TRAVERSABLE[MIXUP_VALUE] is
       require
-         a_value /= Void
+         call_args /= Void
+      local
+         agent_index, call_index: INTEGER
       do
-         source := a_source
-         a_value.accept(Current)
-         Result := op
+         if agent_args.is_empty then
+            Result := call_args -- no args? means that all arguments are open
+         else
+            from
+               create resolved_args.with_capacity(agent_args.count)
+               agent_index := agent_args.lower
+               call_index := call_args.lower
+               if call_args.valid_index(call_index) then
+                  call_arg := call_args.item(call_index)
+               else
+                  call_arg := Void
+               end
+            until
+               agent_index > agent_args.upper
+            loop
+               agent_arg := agent_args.item(agent_index)
+               agent_arg.accept(Current)
+               if resolved_args.last = call_arg then
+                  call_index := call_index + 1
+                  if call_args.valid_index(call_index) then
+                     call_arg := call_args.item(call_index)
+                  else
+                     call_arg := Void
+                  end
+               end
+               agent_index := agent_index + 1
+            end
+            Result := resolved_args
+         end
       end
 
 feature {MIXUP_YIELD_ITERATOR}
@@ -48,13 +76,17 @@ feature {MIXUP_AGENT}
 feature {MIXUP_OPEN_ARGUMENT}
    visit_open_argument (a_open_argument: MIXUP_OPEN_ARGUMENT) is
       do
-         fatal("bad type")
+         if call_arg = Void then
+            fatal("not enough actual arguments")
+         else
+            resolved_args.add_last(call_arg)
+         end
       end
 
 feature {MIXUP_BOOLEAN}
    visit_boolean (a_boolean: MIXUP_BOOLEAN) is
       do
-         fatal("bad type")
+         resolved_args.add_last(a_boolean)
       end
 
 feature {MIXUP_IDENTIFIER}
@@ -66,43 +98,43 @@ feature {MIXUP_IDENTIFIER}
 feature {MIXUP_RESULT}
    visit_result (a_result: MIXUP_RESULT) is
       do
-         fatal("bad type")
+         resolved_args.add_last(a_result)
       end
 
 feature {MIXUP_INTEGER}
    visit_integer (a_integer: MIXUP_INTEGER) is
       do
-         op := op_integer
+         resolved_args.add_last(a_integer)
       end
 
 feature {MIXUP_REAL}
    visit_real (a_real: MIXUP_REAL) is
       do
-         op := op_real
+         resolved_args.add_last(a_real)
       end
 
 feature {MIXUP_STRING}
    visit_string (a_string: MIXUP_STRING) is
       do
-         op := op_string
+         resolved_args.add_last(a_string)
       end
 
 feature {MIXUP_LIST}
    visit_list (a_list: MIXUP_LIST) is
       do
-         fatal("bad type")
+         resolved_args.add_last(a_list)
       end
 
 feature {MIXUP_SEQ}
    visit_seq (a_seq: MIXUP_SEQ) is
       do
-         fatal("bad type")
+         resolved_args.add_last(a_seq)
       end
 
 feature {MIXUP_DICTIONARY}
    visit_dictionary (a_dictionary: MIXUP_DICTIONARY) is
       do
-         fatal("bad type")
+         resolved_args.add_last(a_dictionary)
       end
 
 feature {MIXUP_NATIVE_FUNCTION}
@@ -136,31 +168,26 @@ feature {MIXUP_MUSIC_STORE}
       end
 
 feature {}
-   make is
-      do
-      end
-
-   op: MIXUP_OPERATION
-
-   op_integer: MIXUP_OPERATIONS_INTEGER is
+   make (a_source: like source; a_agent_args: like agent_args) is
       require
-         source /= Void
+         a_source /= Void
+         a_agent_args /= Void
       do
-         create Result.make(source)
+         source := a_source
+         agent_args := a_agent_args
+      ensure
+         source = a_source
+         agent_args = a_agent_args
       end
 
-   op_real: MIXUP_OPERATIONS_REAL is
-      require
-         source /= Void
-      do
-         create Result.make(source)
-      end
+   agent_args: TRAVERSABLE[MIXUP_VALUE]
 
-   op_string: MIXUP_OPERATIONS_STRING is
-      require
-         source /= Void
-      do
-         create Result.make(source)
-      end
+   agent_arg: MIXUP_VALUE
+   call_arg: MIXUP_VALUE
 
-end -- class MIXUP_OPERATIONS
+   resolved_args: FAST_ARRAY[MIXUP_VALUE]
+
+invariant
+   agent_args /= Void
+
+end -- class MIXUP_ARGUMENTS_MERGER

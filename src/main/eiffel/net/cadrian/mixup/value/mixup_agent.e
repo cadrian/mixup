@@ -22,6 +22,7 @@ create {ANY}
 
 feature {ANY}
    expression: MIXUP_EXPRESSION
+   args: TRAVERSABLE[MIXUP_EXPRESSION]
 
    is_callable: BOOLEAN is False
 
@@ -33,11 +34,23 @@ feature {ANY}
          v.visit_agent(Current)
       end
 
+   set_args (a_args: like args) is
+      do
+         args := a_args
+      ensure
+         args = a_args
+      end
+
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
    as_name_in (a_name: STRING) is
       do
          a_name.extend('%'')
          expression.as_name_in(a_name)
+         if args /= Void then
+            a_name.extend('(')
+            args.do_all(agent (arg: MIXUP_EXPRESSION; nam: STRING) is do arg.as_name_in(nam) end(?, a_name))
+            a_name.extend(')')
+         end
       end
 
 feature {}

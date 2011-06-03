@@ -27,13 +27,6 @@ feature {ANY}
          value.accept(Current)
       end
 
-
-feature {MIXUP_AGENT}
-   visit_agent (a_agent: MIXUP_AGENT) is
-      do
-         fatal("cannot iterate on an agent")
-      end
-
 feature {MIXUP_BOOLEAN}
    visit_boolean (a_boolean: MIXUP_BOOLEAN) is
       do

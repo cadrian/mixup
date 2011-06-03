@@ -20,6 +20,15 @@ inherit
 create {ANY}
    make
 
+feature {ANY}
+   accept (visitor: VISITOR) is
+      local
+         v: MIXUP_EXPRESSION_VISITOR
+      do
+         v ::= visitor
+         v.visit_eq(Current)
+      end
+
 feature {}
    compute (left_val, right_val: MIXUP_VALUE): MIXUP_VALUE is
       local
