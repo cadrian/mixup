@@ -34,6 +34,8 @@ feature {ANY}
       do
          inspect
             fn_name
+         when "set_header" then
+            -- ignored
          else
             warning_at(a_call_source, "MIDI: unknown native function: " + fn_name)
          end

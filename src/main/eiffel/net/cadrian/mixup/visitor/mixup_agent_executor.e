@@ -122,6 +122,23 @@ feature {MIXUP_STRING}
          concentrator := mapper.call(source, player, args)
       end
 
+feature {MIXUP_TUPLE}
+   visit_tuple (a_tuple: MIXUP_TUPLE) is
+      local
+         args: TRAVERSABLE[MIXUP_VALUE]
+         i: INTEGER
+      do
+         from
+            i := a_tuple.lower
+         until
+            i > a_tuple.upper
+         loop
+            args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_tuple.item(i) >> }
+            concentrator := mapper.call(source, player, args)
+            i := i + 1
+         end
+      end
+
 feature {MIXUP_LIST}
    visit_list (a_list: MIXUP_LIST) is
       local

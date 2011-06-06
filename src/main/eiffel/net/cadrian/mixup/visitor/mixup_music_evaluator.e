@@ -94,6 +94,12 @@ feature {MIXUP_STRING}
          fatal("a string is not music!")
       end
 
+feature {MIXUP_TUPLE}
+   visit_tuple (a_tuple: MIXUP_TUPLE) is
+      do
+         fatal("a tuple is not music!")
+      end
+
 feature {MIXUP_LIST}
    visit_list (a_list: MIXUP_LIST) is
       do

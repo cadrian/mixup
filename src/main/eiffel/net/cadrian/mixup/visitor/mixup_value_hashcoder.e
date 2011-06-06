@@ -92,6 +92,12 @@ feature {MIXUP_STRING}
          value := a_string.value.hash_code
       end
 
+feature {MIXUP_TUPLE}
+   visit_tuple (a_tuple: MIXUP_TUPLE) is
+      do
+         fatal("no hashcode")
+      end
+
 feature {MIXUP_LIST}
    visit_list (a_list: MIXUP_LIST) is
       do

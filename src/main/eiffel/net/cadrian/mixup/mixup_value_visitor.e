@@ -66,6 +66,13 @@ feature {MIXUP_STRING}
       deferred
       end
 
+feature {MIXUP_TUPLE}
+   visit_tuple (a_tuple: MIXUP_TUPLE) is
+      require
+         a_tuple /= Void
+      deferred
+      end
+
 feature {MIXUP_LIST}
    visit_list (a_list: MIXUP_LIST) is
       require

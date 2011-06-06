@@ -67,14 +67,16 @@ feature {MIXUP_VOICE}
                music_iterator.is_off or else not events_iterator.is_off
             loop
                music_iterator.next
-               events_iterator := music_iterator.item.new_events_iterator(iter_context)
+               if not music_iterator.is_off then
+                  events_iterator := music_iterator.item.new_events_iterator(iter_context)
+               end
             end
             if not music_iterator.is_off then
                music_duration := music_iterator.item.duration
             end
          end
       ensure
-         events_iterator /= Void
+         music_iterator.is_off or else events_iterator /= Void
       end
 
 feature {}

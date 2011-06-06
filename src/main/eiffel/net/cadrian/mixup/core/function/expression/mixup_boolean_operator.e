@@ -69,6 +69,12 @@ feature {MIXUP_STRING}
          fatal("bad type")
       end
 
+feature {MIXUP_TUPLE}
+   visit_tuple (a_tuple: MIXUP_TUPLE) is
+      do
+         fatal("bad type")
+      end
+
 feature {MIXUP_LIST}
    visit_list (a_list: MIXUP_LIST) is
       do

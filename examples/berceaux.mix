@@ -3,6 +3,7 @@ partitur berceaux
 from core import *
 from style.standard import *
 from playback.lilypond import *
+from playback.midi import *
 
 set template.show_empty_staves := false
 

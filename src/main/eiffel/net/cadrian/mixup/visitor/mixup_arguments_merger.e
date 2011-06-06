@@ -119,6 +119,12 @@ feature {MIXUP_STRING}
          resolved_args.add_last(a_string)
       end
 
+feature {MIXUP_TUPLE}
+   visit_tuple (a_tuple: MIXUP_TUPLE) is
+      do
+         a_tuple.do_all(agent (arg: MIXUP_VALUE) is do resolved_args.add_last(arg) end)
+      end
+
 feature {MIXUP_LIST}
    visit_list (a_list: MIXUP_LIST) is
       do

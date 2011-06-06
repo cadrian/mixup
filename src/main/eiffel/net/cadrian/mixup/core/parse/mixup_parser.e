@@ -226,6 +226,8 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             build_e7_exp(node)
          when "e7" then
             build_e7(node)
+         when "Tuple", "Value_Tuple" then
+            build_tuple(node)
          when "List" then
             build_list(node)
          when "Dictionary" then
@@ -875,6 +877,17 @@ feature {} -- Functions
       do
          -- TODO: unary operators
          a_e7.accept_all(Current)
+      end
+
+   build_tuple (a_tuple: MIXUP_NON_TERMINAL_NODE_IMPL) is
+      local
+         old_expressions: like last_expressions
+      do
+         old_expressions := last_expressions
+         create last_expressions.make(0)
+         a_tuple.node_at(1).accept(Current)
+         create {MIXUP_TUPLE} last_expression.make(new_source(a_tuple), last_expressions)
+         last_expressions := old_expressions
       end
 
    build_list (a_list: MIXUP_NON_TERMINAL_NODE_IMPL) is

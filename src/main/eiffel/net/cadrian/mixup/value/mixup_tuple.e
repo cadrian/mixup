@@ -12,7 +12,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_LIST
+class MIXUP_TUPLE
 
 inherit
    MIXUP_ITERABLE
@@ -31,7 +31,7 @@ feature {ANY}
          v: MIXUP_VALUE_VISITOR
       do
          v ::= visitor
-         v.visit_list(Current)
+         v.visit_tuple(Current)
       end
 
    eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN): MIXUP_VALUE is
@@ -95,8 +95,7 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       local
          i: INTEGER
       do
-         buffer.extend('<')
-         buffer.extend('<')
+         buffer.extend('[')
          from
             i := expressions.lower
          until
@@ -108,8 +107,7 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
             expressions.item(i).as_name_in(buffer)
             i := i + 1
          end
-         buffer.extend('>')
-         buffer.extend('>')
+         buffer.extend(']')
       end
 
 feature {}
@@ -132,4 +130,4 @@ invariant
    expressions /= Void
    values /= Void implies values.count = expressions.count
 
-end -- class MIXUP_LIST
+end -- class MIXUP_TUPLE

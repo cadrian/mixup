@@ -139,6 +139,12 @@ feature {MIXUP_STRING}
          value := a_string
       end
 
+feature {MIXUP_TUPLE}
+   visit_tuple (a_tuple: MIXUP_TUPLE) is
+      do
+         value := a_tuple
+      end
+
 feature {MIXUP_LIST}
    visit_list (a_list: MIXUP_LIST) is
       do

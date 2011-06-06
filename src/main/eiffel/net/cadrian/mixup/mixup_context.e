@@ -39,15 +39,12 @@ feature {ANY}
 
    hook (hook_name: ABSTRACT_STRING; a_player: MIXUP_PLAYER): MIXUP_VALUE is
       local
-         full_hook_name, debug_values: STRING
+         full_hook_name: STRING
       do
          full_hook_name := once ""
          full_hook_name.clear_count
          full_hook_name.append(once "hook.")
          full_hook_name.append(hook_name)
-         debug
-            debug_values := values.out
-         end
          Result := lookup(full_hook_name.intern, a_player, False)
       end
 

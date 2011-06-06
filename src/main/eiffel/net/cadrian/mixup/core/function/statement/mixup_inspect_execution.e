@@ -85,6 +85,21 @@ feature {MIXUP_STRING}
          end
       end
 
+feature {MIXUP_TUPLE}
+   visit_tuple (a_tuple: MIXUP_TUPLE) is
+      local
+         i: INTEGER
+      do
+         from
+            i := a_tuple.lower
+         until
+            match_ or else i > a_tuple.upper
+         loop
+            a_tuple.item(i).accept(Current)
+            i := i + 1
+         end
+      end
+
 feature {MIXUP_LIST}
    visit_list (a_list: MIXUP_LIST) is
       local

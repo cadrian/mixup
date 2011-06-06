@@ -135,10 +135,10 @@ feature {}
                                                                         {FAST_ARRAY[STRING] << "Set" >> }, Void;
                                                                         >> };
 
-                                   "Export", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW export", "Identifier", "KW :=", "Value" >> }, Void;
-                                                                    {FAST_ARRAY[STRING] << "KW export", "KW const", "Identifier", "KW :=", "Value" >> }, Void;
+                                   "Export", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW export", "Identifier", "KW :=", "Value_Or_Tuple" >> }, Void;
+                                                                    {FAST_ARRAY[STRING] << "KW export", "KW const", "Identifier", "KW :=", "Value_Or_Tuple" >> }, Void;
                                                                     >> };
-                                   "Set", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW set", "Identifier", "KW :=", "Value" >> }, Void;
+                                   "Set", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW set", "Identifier", "KW :=", "Value_Or_Tuple" >> }, Void;
                                                                  >> };
                                    "Import", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW from", "Identifier", "KW import", "Identifier+" >> }, Void;
                                                                     {FAST_ARRAY[STRING] << "KW from", "Identifier", "KW import", "KW *" >> }, Void;
@@ -174,6 +174,10 @@ feature {}
                                                                          {FAST_ARRAY[STRING] << "Lyrics" >> }, Void;
                                                                          >> };
 
+                                   "Value_Or_Tuple", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Value" >> }, Void;
+                                                                            {FAST_ARRAY[STRING] << "Value_Tuple" >> }, Void;
+                                                                            >> };
+
                                    "Value", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW string" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "KW number" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "KW boolean" >> }, Void;
@@ -185,6 +189,10 @@ feature {}
                                                                    {FAST_ARRAY[STRING] << "Function" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "Agent" >> }, Void;
                                                                    >> };
+
+                                   "Value_Tuple", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW [", "Value*", "KW ]" >> }, Void;
+                                                                         >> };
+                                   "Value*", list_of("Value", True, "KW ,");
 
                                    "Agent", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW '", "Identifier" >> }, Void;
                                                                    {FAST_ARRAY[STRING] << "KW '", "Function", "Identifier_Args" >> }, Void;
@@ -421,9 +429,12 @@ feature {}
 
                                    "Collection", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "List" >> }, Void;
                                                                         {FAST_ARRAY[STRING] << "Dictionary" >> }, Void;
+                                                                        {FAST_ARRAY[STRING] << "Tuple" >> }, Void;
                                                                         >> };
-                                   "List", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW [", "Expression*", "KW ]" >> }, Void;
+                                   "List", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW <<", "Expression*", "KW >>" >> }, Void;
                                                                   >> };
+                                   "Tuple", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW [", "Expression*", "KW ]" >> }, Void;
+                                                                        >> };
                                    "Dictionary", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW {", "Expression_Pair*", "KW }" >> }, Void;
                                                                         >> };
                                    "Expression*", list_of("Expression", True, "KW ,");
