@@ -75,6 +75,9 @@ case x$1 in
     xnote*)
         class=TEST_NOTE_HEAD
         ;;
+    xstream*)
+        class=TEST_MIDI_OUTPUT_STREAM
+        ;;
     *)
         echo "Unknown test: $1" >&2
         exit 1

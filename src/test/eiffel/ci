@@ -45,6 +45,14 @@ echo $log
     }
 
     echo "======================================================================"
+    echo "test midi stream"
+    echo
+    ./test stream $CI_CLEAN || {
+        echo 'midi stream FAILED!'
+        failures=$((failures+1))
+    }
+
+    echo "======================================================================"
     echo "build"
     echo
     if pkg=$($RELEASE_DIR/build.sh -clean -ci -prefix build); then
