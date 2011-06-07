@@ -54,7 +54,7 @@ feature {ANY}
       require
          is_connected
       do
-         put_integer_8(byte)
+         put_integer_8(byte.to_integer_32 & 0x000000ff)
       end
 
 feature {}
