@@ -834,6 +834,22 @@ feature {}
                   when '0'..'9' then
                      code := code * scale + (c.code - '0'.code)
                      image.extend(c)
+                  when 'A'..'F' then
+                     if scale = 16 then
+                        code := code * scale + (c.code - 'A'.code + 10)
+                        image.extend(c)
+                     else
+                        image := Void
+                        state := -1
+                     end
+                  when 'a'..'f' then
+                     if scale = 16 then
+                        code := code * scale + (c.code - 'a'.code + 10)
+                        image.extend(c)
+                     else
+                        image := Void
+                        state := -1
+                     end
                   when 'x' then
                      scale := 16
                      image.extend(c)
