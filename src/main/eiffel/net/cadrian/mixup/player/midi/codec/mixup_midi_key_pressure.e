@@ -22,6 +22,7 @@ create {ANY}
 
 feature {ANY}
    event_type: INTEGER_8 is 0xa0
+   byte_size: INTEGER is 3
 
    key: INTEGER_8
    pressure: INTEGER_8

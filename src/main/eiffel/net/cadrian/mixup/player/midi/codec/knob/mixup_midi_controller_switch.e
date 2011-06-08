@@ -23,6 +23,8 @@ create {ANY}
 feature {ANY}
    code: INTEGER_8
 
+   byte_size: INTEGER is 3
+
    valid_value (value: INTEGER): BOOLEAN is
       do
          Result := value.in_range(63, 64)

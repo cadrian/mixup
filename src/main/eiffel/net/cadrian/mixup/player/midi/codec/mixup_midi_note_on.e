@@ -22,6 +22,7 @@ create {ANY}
 
 feature {ANY}
    event_type: INTEGER_8 is 0x90
+   byte_size: INTEGER is 3
 
    pitch: INTEGER_8
    velocity: INTEGER_8

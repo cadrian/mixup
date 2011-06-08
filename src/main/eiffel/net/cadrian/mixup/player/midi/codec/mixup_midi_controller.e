@@ -29,6 +29,11 @@ feature {ANY}
    knob: MIXUP_MIDI_CONTROLLER_KNOB
    value: INTEGER
 
+   byte_size: INTEGER is
+      do
+         Result := knob.byte_size
+      end
+
    encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM) is
       local
          code: INTEGER_8

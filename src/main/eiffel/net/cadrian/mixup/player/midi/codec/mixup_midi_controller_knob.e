@@ -15,6 +15,10 @@
 deferred class MIXUP_MIDI_CONTROLLER_KNOB
 
 feature {ANY}
+   byte_size: INTEGER is
+      deferred
+      end
+
    valid_value (value: INTEGER): BOOLEAN is
       deferred
       end

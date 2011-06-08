@@ -31,6 +31,11 @@ feature {ANY}
    code: INTEGER_8
    data: FIXED_STRING
 
+   byte_size: INTEGER is
+      do
+         Result := 2 + byte_size_variable(data.count) + data.count
+      end
+
    encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM) is
       local
          i: INTEGER

@@ -24,25 +24,45 @@ feature {ANY}
    msb_code: INTEGER_8
    lsb_code: INTEGER_8
 
+   is_coarse: BOOLEAN is
+      do
+         Result := lsb_code = 0
+      end
+
+   is_fine: BOOLEAN is
+      do
+         Result := not is_coarse
+      end
+
+   byte_size: INTEGER is
+      do
+         if is_coarse then
+            Result := 3
+         else
+            Result := 7
+         end
+      end
+
    encode_to (message_code: INTEGER_8; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM) is
       do
-         if value > 0x7f then -- fine
+         if is_coarse then
+            stream.put_byte(message_code)
+            stream.put_byte(msb_code)
+            stream.put_byte((value & 0x0000007f).to_integer_8)
+         else
             stream.put_byte(message_code)
             stream.put_byte(lsb_code)
             stream.put_byte((value & 0x0000007f).to_integer_8)
+            stream.put_byte(0) -- at the same time
             stream.put_byte(message_code)
             stream.put_byte(msb_code)
             stream.put_byte(((value |>> 7) & 0x0000007f).to_integer_8)
-         else -- coarse
-            stream.put_byte(message_code)
-            stream.put_byte(msb_code)
-            stream.put_byte((value & 0x0000007f).to_integer_8)
          end
       end
 
    valid_value (value: INTEGER): BOOLEAN is
       do
-         if lsb_code = 0 then
+         if is_coarse then
             Result := value.in_range(0, 0x0000007f)
          else
             Result := value.in_range(0, 0x00003fff)

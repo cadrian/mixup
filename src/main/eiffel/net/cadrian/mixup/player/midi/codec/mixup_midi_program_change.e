@@ -22,6 +22,7 @@ create {ANY}
 
 feature {ANY}
    event_type: INTEGER_8 is 0xc0
+   byte_size: INTEGER is 2
 
    patch: INTEGER_8
 

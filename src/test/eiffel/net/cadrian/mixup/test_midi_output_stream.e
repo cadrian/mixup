@@ -30,6 +30,7 @@ feature {}
          test_variables
          test_events
          test_meta_events
+         test_track
       end
 
    test_variables is
@@ -99,12 +100,12 @@ feature {}
          controller.encode_to(stream)
          assert_stream("%/185/%/11/%/37/") -- 185 = 0xb9 = 0xb0 + 9
 
-         create controller.make(9, knobs.expression_controller, 2048)
+         create controller.make(9, knobs.fine_expression_controller, 2048)
          assert(controller.event_type = 0xb0)
          assert(controller.channel = 9)
-         assert(controller.knob = knobs.expression_controller)
+         assert(controller.knob = knobs.fine_expression_controller)
          controller.encode_to(stream)
-         assert_stream("%/185/%/43/%/0/%/185/%/11/%/16/") -- 185 = 0xb9 = 0xb0 + 9
+         assert_stream("%/185/%/43/%/0/%/0/%/185/%/11/%/16/") -- 185 = 0xb9 = 0xb0 + 9
 
          create program.make(1, 20)
          assert(program.event_type = 0xc0)
@@ -138,6 +139,20 @@ feature {}
          assert(event.data = "boo!".intern)
          event.encode_to(stream)
          assert_stream("%/255/%/5/%/4/boo!")
+      end
+
+   test_track is
+      local
+         events: MIXUP_MIDI_EVENTS
+      do
+         create events.make                                                   -- v_time   message
+         events.add_event(  0, create {MIXUP_MIDI_PROGRAM_CHANGE}.make(4, 1)) --  0x00   0xc4 0x01
+         events.add_event(  0, create {MIXUP_MIDI_NOTE_ON}.make(4, 60, 64))   --  0x00   0x94 60 64
+         events.add_event( 64, create {MIXUP_MIDI_NOTE_OFF}.make(4, 60, 64))  --  0x40   0x84 60 64
+         events.add_event( 64, create {MIXUP_MIDI_NOTE_ON}.make(4, 62, 64))   --  0x00   0x94 62 64
+         events.add_event(128, create {MIXUP_MIDI_NOTE_OFF}.make(4, 62, 64))  --  0x40   0x84 62 64
+         events.encode_to(stream)
+         assert_stream("MTrk%/0/%/0/%/0/%/19/%/0/%/196/%/1/%/0/%/148/%/60/%/64/%/64/%/132/%/60/%/64/%/0/%/148/%/62/%/64/%/64/%/132/%/62/%/64/")
       end
 
    assert_stream (ref: STRING) is

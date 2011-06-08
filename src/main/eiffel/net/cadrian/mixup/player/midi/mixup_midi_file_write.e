@@ -49,16 +49,6 @@ feature {}
       do
       end
 
-   put_integer_32 (int: INTEGER_32) is
-      do
-         stream.put_integer_32_native_endian(int)
-      end
-
-   put_integer_16 (short: INTEGER_16) is
-      do
-         stream.put_integer_16_native_endian(short)
-      end
-
    put_integer_8 (byte: INTEGER_8) is
       do
          stream.put_byte(byte)

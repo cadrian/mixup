@@ -83,17 +83,23 @@ feature {}
    track_magic: INTEGER is 0x4d54726b -- "MTrk"
 
 feature {}
-   put_integer_32 (int: INTEGER_32) is
+   frozen put_integer_32 (int: INTEGER_32) is
       require
          is_connected
-      deferred
+      do
+         put_integer_8((int |>> 24) & 0x000000ff)
+         put_integer_8((int |>> 16) & 0x000000ff)
+         put_integer_8((int |>>  8) & 0x000000ff)
+         put_integer_8( int         & 0x000000ff)
       end
 
-   put_integer_16 (short: INTEGER_32) is
+   frozen put_integer_16 (short: INTEGER_32) is
       require
          is_connected
          short.in_range(0, 0x0000ffff)
-      deferred
+      do
+         put_integer_8((short |>>  8) & 0x000000ff)
+         put_integer_8( short         & 0x000000ff)
       end
 
    put_integer_8 (byte: INTEGER_32) is
