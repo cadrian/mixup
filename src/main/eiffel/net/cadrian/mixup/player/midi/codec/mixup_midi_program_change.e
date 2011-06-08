@@ -12,7 +12,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_MIDI_NOTE_ON
+class MIXUP_MIDI_PROGRAM_CHANGE
 
 inherit
    MIXUP_MIDI_EVENT
@@ -21,29 +21,25 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_8 is 0x90
+   event_type: INTEGER_8 is 0xc0
 
-   pitch: INTEGER_8
-   velocity: INTEGER_8
+   patch: INTEGER_8
 
 feature {}
-   make (a_channel: like channel; a_pitch: like pitch; a_velocity: like velocity) is
+   make (a_channel: like channel; a_patch: like patch) is
       require
          a_channel.in_range(0, 15)
       do
          channel := a_channel
-         pitch := a_pitch
-         velocity := a_velocity
+         patch := a_patch
       ensure
          channel = a_channel
-         pitch = a_pitch
-         velocity = a_velocity
+         patch = a_patch
       end
 
    put_args (stream: MIXUP_MIDI_OUTPUT_STREAM) is
       do
-         stream.put_byte(pitch)
-         stream.put_byte(velocity)
+         stream.put_byte(patch)
       end
 
-end -- class MIXUP_MIDI_NOTE_ON
+end -- class MIXUP_MIDI_PROGRAM_CHANGE

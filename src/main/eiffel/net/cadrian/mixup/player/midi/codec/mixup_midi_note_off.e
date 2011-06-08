@@ -21,7 +21,7 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_8 is 0x90
+   event_type: INTEGER_8 is 0x80
 
    pitch: INTEGER_8
    velocity: INTEGER_8
@@ -29,7 +29,7 @@ feature {ANY}
 feature {}
    make (a_channel: like channel; a_pitch: like pitch; a_velocity: like velocity) is
       require
-         channel.in_range(0, 15)
+         a_channel.in_range(0, 15)
       do
          channel := a_channel
          pitch := a_pitch

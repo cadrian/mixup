@@ -28,7 +28,7 @@ feature {ANY}
 feature {}
    make (a_channel: like channel; a_pressure: like pressure) is
       require
-         channel.in_range(0, 15)
+         a_channel.in_range(0, 15)
       do
          channel := a_channel
          pressure := a_pressure

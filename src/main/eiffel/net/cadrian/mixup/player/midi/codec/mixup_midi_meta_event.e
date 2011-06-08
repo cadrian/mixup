@@ -12,49 +12,57 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_MIDI_CONTROLLER
+class MIXUP_MIDI_META_EVENT
 
 inherit
-   MIXUP_MIDI_EVENT
-      redefine
-         encode_to
+   MIXUP_MIDI_CODEC
+
+insert
+   MIXUP_MIDI_META_EVENTS
+      export
+         {ANY} valid_code;
+         {} all
       end
 
 create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_8 is 0xb0
-
-   knob: MIXUP_MIDI_CONTROLLER_KNOB
-   value: INTEGER
+   code: INTEGER_8
+   data: FIXED_STRING
 
    encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM) is
       local
-         code: INTEGER_8
+         i: INTEGER
       do
-         code := event_type | channel
-         knob.encode_to(code, value, stream)
+         stream.put_byte(0xff)
+         stream.put_byte(code)
+         stream.put_variable(data.count)
+         from
+            i := data.lower
+         until
+            i > data.upper
+         loop
+            stream.put_byte(data.item(i).code.to_integer_8)
+            i := i + 1
+         end
       end
 
 feature {}
-   make (a_channel: like channel; a_knob: like knob; a_value: like value) is
+   make (a_code: like code; a_data: ABSTRACT_STRING) is
       require
-         a_channel.in_range(0, 15)
-         a_knob.valid_value(a_value)
+         valid_code(code)
+         a_data /= Void
       do
-         channel := a_channel
-         knob := a_knob
-         value := a_value
+         code := a_code
+         data := a_data.intern
       ensure
-         channel = a_channel
-         knob = a_knob
-         value = a_value
+         code = a_code
+         data = a_data.intern
       end
 
-   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM) is
-      do
-         crash
-      end
+invariant
+   valid_code(code)
+   data /= Void
 
-end -- class MIXUP_MIDI_CONTROLLER
+end -- class MIXUP_MIDI_META_EVENT
