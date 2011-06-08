@@ -26,14 +26,18 @@ feature {ANY}
 
    encode_to (message_code: INTEGER_8; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM) is
       do
-         if value > 0x7f then
+         if value > 0x7f then -- fine
             stream.put_byte(message_code)
             stream.put_byte(lsb_code)
+            stream.put_byte((value & 0x0000007f).to_integer_8)
+            stream.put_byte(message_code)
+            stream.put_byte(msb_code)
             stream.put_byte(((value |>> 7) & 0x0000007f).to_integer_8)
+         else -- coarse
+            stream.put_byte(message_code)
+            stream.put_byte(msb_code)
+            stream.put_byte((value & 0x0000007f).to_integer_8)
          end
-         stream.put_byte(message_code)
-         stream.put_byte(msb_code)
-         stream.put_byte((value & 0x0000007f).to_integer_8)
       end
 
    valid_value (value: INTEGER): BOOLEAN is

@@ -104,7 +104,7 @@ feature {}
          assert(controller.channel = 9)
          assert(controller.knob = knobs.expression_controller)
          controller.encode_to(stream)
-         assert_stream("%/185/%/43/%/16/%/185/%/11/%/0/") -- 185 = 0xb9 = 0xb0 + 9
+         assert_stream("%/185/%/43/%/0/%/185/%/11/%/16/") -- 185 = 0xb9 = 0xb0 + 9
 
          create program.make(1, 20)
          assert(program.event_type = 0xc0)
