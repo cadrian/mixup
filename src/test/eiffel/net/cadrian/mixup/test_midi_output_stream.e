@@ -143,23 +143,39 @@ feature {}
 
    test_track is
       local
-         events: MIXUP_MIDI_EVENTS
-         file: MIXUP_MIDI_FILE
+         meta: MIXUP_MIDI_META_EVENTS
+         track: MIXUP_MIDI_EVENTS; track_ref: STRING
+         file:  MIXUP_MIDI_FILE;   file_ref:  STRING
+         bfr: BINARY_FILE_WRITE
       do
-         create events.make                                                   -- v_time   message
-         events.add_event(  0, create {MIXUP_MIDI_PROGRAM_CHANGE}.make(4, 1)) --  0x00   0xc4 0x01
-         events.add_event(  0, create {MIXUP_MIDI_NOTE_ON}.make(4, 60, 64))   --  0x00   0x94 60 64
-         events.add_event( 64, create {MIXUP_MIDI_NOTE_OFF}.make(4, 60, 64))  --  0x40   0x84 60 64
-         events.add_event( 64, create {MIXUP_MIDI_NOTE_ON}.make(4, 62, 64))   --  0x00   0x94 62 64
-         events.add_event(128, create {MIXUP_MIDI_NOTE_OFF}.make(4, 62, 64))  --  0x40   0x84 62 64
-         events.encode_to(stream)
-         assert_stream("MTrk%/0/%/0/%/0/%/19/%/0/%/196/%/1/%/0/%/148/%/60/%/64/%/64/%/132/%/60/%/64/%/0/%/148/%/62/%/64/%/64/%/132/%/62/%/64/")
+         create track.make                                                   -- v_time   message
+         track.add_event(  0, create {MIXUP_MIDI_PROGRAM_CHANGE}.make(4, 1)) --  0x00   0xc4 0x01
+         track.add_event(  0, create {MIXUP_MIDI_NOTE_ON}.make(4, 60, 64))   --  0x00   0x94 60 64
+         track.add_event( 64, create {MIXUP_MIDI_NOTE_OFF}.make(4, 60, 64))  --  0x40   0x84 60 64
+         track.add_event( 64, create {MIXUP_MIDI_NOTE_ON}.make(4, 62, 64))   --  0x00   0x94 62 64
+         track.add_event(128, create {MIXUP_MIDI_NOTE_OFF}.make(4, 62, 64))  --  0x40   0x84 62 64
+         -- this last is mandatory at the end of every track:
+         track.add_event(128, meta.end_of_track_event)                       --  0x00   0xff 0x2f 0x00
+         track_ref := "MTrk%/0/%/0/%/0/%/23/%/0/%/196/%/1/%/0/%/148/%/60/%/64/%/64/%/132/%/60/%/64/%/0/%/148/%/62/%/64/%/64/%/132/%/62/%/64/%/0/%/255/%/47/%/0/"
 
          create file.make(384)
          assert(file.division = 384)
-         file.add_track(events)
+         file.add_track(track)
+         file_ref := "MThd%/0/%/0/%/0/%/6/%/0/%/1/%/0/%/1/%/1/%/128/" + track_ref
+
+         track.encode_to(stream)
+         assert_stream(track_ref)
+
          file.encode_to(stream)
-         assert_stream("MThd%/0/%/0/%/0/%/6/%/0/%/1/%/0/%/1/%/1/%/128/MTrk%/0/%/0/%/0/%/19/%/0/%/196/%/1/%/0/%/148/%/60/%/64/%/64/%/132/%/60/%/64/%/0/%/148/%/62/%/64/%/64/%/132/%/62/%/64/")
+         assert_stream(file_ref)
+
+         -- that last sections allow to chack that the midi file is
+         -- well formed (use Timidity++ or whatever to check)
+         create bfr.connect_to("test.mid")
+         if bfr.is_connected then
+            file_ref.do_all(agent (c: CHARACTER; b: BINARY_FILE_WRITE) is do b.put_byte(c.code) end(?, bfr))
+            bfr.disconnect
+         end
       end
 
    assert_stream (ref: STRING) is

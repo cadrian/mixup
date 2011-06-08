@@ -18,8 +18,14 @@ create {ANY}
    make
 
 feature {ANY}
+   can_add_event: BOOLEAN is
+      do
+         Result := events.is_empty or else events.last.last /= end_of_track
+      end
+
    add_event (a_time: INTEGER_64; a_event: MIXUP_MIDI_CODEC) is
       require
+         can_add_event
          a_event /= Void
       local
          events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]
@@ -34,7 +40,14 @@ feature {ANY}
          events.fast_reference_at(a_time).last = a_event
       end
 
+   can_encode: BOOLEAN is
+      do
+         Result := not events.is_empty and then events.last.last = end_of_track
+      end
+
    byte_size: INTEGER is
+      require
+         can_encode
       local
          i: INTEGER
          current_time, time: INTEGER_64
@@ -49,11 +62,11 @@ feature {ANY}
             current_time := time
             i := i + 1
          end
-
       end
 
    encode_to (a_stream: MIXUP_MIDI_OUTPUT_STREAM) is
       require
+         can_encode
          a_stream.is_connected
       local
          i: INTEGER
@@ -117,6 +130,13 @@ feature {}
       end
 
    events: AVL_DICTIONARY[FAST_ARRAY[MIXUP_MIDI_CODEC], INTEGER_64]
+
+   end_of_track: MIXUP_MIDI_META_EVENT is
+      local
+         meta: MIXUP_MIDI_META_EVENTS
+      do
+         Result := meta.end_of_track_event
+      end
 
 invariant
    events /= Void

@@ -36,6 +36,12 @@ feature {ANY}
    time_signature:  INTEGER_8 is 0x58
    key_signature:   INTEGER_8 is 0x59
 
+   end_of_track_event: MIXUP_MIDI_META_EVENT is
+         -- must always be added, and added last, to each track
+      once
+         create Result.make(end_of_track, "")
+      end
+
 feature {}
    valid_codes: AVL_SET[INTEGER_8] is
       once
