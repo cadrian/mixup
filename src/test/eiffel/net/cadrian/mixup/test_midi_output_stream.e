@@ -144,6 +144,7 @@ feature {}
    test_track is
       local
          events: MIXUP_MIDI_EVENTS
+         file: MIXUP_MIDI_FILE
       do
          create events.make                                                   -- v_time   message
          events.add_event(  0, create {MIXUP_MIDI_PROGRAM_CHANGE}.make(4, 1)) --  0x00   0xc4 0x01
@@ -153,6 +154,12 @@ feature {}
          events.add_event(128, create {MIXUP_MIDI_NOTE_OFF}.make(4, 62, 64))  --  0x40   0x84 62 64
          events.encode_to(stream)
          assert_stream("MTrk%/0/%/0/%/0/%/19/%/0/%/196/%/1/%/0/%/148/%/60/%/64/%/64/%/132/%/60/%/64/%/0/%/148/%/62/%/64/%/64/%/132/%/62/%/64/")
+
+         create file.make(384)
+         assert(file.division = 384)
+         file.add_track(events)
+         file.encode_to(stream)
+         assert_stream("MThd%/0/%/0/%/0/%/6/%/0/%/1/%/0/%/1/%/1/%/128/MTrk%/0/%/0/%/0/%/19/%/0/%/196/%/1/%/0/%/148/%/60/%/64/%/64/%/132/%/60/%/64/%/0/%/148/%/62/%/64/%/64/%/132/%/62/%/64/")
       end
 
    assert_stream (ref: STRING) is

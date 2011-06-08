@@ -19,7 +19,7 @@ feature {ANY}
       deferred
       end
 
-   start (tracks_count: INTEGER_16) is
+   start (tracks_count: INTEGER_16; division: INTEGER_16) is
       require
          is_connected
       do
@@ -27,7 +27,7 @@ feature {ANY}
          put_integer_32(header_size)
          put_integer_16(header_type)
          put_integer_16(tracks_count)
-         put_integer_16(header_timing)
+         put_integer_16(division)
       end
 
    next_track (length: INTEGER) is
@@ -78,7 +78,6 @@ feature {}
    header_magic: INTEGER is 0x4d546864 -- "MThd"
    header_size: INTEGER is 6
    header_type: INTEGER_16 is 1
-   header_timing: INTEGER_16 is 384
 
    track_magic: INTEGER is 0x4d54726b -- "MTrk"
 
