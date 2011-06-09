@@ -15,6 +15,55 @@
 expanded class MIXUP_MIDI_META_EVENTS
 
 feature {ANY}
+   end_of_track_event: MIXUP_MIDI_META_EVENT is
+         -- must always be added, and added last, to each track
+      once
+         create Result.make(end_of_track, "")
+      end
+
+   text_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
+      require
+         a_text /= Void
+      do
+         create Result.make(text, a_text)
+      end
+
+   copyright_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
+      require
+         a_text /= Void
+      do
+         create Result.make(copyright, a_text)
+      end
+
+   track_name_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
+      require
+         a_text /= Void
+      do
+         create Result.make(track_name, a_text)
+      end
+
+   instrument_name_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
+      require
+         a_text /= Void
+      do
+         create Result.make(instrument_name, a_text)
+      end
+
+   lyrics_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
+      require
+         a_text /= Void
+      do
+         create Result.make(lyrics, a_text)
+      end
+
+   marker_text_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
+      require
+         a_text /= Void
+      do
+         create Result.make(marker_text, a_text)
+      end
+
+feature {ANY}
    valid_code (a_code: INTEGER_8): BOOLEAN is
       do
          Result := valid_codes.fast_has(a_code)
@@ -35,12 +84,6 @@ feature {ANY}
    tempo_setting:   INTEGER_8 is 0x51
    time_signature:  INTEGER_8 is 0x58
    key_signature:   INTEGER_8 is 0x59
-
-   end_of_track_event: MIXUP_MIDI_META_EVENT is
-         -- must always be added, and added last, to each track
-      once
-         create Result.make(end_of_track, "")
-      end
 
 feature {}
    valid_codes: AVL_SET[INTEGER_8] is
