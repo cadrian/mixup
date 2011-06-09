@@ -44,7 +44,7 @@ feature {ANY}
          -- variable length value have the high order bit set. The last byte has the high order bit
          -- cleared. The bytes always appear most significant byte first.
       require
-         variable > 0
+         variable >= 0
          is_connected
       do
          put_variable_byte_and_continue(variable, False)
@@ -60,7 +60,7 @@ feature {ANY}
 feature {}
    put_variable_byte_and_continue (variable: INTEGER_64; continue: BOOLEAN) is
       require
-         variable > 0
+         variable >= 0
          is_connected
       local
          byte: INTEGER_32
