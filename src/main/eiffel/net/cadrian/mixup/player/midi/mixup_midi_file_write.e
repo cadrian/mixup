@@ -12,7 +12,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-deferred class MIXUP_MIDI_FILE_WRITE
+class MIXUP_MIDI_FILE_WRITE
 
 inherit
    MIXUP_MIDI_OUTPUT_STREAM
@@ -49,7 +49,7 @@ feature {}
       do
       end
 
-   put_integer_8 (byte: INTEGER_8) is
+   put_integer_8 (byte: INTEGER_32) is
       do
          stream.put_byte(byte)
       end
