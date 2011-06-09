@@ -146,7 +146,7 @@ feature {}
          meta: MIXUP_MIDI_META_EVENTS
          track: MIXUP_MIDI_EVENTS; track_ref: STRING
          file:  MIXUP_MIDI_FILE;   file_ref:  STRING
-         bfr: BINARY_FILE_WRITE
+         bfw: BINARY_FILE_WRITE
       do
          create track.make                                                   -- v_time   message
          track.add_event(  0, create {MIXUP_MIDI_PROGRAM_CHANGE}.make(4, 1)) --  0x00   0xc4 0x01
@@ -171,10 +171,10 @@ feature {}
 
          -- that last sections allow to chack that the midi file is
          -- well formed (use Timidity++ or whatever to check)
-         create bfr.connect_to("test.mid")
-         if bfr.is_connected then
-            file_ref.do_all(agent (c: CHARACTER; b: BINARY_FILE_WRITE) is do b.put_byte(c.code) end(?, bfr))
-            bfr.disconnect
+         create bfw.connect_to("test.mid")
+         if bfw.is_connected then
+            file_ref.do_all(agent (c: CHARACTER; b: BINARY_FILE_WRITE) is do b.put_byte(c.code) end(?, bfw))
+            bfw.disconnect
          end
       end
 
