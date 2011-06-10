@@ -59,14 +59,14 @@ feature {}
 
          lilypond.play_set_partitur("test"                                                                                                                                 )
          lilypond.play_set_instrument("MyInstr", map(1, 1|..|2)                                                                                                            )
-         lilypond.play_start_voices(event_data("MyInstr",        0, 1, 0), 1|..|1                                                                                          )
-         lilypond.play_set_note(event_data("MyInstr",            0, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("c", 4) >> }, source, << "doe", "do" >> })
-         lilypond.play_set_note(event_data("MyInstr",   duration_4, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("d", 4) >> }, source, << "ray", "re" >> })
-         lilypond.play_start_voices(event_data("MyInstr",        0, 1, 1), 2|..|2                                                                                          )
-         lilypond.play_set_note(event_data("MyInstr",   duration_2, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("e", 4) >> }, source, << "me" , "mi" >> })
-         lilypond.play_set_note(event_data("MyInstr",   duration_2, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("e", 5) >> }, source, << "me" , "mi" >> })
-         lilypond.play_end_voices(event_data("MyInstr", duration_1, 1, 1)                                                                                                  )
-         lilypond.play_end_voices(event_data("MyInstr", duration_1, 1, 0)                                                                                                  )
+         lilypond.play_start_voices(event_data("MyInstr",   0, 1, 0), 1|..|1                                                                                          )
+         lilypond.play_set_note(event_data("MyInstr",       0, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("c", 4) >> }, source, << "doe", "do" >> })
+         lilypond.play_set_note(event_data("MyInstr",      64, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("d", 4) >> }, source, << "ray", "re" >> })
+         lilypond.play_start_voices(event_data("MyInstr",   0, 1, 1), 2|..|2                                                                                          )
+         lilypond.play_set_note(event_data("MyInstr",     128, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("e", 4) >> }, source, << "me" , "mi" >> })
+         lilypond.play_set_note(event_data("MyInstr",     128, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("e", 5) >> }, source, << "me" , "mi" >> })
+         lilypond.play_end_voices(event_data("MyInstr",   192, 1, 1)                                                                                                  )
+         lilypond.play_end_voices(event_data("MyInstr",   192, 1, 0)                                                                                                  )
          lilypond.play_end_partitur
 
          expected := "[

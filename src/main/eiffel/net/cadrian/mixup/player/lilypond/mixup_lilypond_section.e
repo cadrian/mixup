@@ -14,6 +14,9 @@
 --
 class MIXUP_LILYPOND_SECTION
 
+inherit
+   MIXUP_ABSTRACT_SECTION[MIXUP_LILYPOND_OUTPUT]
+
 insert
    MIXUP_ERRORS
 
@@ -21,69 +24,36 @@ create {ANY}
    make_full, make_body
 
 feature {ANY}
-   name: FIXED_STRING
-   type: FIXED_STRING
-   parent: MIXUP_LILYPOND_SECTION
-
-   set_header (a_header: ABSTRACT_STRING) is
-      require
-         a_header /= Void
+   generate (a_output: MIXUP_LILYPOND_OUTPUT) is
+      local
+         stream: OUTPUT_STREAM
       do
+         stream := a_output.stream
+
          if header /= Void then
-            header.append(a_header)
-         else
-            check parent /= Void end
-            parent.set_header(a_header)
-         end
-      end
-
-   set_body (a_body: ABSTRACT_STRING) is
-      require
-         a_body /= Void
-      do
-         body.append(a_body)
-      end
-
-   set_footer (a_footer: ABSTRACT_STRING) is
-      require
-         a_footer /= Void
-      do
-         if footer /= Void then
-            footer.append(a_footer)
-         else
-            check parent /= Void end
-            parent.set_footer(a_footer)
-         end
-      end
-
-   generate (a_output: OUTPUT_STREAM) is
-      require
-         a_output.is_connected
-      do
-         if header /= Void then
-            a_output.put_line(once "%% ---------------- Generated using MiXuP ----------------")
-            a_output.put_line(once "\version %"2.12.3%"")
-            a_output.put_new_line
-            a_output.put_line(once "\include %"mixup.ily%"")
-            a_output.put_line(once "\header {")
-            a_output.put_string(header)
-            a_output.put_line(once "}")
-            a_output.put_new_line
-            a_output.put_line(once "\book {")
-            a_output.put_string(once "\include %"mixup-")
-            a_output.put_string(type)
-            a_output.put_line(once ".ily%"")
-            a_output.put_line(once "\score {")
-            a_output.put_line(once "<<")
+            stream.put_line(once "%% ---------------- Generated using MiXuP ----------------")
+            stream.put_line(once "\version %"2.12.3%"")
+            stream.put_new_line
+            stream.put_line(once "\include %"mixup.ily%"")
+            stream.put_line(once "\header {")
+            stream.put_string(header)
+            stream.put_line(once "}")
+            stream.put_new_line
+            stream.put_line(once "\book {")
+            stream.put_string(once "\include %"mixup-")
+            stream.put_string(type)
+            stream.put_line(once ".ily%"")
+            stream.put_line(once "\score {")
+            stream.put_line(once "<<")
          end
 
-         a_output.put_string(body)
+         stream.put_string(body)
 
          if footer /= Void then
-            a_output.put_line(once ">>")
-            a_output.put_line(once "}")
-            a_output.put_line(once "}")
-            a_output.put_string(footer)
+            stream.put_line(once ">>")
+            stream.put_line(once "}")
+            stream.put_line(once "}")
+            stream.put_string(footer)
          end
       end
 
@@ -140,6 +110,21 @@ feature {}
          parent = Void
          header /= Void
          footer /= Void
+      end
+
+   append_header (a_header: ABSTRACT_STRING) is
+      do
+         header.append(a_header)
+      end
+
+   append_body (a_body: ABSTRACT_STRING) is
+      do
+         body.append(a_body)
+      end
+
+   append_footer (a_footer: ABSTRACT_STRING) is
+      do
+         footer.append(a_footer)
       end
 
 invariant

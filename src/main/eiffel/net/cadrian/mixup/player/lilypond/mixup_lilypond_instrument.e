@@ -14,6 +14,9 @@
 --
 class MIXUP_LILYPOND_INSTRUMENT
 
+inherit
+   MIXUP_ABSTRACT_INSTRUMENT[MIXUP_LILYPOND_OUTPUT, MIXUP_LILYPOND_SECTION]
+
 insert
    MIXUP_LILYPOND_CONTEXT
 
@@ -23,7 +26,7 @@ create {ANY}
 feature {ANY}
    name: FIXED_STRING
 
-feature {MIXUP_LILYPOND_PLAYER}
+feature {MIXUP_ABSTRACT_PLAYER}
    start_voices (a_staff_id, a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]) is
       do
          staffs.reference_at(a_staff_id).start_voices(a_voice_id, voice_ids)
@@ -96,10 +99,8 @@ feature {MIXUP_LILYPOND_PLAYER}
          staffs.reference_at(a_staff_id).string_event(a_voice_id, a_string)
       end
 
-feature {MIXUP_LILYPOND_PLAYER}
+feature {MIXUP_ABSTRACT_PLAYER}
    generate (section: MIXUP_LILYPOND_SECTION) is
-      require
-         section /= Void
       local
          staff_type: STRING
       do
