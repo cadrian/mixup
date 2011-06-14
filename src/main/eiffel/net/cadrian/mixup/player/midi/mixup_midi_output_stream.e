@@ -14,11 +14,10 @@
 --
 deferred class MIXUP_MIDI_OUTPUT_STREAM
 
-feature {ANY}
-   is_connected: BOOLEAN is
-      deferred
-      end
+inherit
+   MIXUP_ABSTRACT_OUTPUT
 
+feature {ANY}
    start (tracks_count: INTEGER_16; division: INTEGER_16) is
       require
          is_connected

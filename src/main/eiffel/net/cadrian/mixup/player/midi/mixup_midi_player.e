@@ -15,19 +15,22 @@
 class MIXUP_MIDI_PLAYER
 
 inherit
-   MIXUP_CORE_PLAYER
+   MIXUP_ABSTRACT_PLAYER[MIXUP_MIDI_OUTPUT_STREAM,
+                         MIXUP_MIDI_SECTION,
+                         MIXUP_MIDI_ITEM,
+                         MIXUP_MIDI_VOICE,
+                         MIXUP_MIDI_VOICES,
+                         MIXUP_MIDI_STAFF,
+                         MIXUP_MIDI_INSTRUMENT
+                         ]
 
 create {ANY}
-   make
+   make, connect_to
 
 feature {ANY}
    name: FIXED_STRING is
       once
          Result := "midi".intern
-      end
-
-   set_context (a_context: MIXUP_CONTEXT) is
-      do
       end
 
    native (a_def_source, a_call_source: MIXUP_SOURCE; fn_name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
@@ -41,90 +44,62 @@ feature {ANY}
          end
       end
 
-feature {ANY}
-   play_set_score (a_name: ABSTRACT_STRING) is
+feature {} -- section files management
+   build_filename (a_name: ABSTRACT_STRING): STRING is
       do
-      end
-
-   play_end_score is
-      do
-      end
-
-   play_set_book (a_name: ABSTRACT_STRING) is
-      do
-      end
-
-   play_end_book is
-      do
-      end
-
-   play_set_partitur (a_name: ABSTRACT_STRING) is
-      do
-      end
-
-   play_end_partitur is
-      do
-      end
-
-   play_set_instrument (a_name: ABSTRACT_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
-      do
-      end
-
-   play_start_voices (a_data: MIXUP_EVENT_DATA; voice_ids: TRAVERSABLE[INTEGER]) is
-      do
-      end
-
-   play_end_voices (a_data: MIXUP_EVENT_DATA) is
-      do
-      end
-
-   play_set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING) is
-      do
-      end
-
-   play_set_note (a_data: MIXUP_EVENT_DATA; note: MIXUP_NOTE) is
-      do
-      end
-
-   play_next_bar (a_data: MIXUP_EVENT_DATA; style: ABSTRACT_STRING) is
-      do
-      end
-
-   play_start_beam (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
-      do
-      end
-
-   play_end_beam (a_data: MIXUP_EVENT_DATA) is
-      do
-      end
-
-   play_start_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
-      do
-      end
-
-   play_end_slur (a_data: MIXUP_EVENT_DATA) is
-      do
-      end
-
-   play_start_phrasing_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
-      do
-      end
-
-   play_end_phrasing_slur (a_data: MIXUP_EVENT_DATA) is
-      do
-      end
-
-   play_start_repeat (a_data: MIXUP_EVENT_DATA; volte: INTEGER_64) is
-      do
-      end
-
-   play_end_repeat (a_data: MIXUP_EVENT_DATA) is
-      do
+         Result := a_name.out
+         if current_section /= Void then
+            current_section.filename_in(Result)
+         end
+         Result.append(once ".mid")
       end
 
 feature {}
+   call_tool (filename: STRING) is
+      do
+         -- nothing currently (will eventually call some midi synthetizer)
+      end
+
+feature {}
+   new_instrument (a_name: FIXED_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]): MIXUP_MIDI_INSTRUMENT is
+      do
+         create Result.make(context, a_name, voice_staff_ids)
+      end
+
+   new_section (section, a_name: ABSTRACT_STRING): MIXUP_MIDI_SECTION is
+      do
+         create Result.make(section, a_name, current_section)
+      end
+
+   new_output (a_filename: ABSTRACT_STRING): MIXUP_MIDI_FILE_WRITE is
+      local
+         bfw: BINARY_FILE_WRITE
+      do
+         create bfw.connect_to(a_filename)
+         if bfw.is_connected then
+            create Result.connect_to(bfw)
+         end
+      end
+
+feature {}
+   connect_to (a_output: like opus_output) is
+      require
+         a_output.is_connected
+      do
+         create instruments.make
+         opus_output := a_output
+      ensure
+         opus_output = a_output
+         not managed_output
+      end
+
    make is
       do
+         managed_output := True
+         create instruments.make
+      ensure
+         opus_output = Void
+         managed_output
       end
 
 end -- class MIXUP_MIDI_PLAYER

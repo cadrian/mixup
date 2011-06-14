@@ -12,47 +12,47 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_MIDI_FILE_WRITE
+class MIXUP_MIDI_SECTION
 
 inherit
-   MIXUP_MIDI_OUTPUT_STREAM
+   MIXUP_ABSTRACT_SECTION[MIXUP_MIDI_OUTPUT_STREAM]
 
 create {ANY}
-   make, connect_to
+   make
 
 feature {ANY}
-   connect_to (a_stream: BINARY_FILE_WRITE) is
+   generate (a_output: MIXUP_MIDI_OUTPUT_STREAM) is
+      do
+      end
+
+   filename_in (a_filename: STRING) is
       require
-         a_stream.is_connected
-         not is_connected
+         a_filename /= Void
       do
-         stream := a_stream
-      ensure
-         stream = a_stream
-         is_connected
-      end
-
-   is_connected: BOOLEAN is
-      do
-         Result := stream /= Void and then stream.is_connected
-      end
-
-   disconnect is
-      do
-         stream.disconnect
-         stream := Void
+         a_filename.precede('-')
+         a_filename.prepend(name)
+         if parent /= Void then
+            parent.filename_in(a_filename)
+         end
       end
 
 feature {}
-   make is
+   append_header (a_header: ABSTRACT_STRING) is
       do
       end
 
-   put_integer_8 (byte: INTEGER_32) is
+   append_body (a_body: ABSTRACT_STRING) is
       do
-         stream.put_byte(byte)
       end
 
-   stream: BINARY_FILE_WRITE
+   append_footer (a_footer: ABSTRACT_STRING) is
+      do
+      end
 
-end -- class MIXUP_MIDI_FILE_WRITE
+   make (section, a_name: ABSTRACT_STRING; a_parent: like parent) is
+      do
+         name := a_name.intern
+         parent := a_parent
+      end
+
+end -- class MIXUP_MIDI_SECTION

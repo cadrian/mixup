@@ -20,7 +20,7 @@ create {ANY}
 feature {ANY}
    division: INTEGER_16
 
-   add_track (a_track: MIXUP_MIDI_EVENTS) is
+   add_track (a_track: MIXUP_MIDI_TRACK) is
       require
          a_track /= Void
          can_add_track
@@ -36,7 +36,7 @@ feature {ANY}
          a_stream.is_connected
       do
          a_stream.start(tracks.count.to_integer_16, division)
-         tracks.do_all(agent {MIXUP_MIDI_EVENTS}.encode_to(a_stream))
+         tracks.do_all(agent {MIXUP_MIDI_TRACK}.encode_to(a_stream))
       end
 
    can_add_track: BOOLEAN is
@@ -55,7 +55,7 @@ feature {}
          division = a_division
       end
 
-   tracks: FAST_ARRAY[MIXUP_MIDI_EVENTS]
+   tracks: FAST_ARRAY[MIXUP_MIDI_TRACK]
 
 invariant
    division > 0

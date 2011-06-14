@@ -12,47 +12,27 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_MIDI_FILE_WRITE
+class MIXUP_MIDI_STAFF
 
 inherit
-   MIXUP_MIDI_OUTPUT_STREAM
+   MIXUP_ABSTRACT_STAFF[MIXUP_MIDI_OUTPUT_STREAM,
+                        MIXUP_MIDI_SECTION,
+                        MIXUP_MIDI_ITEM,
+                        MIXUP_MIDI_VOICE,
+                        MIXUP_MIDI_VOICES
+                        ]
 
 create {ANY}
-   make, connect_to
-
-feature {ANY}
-   connect_to (a_stream: BINARY_FILE_WRITE) is
-      require
-         a_stream.is_connected
-         not is_connected
-      do
-         stream := a_stream
-      ensure
-         stream = a_stream
-         is_connected
-      end
-
-   is_connected: BOOLEAN is
-      do
-         Result := stream /= Void and then stream.is_connected
-      end
-
-   disconnect is
-      do
-         stream.disconnect
-         stream := Void
-      end
+   make
 
 feature {}
-   make is
+   generate_lyrics (lyr: AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]; index: INTEGER; context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION) is
       do
       end
 
-   put_integer_8 (byte: INTEGER_32) is
+   new_voices (a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]): like root_voices is
       do
-         stream.put_byte(byte)
+         create Result.make(voice_ids, lyrics_gatherer)
       end
 
-   stream: BINARY_FILE_WRITE
-
-end -- class MIXUP_MIDI_FILE_WRITE
+end -- class MIXUP_MIDI_STAFF
