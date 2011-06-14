@@ -22,57 +22,9 @@ feature {ANY}
    type: FIXED_STRING
    parent: like Current
 
-   set_header (a_header: ABSTRACT_STRING) is
-      require
-         a_header /= Void
-      do
-         if parent = Void then
-            append_header(a_header)
-         else
-            parent.set_header(a_header)
-         end
-      end
-
-   set_body (a_body: ABSTRACT_STRING) is
-      require
-         a_body /= Void
-      do
-         append_body(a_body)
-      end
-
-   set_footer (a_footer: ABSTRACT_STRING) is
-      require
-         a_footer /= Void
-      do
-         if parent = Void then
-            append_footer(a_footer)
-         else
-            parent.set_footer(a_footer)
-         end
-      end
-
    generate (a_output: OUT_) is
       require
          a_output.is_connected
-      deferred
-      end
-
-feature {}
-   append_header (a_header: ABSTRACT_STRING) is
-      require
-         a_header /= Void
-      deferred
-      end
-
-   append_body (a_body: ABSTRACT_STRING) is
-      require
-         a_body /= Void
-      deferred
-      end
-
-   append_footer (a_footer: ABSTRACT_STRING) is
-      require
-         a_footer /= Void
       deferred
       end
 

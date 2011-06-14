@@ -24,6 +24,37 @@ create {ANY}
    make_full, make_body
 
 feature {ANY}
+   set_header (a_header: ABSTRACT_STRING) is
+      require
+         a_header /= Void
+      do
+         if header /= Void then
+            header.append(a_header)
+         else
+            check parent /= Void end
+            parent.set_header(a_header)
+         end
+      end
+
+   set_body (a_body: ABSTRACT_STRING) is
+      require
+         a_body /= Void
+      do
+         body.append(a_body)
+      end
+
+   set_footer (a_footer: ABSTRACT_STRING) is
+      require
+         a_footer /= Void
+      do
+         if footer /= Void then
+            footer.append(a_footer)
+         else
+            check parent /= Void end
+            parent.set_footer(a_footer)
+         end
+      end
+
    generate (a_output: MIXUP_LILYPOND_OUTPUT) is
       local
          stream: OUTPUT_STREAM
@@ -110,21 +141,6 @@ feature {}
          parent = Void
          header /= Void
          footer /= Void
-      end
-
-   append_header (a_header: ABSTRACT_STRING) is
-      do
-         header.append(a_header)
-      end
-
-   append_body (a_body: ABSTRACT_STRING) is
-      do
-         body.append(a_body)
-      end
-
-   append_footer (a_footer: ABSTRACT_STRING) is
-      do
-         footer.append(a_footer)
       end
 
 invariant
