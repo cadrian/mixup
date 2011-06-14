@@ -31,6 +31,8 @@ feature {}
    make (a_channel: like channel; a_pitch: like pitch; a_velocity: like velocity) is
       require
          a_channel.in_range(0, 15)
+         a_pitch >= 0
+         a_velocity >= 0
       do
          channel := a_channel
          pitch := a_pitch
@@ -46,5 +48,9 @@ feature {}
          stream.put_byte(pitch)
          stream.put_byte(velocity)
       end
+
+invariant
+   pitch >= 0
+   velocity >= 0
 
 end -- class MIXUP_MIDI_NOTE_OFF

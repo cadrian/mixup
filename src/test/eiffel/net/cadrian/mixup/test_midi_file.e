@@ -15,6 +15,7 @@
 class TEST_MIDI_FILE
 
 insert
+   MIXUP_MIDI_EVENTS
    MIXUP_MIDI_META_EVENTS
    MIXUP_MIDI_CONTROLLER_KNOBS
 
@@ -41,7 +42,7 @@ feature {}
 
    midi: MIXUP_MIDI_FILE is
       local
-         track1, track2, track3: MIXUP_MIDI_EVENTS
+         track1, track2, track3: MIXUP_MIDI_TRACK
       do
          -- NOTE! track names of the first track are SEQUENCE names
          -- so don't use that first track for music.
@@ -54,36 +55,36 @@ feature {}
          create track2.make
          track2.add_event(  0, track_name_event("melody"))
          track2.add_event(  0, instrument_name_event("Piano"))
-         track2.add_event(  0, create {MIXUP_MIDI_CONTROLLER}.make(0, bank_controller, 0))
-         track2.add_event(  0, create {MIXUP_MIDI_CONTROLLER}.make(0, channel_volume_controller, 64))
-         track2.add_event(  0, create {MIXUP_MIDI_PROGRAM_CHANGE}.make(0, 1)) -- bright piano
+         track2.add_event(  0, controller_event(0, bank_controller, 0))
+         track2.add_event(  0, controller_event(0, channel_volume_controller, 64))
+         track2.add_event(  0, program_change_event(0, 1)) -- bright piano
          track2.add_event(  0, lyrics_event("do "))
-         track2.add_event(  0, create {MIXUP_MIDI_CONTROLLER}.make(0, expression_controller, 32))
-         track2.add_event(  0, create {MIXUP_MIDI_NOTE_ON}.make(0, 60, 64))
-         track2.add_event(256, create {MIXUP_MIDI_NOTE_OFF}.make(0, 60, 64))
+         track2.add_event(  0, controller_event(0, expression_controller, 32))
+         track2.add_event(  0, note_event(0, True, 60, 64))
+         track2.add_event(256, note_event(0, False, 60, 64))
          track2.add_event(128, lyrics_event("mi "))
-         track2.add_event(128, create {MIXUP_MIDI_CONTROLLER}.make(0, expression_controller, 64))
-         track2.add_event(128, create {MIXUP_MIDI_NOTE_ON}.make(0, 64, 64))
-         track2.add_event(384, create {MIXUP_MIDI_NOTE_OFF}.make(0, 64, 64))
+         track2.add_event(128, controller_event(0, expression_controller, 64))
+         track2.add_event(128, note_event(0, True, 64, 64))
+         track2.add_event(384, note_event(0, False, 64, 64))
          track2.add_event(256, lyrics_event("sol%N"))
-         track2.add_event(256, create {MIXUP_MIDI_CONTROLLER}.make(0, expression_controller, 127))
-         track2.add_event(256, create {MIXUP_MIDI_NOTE_ON}.make(0, 67, 64))
-         track2.add_event(512, create {MIXUP_MIDI_NOTE_OFF}.make(0, 67, 64))
+         track2.add_event(256, controller_event(0, expression_controller, 127))
+         track2.add_event(256, note_event(0, True, 67, 64))
+         track2.add_event(512, note_event(0, False, 67, 64))
          track2.add_event(512, end_of_track_event)
 
          create track3.make
          track3.add_event(  0, track_name_event("continuo"))
          track3.add_event(  0, instrument_name_event("Cello"))
-         track3.add_event(  0, create {MIXUP_MIDI_CONTROLLER}.make(1, bank_controller, 0))
-         track3.add_event(  0, create {MIXUP_MIDI_CONTROLLER}.make(1, channel_volume_controller, 64))
-         track3.add_event(  0, create {MIXUP_MIDI_PROGRAM_CHANGE}.make(1, 42)) -- cello
-         track3.add_event(  0, create {MIXUP_MIDI_CONTROLLER}.make(1, expression_controller,  48))
-         track3.add_event(128, create {MIXUP_MIDI_CONTROLLER}.make(1, expression_controller,  64))
-         track3.add_event(256, create {MIXUP_MIDI_CONTROLLER}.make(1, expression_controller,  80))
-         track3.add_event(384, create {MIXUP_MIDI_CONTROLLER}.make(1, expression_controller,  96))
-         track3.add_event(512, create {MIXUP_MIDI_CONTROLLER}.make(1, expression_controller, 112))
-         track3.add_event(  0, create {MIXUP_MIDI_NOTE_ON}.make(1, 48, 64))
-         track3.add_event(512, create {MIXUP_MIDI_NOTE_OFF}.make(1, 48, 64))
+         track3.add_event(  0, controller_event(1, bank_controller, 0))
+         track3.add_event(  0, controller_event(1, channel_volume_controller, 64))
+         track3.add_event(  0, program_change_event(1, 42)) -- cello
+         track3.add_event(  0, controller_event(1, expression_controller,  48))
+         track3.add_event(128, controller_event(1, expression_controller,  64))
+         track3.add_event(256, controller_event(1, expression_controller,  80))
+         track3.add_event(384, controller_event(1, expression_controller,  96))
+         track3.add_event(512, controller_event(1, expression_controller, 112))
+         track3.add_event(  0, note_event(1, True, 48, 64))
+         track3.add_event(512, note_event(1, False, 48, 64))
          track3.add_event(512, end_of_track_event)
 
          create Result.make(192)

@@ -31,6 +31,8 @@ feature {}
    make (a_channel: like channel; a_key: like key; a_pressure: like pressure) is
       require
          a_channel.in_range(0, 15)
+         a_key >= 0
+         a_pressure >= 0
       do
          channel := a_channel
          key := a_key
@@ -46,5 +48,9 @@ feature {}
          stream.put_byte(key)
          stream.put_byte(pressure)
       end
+
+invariant
+   key >= 0
+   pressure >= 0
 
 end -- class MIXUP_MIDI_KEY_PRESSURE

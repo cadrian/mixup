@@ -61,6 +61,13 @@ feature {ANY}
          buffer_position := 0
       end
 
+   to_string: STRING is
+      do
+         Result := once ""
+         Result.clear_count
+         append_in(Result)
+      end
+
 feature {}
    make is
       do

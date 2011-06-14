@@ -30,6 +30,7 @@ feature {}
    make (a_channel: like channel; a_pressure: like pressure) is
       require
          a_channel.in_range(0, 15)
+         a_pressure >= 0
       do
          channel := a_channel
          pressure := a_pressure
@@ -42,5 +43,8 @@ feature {}
       do
          stream.put_byte(pressure)
       end
+
+invariant
+   pressure >= 0
 
 end -- class MIXUP_MIDI_CHANNEL_PRESSURE

@@ -144,8 +144,8 @@ feature {}
    test_track is
       local
          meta: MIXUP_MIDI_META_EVENTS
-         track: MIXUP_MIDI_EVENTS; track_ref: STRING
-         file:  MIXUP_MIDI_FILE;   file_ref:  STRING
+         track: MIXUP_MIDI_TRACK; track_ref: STRING
+         file:  MIXUP_MIDI_FILE;  file_ref:  STRING
          bfw: BINARY_FILE_WRITE
       do
          create track.make                                                   -- v_time   message

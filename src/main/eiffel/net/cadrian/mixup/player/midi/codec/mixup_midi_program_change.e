@@ -30,6 +30,7 @@ feature {}
    make (a_channel: like channel; a_patch: like patch) is
       require
          a_channel.in_range(0, 15)
+         a_patch >= 0
       do
          channel := a_channel
          patch := a_patch
@@ -42,5 +43,8 @@ feature {}
       do
          stream.put_byte(patch)
       end
+
+invariant
+   patch >= 0
 
 end -- class MIXUP_MIDI_PROGRAM_CHANGE

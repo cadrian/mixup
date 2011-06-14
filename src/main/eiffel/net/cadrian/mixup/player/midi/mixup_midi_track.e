@@ -12,7 +12,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_MIDI_EVENTS
+class MIXUP_MIDI_TRACK
 
 create {ANY}
    make
@@ -141,4 +141,4 @@ feature {}
 invariant
    events /= Void
 
-end -- class MIXUP_MIDI_EVENTS
+end -- class MIXUP_MIDI_TRACK
