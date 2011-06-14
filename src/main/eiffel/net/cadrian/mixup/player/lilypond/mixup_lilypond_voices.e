@@ -22,6 +22,8 @@ inherit
                          MIXUP_LILYPOND_VOICE]
       rename
          make as make_abstract
+      redefine
+         generate
       end
 
 create {ANY}

@@ -20,6 +20,15 @@ deferred class MIXUP_ABSTRACT_VOICES[OUT_ -> MIXUP_ABSTRACT_OUTPUT,
 inherit
    MIXUP_ABSTRACT_ITEM[OUT_, SEC_]
 
+feature {ANY}
+   generate (context: MIXUP_CONTEXT; section: SEC_) is
+      do
+         voices.do_all_items(agent (ctx: MIXUP_CONTEXT; sec: SEC_; a_voice: VOI_) is
+                             do
+                                a_voice.generate(ctx, sec)
+                             end(context, section, ?))
+      end
+
 feature {MIXUP_ABSTRACT_STAFF}
    map_in (map: DICTIONARY[VOI_, INTEGER]) is
       require
