@@ -14,6 +14,18 @@
 --
 class MIXUP_LILYPOND_STAFF
 
+inherit
+   MIXUP_ABSTRACT_STAFF[MIXUP_LILYPOND_OUTPUT,
+                        MIXUP_LILYPOND_SECTION,
+                        MIXUP_LILYPOND_ITEM,
+                        MIXUP_LILYPOND_VOICE,
+                        MIXUP_LILYPOND_VOICES]
+      rename
+         make as make_abstract
+      redefine
+         generate
+      end
+
 insert
    MIXUP_LILYPOND_CONTEXT
 
@@ -22,118 +34,8 @@ create {ANY}
 
 feature {ANY}
    instrument: MIXUP_LILYPOND_INSTRUMENT
-   id: INTEGER
 
 feature {MIXUP_LILYPOND_INSTRUMENT}
-   start_voices (a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]) is
-      local
-         map: AVL_DICTIONARY[MIXUP_LILYPOND_VOICE, INTEGER]
-         voices_: like root_voices
-         voice_: like voice
-         ref: like reference
-      do
-         if paths.is_empty then
-            ref := reference
-         else
-            voice_ := voice(a_voice_id)
-            if voice_.valid_reference then
-               ref := voice_.reference
-               log.info.put_line("Lilypond: Voice #" + a_voice_id.out + " (instrument " + instrument.name.out + "): giving reference " + ref.out + " to voices " + voice_ids.out)
-            else
-               log.warning.put_line("Lilypond: Voice #" + a_voice_id.out + " (instrument " + instrument.name.out + "): no valid reference")
-               ref := reference
-            end
-         end
-         create voices_.make(Current, voice_ids, ref, lyrics_gatherer)
-         create map.make
-         if root_voices = Void then
-            check
-               a_voice_id = 0
-               paths.is_empty
-            end
-            root_voices := voices_
-         else
-            check
-               a_voice_id /= 0
-               not paths.is_empty
-            end
-            map.copy(paths.top)
-         end
-         voices_.map_in(map)
-         voices.push(voices_)
-         paths.push(map)
-      end
-
-   end_voices (a_voice_id: INTEGER) is
-      local
-         voices_: like root_voices
-      do
-         voices_ := voices.top
-         voices.pop
-         paths.pop
-         if a_voice_id /= 0 then
-            check
-               not paths.is_empty
-            end
-            voice(a_voice_id).add_item(voices_)
-         end
-      end
-
-   set_dynamics (a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
-      do
-         voice(a_voice_id).set_dynamics(dynamics, position)
-      end
-
-   set_note (a_voice_id: INTEGER; time: INTEGER_64; note: MIXUP_NOTE) is
-      do
-         voice(a_voice_id).set_note(time, note)
-      end
-
-   next_bar (a_voice_id: INTEGER; style: ABSTRACT_STRING) is
-      do
-         voice(a_voice_id).next_bar(style)
-      end
-
-   start_beam (a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
-      do
-         voice(a_voice_id).start_beam(xuplet_numerator, xuplet_denominator, text)
-      end
-
-   end_beam (a_voice_id: INTEGER) is
-      do
-         voice(a_voice_id).end_beam
-      end
-
-   start_slur (a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
-      do
-         voice(a_voice_id).start_slur(xuplet_numerator, xuplet_denominator, text)
-      end
-
-   end_slur (a_voice_id: INTEGER) is
-      do
-         voice(a_voice_id).end_slur
-      end
-
-   start_phrasing_slur (a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
-      do
-         voice(a_voice_id).start_phrasing_slur(xuplet_numerator, xuplet_denominator, text)
-      end
-
-   end_phrasing_slur (a_voice_id: INTEGER) is
-      do
-         voice(a_voice_id).end_phrasing_slur
-      end
-
-   start_repeat (a_voice_id: INTEGER; volte: INTEGER_64) is
-      do
-         voice(a_voice_id).start_repeat(volte)
-      end
-
-   end_repeat (a_voice_id: INTEGER) is
-      do
-         voice(a_voice_id).end_repeat
-      end
-
    string_event (a_voice_id: INTEGER; a_string: FIXED_STRING) is
       require
          a_string /= Void
@@ -141,10 +43,8 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
          voice(a_voice_id).string_event(a_string)
       end
 
-feature {MIXUP_LILYPOND_INSTRUMENT}
+feature {MIXUP_ABSTRACT_INSTRUMENT}
    generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION; generate_names: BOOLEAN) is
-      require
-         section /= Void
       local
          iter_lyrics: ZIP[AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64], INTEGER]
          relative: FIXED_STRING
@@ -190,32 +90,7 @@ feature {}
          Result := "lilypond.relative".intern
       end
 
-   gather_lyrics (a_lyrics: TRAVERSABLE[MIXUP_SYLLABLE]; a_time: INTEGER_64) is
-      local
-         zip: ZIP[AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64], MIXUP_SYLLABLE]
-      do
-         ensure_lyrics_count(a_lyrics.count)
-         create zip.make(lyrics, a_lyrics)
-         zip.do_all(agent {AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]}.put({MIXUP_SYLLABLE}, a_time))
-      end
-
-   ensure_lyrics_count (a_count: INTEGER) is
-      do
-         from
-         until
-            lyrics.count >= a_count
-         loop
-            lyrics.add_last(create {AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]}.make)
-         end
-      ensure
-         lyrics.count >= a_count
-      end
-
    generate_lyrics (lyr: AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]; index: INTEGER; context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
-      require
-         lyr /= Void
-         index > 0
-         section /= Void
       do
          if index \\ 2 = 0 then
             section.set_body(once "\new AltLyrics = %"")
@@ -245,28 +120,21 @@ feature {}
       end
 
 feature {}
-   make (a_player: like player; a_instrument: like instrument; a_id: like id; a_voice_ids: TRAVERSABLE[INTEGER]; a_reference: like reference) is
+   make (a_instrument: like instrument; a_player: like player; a_id: like id; a_voice_ids: TRAVERSABLE[INTEGER]; a_reference: like reference) is
       require
-         a_player /= Void
          a_instrument /= Void
+         a_player /= Void
          a_id > 0
       do
+         make_abstract(a_id, a_voice_ids)
          reference := a_reference
-         player := a_player
          instrument := a_instrument
-         id := a_id
-         create lyrics.make(0)
-         lyrics_gatherer := agent gather_lyrics
-         create voices.make
-         create paths.make
+         player := a_player
       ensure
          reference = a_reference
-         player = a_player
          instrument = a_instrument
-         id = a_id
+         player = a_player
       end
-
-   player: MIXUP_LILYPOND_PLAYER
 
    context_name: FIXED_STRING is
       once
@@ -274,22 +142,30 @@ feature {}
       end
 
    reference: MIXUP_NOTE_HEAD
-   lyrics: FAST_ARRAY[AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]]
-   lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]
 
-   root_voices: MIXUP_LILYPOND_VOICES
-   voices: STACK[MIXUP_LILYPOND_VOICES]
-   paths: STACK[AVL_DICTIONARY[MIXUP_LILYPOND_VOICE, INTEGER]]
-
-   voice (a_voice_id: INTEGER): MIXUP_LILYPOND_VOICE is
-      require
-         not paths.is_empty
+   new_voices (a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]): like root_voices is
+      local
+         voice_: like voice
+         ref: like reference
       do
-         Result := paths.top.reference_at(a_voice_id)
+         if paths.is_empty then
+            ref := reference
+         else
+            voice_ := voice(a_voice_id)
+            if voice_.valid_reference then
+               ref := voice_.reference
+               log.info.put_line("Lilypond: Voice #" + a_voice_id.out + " (instrument " + instrument.name.out + "): giving reference " + ref.out + " to voices " + voice_ids.out)
+            else
+               log.warning.put_line("Lilypond: Voice #" + a_voice_id.out + " (instrument " + instrument.name.out + "): no valid reference")
+               ref := reference
+            end
+         end
+         create Result.make(voice_ids, ref, lyrics_gatherer)
       end
 
+   player: MIXUP_LILYPOND_PLAYER
+
 invariant
-   player /= Void
    instrument /= Void
    id > 0
    lyrics /= Void

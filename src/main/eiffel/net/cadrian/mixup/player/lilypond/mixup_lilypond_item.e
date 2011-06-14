@@ -14,6 +14,9 @@
 --
 deferred class MIXUP_LILYPOND_ITEM
 
+inherit
+   MIXUP_ABSTRACT_ITEM[MIXUP_LILYPOND_OUTPUT, MIXUP_LILYPOND_SECTION]
+
 feature {ANY}
    valid_reference: BOOLEAN is
       deferred
@@ -44,12 +47,6 @@ feature {ANY}
       require
          can_append
          a_string /= Void
-      deferred
-      end
-
-   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
-      require
-         section /= Void
       deferred
       end
 

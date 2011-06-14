@@ -12,7 +12,14 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-deferred class MIXUP_ABSTRACT_PLAYER[OUT_ -> MIXUP_ABSTRACT_OUTPUT, SEC_ -> MIXUP_ABSTRACT_SECTION[OUT_], INST_ -> MIXUP_ABSTRACT_INSTRUMENT[OUT_, SEC_]]
+deferred class MIXUP_ABSTRACT_PLAYER[OUT_ -> MIXUP_ABSTRACT_OUTPUT,
+                                     SEC_ -> MIXUP_ABSTRACT_SECTION[OUT_],
+                                     ITM_ -> MIXUP_ABSTRACT_ITEM[OUT_, SEC_],
+                                     VOI_ -> MIXUP_ABSTRACT_VOICE[OUT_, SEC_, ITM_],
+                                     VOS_ -> MIXUP_ABSTRACT_VOICES[OUT_, SEC_, ITM_, VOI_],
+                                     STAF_ -> MIXUP_ABSTRACT_STAFF[OUT_, SEC_, ITM_, VOI_, VOS_],
+                                     INST_ -> MIXUP_ABSTRACT_INSTRUMENT[OUT_, SEC_, ITM_, VOI_, VOS_, STAF_]
+                                     ]
 
 inherit
    MIXUP_CORE_PLAYER
@@ -160,7 +167,39 @@ feature {} -- section files management
          tfr: OUT_
       do
          -- agent below: should be {INST_} but SmartEiffel crashes (TODO fix SmartEiffel)
-         instruments.do_all_items(agent {MIXUP_ABSTRACT_INSTRUMENT[MIXUP_ABSTRACT_OUTPUT, MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT]]}.generate(current_section))
+         instruments.do_all_items(agent {MIXUP_ABSTRACT_INSTRUMENT[MIXUP_ABSTRACT_OUTPUT,
+                                                                   MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT],
+                                                                   MIXUP_ABSTRACT_ITEM[MIXUP_ABSTRACT_OUTPUT,
+                                                                                       MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT]],
+                                                                   MIXUP_ABSTRACT_VOICE[MIXUP_ABSTRACT_OUTPUT,
+                                                                                        MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT],
+                                                                                        MIXUP_ABSTRACT_ITEM[MIXUP_ABSTRACT_OUTPUT,
+                                                                                                            MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT]]],
+                                                                   MIXUP_ABSTRACT_VOICES[MIXUP_ABSTRACT_OUTPUT,
+                                                                                         MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT],
+                                                                                         MIXUP_ABSTRACT_ITEM[MIXUP_ABSTRACT_OUTPUT,
+                                                                                                             MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT]],
+                                                                                         MIXUP_ABSTRACT_VOICE[MIXUP_ABSTRACT_OUTPUT,
+                                                                                                              MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT],
+                                                                                                              MIXUP_ABSTRACT_ITEM[MIXUP_ABSTRACT_OUTPUT,
+                                                                                                                                  MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT]]]],
+                                                                   MIXUP_ABSTRACT_STAFF[MIXUP_ABSTRACT_OUTPUT,
+                                                                                        MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT],
+                                                                                        MIXUP_ABSTRACT_ITEM[MIXUP_ABSTRACT_OUTPUT,
+                                                                                                            MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT]],
+                                                                                        MIXUP_ABSTRACT_VOICE[MIXUP_ABSTRACT_OUTPUT,
+                                                                                                             MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT],
+                                                                                                             MIXUP_ABSTRACT_ITEM[MIXUP_ABSTRACT_OUTPUT,
+                                                                                                                                 MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT]]],
+                                                                                        MIXUP_ABSTRACT_VOICES[MIXUP_ABSTRACT_OUTPUT,
+                                                                                                              MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT],
+                                                                                                              MIXUP_ABSTRACT_ITEM[MIXUP_ABSTRACT_OUTPUT,
+                                                                                                                                  MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT]],
+                                                                                                              MIXUP_ABSTRACT_VOICE[MIXUP_ABSTRACT_OUTPUT,
+                                                                                                                                   MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT],
+                                                                                                                                   MIXUP_ABSTRACT_ITEM[MIXUP_ABSTRACT_OUTPUT,
+                                                                                                                                                       MIXUP_ABSTRACT_SECTION[MIXUP_ABSTRACT_OUTPUT]]]]]
+                                                                   ]}.generate(current_section))
          instruments.clear_count
 
          section := current_section

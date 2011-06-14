@@ -16,6 +16,13 @@ class MIXUP_LILYPOND_VOICES
 
 inherit
    MIXUP_LILYPOND_ITEM
+   MIXUP_ABSTRACT_VOICES[MIXUP_LILYPOND_OUTPUT,
+                         MIXUP_LILYPOND_SECTION,
+                         MIXUP_LILYPOND_ITEM,
+                         MIXUP_LILYPOND_VOICE]
+      rename
+         make as make_abstract
+      end
 
 create {ANY}
    make
@@ -109,38 +116,18 @@ feature {ANY}
          end
       end
 
-feature {MIXUP_LILYPOND_STAFF}
-   map_in (map: DICTIONARY[MIXUP_LILYPOND_VOICE, INTEGER]) is
-      require
-         map /= Void
-      do
-         voices.do_all(agent (a_voice: MIXUP_LILYPOND_VOICE; a_map: DICTIONARY[MIXUP_LILYPOND_VOICE, INTEGER]) is
-                          do
-                             a_map.put(a_voice, a_voice.id)
-                          end(?, map))
-      end
-
 feature {}
-   make (a_staff: MIXUP_LILYPOND_STAFF; a_ids: TRAVERSABLE[INTEGER]; a_reference: MIXUP_NOTE_HEAD; a_lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]) is
-      require
-         a_staff /= Void
-         a_lyrics_gatherer /= Void
-         not a_ids.is_empty
-         all_different: (create {AVL_SET[INTEGER]}.from_collection(a_ids)).count = a_ids.count
+   make (a_ids: TRAVERSABLE[INTEGER]; a_reference: like first_reference; a_lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]) is
       do
-         create voices.make
-         a_ids.do_all(agent (a_id: INTEGER; staff: MIXUP_LILYPOND_STAFF; a_reference: MIXUP_NOTE_HEAD; lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]) is
-                         do
-                            voices.add(create {MIXUP_LILYPOND_VOICE}.make(staff, a_id, a_reference, lyrics_gatherer), a_id)
-                         end(?, a_staff, a_reference, a_lyrics_gatherer))
-      ensure
-         voices.count = a_ids.count
-         a_ids.for_all(agent (a_id: INTEGER): BOOLEAN is do Result := voices.reference_at(a_id) /= Void and then voices.reference_at(a_id).id = a_id end)
+         first_reference := a_reference
+         make_abstract(a_ids, a_lyrics_gatherer)
       end
 
-   voices: AVL_DICTIONARY[MIXUP_LILYPOND_VOICE, INTEGER]
+   first_reference: MIXUP_NOTE_HEAD
 
-invariant
-   voices /= Void
+   new_voice (a_id: INTEGER; lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]): MIXUP_LILYPOND_VOICE is
+      do
+         create Result.make(a_id, first_reference, lyrics_gatherer)
+      end
 
 end -- class MIXUP_LILYPOND_VOICES

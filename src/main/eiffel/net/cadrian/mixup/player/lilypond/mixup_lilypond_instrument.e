@@ -15,7 +15,17 @@
 class MIXUP_LILYPOND_INSTRUMENT
 
 inherit
-   MIXUP_ABSTRACT_INSTRUMENT[MIXUP_LILYPOND_OUTPUT, MIXUP_LILYPOND_SECTION]
+   MIXUP_ABSTRACT_INSTRUMENT[MIXUP_LILYPOND_OUTPUT,
+                             MIXUP_LILYPOND_SECTION,
+                             MIXUP_LILYPOND_ITEM,
+                             MIXUP_LILYPOND_VOICE,
+                             MIXUP_LILYPOND_VOICES,
+                             MIXUP_LILYPOND_STAFF]
+      rename
+         make as make_abstract
+      redefine
+         generate
+      end
 
 insert
    MIXUP_LILYPOND_CONTEXT
@@ -23,75 +33,7 @@ insert
 create {ANY}
    make
 
-feature {ANY}
-   name: FIXED_STRING
-
 feature {MIXUP_ABSTRACT_PLAYER}
-   start_voices (a_staff_id, a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]) is
-      do
-         staffs.reference_at(a_staff_id).start_voices(a_voice_id, voice_ids)
-      end
-
-   end_voices (a_staff_id, a_voice_id: INTEGER) is
-      do
-         staffs.reference_at(a_staff_id).end_voices(a_voice_id)
-      end
-
-   set_dynamics (a_staff_id, a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
-      do
-         staffs.reference_at(a_staff_id).set_dynamics(a_voice_id, dynamics, position)
-      end
-
-   set_note (a_staff_id, a_voice_id: INTEGER; time: INTEGER_64; note: MIXUP_NOTE) is
-      do
-         staffs.reference_at(a_staff_id).set_note(a_voice_id, time, note)
-      end
-
-   next_bar (a_staff_id, a_voice_id: INTEGER; style: ABSTRACT_STRING) is
-      do
-         staffs.reference_at(a_staff_id).next_bar(a_voice_id, style)
-      end
-
-   start_beam (a_staff_id, a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
-      do
-         staffs.reference_at(a_staff_id).start_beam(a_voice_id, xuplet_numerator, xuplet_denominator, text)
-      end
-
-   end_beam (a_staff_id, a_voice_id: INTEGER) is
-      do
-         staffs.reference_at(a_staff_id).end_beam(a_voice_id)
-      end
-
-   start_slur (a_staff_id, a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
-      do
-         staffs.reference_at(a_staff_id).start_slur(a_voice_id, xuplet_numerator, xuplet_denominator, text)
-      end
-
-   end_slur (a_staff_id, a_voice_id: INTEGER) is
-      do
-         staffs.reference_at(a_staff_id).end_slur(a_voice_id)
-      end
-
-   start_phrasing_slur (a_staff_id, a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
-      do
-         staffs.reference_at(a_staff_id).start_phrasing_slur(a_voice_id, xuplet_numerator, xuplet_denominator, text)
-      end
-
-   end_phrasing_slur (a_staff_id, a_voice_id: INTEGER) is
-      do
-         staffs.reference_at(a_staff_id).end_phrasing_slur(a_voice_id)
-      end
-
-   start_repeat (a_staff_id, a_voice_id: INTEGER; volte: INTEGER_64) is
-      do
-         staffs.reference_at(a_staff_id).start_repeat(a_voice_id, volte)
-      end
-
-   end_repeat (a_staff_id, a_voice_id: INTEGER) is
-      do
-         staffs.reference_at(a_staff_id).end_repeat(a_voice_id)
-      end
-
    string_event (a_staff_id, a_voice_id: INTEGER; a_string: FIXED_STRING) is
       require
          a_string /= Void
@@ -120,7 +62,7 @@ feature {MIXUP_ABSTRACT_PLAYER}
             section.set_body(name)
             section.set_body(once "%" <<%N")
             generate_context(context, section, Current)
-            staffs.do_all(agent {MIXUP_LILYPOND_STAFF}.generate(context, section, False))
+            Precursor(section)
             section.set_body(once ">>%N")
          end
       end
@@ -133,14 +75,8 @@ feature {}
          a_name /= Void
          a_voice_staff_ids /= Void
       do
-         context := a_context
          player := a_player
-         name := a_name
-         create staffs.make
-         a_voice_staff_ids.do_all(agent (voice_ids: TRAVERSABLE[INTEGER]; id: INTEGER) is
-                                     do
-                                        staffs.add(create {MIXUP_LILYPOND_STAFF}.make(player, Current, id, voice_ids, absolute_reference), id);
-                                     end)
+         make_abstract(a_context, a_name, a_voice_staff_ids)
       ensure
          context = a_context
          player = a_player
@@ -149,10 +85,8 @@ feature {}
          a_voice_staff_ids.for_all(agent (a_voice_ids: TRAVERSABLE[INTEGER]; a_id: INTEGER): BOOLEAN is do Result := staffs.fast_has(a_id) and then staffs.fast_reference_at(a_id).id = a_id end)
       end
 
-   player: MIXUP_LILYPOND_PLAYER
-   staffs: AVL_DICTIONARY[MIXUP_LILYPOND_STAFF, INTEGER]
-   context: MIXUP_CONTEXT
    context_name: FIXED_STRING
+   player: MIXUP_LILYPOND_PLAYER
 
    absolute_reference: MIXUP_NOTE_HEAD is
       once
@@ -164,9 +98,9 @@ feature {}
          Result := "template.instrument_staff".intern
       end
 
-invariant
-   context /= Void
-   player /= Void
-   name /= Void
+   new_staff (voice_ids: TRAVERSABLE[INTEGER]; id: INTEGER): MIXUP_LILYPOND_STAFF is
+      do
+         create Result.make(Current, player, id, voice_ids, absolute_reference)
+      end
 
 end -- class MIXUP_LILYPOND_INSTRUMENT

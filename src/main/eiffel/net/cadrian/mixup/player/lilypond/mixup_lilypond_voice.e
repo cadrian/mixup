@@ -14,6 +14,14 @@
 --
 class MIXUP_LILYPOND_VOICE
 
+inherit
+   MIXUP_ABSTRACT_VOICE[MIXUP_LILYPOND_OUTPUT, MIXUP_LILYPOND_SECTION, MIXUP_LILYPOND_ITEM]
+      rename
+         make as make_abstract
+      redefine
+         generate
+      end
+
 insert
    LOGGING
 
@@ -21,9 +29,6 @@ create {ANY}
    make
 
 feature {ANY}
-   staff: MIXUP_LILYPOND_STAFF
-   id: INTEGER
-
    valid_reference: BOOLEAN is
       do
          Result := not reference.is_rest
@@ -70,10 +75,8 @@ feature {ANY}
          end
       end
 
-feature {MIXUP_LILYPOND_STAFF}
+feature {MIXUP_ABSTRACT_STAFF}
    add_item (a_item: MIXUP_LILYPOND_ITEM) is
-      require
-         a_item /= Void
       do
          if dynamics /= Void then
             a_item.append_first(dynamics)
@@ -179,45 +182,23 @@ feature {MIXUP_LILYPOND_STAFF}
          add_item(create {MIXUP_LILYPOND_STRING}.make(a_string))
       end
 
-feature {MIXUP_LILYPOND_VOICES}
+feature {MIXUP_ABSTRACT_VOICES}
    generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
-      require
-         section /= Void
       do
          items.do_all(agent {MIXUP_LILYPOND_ITEM}.generate(context, section))
          section.set_body(once "%N")
       end
 
 feature {}
-   make (a_staff: like staff; a_id: like id; a_reference: like reference; a_lyrics_gatherer: like lyrics_gatherer) is
-      require
-         a_staff /= Void
-         a_id > 0
-         a_lyrics_gatherer /= Void
+   make (a_id: like id; a_reference: like reference; a_lyrics_gatherer: like lyrics_gatherer) is
       do
-         staff := a_staff
-         id := a_id
+         make_abstract(a_id, a_lyrics_gatherer)
          if not a_reference.is_rest then
             reference := a_reference
          end
-         lyrics_gatherer := a_lyrics_gatherer
-         create items.make(0)
-      ensure
-         staff = a_staff
-         id = a_id
-         lyrics_gatherer = a_lyrics_gatherer
       end
-
-   items: FAST_ARRAY[MIXUP_LILYPOND_ITEM]
-   lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]
 
    dynamics: STRING
    slur: STRING
-
-invariant
-   staff /= Void
-   id > 0
-   lyrics_gatherer /= Void
-   items /= Void
 
 end -- class MIXUP_LILYPOND_VOICE
