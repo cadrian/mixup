@@ -125,6 +125,11 @@ feature {}
       do
          if current_section = Void then
             create Result.make_full(section, a_name)
+            Result.set_header(once "mixup")
+            Result.set_header(section)
+            Result.set_header(once " = %"")
+            Result.set_header(a_name)
+            Result.set_header(once "%"%N")
          else
             create Result.make_body(section, a_name, current_section)
          end
