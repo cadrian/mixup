@@ -21,14 +21,34 @@ inherit
                          MIXUP_MIDI_ITEM,
                          MIXUP_MIDI_VOICE
                          ]
+      rename
+         make as make_abstract
+      end
 
 create {ANY}
    make
 
 feature {}
+   make (a_ids: TRAVERSABLE[INTEGER]; a_lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]; a_track: like track; a_track_id: like track_id) is
+      require
+         a_track /= Void
+         a_track_id.in_range(0, 15)
+      do
+         track := a_track
+         track_id := a_track_id
+         make_abstract(a_ids, a_lyrics_gatherer)
+      end
+
    new_voice (a_id: INTEGER; lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]): MIXUP_MIDI_VOICE is
       do
-         create Result.make(a_id, lyrics_gatherer)
+         create Result.make(a_id, lyrics_gatherer, track, track_id)
       end
+
+   track: MIXUP_MIDI_TRACK
+   track_id: INTEGER
+
+invariant
+   track /= Void
+   track_id.in_range(0, 15)
 
 end -- class MIXUP_MIDI_VOICES

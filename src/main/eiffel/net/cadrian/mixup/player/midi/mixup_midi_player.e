@@ -57,13 +57,13 @@ feature {} -- section files management
 feature {}
    call_tool (filename: STRING) is
       do
-         -- nothing currently (will eventually call some midi synthetizer)
+         -- nothing currently (may eventually call some midi synthesizer)
       end
 
 feature {}
    new_instrument (a_name: FIXED_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]): MIXUP_MIDI_INSTRUMENT is
       do
-         create Result.make(context, a_name, voice_staff_ids)
+         create Result.make(context, a_name, voice_staff_ids, current_section.file, instruments.count)
       end
 
    new_section (section, a_name: ABSTRACT_STRING): MIXUP_MIDI_SECTION is

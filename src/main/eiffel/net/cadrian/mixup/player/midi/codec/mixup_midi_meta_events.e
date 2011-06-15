@@ -14,6 +14,9 @@
 --
 expanded class MIXUP_MIDI_META_EVENTS
 
+insert
+   LOGGING
+
 feature {ANY}
    end_of_track_event: MIXUP_MIDI_META_EVENT is
          -- must always be added, and added last, to each track
@@ -61,6 +64,28 @@ feature {ANY}
          a_text /= Void
       do
          create Result.make(marker_text, a_text)
+      end
+
+   tempo_setting_event (bpm: INTEGER): MIXUP_MIDI_META_EVENT is
+      require
+         bpm.in_range(1, 0x00003fff)
+      local
+         setting: STRING; mpq: INTEGER
+      do
+         setting := ""
+         mpq := bpm_to_mpq(bpm)
+         setting.extend(((mpq|>>16) & 0x000000ff).to_character)
+         setting.extend(((mpq|>> 8) & 0x000000ff).to_character)
+         setting.extend(((mpq     ) & 0x000000ff).to_character)
+         create Result.make(tempo_setting, setting)
+      end
+
+feature {}
+   bpm_to_mpq (bpm: INTEGER): INTEGER is
+         -- Bytes Per Minute => Microseconds Per Quarter
+      do
+         Result := 60000000 // bpm;
+         log.info.put_line(bpm.out + " BPM => " + Result.out + " MPQ")
       end
 
 feature {ANY}

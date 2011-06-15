@@ -44,6 +44,34 @@ feature {ANY}
          Result := tracks.count < 0x00007fff
       end
 
+   end_all_tracks is
+      local
+         times: AGGREGATOR[MIXUP_MIDI_TRACK, INTEGER_64]
+         max_time: INTEGER_64
+      do
+         max_time := times.map(tracks,
+                               agent (track: MIXUP_MIDI_TRACK; time: INTEGER_64): INTEGER_64 is
+                               do
+                                  if track.max_time > time then
+                                     Result := track.max_time
+                                  else
+                                     Result := time
+                                  end
+                               end,
+                               0
+                               )
+         tracks.do_all(agent (track: MIXUP_MIDI_TRACK; time: INTEGER_64) is
+                       local
+                          meta: MIXUP_MIDI_META_EVENTS
+                       do
+                          if track.can_add_event then
+                             track.add_event(time, meta.end_of_track_event)
+                          end
+                       end(?, max_time))
+      ensure
+         tracks.for_all(agent (track: MIXUP_MIDI_TRACK): BOOLEAN is do Result := not track.can_add_event end)
+      end
+
 feature {}
    make (a_division: like division) is
       require

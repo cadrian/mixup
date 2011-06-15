@@ -23,6 +23,8 @@ create {ANY}
 feature {ANY}
    generate (a_output: MIXUP_MIDI_OUTPUT_STREAM) is
       do
+         file.end_all_tracks
+         file.encode_to(a_output)
       end
 
    filename_in (a_filename: STRING) is
@@ -36,23 +38,20 @@ feature {ANY}
          end
       end
 
+   file: MIXUP_MIDI_FILE
+   track0: MIXUP_MIDI_TRACK
+
 feature {}
-   append_header (a_header: ABSTRACT_STRING) is
-      do
-      end
-
-   append_body (a_body: ABSTRACT_STRING) is
-      do
-      end
-
-   append_footer (a_footer: ABSTRACT_STRING) is
-      do
-      end
-
    make (section, a_name: ABSTRACT_STRING; a_parent: like parent) is
+      local
+         meta: MIXUP_MIDI_META_EVENTS
       do
          name := a_name.intern
          parent := a_parent
+         create file.make(768)
+         create track0.make
+         file.add_track(track0)
+         track0.add_event(0, meta.tempo_setting_event(90))
       end
 
 end -- class MIXUP_MIDI_SECTION

@@ -27,17 +27,20 @@ feature {ANY}
       require
          can_add_event
          a_event /= Void
+         a_event = end_of_track implies a_time >= max_time
       local
+         actual_time: INTEGER_64
          events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]
       do
-         events_at_time := events.fast_reference_at(a_time)
+         actual_time := 12 * a_time
+         events_at_time := events.fast_reference_at(actual_time)
          if events_at_time = Void then
             create events_at_time.with_capacity(4)
-            events.add(events_at_time, a_time)
+            events.add(events_at_time, actual_time)
          end
          events_at_time.add_last(a_event)
       ensure
-         events.fast_reference_at(a_time).last = a_event
+         events.fast_reference_at(12*a_time).last = a_event
       end
 
    can_encode: BOOLEAN is
@@ -82,6 +85,13 @@ feature {ANY}
             encode_events(events.item(i), a_stream, (time - current_time).to_integer_32)
             current_time := time
             i := i + 1
+         end
+      end
+
+   max_time: INTEGER_64 is
+      do
+         if not events.is_empty then
+            Result := events.key(events.upper) // 12
          end
       end
 

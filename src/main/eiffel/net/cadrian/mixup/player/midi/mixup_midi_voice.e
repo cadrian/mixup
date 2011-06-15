@@ -19,6 +19,9 @@ inherit
                         MIXUP_MIDI_SECTION,
                         MIXUP_MIDI_ITEM
                         ]
+      rename
+         make as make_abstract
+      end
 
 create {ANY}
    make
@@ -34,7 +37,11 @@ feature {MIXUP_ABSTRACT_STAFF}
       end
 
    set_note (a_time: INTEGER_64; a_note: MIXUP_NOTE) is
+      local
+         note: MIXUP_MIDI_NOTE
       do
+         create note.make(a_time, a_note, track, track_id)
+         add_item(note)
       end
 
    next_bar (style: ABSTRACT_STRING) is
@@ -72,5 +79,23 @@ feature {MIXUP_ABSTRACT_STAFF}
    end_repeat is
       do
       end
+
+feature {} -- TODO: remove the lyrics_gatherer which is lilypond-specific
+   make (a_id: like id; a_lyrics_gatherer: like lyrics_gatherer; a_track: like track; a_track_id: like track_id) is
+      require
+         a_track /= Void
+         a_track_id.in_range(0, 15)
+      do
+         track := a_track
+         track_id := a_track_id
+         make_abstract(a_id, a_lyrics_gatherer)
+      end
+
+   track: MIXUP_MIDI_TRACK
+   track_id: INTEGER
+
+invariant
+   track /= Void
+   track_id.in_range(0, 15)
 
 end -- class MIXUP_MIDI_VOICE

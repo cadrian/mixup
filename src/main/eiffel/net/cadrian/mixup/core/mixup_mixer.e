@@ -91,6 +91,7 @@ feature {}
          a_context /= Void
          a_player /= Void
       do
+         log.info.put_line("Now playing " + a_context.name.out + " using " + a_player.name.out)
          (create {MIXUP_MIXER_CONDUCTOR}.make(a_context, a_player, a_context.bar_number)).play
       end
 
