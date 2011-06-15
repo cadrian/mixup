@@ -18,9 +18,13 @@ status() {
 }
 
 status_failures_count() {
-    ls -1 $OUTDIR/log/log-* | tail -n 5 | while read log; do
-        $(status $log) || echo failed
-    done | wc -l
+    ls -1 $OUTDIR/log/log-* | tail -n 6 | while read log; do
+        if $(status $log); then
+            echo success
+        else
+            echo failure
+        fi
+    done | awk 'BEGIN { status=""; count=0; trn=0 } {s=$0; if (s == "failure") { if (status != "" && s != status) trn++; count+=(6-NR); } status=s } END {printf("%d\n", (count+trn+2)/3)}'
 }
 
 status_icon() {
