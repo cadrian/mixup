@@ -17,7 +17,7 @@ status() {
     fi
 }
 
-status_failures_count() {
+status_failures_weather() {
     ls -1 $OUTDIR/log/log-* | tail -n 6 | while read log; do
         if $(status $log); then
             echo success
@@ -27,8 +27,18 @@ status_failures_count() {
     done | awk 'BEGIN { status=""; count=0; trn=0 } {s=$0; if (s == "failure") { if (status != "" && s != status) trn++; count+=(6-NR); } status=s } END {printf("%d\n", (count+trn+2)/3)}'
 }
 
+status_failures_count() {
+    ls -1 $OUTDIR/log/log-* | tail -n 6 | while read log; do
+        if $(status $log); then
+            echo success
+        else
+            echo failure
+        fi
+    done | wc -l
+}
+
 status_icon() {
-    case $(status_failures_count) in
+    case $(status_failures_weather) in
         0)
             echo ci/weather-clear.png
             ;;
