@@ -28,12 +28,8 @@ status_failures_weather() {
 }
 
 status_failures_count() {
-    ls -1 $OUTDIR/log/log-* | tail -n 6 | while read log; do
-        if $(status $log); then
-            echo success
-        else
-            echo failure
-        fi
+    ls -1 $OUTDIR/log/log-* | tail -n 5 | while read log; do
+        $(status $log) || echo failure
     done | wc -l
 }
 
