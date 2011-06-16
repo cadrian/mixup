@@ -19,6 +19,16 @@ create {ANY}
 
 feature {ANY}
    division: INTEGER_16
+         -- ticks per quarter
+
+   set_division (a_division: like division) is
+      require
+         a_division > 0
+      do
+         division := a_division
+      ensure
+         division = a_division
+      end
 
    add_track (a_track: MIXUP_MIDI_TRACK) is
       require
@@ -77,7 +87,7 @@ feature {}
       require
          a_division > 0
       do
-         division := a_division
+         set_division(a_division)
          create tracks.make(0)
       ensure
          division = a_division

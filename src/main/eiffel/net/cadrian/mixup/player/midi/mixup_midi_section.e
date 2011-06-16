@@ -17,6 +17,9 @@ class MIXUP_MIDI_SECTION
 inherit
    MIXUP_ABSTRACT_SECTION[MIXUP_MIDI_OUTPUT_STREAM]
 
+insert
+   MIXUP_NOTE_DURATIONS
+
 create {ANY}
    make
 
@@ -38,20 +41,37 @@ feature {ANY}
          end
       end
 
-   file: MIXUP_MIDI_FILE
-   track0: MIXUP_MIDI_TRACK
+   precision: INTEGER_8
+
+   set_precision (a_precision: like precision) is
+      require
+         a_precision > 0
+         (duration_4 * precision).fit_integer_16
+      do
+         precision := a_precision
+         file.set_division((duration_4 * precision).to_integer_16)
+      ensure
+         precision = a_precision
+      end
+
+feature {ANY}
+   new_instrument (context: MIXUP_CONTEXT; a_name: FIXED_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]; track_id: INTEGER): MIXUP_MIDI_INSTRUMENT is
+      do
+         create Result.make(context, a_name, voice_staff_ids, file, track_id)
+      end
 
 feature {}
    make (section, a_name: ABSTRACT_STRING; a_parent: like parent) is
-      local
-         meta: MIXUP_MIDI_META_EVENTS
       do
          name := a_name.intern
          parent := a_parent
          create file.make(768)
+         set_precision(12)
          create track0.make
          file.add_track(track0)
-         track0.add_event(0, meta.tempo_setting_event(90))
       end
+
+   file: MIXUP_MIDI_FILE
+   track0: MIXUP_MIDI_TRACK
 
 end -- class MIXUP_MIDI_SECTION

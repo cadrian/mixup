@@ -63,7 +63,7 @@ feature {}
 feature {}
    new_instrument (a_name: FIXED_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]): MIXUP_MIDI_INSTRUMENT is
       do
-         create Result.make(context, a_name, voice_staff_ids, current_section.file, instruments.count)
+         Result := current_section.new_instrument(context, a_name, voice_staff_ids, instruments.count)
       end
 
    new_section (section, a_name: ABSTRACT_STRING): MIXUP_MIDI_SECTION is

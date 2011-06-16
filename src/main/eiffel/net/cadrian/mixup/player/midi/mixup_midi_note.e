@@ -27,6 +27,7 @@ create {ANY}
 feature {ANY}
    generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION) is
       do
+         precision := section.precision
          note.accept(Current)
       end
 
@@ -38,8 +39,8 @@ feature {MIXUP_CHORD}
                            events: MIXUP_MIDI_EVENTS
                         do
                            if not head.is_rest then
-                              track.add_event(time           , events.note_event(track_id.to_integer_8, True , pitch(head), 64))
-                              track.add_event(time + duration, events.note_event(track_id.to_integer_8, False, pitch(head), 64))
+                              track.add_event(precision *  time            , events.note_event(track_id.to_integer_8, True , pitch(head), 64))
+                              track.add_event(precision * (time + duration), events.note_event(track_id.to_integer_8, False, pitch(head), 64))
                            end
                         end(?, a_chord.duration))
       end
@@ -54,9 +55,9 @@ feature {MIXUP_LYRICS}
                          do
                             log.info.put_line("SYLLABLE: %"" + syl.syllable + "%" at time " + time.out)
                             if syl.in_word then
-                               track.add_event(time, events.lyrics_event(syl.syllable))
+                               track.add_event(precision * time, events.lyrics_event(syl.syllable))
                             else
-                               track.add_event(time, events.lyrics_event(" " + syl.syllable))
+                               track.add_event(precision * time, events.lyrics_event(" " + syl.syllable))
                             end
                          end)
       end
@@ -79,6 +80,8 @@ feature {}
 
    track: MIXUP_MIDI_TRACK
    track_id: INTEGER
+
+   precision: INTEGER
 
    pitch (head: MIXUP_NOTE_HEAD): INTEGER_8 is
       require
