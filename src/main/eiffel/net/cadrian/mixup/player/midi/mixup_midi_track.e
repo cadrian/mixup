@@ -32,7 +32,7 @@ feature {ANY}
          actual_time: INTEGER_64
          events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]
       do
-         actual_time := 12 * a_time
+         actual_time := a_time
          events_at_time := events.fast_reference_at(actual_time)
          if events_at_time = Void then
             create events_at_time.with_capacity(4)
@@ -40,7 +40,7 @@ feature {ANY}
          end
          events_at_time.add_last(a_event)
       ensure
-         events.fast_reference_at(12*a_time).last = a_event
+         events.fast_reference_at(a_time).last = a_event
       end
 
    can_encode: BOOLEAN is
@@ -91,7 +91,7 @@ feature {ANY}
    max_time: INTEGER_64 is
       do
          if not events.is_empty then
-            Result := events.key(events.upper) // 12
+            Result := events.key(events.upper)
          end
       end
 
