@@ -97,19 +97,19 @@ feature {} -- native functions
 
    set_midi_tempo (a_source: MIXUP_SOURCE; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_MIDI_SEND_META_EVENTS_FACTORY is
       local
-         tempo: MIXUP_INTEGER
+         bpm: MIXUP_INTEGER
       do
          if args.count /= 1 then
             error_at(a_source, "MIDI: bad argument count")
-         elseif not (tempo ?:= args.first) then
+         elseif not (bpm ?:= args.first) then
             error_at(args.first.source, "MIDI: bad argument type")
          else
-            tempo ::= args.first
-            if not tempo.value.in_range(0, 0x00003fff) then
-               error_at(tempo.source, "MIDI: bad argument value, expected 0..16383 but got " + tempo.value.out)
+            bpm ::= args.first
+            if not bpm.value.in_range(0, 0x00003fff) then
+               error_at(bpm.source, "MIDI: bad argument value, expected 0..16383 but got " + bpm.value.out)
             else
                create Result.make(a_source)
-               Result.add_event(tempo_setting_event(tempo.value.to_integer_32))
+               Result.add_event(tempo_setting_event(bpm.value.to_integer_32))
             end
          end
       end
