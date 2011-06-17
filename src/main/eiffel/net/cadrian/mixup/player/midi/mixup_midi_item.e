@@ -19,4 +19,7 @@ inherit
                        MIXUP_MIDI_SECTION
                        ]
 
+feature {}
+   time: INTEGER_64
+
 end -- class MIXUP_MIDI_ITEM

@@ -24,6 +24,10 @@ inherit
                          MIXUP_MIDI_INSTRUMENT
                          ]
 
+insert
+   MIXUP_MIDI_CONTROLLER_KNOBS
+   MIXUP_MIDI_EVENTS
+
 create {ANY}
    make, connect_to
 
@@ -37,10 +41,45 @@ feature {ANY}
       do
          inspect
             fn_name
-         when "set_header" then
-            -- ignored
+         when "midi_instrument" then
+            Result := set_midi_instrument(a_call_source, a_context, args)
          else
-            warning_at(a_call_source, "MIDI: unknown native function: " + fn_name)
+            info_at(a_call_source, "MIDI: ignored unknown native function: " + fn_name)
+         end
+      end
+
+   play_send_events (a_data: MIXUP_EVENT_DATA; a_events: HOARD[FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]]) is
+         -- MIDI-specific
+      require
+         a_events /= Void
+      do
+         log.info.put_line("MIDI: send events")
+         instruments.reference_at(a_data.instrument).send_events(a_data.start_time, a_data.staff_id, a_data.voice_id, a_events)
+      end
+
+feature {} -- native functions
+   set_midi_instrument (a_source: MIXUP_SOURCE; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_MIDI_SEND_EVENTS_FACTORY is
+      local
+         bank, patch: MIXUP_INTEGER
+      do
+         if args.count /= 2 then
+            error_at(a_source, "MIDI: bad argument count")
+         elseif not (bank ?:= args.first) then
+            error_at(args.first.source, "MIDI: bad argument type")
+         elseif not (patch ?:= args.last) then
+            error_at(args.last.source, "MIDI: bad argument type")
+         else
+            bank ::= args.first
+            patch ::= args.last
+            if not bank.value.in_range(0, 127) then
+               error_at(bank.source, "MIDI: bad argument value, expected 0..127 but got " + bank.value.out)
+            elseif not patch.value.in_range(0, 127) then
+               error_at(patch.source, "MIDI: bad argument value, expected 0..127 but got " + patch.value.out)
+            else
+               create Result.make(a_source)
+               Result.add_event(agent controller_event(?, bank_controller, bank.value.to_integer_8))
+               Result.add_event(agent program_change_event(?, patch.value.to_integer_8))
+            end
          end
       end
 

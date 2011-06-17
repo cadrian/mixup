@@ -6,6 +6,7 @@ instrument lied
     music
         <<
             \set_clef(trebble) \set_key(bes_mol) \set_time("12/8")
+            \midi_instrument(cello)
             R1. | R1. |
             :p:
             f4. bes4 bes8 aes4.~ aes4 aes8 |

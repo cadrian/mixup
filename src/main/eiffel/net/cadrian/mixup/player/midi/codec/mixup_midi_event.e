@@ -33,6 +33,15 @@ feature {ANY}
 
    channel: INTEGER_8
 
+   set_channel (a_channel: like channel) is
+      require
+         a_channel.in_range(0, 15)
+      do
+         channel := a_channel
+      ensure
+         channel = a_channel
+      end
+
 feature {}
    put_args (stream: MIXUP_MIDI_OUTPUT_STREAM) is
       require

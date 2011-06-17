@@ -80,6 +80,14 @@ feature {MIXUP_ABSTRACT_STAFF}
       do
       end
 
+feature {MIXUP_MIDI_STAFF}
+   send_events (a_time: INTEGER_64; a_events: HOARD[FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]]) is
+      require
+         a_events /= Void
+      do
+         add_item(create {MIXUP_MIDI_EVENTS_TO_SEND}.make(a_time, a_events, track, track_id))
+      end
+
 feature {} -- TODO: remove the lyrics_gatherer which is lilypond-specific
    make (a_id: like id; a_lyrics_gatherer: like lyrics_gatherer; a_track: like track; a_track_id: like track_id) is
       require

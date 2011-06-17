@@ -28,6 +28,14 @@ inherit
 create {ANY}
    make
 
+feature {MIXUP_MIDI_INSTRUMENT}
+   send_events (a_time: INTEGER_64; a_voice_id: INTEGER; a_events: HOARD[FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]]) is
+      require
+         a_events /= Void
+      do
+         voice(a_voice_id).send_events(a_time, a_events)
+      end
+
 feature {}
    generate_lyrics (lyr: AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]; index: INTEGER; context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION) is
       do

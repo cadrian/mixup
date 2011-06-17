@@ -29,6 +29,7 @@ instrument piano
     music
         << -- the right hand staff
             \set_clef(trebble) \set_key(bes_mol) \set_time("12/8")
+            \midi_instrument(bright_acoustic)
             :p:
             {
                 \pattern_RH_bes  \pattern_RH_bes  |

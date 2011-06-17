@@ -75,7 +75,6 @@ feature {}
          track_id := a_track_id
       end
 
-   time: INTEGER_64
    note: MIXUP_NOTE
 
    track: MIXUP_MIDI_TRACK

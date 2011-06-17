@@ -2,6 +2,12 @@ module midi
 
 set hook.at_load := function native "playback_midi"
 
+set midi_instrument := function (bank, patch) native "midi_instrument"
+
+
+
+
+
 -- bank 0
 
 export acoustic_grand        := [0,   0]

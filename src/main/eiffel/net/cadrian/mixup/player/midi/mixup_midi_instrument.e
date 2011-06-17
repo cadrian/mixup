@@ -32,33 +32,25 @@ insert
 create {ANY}
    make
 
+feature {MIXUP_MIDI_PLAYER}
+   send_events (a_time: INTEGER_64; a_staff_id, a_voice_id: INTEGER; a_events: HOARD[FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]]) is
+      require
+         a_events /= Void
+      do
+         staffs.reference_at(a_staff_id).send_events(a_time, a_voice_id, a_events)
+      end
+
 feature {}
    make (a_context: like context; a_name: like name; a_voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]; file: MIXUP_MIDI_FILE; a_track_id: like track_id) is
       require
          file /= Void
          a_track_id.in_range(0, 15)
-      local
-         events: MIXUP_MIDI_EVENTS
-         knobs: MIXUP_MIDI_CONTROLLER_KNOBS
       do
+         log.info.put_line("MIDI instrument #" + a_track_id.out + ": " + a_name.out)
          create track.make
          track_id := a_track_id
          file.add_track(track)
          make_abstract(a_context, a_name, a_voice_staff_ids)
-
-         log.info.put_line("MIDI instrument #" + a_track_id.out + ": " + a_name.out)
-
-         track.add_event(0, events.program_change_event(track_id.to_integer_8, 0))
-         track.add_event(0, events.controller_event(track_id.to_integer_8, knobs.channel_volume_controller, 64))
-         track.add_event(0, events.controller_event(track_id.to_integer_8, knobs.expression_controller, 64))
-
-         debug
-            if track_id = 0 then
-               track.add_event(0, events.program_change_event(track_id.to_integer_8, 42))
-               track.add_event(0, events.controller_event(track_id.to_integer_8, knobs.channel_volume_controller, 64))
-               track.add_event(0, events.controller_event(track_id.to_integer_8, knobs.expression_controller, 96))
-            end
-         end
       end
 
    new_staff (voice_ids: TRAVERSABLE[INTEGER]; id: INTEGER): MIXUP_MIDI_STAFF is
