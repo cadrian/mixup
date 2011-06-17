@@ -27,6 +27,7 @@ inherit
 insert
    MIXUP_MIDI_CONTROLLER_KNOBS
    MIXUP_MIDI_EVENTS
+   MIXUP_MIDI_META_EVENTS
 
 create {ANY}
    make, connect_to
@@ -43,6 +44,8 @@ feature {ANY}
             fn_name
          when "midi_instrument" then
             Result := set_midi_instrument(a_call_source, a_context, args)
+         when "midi_tempo" then
+            Result := set_midi_tempo(a_call_source, a_context, args)
          else
             info_at(a_call_source, "MIDI: ignored unknown native function: " + fn_name)
          end
@@ -55,6 +58,15 @@ feature {ANY}
       do
          log.info.put_line("MIDI: send events")
          instruments.reference_at(a_data.instrument).send_events(a_data.start_time, a_data.staff_id, a_data.voice_id, a_events)
+      end
+
+   play_send_meta_events (a_data: MIXUP_EVENT_DATA; a_events: HOARD[MIXUP_MIDI_META_EVENT]) is
+         -- MIDI-specific
+      require
+         a_events /= Void
+      do
+         log.info.put_line("MIDI: send meta events")
+         current_section.send_meta_events(a_data.start_time, a_events)
       end
 
 feature {} -- native functions
@@ -79,6 +91,25 @@ feature {} -- native functions
                create Result.make(a_source)
                Result.add_event(agent controller_event(?, bank_controller, bank.value.to_integer_8))
                Result.add_event(agent program_change_event(?, patch.value.to_integer_8))
+            end
+         end
+      end
+
+   set_midi_tempo (a_source: MIXUP_SOURCE; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_MIDI_SEND_META_EVENTS_FACTORY is
+      local
+         tempo: MIXUP_INTEGER
+      do
+         if args.count /= 1 then
+            error_at(a_source, "MIDI: bad argument count")
+         elseif not (tempo ?:= args.first) then
+            error_at(args.first.source, "MIDI: bad argument type")
+         else
+            tempo ::= args.first
+            if not tempo.value.in_range(0, 0x00003fff) then
+               error_at(tempo.source, "MIDI: bad argument value, expected 0..16383 but got " + tempo.value.out)
+            else
+               create Result.make(a_source)
+               Result.add_event(tempo_setting_event(tempo.value.to_integer_32))
             end
          end
       end

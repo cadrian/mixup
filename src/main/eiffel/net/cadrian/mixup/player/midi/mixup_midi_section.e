@@ -54,6 +54,13 @@ feature {ANY}
          precision = a_precision
       end
 
+   send_meta_events (a_time: INTEGER_64; a_events: HOARD[MIXUP_MIDI_META_EVENT]) is
+      require
+         a_events /= Void
+      do
+         a_events.do_all(agent track0.add_event(a_time, ?))
+      end
+
 feature {ANY}
    new_instrument (context: MIXUP_CONTEXT; a_name: FIXED_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]; track_id: INTEGER): MIXUP_MIDI_INSTRUMENT is
       do
