@@ -33,7 +33,7 @@ insert
 create {ANY}
    make
 
-feature {MIXUP_ABSTRACT_PLAYER}
+feature {MIXUP_LILYPOND_PLAYER}
    string_event (a_staff_id, a_voice_id: INTEGER; a_string: FIXED_STRING) is
       require
          a_string /= Void

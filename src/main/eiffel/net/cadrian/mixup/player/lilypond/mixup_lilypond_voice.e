@@ -175,6 +175,7 @@ feature {MIXUP_ABSTRACT_STAFF}
       do
       end
 
+feature {MIXUP_LILYPOND_STAFF}
    string_event (a_string: FIXED_STRING) is
       require
          a_string /= Void
