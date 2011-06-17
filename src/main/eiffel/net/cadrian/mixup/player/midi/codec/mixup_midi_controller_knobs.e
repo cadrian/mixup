@@ -74,22 +74,22 @@ feature {ANY} -- coarse controllers (most common)
          create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(13, 0)
       end
 
-   general_porpose_1_controller: MIXUP_MIDI_CONTROLLER_KNOB is
+   general_purpose_1_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
          create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(16, 0)
       end
 
-   general_porpose_2_controller: MIXUP_MIDI_CONTROLLER_KNOB is
+   general_purpose_2_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
          create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(17, 0)
       end
 
-   general_porpose_3_controller: MIXUP_MIDI_CONTROLLER_KNOB is
+   general_purpose_3_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
          create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(18, 0)
       end
 
-   general_porpose_4_controller: MIXUP_MIDI_CONTROLLER_KNOB is
+   general_purpose_4_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
          create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(19, 0)
       end
@@ -175,22 +175,22 @@ feature {ANY} -- fine controllers (rarer)
          create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(13, 45)
       end
 
-   fine_general_porpose_1_controller: MIXUP_MIDI_CONTROLLER_KNOB is
+   fine_general_purpose_1_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
          create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(16, 48)
       end
 
-   fine_general_porpose_2_controller: MIXUP_MIDI_CONTROLLER_KNOB is
+   fine_general_purpose_2_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
          create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(17, 49)
       end
 
-   fine_general_porpose_3_controller: MIXUP_MIDI_CONTROLLER_KNOB is
+   fine_general_purpose_3_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
          create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(18, 50)
       end
 
-   fine_general_porpose_4_controller: MIXUP_MIDI_CONTROLLER_KNOB is
+   fine_general_purpose_4_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
          create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(19, 51)
       end
