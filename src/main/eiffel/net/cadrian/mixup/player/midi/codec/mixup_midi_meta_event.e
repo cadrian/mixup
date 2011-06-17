@@ -38,7 +38,7 @@ feature {ANY}
 
    encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM) is
       local
-         i: INTEGER
+         i, byte: INTEGER
       do
          stream.put_byte(0xff)
          stream.put_byte(code)
@@ -48,7 +48,12 @@ feature {ANY}
          until
             i > data.upper
          loop
-            stream.put_byte(data.item(i).code.to_integer_8)
+            byte := data.item(i).code
+            if byte > 127 then
+               stream.put_byte((byte | 0xff00).to_integer_8)
+            else
+               stream.put_byte(byte.to_integer_8)
+            end
             i := i + 1
          end
       end
