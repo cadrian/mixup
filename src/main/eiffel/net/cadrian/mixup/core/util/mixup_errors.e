@@ -20,6 +20,14 @@ insert
 feature {ANY}
    source: MIXUP_SOURCE
 
+   info (message: ABSTRACT_STRING) is
+      require
+         message /= Void
+         source /= Void
+      do
+         info_at(source, message)
+      end
+
    warning (message: ABSTRACT_STRING) is
       require
          message /= Void
@@ -45,6 +53,15 @@ feature {ANY}
       end
 
 feature {ANY}
+   info_at (a_source: like source; message: ABSTRACT_STRING) is
+      require
+         message /= Void
+         a_source /= Void
+      do
+         log.info.put_line(error_header(a_source) + message)
+         a_source.display(log.info)
+      end
+
    warning_at (a_source: like source; message: ABSTRACT_STRING) is
       require
          message /= Void
