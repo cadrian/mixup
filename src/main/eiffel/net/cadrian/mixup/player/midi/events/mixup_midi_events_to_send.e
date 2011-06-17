@@ -23,10 +23,10 @@ create {ANY}
 feature {ANY}
    generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION) is
       do
-         events.do_all(agent (a_event: FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]) is
+         events.do_all(agent (a_time: INTEGER_64; a_event: FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]) is
                        do
-                          track.add_event(time, a_event.item([track_id.to_integer_8]))
-                       end)
+                          track.add_event(a_time, a_event.item([track_id.to_integer_8]))
+                       end(time * section.precision, ?))
       end
 
 feature {}

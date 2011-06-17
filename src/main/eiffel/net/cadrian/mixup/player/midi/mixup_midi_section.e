@@ -58,7 +58,7 @@ feature {ANY}
       require
          a_events /= Void
       do
-         a_events.do_all(agent track0.add_event(a_time, ?))
+         a_events.do_all(agent track0.add_event(a_time * precision, ?))
       end
 
 feature {ANY}
