@@ -44,4 +44,11 @@ feature {ANY}
          crash
       end
 
+   append_to (values: COLLECTION[MIXUP_VALUE]) is
+      require
+         values /= Void
+      do
+         values.add_last(Current)
+      end
+
 end -- class MIXUP_VALUE

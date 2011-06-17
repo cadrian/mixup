@@ -75,8 +75,10 @@ feature {MIXUP_IDENTIFIER}
                arg := args.item(i).eval(a_context, a_player, True)
                if arg = Void then
                   sedb_breakpoint
+                  actual_args.add_last(Void)
+               else
+                  arg.append_to(actual_args)
                end
-               actual_args.add_last(arg)
                i := i + 1
             end
          end

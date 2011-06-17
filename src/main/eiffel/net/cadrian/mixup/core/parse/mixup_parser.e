@@ -71,7 +71,7 @@ feature {MIXUP_LIST_NODE_IMPL}
       do
          inspect
             node.name
-         when "Expression*" then
+         when "Expression*", "Value*" then
             build_expression_list(node)
          when "Voice+" then
             build_voices(node)
@@ -376,7 +376,7 @@ feature {}
       local
          i: INTEGER
       do
-         last_expressions.with_capacity((expression_list.count + 1) // 2)
+         last_expressions.with_capacity(expression_list.count)
          from
             i := expression_list.lower
          until

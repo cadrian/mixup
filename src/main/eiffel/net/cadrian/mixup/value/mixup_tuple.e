@@ -17,7 +17,7 @@ class MIXUP_TUPLE
 inherit
    MIXUP_ITERABLE
       redefine
-         eval
+         eval, append_to
       end
 
 create {ANY}
@@ -52,42 +52,54 @@ feature {ANY}
 
    count: INTEGER is
       do
-         Result := values.count
+         Result := expressions.count
       end
 
    is_empty: BOOLEAN is
       do
-         Result := values.is_empty
+         Result := expressions.is_empty
       end
 
-   lower: INTEGER is
-      do
-         Result := values.lower
-      end
+   lower: INTEGER is 0
 
    upper: INTEGER is
       do
-         Result := values.upper
+         Result := expressions.count - 1
       end
 
    item (index: INTEGER): MIXUP_VALUE is
       do
-         Result := values.item(index)
+         if values /= Void then
+            Result := values.item(index)
+         end
       end
 
    first: MIXUP_VALUE is
       do
-         Result := values.first
+         if values /= Void then
+            Result := values.first
+         end
       end
 
    last: MIXUP_VALUE is
       do
-         Result := values.last
+         if values /= Void then
+            Result := values.last
+         end
       end
 
    new_iterator: ITERATOR[MIXUP_VALUE] is
       do
-         Result := values.new_iterator
+         if values /= Void then
+            Result := values.new_iterator
+         end
+      end
+
+   append_to (a_values: COLLECTION[MIXUP_VALUE]) is
+      do
+         if values /= Void then
+            a_values.append_traversable(values)
+         end
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
