@@ -39,8 +39,11 @@ feature {}
          pitch = a_pitch
       end
 
-   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
       do
+         debug
+            log.trace.put_line("channel " + channel.out + ": pitch bend " + pitch.out)
+         end
          stream.put_byte((pitch & 0x0000007f).to_integer_8)
          stream.put_byte(((pitch |>> 7) & 0x0000007f).to_integer_8)
       end

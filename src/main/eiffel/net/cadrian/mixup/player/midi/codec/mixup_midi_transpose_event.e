@@ -12,46 +12,33 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_MIDI_CONTROLLER_SWITCH
+class MIXUP_MIDI_TRANSPOSE_EVENT
 
 inherit
-   MIXUP_MIDI_CONTROLLER_KNOB
+   MIXUP_MIDI_CODEC
 
 create {ANY}
    make
 
 feature {ANY}
-   name: FIXED_STRING
+   byte_size: INTEGER is 0
 
-   code: INTEGER_8
-
-   byte_size: INTEGER is 3
-
-   valid_value (value: INTEGER): BOOLEAN is
-      do
-         Result := value.in_range(63, 64)
-      end
-
-   encode_to (message_code: INTEGER_8; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
       do
          debug
-            log.trace.put_line(name.out + "=" + value.out)
+            log.trace.put_line("transpose=" + half_tones.out)
          end
-         stream.put_byte(message_code)
-         stream.put_byte(code)
-         stream.put_byte(value.to_integer_8)
+         context.set_transpose_half_tones(half_tones)
       end
+
+   half_tones: INTEGER_8
 
 feature {}
-   make (cod: INTEGER_8; a_name: ABSTRACT_STRING) is
-      require
-         a_name /= Void
+   make (a_half_tones: like half_tones) is
       do
-         code := cod
-         name := a_name.intern
+         half_tones := a_half_tones
       ensure
-         code = cod
-         name = a_name.intern
+         half_tones = a_half_tones
       end
 
-end -- class MIXUP_MIDI_CONTROLLER_SWITCH
+end -- class MIXUP_MIDI_EVENT

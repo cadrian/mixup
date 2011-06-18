@@ -46,6 +46,8 @@ feature {ANY}
             Result := set_midi_instrument(a_call_source, a_context, args)
          when "midi_tempo" then
             Result := set_midi_tempo(a_call_source, a_context, args)
+         when "transpose" then
+            Result := set_transpose(a_call_source, a_context, args)
          else
             info_at(a_call_source, "MIDI: ignored unknown native function: " + fn_name)
          end
@@ -67,6 +69,13 @@ feature {ANY}
       do
          log.info.put_line("MIDI: send meta events")
          current_section.send_meta_events(a_data.start_time, a_events)
+      end
+
+   play_transpose (a_data: MIXUP_EVENT_DATA; a_half_tones: INTEGER_8) is
+         -- MIDI-specific
+      do
+         log.info.put_line("MIDI: send meta events")
+         instruments.reference_at(a_data.instrument).transpose(a_data.start_time, a_half_tones)
       end
 
 feature {} -- native functions
@@ -110,6 +119,24 @@ feature {} -- native functions
             else
                create Result.make(a_source)
                Result.add_event(tempo_setting_event(bpm.value.to_integer_32))
+            end
+         end
+      end
+
+   set_transpose (a_source: MIXUP_SOURCE; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_MIDI_TRANSPOSE_FACTORY is
+      local
+         half_tones: MIXUP_INTEGER
+      do
+         if args.count /= 1 then
+            error_at(a_source, "MIDI: bad argument count")
+         elseif not (half_tones ?:= args.first) then
+            error_at(args.first.source, "MIDI: bad argument type")
+         else
+            half_tones ::= args.first
+            if not half_tones.value.in_range(-127, 127) then
+               error_at(half_tones.source, "MIDI: bad argument value, expected -127..127 but got " + half_tones.value.out)
+            else
+               create Result.make(a_source, half_tones.value.to_integer_8)
             end
          end
       end

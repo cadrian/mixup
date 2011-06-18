@@ -21,6 +21,7 @@ create {ANY}
    make
 
 feature {ANY}
+   name: FIXED_STRING
    msb_code: INTEGER_8
    lsb_code: INTEGER_8
 
@@ -45,6 +46,9 @@ feature {ANY}
 
    encode_to (message_code: INTEGER_8; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM) is
       do
+         debug
+            log.trace.put_line(name.out + "=" + value.out)
+         end
          if is_coarse then
             stream.put_byte(message_code)
             stream.put_byte(msb_code)
@@ -70,15 +74,18 @@ feature {ANY}
       end
 
 feature {}
-   make (msb, lsb: INTEGER_8) is
+   make (msb, lsb: INTEGER_8; a_name: ABSTRACT_STRING) is
       require
          lsb /= 0 implies lsb > msb
+         a_name /= Void
       do
          msb_code := msb
          lsb_code := lsb
+         name := a_name.intern
       ensure
          msb_code = msb
          lsb_code = lsb
+         name = a_name.intern
       end
 
 invariant

@@ -39,8 +39,11 @@ feature {}
          pressure = a_pressure
       end
 
-   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
       do
+         debug
+            log.trace.put_line("channel " + channel.out + ": pressure=" + pressure.out)
+         end
          stream.put_byte(pressure)
       end
 

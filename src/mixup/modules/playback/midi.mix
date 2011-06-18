@@ -4,6 +4,7 @@ set hook.at_load := function native "playback_midi"
 
 set midi_instrument := function (bank, patch) native "midi_instrument"
 set midi_tempo := function (bpm) native "midi_tempo"
+set transpose := function (half_tones) native "transpose"
 
 
 

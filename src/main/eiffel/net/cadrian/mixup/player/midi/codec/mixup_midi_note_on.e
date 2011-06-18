@@ -43,9 +43,12 @@ feature {}
          velocity = a_velocity
       end
 
-   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
       do
-         stream.put_byte(pitch)
+         debug
+            log.trace.put_line("channel " + channel.out + ": key=" + pitch.out + " on")
+         end
+         stream.put_byte(pitch + context.transpose_half_tones)
          stream.put_byte(velocity)
       end
 

@@ -28,6 +28,7 @@ create {ANY}
    make
 
 feature {ANY}
+   name: FIXED_STRING
    code: INTEGER_8
    data: FIXED_STRING
 
@@ -36,10 +37,13 @@ feature {ANY}
          Result := 2 + byte_size_variable(data.count) + data.count
       end
 
-   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
       local
          i, byte: INTEGER
       do
+         debug
+            log.trace.put_line(name)
+         end
          stream.put_byte(0xff)
          stream.put_byte(code)
          stream.put_variable(data.count)
@@ -59,20 +63,24 @@ feature {ANY}
       end
 
 feature {}
-   make (a_code: like code; a_data: ABSTRACT_STRING) is
+   make (a_code: like code; a_data: ABSTRACT_STRING; a_name: ABSTRACT_STRING) is
       require
          valid_code(code)
          a_data /= Void
+         a_name /= Void
       do
          code := a_code
          data := a_data.intern
+         name := a_name.intern
       ensure
          code = a_code
          data = a_data.intern
+         name = a_name.intern
       end
 
 invariant
    valid_code(code)
    data /= Void
+   name /= Void
 
 end -- class MIXUP_MIDI_META_EVENT

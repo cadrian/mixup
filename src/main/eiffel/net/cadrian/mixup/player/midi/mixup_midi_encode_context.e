@@ -12,31 +12,20 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-deferred class MIXUP_MIDI_CONTROLLER_KNOB
-
-insert
-   LOGGING
+deferred class MIXUP_MIDI_ENCODE_CONTEXT
 
 feature {ANY}
-   byte_size: INTEGER is
+   transpose_half_tones: INTEGER_8 is
       deferred
       end
 
-   valid_value (value: INTEGER): BOOLEAN is
-      deferred
-      end
-
-   encode_to (message_code: INTEGER_8; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM) is
-      require
-         valid_value(value)
-         stream.is_connected
-      deferred
-      end
-
-   name: FIXED_STRING is
+   set_transpose_half_tones (a_transpose_half_tones: like transpose_half_tones) is
       deferred
       ensure
-         Result /= Void
+         transpose_half_tones = a_transpose_half_tones
       end
 
-end -- class MIXUP_MIDI_CONTROLLER_KNOB
+   -- TODO: this is the way to fix note ties (noting which notes are
+   -- "currently" playing)
+
+end -- class MIXUP_MIDI_ENCODE_CONTEXT

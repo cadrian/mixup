@@ -40,6 +40,11 @@ feature {MIXUP_MIDI_PLAYER}
          staffs.reference_at(a_staff_id).send_events(a_time, a_voice_id, a_events)
       end
 
+   transpose (a_time: INTEGER_64; a_half_tones: INTEGER_8) is
+      do
+         track.add_event(a_time, create {MIXUP_MIDI_TRANSPOSE_EVENT}.make(a_half_tones))
+      end
+
 feature {}
    make (a_context: like context; a_name: like name; a_voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]; file: MIXUP_MIDI_FILE; a_track_id: like track_id) is
       require

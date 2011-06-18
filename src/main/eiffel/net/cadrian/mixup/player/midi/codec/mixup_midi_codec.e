@@ -14,16 +14,20 @@
 --
 deferred class MIXUP_MIDI_CODEC
 
+insert
+   LOGGING
+
 feature {ANY}
    byte_size: INTEGER is
       deferred
       ensure
-         Result > 0
+         Result >= 0
       end
 
-   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
       require
          stream.is_connected
+         context /= Void
       deferred
       end
 

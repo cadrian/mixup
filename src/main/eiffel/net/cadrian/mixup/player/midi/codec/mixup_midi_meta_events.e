@@ -21,49 +21,49 @@ feature {ANY}
    end_of_track_event: MIXUP_MIDI_META_EVENT is
          -- must always be added, and added last, to each track
       once
-         create Result.make(end_of_track, "")
+         create Result.make(end_of_track, "", "end_of_track_event")
       end
 
    text_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
       require
          a_text /= Void
       do
-         create Result.make(text, a_text)
+         create Result.make(text, a_text, "text_event: '" + a_text + "'")
       end
 
    copyright_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
       require
          a_text /= Void
       do
-         create Result.make(copyright, a_text)
+         create Result.make(copyright, a_text, "copyright_event: '" + a_text + "'")
       end
 
    track_name_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
       require
          a_text /= Void
       do
-         create Result.make(track_name, a_text)
+         create Result.make(track_name, a_text, "track_name_event: '" + a_text + "'")
       end
 
    instrument_name_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
       require
          a_text /= Void
       do
-         create Result.make(instrument_name, a_text)
+         create Result.make(instrument_name, a_text, "instrument_name_event: '" + a_text + "'")
       end
 
    lyrics_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
       require
          a_text /= Void
       do
-         create Result.make(lyrics, a_text)
+         create Result.make(lyrics, a_text, "lyrics_event: '" + a_text + "'")
       end
 
    marker_text_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
       require
          a_text /= Void
       do
-         create Result.make(marker_text, a_text)
+         create Result.make(marker_text, a_text, "marker_text_event: '" + a_text + "'")
       end
 
    tempo_setting_event (bpm: INTEGER): MIXUP_MIDI_META_EVENT is
@@ -77,7 +77,7 @@ feature {ANY}
          setting.extend(((mpq|>>16) & 0x000000ff).to_character)
          setting.extend(((mpq|>> 8) & 0x000000ff).to_character)
          setting.extend(((mpq     ) & 0x000000ff).to_character)
-         create Result.make(tempo_setting, setting)
+         create Result.make(tempo_setting, setting, "tempo_setting_event: " + bpm.out + " BPM")
       end
 
 feature {}

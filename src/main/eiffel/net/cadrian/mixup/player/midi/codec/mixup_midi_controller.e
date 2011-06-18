@@ -34,10 +34,13 @@ feature {ANY}
          Result := knob.byte_size
       end
 
-   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
       local
          code: INTEGER_8
       do
+         debug
+            log.trace.put_string("channel " + channel.out + ": controller ")
+         end
          code := event_type | channel
          knob.encode_to(code, value, stream)
       end
@@ -57,7 +60,7 @@ feature {}
          value = a_value
       end
 
-   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
       do
          crash
       end

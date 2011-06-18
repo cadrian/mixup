@@ -18,13 +18,19 @@ inherit
    MIXUP_MIDI_CODEC
 
 feature {ANY}
-   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   byte_size: INTEGER is
+      deferred
+      ensure then
+         Result > 0
+      end
+
+   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
       local
          code: INTEGER_8
       do
          code := event_type | channel
          stream.put_byte(code)
-         put_args(stream)
+         put_args(stream, context)
       end
 
    event_type: INTEGER_8 is
@@ -43,9 +49,10 @@ feature {ANY}
       end
 
 feature {}
-   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
       require
          stream.is_connected
+         context /= Void
       deferred
       end
 

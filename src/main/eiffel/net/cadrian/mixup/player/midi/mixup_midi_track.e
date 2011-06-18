@@ -14,6 +14,12 @@
 --
 class MIXUP_MIDI_TRACK
 
+inherit
+   MIXUP_MIDI_ENCODE_CONTEXT
+
+insert
+   LOGGING
+
 create {ANY}
    make
 
@@ -82,6 +88,9 @@ feature {ANY}
             i > events.upper
          loop
             time := events.key(i)
+            debug
+               log.trace.put_string("Track #" + id.out + ": at tick " + time.out)
+            end
             encode_events(events.item(i), a_stream, (time - current_time).to_integer_32)
             current_time := time
             i := i + 1
@@ -95,40 +104,59 @@ feature {ANY}
          end
       end
 
+   transpose_half_tones: INTEGER_8
+
+   set_transpose_half_tones (a_transpose_half_tones: like transpose_half_tones) is
+      do
+         transpose_half_tones := a_transpose_half_tones
+      end
+
 feature {}
-   byte_size_events (events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]; initial_time: INTEGER): INTEGER is
+   byte_size_events (events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]; delta_time: INTEGER): INTEGER is
+      require
+         not events_at_time.is_empty
       local
-         time: INTEGER
-         i: INTEGER
+         i, time: INTEGER
          event: MIXUP_MIDI_CODEC
       do
          from
-            time := initial_time
+            time := delta_time
             i := events_at_time.lower
          until
             i > events_at_time.upper
          loop
             event := events_at_time.item(i)
-            Result := Result + event.byte_size_variable(time) + event.byte_size
-            time := 0
+            if event.byte_size > 0 then
+               Result := Result + event.byte_size_variable(time)
+               time := 0
+            end
+            Result := Result + event.byte_size
             i := i + 1
          end
       end
 
-   encode_events (events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]; a_stream: MIXUP_MIDI_OUTPUT_STREAM; initial_time: INTEGER) is
+   encode_events (events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]; a_stream: MIXUP_MIDI_OUTPUT_STREAM; delta_time: INTEGER) is
+      require
+         not events_at_time.is_empty
       local
-         time: INTEGER
-         i: INTEGER
+         i, time: INTEGER
+         event: MIXUP_MIDI_CODEC
       do
+         debug
+            log.trace.put_line(" (delta=" + delta_time.out + ")")
+         end
          from
-            time := initial_time
+            time := delta_time
             i := events_at_time.lower
          until
             i > events_at_time.upper
          loop
-            a_stream.put_variable(time)
-            events_at_time.item(i).encode_to(a_stream)
-            time := 0
+            event := events_at_time.item(i)
+            if event.byte_size > 0 then
+               a_stream.put_variable(time)
+               time := 0
+            end
+            event.encode_to(a_stream, Current)
             i := i + 1
          end
       end
@@ -137,6 +165,8 @@ feature {}
    make is
       do
          create events.make
+         id_counter.next
+         id := id_counter.item
       end
 
    events: AVL_DICTIONARY[FAST_ARRAY[MIXUP_MIDI_CODEC], INTEGER_64]
@@ -148,7 +178,15 @@ feature {}
          Result := meta.end_of_track_event
       end
 
+   id: INTEGER
+
+   id_counter: COUNTER is
+      once
+         create Result
+      end
+
 invariant
-   events /= Void
+   id > 0
+   events.for_all(agent (events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]): BOOLEAN is do Result := not events_at_time.is_empty end)
 
 end -- class MIXUP_MIDI_TRACK

@@ -21,178 +21,178 @@ feature {ANY}
 feature {ANY} -- coarse controllers (most common)
    bank_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(0, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(0, 0, "bank_controller")
       end
 
    modulation_wheel_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(1, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(1, 0, "modulation_wheel_controller")
       end
 
    breath_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(2, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(2, 0, "breath_controller")
       end
 
    foot_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(4, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(4, 0, "foot_controller")
       end
 
    portamento_time_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(5, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(5, 0, "portamento_time_controller")
       end
 
    channel_volume_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(7, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(7, 0, "channel_volume_controller")
       end
 
    balance_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(8, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(8, 0, "balance_controller")
       end
 
    pan_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(10, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(10, 0, "pan_controller")
       end
 
    expression_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(11, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(11, 0, "troller")
       end
 
    effect_1_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(12, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(12, 0, "effect_1_controller")
       end
 
    effect_2_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(13, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(13, 0, "effect_2_controller")
       end
 
    general_purpose_1_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(16, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(16, 0, "general_purpose_1_controller")
       end
 
    general_purpose_2_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(17, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(17, 0, "general_purpose_2_controller")
       end
 
    general_purpose_3_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(18, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(18, 0, "general_purpose_3_controller")
       end
 
    general_purpose_4_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(19, 0)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(19, 0, "general_purpose_4_controller")
       end
 
    damper_pedal_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SWITCH} Result.make(64)
+         create {MIXUP_MIDI_CONTROLLER_SWITCH} Result.make(64, "damper_pedal_controller")
       end
 
    portamento_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SWITCH} Result.make(65)
+         create {MIXUP_MIDI_CONTROLLER_SWITCH} Result.make(65, "portamento_controller")
       end
 
    sostenuto_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SWITCH} Result.make(66)
+         create {MIXUP_MIDI_CONTROLLER_SWITCH} Result.make(66, "sostenuto_controller")
       end
 
    soft_pedal_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SWITCH} Result.make(67)
+         create {MIXUP_MIDI_CONTROLLER_SWITCH} Result.make(67, "soft_pedal_controller")
       end
 
    legato_footswitch_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SWITCH} Result.make(68)
+         create {MIXUP_MIDI_CONTROLLER_SWITCH} Result.make(68, "legato_footswitch_controller")
       end
 
 feature {ANY} -- fine controllers (rarer)
    fine_bank_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(0, 32)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(0, 32, "fine_bank_controller")
       end
 
    fine_modulation_wheel_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(1, 33)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(1, 33, "fine_modulation_wheel_controller")
       end
 
    fine_breath_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(2, 34)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(2, 34, "fine_breath_controller")
       end
 
    fine_foot_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(4, 36)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(4, 36, "fine_foot_controller")
       end
 
    fine_portamento_time_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(5, 37)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(5, 37, "fine_portamento_time_controller")
       end
 
    fine_channel_volume_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(7, 39)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(7, 39, "fine_channel_volume_controller")
       end
 
    fine_balance_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(8, 40)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(8, 40, "fine_balance_controller")
       end
 
    fine_pan_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(10, 42)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(10, 42, "fine_pan_controller")
       end
 
    fine_expression_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(11, 43)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(11, 43, "fine_expression_controller")
       end
 
    fine_effect_1_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(12, 44)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(12, 44, "fine_effect_1_controller")
       end
 
    fine_effect_2_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(13, 45)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(13, 45, "fine_effect_2_controller")
       end
 
    fine_general_purpose_1_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(16, 48)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(16, 48, "fine_general_purpose_1_controller")
       end
 
    fine_general_purpose_2_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(17, 49)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(17, 49, "fine_general_purpose_2_controller")
       end
 
    fine_general_purpose_3_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(18, 50)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(18, 50, "fine_general_purpose_3_controller")
       end
 
    fine_general_purpose_4_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(19, 51)
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(19, 51, "fine_general_purpose_4_controller")
       end
 
 end -- class MIXUP_MIDI_CONTROLLER_KNOBS
