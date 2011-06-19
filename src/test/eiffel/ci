@@ -68,6 +68,7 @@ echo $log
                 test -d $dirmix || mkdir -p $dirmix
                 cp $example $relmix
             done
+            export MIXUP_DIR=$(pwd)/build/share/mixup
             for example in *.mix; do
                 echo "======================================================================"
                 mix=$(basename $example)

@@ -100,7 +100,11 @@ feature {}
             until
                error = Void
             loop
-               log.error.put_line(a_path.out + ":" + error.index.out + ": " + error.message)
+               log.error.put_string(a_path.out)
+               log.error.put_string(once ":")
+               log.error.put_integer(error.index)
+               log.error.put_string(once ": ")
+               log.error.put_line(error.message)
                error := error.next
             end
             die_with_code(1)
@@ -119,15 +123,20 @@ feature {}
          input: INPUT_STREAM
       do
          if not a_file.is_regular then
-            log.error.put_line("Could not open " + a_file.path.out + " for reading (is it a directory?)")
+            log.error.put_string(once "Could not open ")
+            log.error.put_line(a_file.path)
+            log.error.put_line(once " for reading (is it a directory?)")
             die_with_code(1)
          end
          input := a_file.as_regular.read
          if input = Void or else not input.is_connected then
-            log.error.put_line("Could not open " + a_file.path.out + " for reading (is it a regular file?)")
+            log.error.put_string(once "Could not open ")
+            log.error.put_string(a_file.path)
+            log.error.put_line(once " for reading (is it a regular file?)")
             die_with_code(1)
          end
-         log.info.put_line("Reading " + a_file.path.out)
+         log.info.put_string(once "Reading ")
+         log.info.put_line(a_file.path)
          from
             source := ""
          until
@@ -159,7 +168,8 @@ feature {}
                                    agent find_file_in_dir(name.intern, ?, ?),
                                    find_file_in_dir(name.intern, open_directory, Void))
          if Result = Void then
-            log.error.put_line("Could not find file: " + name)
+            log.error.put_string(once "Could not find file: ")
+            log.error.put_line(name)
             die_with_code(1)
          end
       ensure
@@ -187,7 +197,11 @@ feature {}
                if a_directory.has_file(dirname) and then a_directory.file(dirname).is_directory then
                   dir := a_directory.file(dirname).as_directory
                   basename := a_name.substring(dot_index + 1, a_name.upper)
-                  log.info.put_line(a_name + ": looking for " + basename + " in " + dir.path)
+                  log.info.put_string(a_name)
+                  log.info.put_string(once ": looking for ")
+                  log.info.put_string(basename)
+                  log.info.put_string(once " in ")
+                  log.info.put_line(dir.path)
                   Result := find_file_in_dir(basename, dir, Void)
                end
             end
@@ -247,19 +261,39 @@ feature {} -- Low-level files cuisine
       end
 
    system: FIXED_STRING is
+      local
+         mixup_dir, candidate: STRING
+         sys: SYSTEM
+         possible_directories: LINKED_LIST[STRING]
+         i: ITERATOR[STRING]
       once
-         Result := if_exists("/etc/mixup")
-         if Result = Void then
-            Result := if_exists("/usr/share/mixup")
+         possible_directories := {LINKED_LIST[STRING] <<
+                                                        "/etc/mixup",
+                                                        "/usr/share/mixup",
+                                                        "/usr/local/share/mixup",
+                                                        "C:\Program Files\mixup\system"
+                                                        >> }
+
+         mixup_dir := sys.get_environment_variable("MIXUP_DIR")
+         if mixup_dir /= Void then
+            possible_directories.add_first(mixup_dir)
          end
-         if Result = Void then
-            Result := if_exists("/usr/local/share/mixup")
+
+         from
+            i := possible_directories.new_iterator
+         until
+            Result /= Void or else i.is_off
+         loop
+            candidate := i.item
+            Result := if_exists(candidate)
+            i.next
          end
-         if Result = Void then
-            Result := if_exists("C:/Program Files/mixup")
-         end
+
          if Result = Void then
             log.warning.put_line("Could not find the MiXuP installation directory.")
+         else
+            log.info.put_string("Using MiXuP installation directory: ")
+            log.info.put_line(Result)
          end
       end
 

@@ -24,7 +24,7 @@ status_failures_weather() {
         else
             echo failure
         fi
-    done | awk 'BEGIN { status=""; count=0; trn=0 } {s=$0; if (s == "failure") { if (status != "" && s != status) trn++; count+=(6-NR); } status=s } END {printf("%d\n", (count+trn)/3)}'
+    done | awk 'BEGIN { status=""; count=0; trn=0 } {if ($1 == "failure") { if (status != "" && $1 != status) { trn++ } count+=(6-NR); } status=$1 } END {printf("%d\n", (count+trn)/3)}'
 }
 
 status_failures_count() {
