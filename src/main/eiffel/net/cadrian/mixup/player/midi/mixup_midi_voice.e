@@ -61,7 +61,7 @@ feature {MIXUP_ABSTRACT_STAFF}
 
    start_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         fix_slur(65, 64)
+         fix_slur(1, 1)
       end
 
    end_slur is
@@ -71,7 +71,7 @@ feature {MIXUP_ABSTRACT_STAFF}
 
    start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         fix_slur(65, 64)
+         fix_slur(1, 1)
       end
 
    end_phrasing_slur is
