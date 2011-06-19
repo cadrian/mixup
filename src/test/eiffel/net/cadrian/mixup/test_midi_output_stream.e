@@ -23,10 +23,12 @@ create {}
 
 feature {}
    stream: AUX_MIXUP_MOCK_MIDI_OUTPUT
+   encode_context: AUX_MIXUP_MOCK_ENCODE_CONTEXT
 
    make is
       do
          create stream.make
+         create encode_context.make
          test_variables
          test_events
          test_meta_events
@@ -67,7 +69,7 @@ feature {}
          assert(note_on_event.channel = 12)
          assert(note_on_event.pitch = 60)
          assert(note_on_event.velocity = 42)
-         note_on_event.encode_to(stream)
+         note_on_event.encode_to(stream, encode_context)
          assert_stream("%/156/%/60/%/42/") -- 156 = 0x9c = 0x90 + 12
 
          create note_off_event.make(3, 47, 58)
@@ -75,7 +77,7 @@ feature {}
          assert(note_off_event.channel = 3)
          assert(note_off_event.pitch = 47)
          assert(note_off_event.velocity = 58)
-         note_off_event.encode_to(stream)
+         note_off_event.encode_to(stream, encode_context)
          assert_stream("%/131/%/47/%/58/") -- 131 = 0x83 = 0x80 + 3
 
          create key_pressure_event.make(7, 124, 12)
@@ -83,49 +85,49 @@ feature {}
          assert(key_pressure_event.channel = 7)
          assert(key_pressure_event.key = 124)
          assert(key_pressure_event.pressure = 12)
-         key_pressure_event.encode_to(stream)
+         key_pressure_event.encode_to(stream, encode_context)
          assert_stream("%/167/%/124/%/12/") -- 167 = 0xa7 = 0xa0 + 7
 
          create channel_pressure_event.make(5, 73)
          assert(channel_pressure_event.event_type = 0xd0)
          assert(channel_pressure_event.channel = 5)
          assert(channel_pressure_event.pressure = 73)
-         channel_pressure_event.encode_to(stream)
+         channel_pressure_event.encode_to(stream, encode_context)
          assert_stream("%/213/%/73/") -- 213 = 0xd5 = 0xd0 + 5
 
          create controller.make(9, knobs.expression_controller, 37)
          assert(controller.event_type = 0xb0)
          assert(controller.channel = 9)
          assert(controller.knob = knobs.expression_controller)
-         controller.encode_to(stream)
+         controller.encode_to(stream, encode_context)
          assert_stream("%/185/%/11/%/37/") -- 185 = 0xb9 = 0xb0 + 9
 
          create controller.make(9, knobs.fine_expression_controller, 2048)
          assert(controller.event_type = 0xb0)
          assert(controller.channel = 9)
          assert(controller.knob = knobs.fine_expression_controller)
-         controller.encode_to(stream)
+         controller.encode_to(stream, encode_context)
          assert_stream("%/185/%/43/%/0/%/0/%/185/%/11/%/16/") -- 185 = 0xb9 = 0xb0 + 9
 
          create program.make(1, 20)
          assert(program.event_type = 0xc0)
          assert(program.channel = 1)
          assert(program.patch = 20)
-         program.encode_to(stream)
+         program.encode_to(stream, encode_context)
          assert_stream("%/193/%/20/") -- 193 = 0xc1 = 0xc0 + 1
 
          create pitch_bend.make(3, 42)
          assert(pitch_bend.event_type = 0xe0)
          assert(pitch_bend.channel = 3)
          assert(pitch_bend.pitch = 42)
-         pitch_bend.encode_to(stream)
+         pitch_bend.encode_to(stream, encode_context)
          assert_stream("%/227/%/42/%/0/") -- 227 = 0xe3 = 0xe0 + 3
 
          create pitch_bend.make(3, 2000)
          assert(pitch_bend.event_type = 0xe0)
          assert(pitch_bend.channel = 3)
          assert(pitch_bend.pitch = 2000)
-         pitch_bend.encode_to(stream)
+         pitch_bend.encode_to(stream, encode_context)
          assert_stream("%/227/%/80/%/15/") -- 227 = 0xe3 = 0xe0 + 3
       end
 
@@ -134,10 +136,10 @@ feature {}
          meta: MIXUP_MIDI_META_EVENTS
          event: MIXUP_MIDI_META_EVENT
       do
-         create event.make(meta.lyrics, "boo!")
+         create event.make(meta.lyrics, "boo!", "lyrics")
          assert(event.code = meta.lyrics)
          assert(event.data = "boo!".intern)
-         event.encode_to(stream)
+         event.encode_to(stream, encode_context)
          assert_stream("%/255/%/5/%/4/boo!")
       end
 
