@@ -40,8 +40,9 @@ feature {MIXUP_ABSTRACT_STAFF}
       local
          note: MIXUP_MIDI_NOTE
       do
-         create note.make(a_time, a_note, track, track_id)
+         create note.make(a_time, a_note, track, track_id, slur_numerator, slur_denominator)
          add_item(note)
+         last_note := note
       end
 
    next_bar (style: ABSTRACT_STRING) is
@@ -50,26 +51,32 @@ feature {MIXUP_ABSTRACT_STAFF}
 
    start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
+         fix_slur(11, 12)
       end
 
    end_beam is
       do
+         fix_slur(7, 8)
       end
 
    start_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
+         fix_slur(65, 64)
       end
 
    end_slur is
       do
+         fix_slur(7, 8)
       end
 
    start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
+         fix_slur(65, 64)
       end
 
    end_phrasing_slur is
       do
+         fix_slur(7, 8)
       end
 
    start_repeat (volte: INTEGER_64) is
@@ -94,6 +101,7 @@ feature {} -- TODO: remove the lyrics_gatherer which is lilypond-specific
          a_track /= Void
          a_track_id.in_range(0, 15)
       do
+         fix_slur(7, 8)
          track := a_track
          track_id := a_track_id
          make_abstract(a_id, a_lyrics_gatherer)
@@ -101,6 +109,22 @@ feature {} -- TODO: remove the lyrics_gatherer which is lilypond-specific
 
    track: MIXUP_MIDI_TRACK
    track_id: INTEGER
+
+   last_note: MIXUP_MIDI_NOTE
+
+   slur_numerator, slur_denominator: INTEGER
+
+   fix_slur (a_slur_numerator, a_slur_denominator: INTEGER) is
+      require
+         a_slur_numerator > 0
+         a_slur_denominator > 0
+      do
+         slur_numerator := a_slur_numerator
+         slur_denominator := a_slur_denominator
+         if last_note /= Void then
+            last_note.fix_slur(a_slur_numerator, a_slur_denominator)
+         end
+      end
 
 invariant
    track /= Void

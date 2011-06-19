@@ -106,15 +106,7 @@ feature {ANY}
          end
       end
 
-feature {ANY} -- context
-   transpose_half_tones: INTEGER_8
-
-   set_transpose_half_tones (a_transpose_half_tones: like transpose_half_tones) is
-      do
-         transpose_half_tones := a_transpose_half_tones
-      end
-
-feature {ANY} -- note ties management
+feature {ANY} -- playing notes
    is_on (channel, pitch: INTEGER_8): BOOLEAN is
       do
          Result := playing_notes(channel).fast_has(pitch)
@@ -138,6 +130,14 @@ feature {ANY} -- note ties management
          playing_notes(channel).fast_remove(pitch)
       ensure
          not is_on(channel, pitch)
+      end
+
+feature {ANY} -- encode context
+   transpose_half_tones: INTEGER_8
+
+   set_transpose_half_tones (a_transpose_half_tones: like transpose_half_tones) is
+      do
+         transpose_half_tones := a_transpose_half_tones
       end
 
 feature {}

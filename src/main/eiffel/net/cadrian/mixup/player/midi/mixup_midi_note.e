@@ -31,13 +31,25 @@ feature {ANY}
          note.accept(Current)
       end
 
+   fix_slur (a_slur_numerator: like slur_numerator; a_slur_denominator: like slur_denominator) is
+      require
+         a_slur_numerator > 0
+         a_slur_denominator > 0
+      do
+         slur_numerator := a_slur_numerator
+         slur_denominator := a_slur_denominator
+      ensure
+         slur_numerator = a_slur_numerator
+         slur_denominator = a_slur_denominator
+      end
+
 feature {MIXUP_CHORD}
    visit_chord (a_chord: MIXUP_CHORD) is
       do
          a_chord.do_all(agent (head: MIXUP_NOTE_HEAD; duration: INTEGER_64; tie: BOOLEAN; channel: INTEGER_8) is
                         do
                            if not head.is_rest then
-                              track.turn_on(channel, precision * time, pitch(head), precision * duration)
+                              track.turn_on(channel, precision * time, pitch(head), precision * duration * slur_numerator // slur_denominator)
                               if not tie then
                                  track.turn_off(channel, precision * time, pitch(head))
                               end
@@ -63,16 +75,27 @@ feature {MIXUP_LYRICS}
       end
 
 feature {}
-   make (a_time: like time; a_note: like note; a_track: like track; a_track_id: like track_id) is
+   make (a_time: like time; a_note: like note; a_track: like track; a_track_id: like track_id;
+         a_slur_numerator: like slur_numerator; a_slur_denominator: like slur_denominator) is
       require
          a_note /= Void
          a_track /= Void
          a_track_id.in_range(0, 15)
+         a_slur_numerator > 0
+         a_slur_denominator > 0
       do
          time := a_time
          note := a_note
          track := a_track
          track_id := a_track_id
+         fix_slur(a_slur_numerator, a_slur_denominator)
+      ensure
+         time = a_time
+         note = a_note
+         track = a_track
+         track_id = a_track_id
+         slur_numerator = a_slur_numerator
+         slur_denominator = a_slur_denominator
       end
 
    note: MIXUP_NOTE
@@ -81,6 +104,8 @@ feature {}
    track_id: INTEGER
 
    precision: INTEGER
+
+   slur_numerator, slur_denominator: INTEGER
 
    pitch (head: MIXUP_NOTE_HEAD): INTEGER_8 is
       require
@@ -127,5 +152,7 @@ invariant
    note /= Void
    track /= Void
    track_id.in_range(0, 15)
+   slur_numerator > 0
+   slur_denominator > 0
 
 end -- class MIXUP_MIDI_NOTE
