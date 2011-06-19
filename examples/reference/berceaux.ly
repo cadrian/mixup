@@ -25,14 +25,18 @@ composer = \markup{"Gabriel" \sans "Fauré"}
  \clef "G"
  \key des \major
  \override Staff.TimeSignature #'style = #'() \time 12/8
- R1. | R1. | f4.-\p bes4 bes8 aes4.~ aes4 aes8 | ges4.~ ges4 ges8 f2. | f4 des8 ees4 f8 aes4. f4 des8 | c2. bes4.~ bes8 r8 f'8 | f4. bes4 bes8 aes2. | ges4.~ ges4 ges8 f2. | f4 des8 ees4 f8 f4. ees4 des8 | c2. c2.~ | \override Staff.TimeSignature #'style = #'() \time 6/8
- c4. r4 r8 | \override Staff.TimeSignature #'style = #'() \time 12/8
+ R1. | R1. | f4.\(-\p bes4 bes8 aes4.~ aes4 aes8 | ges4.~ ges4 ges8 f2.\)
+ | f4\( des8 ees4 f8 aes4. f4 des8 | c2. bes4.~ bes8\)
+ r8 f'8\( | f4. bes4 bes8 aes2. | ges4.~ ges4 ges8 f2.\)
+ | f4\( des8 ees4 f8 f4. ees4 des8 | c2. c2.~ | \override Staff.TimeSignature #'style = #'() \time 6/8
+ c4.\)
+ r4 r8 | \override Staff.TimeSignature #'style = #'() \time 12/8
 
 }
 }
 \new Lyrics = "lied1x1" \lyricsto "lied1voice" {
 \lyricmode {
- "Le" "long" "du" "Quai," "les" "grands" "vais" -- "seaux," "Que" "la" "hou" -- "le in" -- "cli" -- "ne en" "si" -- "len" -- "ce," "Ne" "pren" -- "nent" "pas" "gar" -- "de aux" "ber" -- "ceaux," "Que" "la" "main" "des" "fem" -- "mes" "ba" -- "lan" -- "ce." "" "" "" "" "" "" "" "" "" ""
+ "Le" "long" "du" "Quai," "les" "grands" "vais" -- "seaux," "Que" "la" "hou" -- "le in" -- "cli" -- "ne en" "si" -- "len" -- "ce," "Ne" "pren" -- "nent" "pas" "gar" -- "de aux" "ber" -- "ceaux," "Que" "la" "main" "des" "fem" -- "mes" "ba" -- "lan" -- "ce." "" "" "" "" ""
 }
 }
 >>

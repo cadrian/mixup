@@ -45,7 +45,7 @@ mixuppartitur = "sample"
 }
 \new Lyrics = "alto2x1" \lyricsto "alto2voice" {
 \lyricmode {
- "do" "re" "mi" "fa" "so" "la"
+ "do" "re" "mi" "fa" "so"
 }
 }
 >>
