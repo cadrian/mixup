@@ -19,6 +19,8 @@ inherit
 
 insert
    LOGGING
+   MIXUP_MIDI_EVENTS
+   MIXUP_MIDI_META_EVENTS
 
 create {ANY}
    make
@@ -26,14 +28,14 @@ create {ANY}
 feature {ANY}
    can_add_event: BOOLEAN is
       do
-         Result := events.is_empty or else events.last.last /= end_of_track
+         Result := events.is_empty or else events.last.last /= end_of_track_event
       end
 
    add_event (a_time: INTEGER_64; a_event: MIXUP_MIDI_CODEC) is
       require
          can_add_event
          a_event /= Void
-         a_event = end_of_track implies a_time >= max_time
+         a_event = end_of_track_event implies a_time >= max_time
       local
          actual_time: INTEGER_64
          events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]
@@ -51,7 +53,7 @@ feature {ANY}
 
    can_encode: BOOLEAN is
       do
-         Result := not events.is_empty and then events.last.last = end_of_track
+         Result := not events.is_empty and then events.last.last = end_of_track_event
       end
 
    byte_size: INTEGER is
@@ -113,19 +115,29 @@ feature {ANY} -- context
       end
 
 feature {ANY} -- note ties management
-   is_on (pitch: INTEGER_8): BOOLEAN is
+   is_on (channel, pitch: INTEGER_8): BOOLEAN is
       do
-         Result := playing_notes.fast_has(pitch)
+         Result := playing_notes(channel).fast_has(pitch)
       end
 
-   turn_on (pitch: INTEGER_8) is
+   turn_on (channel: INTEGER_8; time: INTEGER_64; pitch: INTEGER_8; duration: INTEGER_64) is
       do
-         playing_notes.fast_add(pitch)
+         if not is_on(channel, pitch) then
+            add_event(time, note_event(channel, True, pitch, 64))
+         end
+         playing_notes(channel).fast_put(duration, pitch)
+      ensure
+         is_on(channel, pitch)
       end
 
-   turn_off (pitch: INTEGER_8) is
+   turn_off (channel: INTEGER_8; time: INTEGER_64; pitch: INTEGER_8) is
       do
-         playing_notes.fast_remove(pitch)
+         if is_on(channel, pitch) then
+            add_event(time + playing_notes(channel).fast_at(pitch), note_event(channel, False, pitch, 64))
+         end
+         playing_notes(channel).fast_remove(pitch)
+      ensure
+         not is_on(channel, pitch)
       end
 
 feature {}
@@ -184,17 +196,23 @@ feature {}
          create events.make
          id_counter.next
          id := id_counter.item
-         create playing_notes.with_capacity(128)
+         create playing_notes_.make
       end
 
    events: AVL_DICTIONARY[FAST_ARRAY[MIXUP_MIDI_CODEC], INTEGER_64]
-   playing_notes: HASHED_SET[INTEGER_8]
+   playing_notes_: AVL_DICTIONARY[HASHED_DICTIONARY[INTEGER_64, INTEGER_8], INTEGER_8]
 
-   end_of_track: MIXUP_MIDI_META_EVENT is
-      local
-         meta: MIXUP_MIDI_META_EVENTS
+   playing_notes (channel: INTEGER_8): HASHED_DICTIONARY[INTEGER_64, INTEGER_8] is
+      require
+         channel.in_range(0, 15)
       do
-         Result := meta.end_of_track_event
+         Result := playing_notes_.reference_at(channel)
+         if Result = Void then
+            create Result.with_capacity(128)
+            playing_notes_.add(Result, channel)
+         end
+      ensure
+         Result /= Void
       end
 
    id: INTEGER
