@@ -104,11 +104,28 @@ feature {ANY}
          end
       end
 
+feature {ANY} -- context
    transpose_half_tones: INTEGER_8
 
    set_transpose_half_tones (a_transpose_half_tones: like transpose_half_tones) is
       do
          transpose_half_tones := a_transpose_half_tones
+      end
+
+feature {ANY} -- note ties management
+   is_on (pitch: INTEGER_8): BOOLEAN is
+      do
+         Result := playing_notes.fast_has(pitch)
+      end
+
+   turn_on (pitch: INTEGER_8) is
+      do
+         playing_notes.fast_add(pitch)
+      end
+
+   turn_off (pitch: INTEGER_8) is
+      do
+         playing_notes.fast_remove(pitch)
       end
 
 feature {}
@@ -167,9 +184,11 @@ feature {}
          create events.make
          id_counter.next
          id := id_counter.item
+         create playing_notes.with_capacity(128)
       end
 
    events: AVL_DICTIONARY[FAST_ARRAY[MIXUP_MIDI_CODEC], INTEGER_64]
+   playing_notes: HASHED_SET[INTEGER_8]
 
    end_of_track: MIXUP_MIDI_META_EVENT is
       local

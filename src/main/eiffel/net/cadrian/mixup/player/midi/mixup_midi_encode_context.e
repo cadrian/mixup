@@ -25,7 +25,4 @@ feature {ANY}
          transpose_half_tones = a_transpose_half_tones
       end
 
-   -- TODO: this is the way to fix note ties (noting which notes are
-   -- "currently" playing)
-
 end -- class MIXUP_MIDI_ENCODE_CONTEXT

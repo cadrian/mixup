@@ -34,15 +34,22 @@ feature {ANY}
 feature {MIXUP_CHORD}
    visit_chord (a_chord: MIXUP_CHORD) is
       do
-         a_chord.do_all(agent (head: MIXUP_NOTE_HEAD; duration: INTEGER_64) is
+         a_chord.do_all(agent (head: MIXUP_NOTE_HEAD; duration: INTEGER_64; tie: BOOLEAN) is
                         local
-                           events: MIXUP_MIDI_EVENTS
+                           events: MIXUP_MIDI_EVENTS; p: INTEGER_8
                         do
                            if not head.is_rest then
-                              track.add_event(precision *  time            , events.note_event(track_id.to_integer_8, True , pitch(head), 64))
-                              track.add_event(precision * (time + duration), events.note_event(track_id.to_integer_8, False, pitch(head), 64))
+                              p := pitch(head)
+                              if not track.is_on(p) then
+                                 track.add_event(precision * time, events.note_event(track_id.to_integer_8, True , p, 64))
+                                 track.turn_on(p)
+                              end
+                              if not tie then
+                                 track.add_event(precision * (time + duration), events.note_event(track_id.to_integer_8, False, p, 64))
+                                 track.turn_off(p)
+                              end
                            end
-                        end(?, a_chord.duration))
+                        end(?, a_chord.duration, a_chord.tie))
       end
 
 feature {MIXUP_LYRICS}

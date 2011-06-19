@@ -31,6 +31,9 @@ feature {ANY}
 feature {}
    make is
       do
+         create playing_notes.with_capacity(128)
       end
+
+   playing_notes: HASHED_SET[INTEGER_8]
 
 end -- class AUX_MIXUP_MOCK_ENCODE_CONTEXT
