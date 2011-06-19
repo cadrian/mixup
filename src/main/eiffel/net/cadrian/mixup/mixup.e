@@ -262,7 +262,7 @@ feature {} -- Low-level files cuisine
 
    system: FIXED_STRING is
       local
-         mixup_dir, candidate: STRING
+         mixup_dir: STRING
          sys: SYSTEM
          possible_directories: LINKED_LIST[STRING]
          i: ITERATOR[STRING]
@@ -284,8 +284,7 @@ feature {} -- Low-level files cuisine
          until
             Result /= Void or else i.is_off
          loop
-            candidate := i.item
-            Result := if_exists(candidate)
+            Result := if_exists(i.item)
             i.next
          end
 
