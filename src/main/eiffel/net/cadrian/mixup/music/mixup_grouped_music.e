@@ -111,7 +111,7 @@ feature {}
          if xuplet_text /= Void then
             a_context.set_xuplet(xuplet_numerator, xuplet_denominator, xuplet_text)
          end
-         create lyrics_manager.make(not (is_slur or is_phrasing_slur))
+         create lyrics_manager.make(not is_slur)
          create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_event_factory, end_event_factory, agent lyrics_manager.manage_lyrics, precursor_iterator)
       end
 

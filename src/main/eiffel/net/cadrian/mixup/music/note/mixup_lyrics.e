@@ -130,6 +130,8 @@ feature {ANY}
 
    is_empty: BOOLEAN is False
 
+   can_have_lyrics: BOOLEAN is True
+
 feature {}
    make (a_source: like source; a_note: MIXUP_NOTE; a_lyrics: TRAVERSABLE[MIXUP_SYLLABLE]) is
       require

@@ -28,7 +28,10 @@ create {ANY}
 feature {ANY}
    note: MIXUP_NOTE
 
-   allow_lyrics: BOOLEAN is True
+   allow_lyrics: BOOLEAN is
+      do
+         Result := note.can_have_lyrics
+      end
 
    has_lyrics: BOOLEAN
 
@@ -65,7 +68,9 @@ feature {}
       do
          make_(a_data)
          note := a_note
-         set_has_lyrics(True)
+         if allow_lyrics then
+            set_has_lyrics(True)
+         end
       ensure
          note = a_note
       end

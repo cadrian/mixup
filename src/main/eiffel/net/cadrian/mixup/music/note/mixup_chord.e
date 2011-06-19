@@ -190,6 +190,20 @@ feature {ANY}
          Result := reverse_index_of(element, upper)
       end
 
+   can_have_lyrics: BOOLEAN is
+      local
+         i: INTEGER
+      do
+         from
+            i := lower
+         until
+            Result or else i > upper
+         loop
+            Result := not storage.item(i).is_rest
+            i := i + 1
+         end
+      end
+
 feature {}
    make (a_source: like source; a_capacity: INTEGER; a_duration: INTEGER_64; a_tie: like tie) is
       require

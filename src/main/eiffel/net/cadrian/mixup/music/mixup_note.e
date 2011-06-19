@@ -35,6 +35,10 @@ feature {ANY}
          create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_SET_NOTE}.make(a_context.event_data(source), Current))
       end
 
+   can_have_lyrics: BOOLEAN is
+      deferred
+      end
+
 feature {MIXUP_MUSIC, MIXUP_VOICE}
    frozen consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
       do
