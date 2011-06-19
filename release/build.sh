@@ -127,7 +127,7 @@ root
     MIXUP: make
 
 default
-    assertion(boost)
+    assertion(no)
     debug(no)
     trace(no)
     no_style_warning(no)
@@ -137,13 +137,14 @@ default
     high_memory_compiler(yes)
     profile(no)
     relax(yes)
+    collect(yes)
 
 cluster
     liberty: "\${path_liberty}/src/loadpath.se"
     main: "${INSTALL_DIR}/src/main/eiffel/loadpath.se"
 
 generate
-    no_strip(no)
+    no_strip(yes)
     clean(no)
     c_compiler_options: "-g -pipe -Os"
     split("legacy")
@@ -172,6 +173,7 @@ default
     high_memory_compiler(yes)
     profile(no)
     relax(yes)
+    collect(yes)
 
 cluster
     liberty: "\${path_liberty}/src/loadpath.se"
@@ -222,6 +224,7 @@ default
     high_memory_compiler(yes)
     profile(no)
     relax(yes)
+    collect(yes)
 
 cluster
     liberty: "\${path_liberty}/src/loadpath.se"
