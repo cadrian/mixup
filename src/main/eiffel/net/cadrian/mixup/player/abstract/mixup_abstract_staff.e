@@ -120,6 +120,7 @@ feature {MIXUP_ABSTRACT_INSTRUMENT}
 
 feature {MIXUP_ABSTRACT_INSTRUMENT}
    generate (context: MIXUP_CONTEXT; section: SEC_; generate_names: BOOLEAN) is
+         -- TODO: generate_names is lilypond-specific, find another way
       require
          section /= Void
       local

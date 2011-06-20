@@ -26,6 +26,9 @@ inherit
 create {ANY}
    make
 
+feature {ANY}
+   dynamics: MIXUP_MIDI_DYNAMICS
+
 feature {MIXUP_ABSTRACT_STAFF}
    add_item (a_item: MIXUP_MIDI_ITEM) is
       do
@@ -34,13 +37,22 @@ feature {MIXUP_ABSTRACT_STAFF}
 
    set_dynamics (a_dynamics, position: ABSTRACT_STRING) is
       do
+         inspect
+            a_dynamics.intern
+         when "ppp", "pp", "p", "mp", "mf", "f", "ff", "fff", "end" then
+            create {MIXUP_MIDI_DYNAMICS_NUANCE} dynamics.make(dynamics, a_dynamics)
+         when "<", ">", "cresc", "decr", "dim" then
+            create {MIXUP_MIDI_DYNAMICS_HAIRPIN} dynamics.make(dynamics)
+         else
+            -- ignored for now
+         end
       end
 
    set_note (a_time: INTEGER_64; a_note: MIXUP_NOTE) is
       local
          note: MIXUP_MIDI_NOTE
       do
-         create note.make(a_time, a_note, track, track_id, slur_numerator, slur_denominator)
+         create note.make(a_time, a_note, track, track_id, slur_numerator, slur_denominator, dynamics)
          add_item(note)
          last_note := note
       end
@@ -96,15 +108,21 @@ feature {MIXUP_MIDI_STAFF}
       end
 
 feature {} -- TODO: remove the lyrics_gatherer which is lilypond-specific
-   make (a_id: like id; a_lyrics_gatherer: like lyrics_gatherer; a_track: like track; a_track_id: like track_id) is
+   make (a_id: like id; a_lyrics_gatherer: like lyrics_gatherer; a_track: like track; a_track_id: like track_id; a_dynamics: like dynamics) is
       require
          a_track /= Void
          a_track_id.in_range(0, 15)
+         a_dynamics /= Void
       do
          fix_slur(7, 8)
          track := a_track
          track_id := a_track_id
+         dynamics := a_dynamics
          make_abstract(a_id, a_lyrics_gatherer)
+      ensure
+         track = a_track
+         track_id = a_track_id
+         dynamics = a_dynamics
       end
 
    track: MIXUP_MIDI_TRACK
@@ -129,5 +147,6 @@ feature {} -- TODO: remove the lyrics_gatherer which is lilypond-specific
 invariant
    track /= Void
    track_id.in_range(0, 15)
+   dynamics /= Void
 
 end -- class MIXUP_MIDI_VOICE

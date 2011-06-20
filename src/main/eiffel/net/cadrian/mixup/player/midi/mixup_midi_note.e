@@ -25,6 +25,8 @@ create {ANY}
    make
 
 feature {ANY}
+   duration: INTEGER_64
+
    generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION) is
       do
          precision := section.precision
@@ -46,15 +48,16 @@ feature {ANY}
 feature {MIXUP_CHORD}
    visit_chord (a_chord: MIXUP_CHORD) is
       do
-         a_chord.do_all(agent (head: MIXUP_NOTE_HEAD; duration: INTEGER_64; tie: BOOLEAN; channel: INTEGER_8) is
+         duration := a_chord.duration
+         a_chord.do_all(agent (head: MIXUP_NOTE_HEAD; tie: BOOLEAN; channel: INTEGER_8) is
                         do
                            if not head.is_rest then
-                              track.turn_on(channel, precision * time, pitch(head), precision * duration * slur_numerator // slur_denominator)
+                              track.turn_on(channel, precision * time, pitch(head), precision * duration * slur_numerator // slur_denominator, dynamics.velocity(time))
                               if not tie then
-                                 track.turn_off(channel, precision * time, pitch(head))
+                                 track.turn_off(channel, precision * time, pitch(head), dynamics.velocity(time))
                               end
                            end
-                        end(?, a_chord.duration, a_chord.tie, track_id.to_integer_8))
+                        end(?, a_chord.tie, track_id.to_integer_8))
       end
 
 feature {MIXUP_LYRICS}
@@ -76,19 +79,23 @@ feature {MIXUP_LYRICS}
 
 feature {}
    make (a_time: like time; a_note: like note; a_track: like track; a_track_id: like track_id;
-         a_slur_numerator: like slur_numerator; a_slur_denominator: like slur_denominator) is
+         a_slur_numerator: like slur_numerator; a_slur_denominator: like slur_denominator;
+         a_dynamics: like dynamics) is
       require
          a_note /= Void
          a_track /= Void
          a_track_id.in_range(0, 15)
          a_slur_numerator > 0
          a_slur_denominator > 0
+         a_dynamics /= Void
       do
          time := a_time
          note := a_note
          track := a_track
          track_id := a_track_id
          fix_slur(a_slur_numerator, a_slur_denominator)
+         dynamics := a_dynamics
+         a_dynamics.add_note(Current)
       ensure
          time = a_time
          note = a_note
@@ -96,6 +103,7 @@ feature {}
          track_id = a_track_id
          slur_numerator = a_slur_numerator
          slur_denominator = a_slur_denominator
+         dynamics = a_dynamics
       end
 
    note: MIXUP_NOTE
@@ -106,6 +114,8 @@ feature {}
    precision: INTEGER
 
    slur_numerator, slur_denominator: INTEGER
+
+   dynamics: MIXUP_MIDI_DYNAMICS
 
    pitch (head: MIXUP_NOTE_HEAD): INTEGER_8 is
       require

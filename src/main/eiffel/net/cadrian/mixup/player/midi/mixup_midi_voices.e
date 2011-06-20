@@ -29,23 +29,25 @@ create {ANY}
    make
 
 feature {}
-   make (a_ids: TRAVERSABLE[INTEGER]; a_lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]; a_track: like track; a_track_id: like track_id) is
+   make (a_ids: TRAVERSABLE[INTEGER]; a_lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]; a_track: like track; a_track_id: like track_id; a_dynamics: like dynamics) is
       require
          a_track /= Void
          a_track_id.in_range(0, 15)
       do
          track := a_track
          track_id := a_track_id
+         dynamics := a_dynamics
          make_abstract(a_ids, a_lyrics_gatherer)
       end
 
    new_voice (a_id: INTEGER; lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]): MIXUP_MIDI_VOICE is
       do
-         create Result.make(a_id, lyrics_gatherer, track, track_id)
+         create Result.make(a_id, lyrics_gatherer, track, track_id, dynamics)
       end
 
    track: MIXUP_MIDI_TRACK
    track_id: INTEGER
+   dynamics: MIXUP_MIDI_DYNAMICS
 
 invariant
    track /= Void

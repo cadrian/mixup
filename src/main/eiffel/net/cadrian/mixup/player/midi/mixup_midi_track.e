@@ -112,24 +112,51 @@ feature {ANY} -- playing notes
          Result := playing_notes(channel).fast_has(pitch)
       end
 
-   turn_on (channel: INTEGER_8; time: INTEGER_64; pitch: INTEGER_8; duration: INTEGER_64) is
+   turn_on (channel: INTEGER_8; time: INTEGER_64; pitch: INTEGER_8; duration: INTEGER_64; velocity: INTEGER_8) is
       do
          if not is_on(channel, pitch) then
-            add_event(time, note_event(channel, True, pitch, 64))
+            add_event(time, note_event(channel, True, pitch, velocity))
          end
          playing_notes(channel).fast_put(duration, pitch)
       ensure
          is_on(channel, pitch)
       end
 
-   turn_off (channel: INTEGER_8; time: INTEGER_64; pitch: INTEGER_8) is
+   turn_off (channel: INTEGER_8; time: INTEGER_64; pitch: INTEGER_8; velocity: INTEGER_8) is
+      local
+         stop_time: INTEGER_64
       do
          if is_on(channel, pitch) then
-            add_event(time + playing_notes(channel).fast_at(pitch), note_event(channel, False, pitch, 64))
+            stop_time := time + playing_notes(channel).fast_at(pitch)
+            add_event(stop_time, note_event(channel, False, pitch, velocity))
          end
          playing_notes(channel).fast_remove(pitch)
       ensure
          not is_on(channel, pitch)
+      end
+
+   add_multi_point_controller (channel: INTEGER_8; start_time, end_time: INTEGER_64; count: INTEGER; knob: MIXUP_MIDI_CONTROLLER_KNOB; curve: FUNCTION[TUPLE[INTEGER], INTEGER]) is
+         -- Idea coming right from NoteWorthy Composer: the "MPC". That's the most user-friendly MIDI tool I ever used.
+      require
+         time_direction: end_time > start_time
+         sensible_count: count > 1
+         sensible_division: start_time + ((end_time - start_time) // count) * count = end_time
+      local
+         i, value: INTEGER
+         time, delta: INTEGER_64
+      do
+         from
+            time := start_time
+            delta := (end_time - start_time) // count
+            i := 1
+         until
+            i > count
+         loop
+            value := curve.item([i])
+            add_event(time, controller_event(channel, knob, value))
+            time := time + delta
+            i := i + 1
+         end
       end
 
 feature {ANY} -- encode context
