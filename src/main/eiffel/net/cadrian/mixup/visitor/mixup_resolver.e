@@ -76,7 +76,7 @@ feature {}
             if arg /= Void then
                arg.accept(Current)
             else
-               fatal_at(args.item(i).source, "Missing value")
+               create {MIXUP_NO_VALUE} value.make(args.item(i).source)
             end
             Result.add_last(value)
             i := i + 1

@@ -36,7 +36,7 @@ feature {ANY}
       do
          value := a_context.resolver.resolve(identifier, a_player)
          if value = Void then
-            fatal("unknown identifier: " + identifier.as_name)
+            create {MIXUP_ZERO_MUSIC} Result.make(source)
          else
             music := Void
             value.accept(Current)

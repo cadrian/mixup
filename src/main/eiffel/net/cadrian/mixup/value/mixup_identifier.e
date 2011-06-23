@@ -58,51 +58,31 @@ feature {ANY}
 
    eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN): MIXUP_VALUE is
       local
-         context: MIXUP_CONTEXT
-         i: INTEGER; name_buffer: STRING
          value: MIXUP_VALUE
-         args: TRAVERSABLE[MIXUP_VALUE]
       do
-         context := a_context
-         name_buffer := once ""
-         name_buffer.clear_count
-         from
-            i := parts.lower
-         until
-            i > parts.upper
-         loop
-            if not name_buffer.is_empty then
-               name_buffer.extend('.')
+         value := lookup(a_context, a_player).first
+         if value /= Void and then value.is_callable then
+            if do_call then
+               Result := value.call(parts.last.source, a_player, parts.last.eval_args(a_context, a_player))
+            else
+               create {MIXUP_AGENT_FUNCTION} Result.make(parts.last.source, value, parts.last.eval_args(a_context, a_player))
             end
-            name_buffer.append(parts.item(i).name)
-            value := a_context.lookup(name_buffer.intern, a_player, True)
-            if value /= Void then
-               if value.is_callable then
-                  args := parts.item(i).eval_args(a_context, a_player)
-                  if do_call then
-                     Result := value.call(parts.item(i).source, a_player, args)
-                  else
-                     create {MIXUP_AGENT_FUNCTION} Result.make(parts.item(i).source, value, args)
-                  end
-               else
-                  Result := value
-               end
-               if Result = Void then
-                  if i < parts.upper then
-                     warning("nothing returned")
-                  end
-                  Result := no_value
-               elseif Result /= Void and then Result.is_context then
-                  context := Result.as_context
-                  name_buffer.clear_count
-               elseif i < parts.upper then
-                  fatal("not a context")
-               end
-            elseif parts.item(i).args /= Void then
-               parts.item(i).append_args_in(name_buffer)
-            end
-            i := i + 1
+         else
+            Result := value
          end
+         if Result = Void then
+            info("nothing returned")
+            value := no_value
+         end
+      end
+
+   assign (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN) is
+      local
+         context: like lookup
+      do
+         context := lookup(a_context, a_player)
+         parts.last.append_eval_args_in(context.third, a_context, a_player)
+         context.second.setup(context.third.intern, a_value, is_const, is_public, is_local)
       end
 
    as_name: STRING is
@@ -177,6 +157,44 @@ feature {}
 
    debug_name: STRING
    no_value: MIXUP_NO_VALUE
+
+   lookup (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): TUPLE[MIXUP_VALUE, MIXUP_CONTEXT, STRING] is
+      local
+         context: MIXUP_CONTEXT
+         i: INTEGER; name_buffer: STRING
+         value: MIXUP_VALUE
+      do
+         context := a_context
+         name_buffer := ""
+         from
+            i := parts.lower
+         until
+            i > parts.upper
+         loop
+            if not name_buffer.is_empty then
+               name_buffer.extend('.')
+            end
+            name_buffer.append(parts.item(i).name)
+            value := a_context.lookup(name_buffer.intern, a_player, True)
+            if value /= Void then
+               if value.is_context then
+                  context := value.as_context
+                  name_buffer.clear_count
+               elseif i < parts.upper then
+                  fatal("not a context")
+               end
+            elseif parts.item(i).args /= Void then
+               parts.item(i).append_eval_args_in(name_buffer, a_context, a_player)
+            end
+            i := i + 1
+         end
+
+         Result := [value, context, name_buffer]
+      ensure
+         Result /= Void
+         Result.second /= Void
+         Result.third /= Void
+      end
 
 feature {MIXUP_VALUE_VISITOR}
    parts: COLLECTION[MIXUP_IDENTIFIER_PART]

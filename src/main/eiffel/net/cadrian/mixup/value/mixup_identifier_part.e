@@ -107,6 +107,28 @@ feature {MIXUP_IDENTIFIER}
          buffer.extend(')')
       end
 
+   append_eval_args_in (buffer: STRING; a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
+      require
+         buffer /= Void
+         args /= Void
+      local
+         i: INTEGER
+      do
+         buffer.extend('(')
+         from
+            i := args.lower
+         until
+            i > args.upper
+         loop
+            if i > args.lower then
+               buffer.append(once ", ")
+            end
+            args.item(i).eval(a_context, a_player, True).as_name_in(buffer)
+            i := i + 1
+         end
+         buffer.extend(')')
+      end
+
 feature {MIXUP_IDENTIFIER_PART, MIXUP_IDENTIFIER}
    as_name_in (a_name: STRING) is
       require

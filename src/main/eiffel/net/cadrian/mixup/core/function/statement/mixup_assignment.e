@@ -35,7 +35,7 @@ feature {ANY}
          if value = Void then
             error("value could not be computed")
          else
-            a_context.setup(identifier.as_name.intern, value, False, True, True)
+            identifier.assign(a_context, a_context.player, value, False, True, True)
          end
       end
 
