@@ -64,7 +64,7 @@ feature {ANY}
                error_at(args.first.source, "Lilypond: expected a string")
             end
          else
-            info_at(a_call_source, "Lilypond: ingored unknown native function: " + fn_name)
+            info_at(a_call_source, "Lilypond: ignored unknown native function: " + fn_name)
          end
       end
 
