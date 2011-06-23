@@ -25,18 +25,27 @@ composer = \markup{"Gabriel" \sans "Fauré"}
  \clef "G"
  \key des \major
  \override Staff.TimeSignature #'style = #'() \time 12/8
- R1. | R1. | f4.\(-\p bes4 bes8 aes4.~ aes4 aes8 | ges4.~ ges4 ges8 f2.\)
+ R1. | R1. | f4.\(^\p bes4 bes8 aes4.~ aes4 aes8 | ges4.~ ges4 ges8 f2.\)
  | f4\( des8 ees4 f8 aes4. f4 des8 | c2. bes4.~ bes8\)
  r8 f'8\( | f4. bes4 bes8 aes2. | ges4.~ ges4 ges8 f2.\)
  | f4\( des8 ees4 f8 f4. ees4 des8 | c2. c2.~ | \override Staff.TimeSignature #'style = #'() \time 6/8
  c4.\)
  r4 r8 | \override Staff.TimeSignature #'style = #'() \time 12/8
-
+ f4.\( c'4. bes4. f4. | ees4. f4 ges8 f2.\)
+ | f4\( f8 bes4. bes4 bes8 aes4 ges8 | f2. ges2.\)
+ | ges4.\( aes4 bes8 c2. | bes4. c4 des8 ees2.\)
+ | fes4.\(^\f ees4 des8 c4 bes8 a4 bes8 | f'1. | f,2.~ f4.\)
+ r4 r8 | R1. | f4.\(^\pp bes4 b8 aes4.~ aes4 aes8 | ges4.~ ges4 ges8 f2.\)
+ | f4.\( des4 ees8 f4 f8 ees4 des8 | c2. c2.\)
+ | f4.\( a4 c8 ees2. | des4. c4 bes8 c4. f,4.\)
+ | r2. bes2.^\mf\( | aes2. aes4. bes4 aes8 | aes2.~ aes4. ges4. | f1.\)
+ | r2. f2.^\p\( | bes2. bes4. aes4 ges8 | f2.~ f4. f4. | bes,1.~ | bes2.\)
+ r2. | R1. |
 }
 }
 \new Lyrics = "lied1x1" \lyricsto "lied1voice" {
 \lyricmode {
- "Le" "long" "du" "Quai," "les" "grands" "vais" -- "seaux," "Que" "la" "hou" -- "le in" -- "cli" -- "ne en" "si" -- "len" -- "ce," "Ne" "pren" -- "nent" "pas" "gar" -- "de aux" "ber" -- "ceaux," "Que" "la" "main" "des" "fem" -- "mes" "ba" -- "lan" -- "ce." "" "" "" "" ""
+ "Le" "long" "du" "Quai," "les" "grands" "vais" -- "seaux," "Que" "la" "hou" -- "le in" -- "cli" -- "ne en" "si" -- "len" -- "ce," "Ne" "pren" -- "nent" "pas" "gar" -- "de aux" "ber" -- "ceaux," "Que" "la" "main" "des" "fem" -- "mes" "ba" -- "lan" -- "ce." "Mais" "vien" -- "dra" "le" "jour" "des" "a" -- "dieux," "Car" "il" "faut" "que" "les" "fem" -- "mes" "pleu" -- "rent," "Et" "que" "les" "hom" -- "mes" "cu" -- "ri" -- "eux" "Ten" -- "tent" "les" "ho" -- "ri" -- "zons" "qui" "leur" -- "rent !" "Et" "ce" "jour" "là" "les" "grands" "vais" -- "seaux," "Fuy" -- "ant" "le" "port" "qui" "di" -- "mi" -- "nu" -- "e," "Sen" -- "tent" "leur" "mas" -- "se" "re" -- "te" -- "nu" -- "e" "Par" "l'â" -- "me" "des" "loin" -- "tains" "ber" -- "ceaux," "Par" "l'â" -- "me" "des" "loin" -- "tains" "ber" -- "ceaux." "" "" "" "" "" "" "" "" "" "" ""
 }
 }
 >>
