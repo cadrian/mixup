@@ -6,7 +6,48 @@ set midi_instrument := function (bank, patch) native "midi_instrument"
 set midi_tempo := function (bpm) native "midi_tempo"
 set transpose := function (half_tones) native "transpose"
 
+set midi_mpc_start := function (id, knob, value) native "midi_mpc_start"
+set midi_mpc_end := function (id, value) native "midi_mpc_end"
 
+
+
+-- controller knobs
+
+export bank_controller := "bank_controller"
+export modulation_wheel_controller := "modulation_wheel_controller"
+export breath_controller := "breath_controller"
+export foot_controller := "foot_controller"
+export portamento_time_controller := "portamento_time_controller"
+export channel_volume_controller := "channel_volume_controller"
+export balance_controller := "balance_controller"
+export pan_controller := "pan_controller"
+export expression_controller := "expression_controller"
+export effect_1_controller := "effect_1_controller"
+export effect_2_controller := "effect_2_controller"
+export general_purpose_1_controller := "general_purpose_1_controller"
+export general_purpose_2_controller := "general_purpose_2_controller"
+export general_purpose_3_controller := "general_purpose_3_controller"
+export general_purpose_4_controller := "general_purpose_4_controller"
+export damper_pedal_controller := "damper_pedal_controller"
+export portamento_controller := "portamento_controller"
+export sostenuto_controller := "sostenuto_controller"
+export soft_pedal_controller := "soft_pedal_controller"
+export legato_footswitch_controller := "legato_footswitch_controller"
+export fine_bank_controller := "fine_bank_controller"
+export fine_modulation_wheel_controller := "fine_modulation_wheel_controller"
+export fine_breath_controller := "fine_breath_controller"
+export fine_foot_controller := "fine_foot_controller"
+export fine_portamento_time_controller := "fine_portamento_time_controller"
+export fine_channel_volume_controller := "fine_channel_volume_controller"
+export fine_balance_controller := "fine_balance_controller"
+export fine_pan_controller := "fine_pan_controller"
+export fine_expression_controller := "fine_expression_controller"
+export fine_effect_1_controller := "fine_effect_1_controller"
+export fine_effect_2_controller := "fine_effect_2_controller"
+export fine_general_purpose_1_controller := "fine_general_purpose_1_controller"
+export fine_general_purpose_2_controller := "fine_general_purpose_2_controller"
+export fine_general_purpose_3_controller := "fine_general_purpose_3_controller"
+export fine_general_purpose_4_controller := "fine_general_purpose_4_controller"
 
 
 

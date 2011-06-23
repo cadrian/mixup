@@ -48,6 +48,10 @@ feature {ANY}
             Result := set_midi_tempo(a_call_source, a_context, args)
          when "transpose" then
             Result := set_transpose(a_call_source, a_context, args)
+         when "midi_mpc_start" then
+            Result := set_midi_mpc_start(a_call_source, a_context, args)
+         when "midi_mpc_end" then
+            Result := set_midi_mpc_end(a_call_source, a_context, args)
          else
             info_at(a_call_source, "MIDI: ignored unknown native function: " + fn_name)
          end
@@ -74,8 +78,15 @@ feature {ANY}
    play_transpose (a_data: MIXUP_EVENT_DATA; a_half_tones: INTEGER_8) is
          -- MIDI-specific
       do
-         log.info.put_line("MIDI: send meta events")
+         log.info.put_line("MIDI: send transpose")
          instruments.reference_at(a_data.instrument).transpose(a_data.start_time, a_half_tones)
+      end
+
+   play_mpc (a_data: MIXUP_EVENT_DATA; a_knob: MIXUP_MIDI_CONTROLLER_KNOB; a_start_time: INTEGER_64; a_start_value, a_end_value: INTEGER_8) is
+         -- MIDI-specific
+      do
+         log.info.put_line("MIDI: send MPC")
+         instruments.reference_at(a_data.instrument).mpc(a_knob, a_start_time * current_section.precision, a_start_value, a_data.start_time * current_section.precision, a_end_value)
       end
 
 feature {} -- native functions
@@ -141,6 +152,68 @@ feature {} -- native functions
          end
       end
 
+   set_midi_mpc_start (a_source: MIXUP_SOURCE; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_MIDI_MPC_START_FACTORY is
+      local
+         id, knob: MIXUP_STRING; value: MIXUP_INTEGER
+         controller_knob: MIXUP_MIDI_CONTROLLER_KNOB
+      do
+         if args.count /= 3 then
+            error_at(a_source, "MIDI: bad argument count")
+         elseif not (id ?:= args.first) then
+            error_at(args.first.source, "MIDI: bad argument type")
+         elseif not (knob ?:= args.item(args.lower+1)) then
+            error_at(args.first.source, "MIDI: bad argument type")
+         elseif not (value ?:= args.last) then
+            error_at(args.last.source, "MIDI: bad argument type")
+         else
+            id ::= args.first
+            knob ::= args.item(args.lower+1)
+            value ::= args.last
+            controller_knob := knobs.fast_reference_at(knob.value)
+            if controller_knob = Void then
+               error_at(knob.source, "MIDI: unknown controller knob: " + knob.value.out)
+            elseif not value.value.in_range(0, 127) then
+               error_at(value.source, "MIDI: bad argument value, expected 0..127 but got " + value.value.out)
+            else
+               create Result.make(a_source, controller_knob, value.value.to_integer_8)
+               if not id.value.is_empty then
+                  mpc_map.put(Result, id.value)
+               end
+            end
+         end
+      end
+
+   set_midi_mpc_end (a_source: MIXUP_SOURCE; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_MIDI_MPC_END_FACTORY is
+      local
+         id: MIXUP_STRING; value: MIXUP_INTEGER
+         mpc_start: MIXUP_MIDI_MPC_START_FACTORY
+      do
+         if args.count /= 2 then
+            error_at(a_source, "MIDI: bad argument count")
+         elseif not (id ?:= args.first) and then not (mpc_start ?:= args.first) then
+            error_at(args.first.source, "MIDI: bad argument type")
+         elseif not (value ?:= args.last) then
+            error_at(args.last.source, "MIDI: bad argument type")
+         else
+            value ::= args.last
+            if mpc_start ?:= args.first then
+               mpc_start ::= args.first
+            else
+               id ::= args.first
+               mpc_start := mpc_map.fast_reference_at(id.value)
+            end
+            if mpc_start = Void then
+               error_at(mpc_start.source, "MIDI: bad argument value, unknown MPC")
+            elseif mpc_start.mpc_end /= Void then
+               error_at(mpc_start.source, "MIDI: bad argument value, this MPC already has an end point")
+            elseif not value.value.in_range(0, 127) then
+               error_at(value.source, "MIDI: bad argument value, expected 0..127 but got " + value.value.out)
+            else
+               create Result.make(a_source, mpc_start, value.value.to_integer_8)
+            end
+         end
+      end
+
 feature {} -- section files management
    build_filename (a_name: ABSTRACT_STRING): STRING is
       do
@@ -197,6 +270,11 @@ feature {}
       ensure
          opus_output = Void
          managed_output
+      end
+
+   mpc_map: HASHED_DICTIONARY[MIXUP_MIDI_MPC_START_FACTORY, FIXED_STRING] is
+      once
+         create Result.make
       end
 
 end -- class MIXUP_MIDI_PLAYER

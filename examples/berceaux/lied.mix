@@ -12,6 +12,7 @@ instrument lied
 
             R1. | R1. |
             :p:
+            \midi_mpc_start("x0", expression_controller, 64)
             { f4. bes4 bes8 aes4.~ aes4 aes8 |
             ges4.~ ges4 ges8 f2. } |
             { f4 des8 ees4 f8 aes4. f4 des8 |
@@ -24,6 +25,7 @@ instrument lied
             \set_time("6/8")
             c4. } r4 r8 |
             \set_time("12/8")
+            \midi_mpc_end("x0", 127)
         >>
 
     lyrics

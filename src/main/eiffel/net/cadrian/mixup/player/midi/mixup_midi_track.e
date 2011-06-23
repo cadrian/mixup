@@ -144,7 +144,10 @@ feature {ANY} -- playing notes
       local
          i, value: INTEGER
          time, delta: INTEGER_64
+         log_info: OUTPUT_STREAM
+
       do
+         log_info := log.info
          from
             time := start_time
             delta := (end_time - start_time) // count
@@ -153,6 +156,13 @@ feature {ANY} -- playing notes
             i > count
          loop
             value := curve.item([i])
+
+            log_info.put_string(once "   at ")
+            log_info.put_integer(time)
+            log_info.put_string(once ": value=")
+            log_info.put_integer(value)
+            log_info.put_new_line
+
             add_event(time, controller_event(channel, knob, value))
             time := time + delta
             i := i + 1

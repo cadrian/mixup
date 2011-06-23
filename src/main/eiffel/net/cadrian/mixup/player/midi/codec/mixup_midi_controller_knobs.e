@@ -18,6 +18,57 @@ feature {ANY}
    switch_off: INTEGER_8 is 63
    switch_on:  INTEGER_8 is 64
 
+feature {ANY}
+   knobs: MAP[MIXUP_MIDI_CONTROLLER_KNOB, FIXED_STRING] is
+      local
+         dico: HASHED_DICTIONARY[MIXUP_MIDI_CONTROLLER_KNOB, FIXED_STRING]
+      once
+         create dico.make
+         Result := dico
+
+         {FAST_ARRAY[MIXUP_MIDI_CONTROLLER_KNOB]
+         <<
+           bank_controller,
+           modulation_wheel_controller,
+           breath_controller,
+           foot_controller,
+           portamento_time_controller,
+           channel_volume_controller,
+           balance_controller,
+           pan_controller,
+           expression_controller,
+           effect_1_controller,
+           effect_2_controller,
+           general_purpose_1_controller,
+           general_purpose_2_controller,
+           general_purpose_3_controller,
+           general_purpose_4_controller,
+           damper_pedal_controller,
+           portamento_controller,
+           sostenuto_controller,
+           soft_pedal_controller,
+           legato_footswitch_controller,
+           fine_bank_controller,
+           fine_modulation_wheel_controller,
+           fine_breath_controller,
+           fine_foot_controller,
+           fine_portamento_time_controller,
+           fine_channel_volume_controller,
+           fine_balance_controller,
+           fine_pan_controller,
+           fine_expression_controller,
+           fine_effect_1_controller,
+           fine_effect_2_controller,
+           fine_general_purpose_1_controller,
+           fine_general_purpose_2_controller,
+           fine_general_purpose_3_controller,
+           fine_general_purpose_4_controller,
+           >> }.do_all(agent (knob: MIXUP_MIDI_CONTROLLER_KNOB; dic: HASHED_DICTIONARY[MIXUP_MIDI_CONTROLLER_KNOB, FIXED_STRING]) is
+                       do
+                          dic.add(knob, knob.name)
+                       end(?, dico))
+      end
+
 feature {ANY} -- coarse controllers (most common)
    bank_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
@@ -61,7 +112,7 @@ feature {ANY} -- coarse controllers (most common)
 
    expression_controller: MIXUP_MIDI_CONTROLLER_KNOB is
       once
-         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(11, 0, "troller")
+         create {MIXUP_MIDI_CONTROLLER_SLIDER} Result.make(11, 0, "expression_controller")
       end
 
    effect_1_controller: MIXUP_MIDI_CONTROLLER_KNOB is

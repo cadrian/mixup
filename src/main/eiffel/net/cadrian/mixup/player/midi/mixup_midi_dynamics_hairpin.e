@@ -41,11 +41,27 @@ feature {ANY}
       local
          knobs: MIXUP_MIDI_CONTROLLER_KNOBS
          count: INTEGER
+         log_info: OUTPUT_STREAM
       do
+         -- TODO: that code has much in common with MIXUP_MIDI_INSTRUMENT.mpc
+         -- TO REFACTOR!
+
          count := stop.nuance - start.nuance
          if count < 0 then
             count := -count
          end
+
+         log_info := log.info
+         log_info.put_string(once "Playing hairpin: from time")
+         log_info.put_integer(last_time * section.precision)
+         log_info.put_string(once " (value: ")
+         log_info.put_integer(start.nuance)
+         log_info.put_string(once ") to time ")
+         log_info.put_integer(first_time)
+         log_info.put_string(once " (value: ")
+         log_info.put_integer(stop.nuance * section.precision)
+         log_info.put_line(once ")")
+
          track.add_multi_point_controller(track_id.to_integer_8, first_time * section.precision, last_time * section.precision, count,
                                           knobs.expression_controller, agent linear_expression)
       end
