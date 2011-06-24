@@ -34,9 +34,9 @@ feature {MIXUP_ABSTRACT_PLAYER}
          staffs.reference_at(a_staff_id).end_voices(a_voice_id)
       end
 
-   set_dynamics (a_staff_id, a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (a_staff_id, a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
       do
-         staffs.reference_at(a_staff_id).set_dynamics(a_voice_id, dynamics, position)
+         staffs.reference_at(a_staff_id).set_dynamics(a_voice_id, dynamics, position, is_standard)
       end
 
    set_note (a_staff_id, a_voice_id: INTEGER; time: INTEGER_64; note: MIXUP_NOTE) is

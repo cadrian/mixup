@@ -79,6 +79,9 @@ feature {MIXUP_ABSTRACT_STAFF}
    add_item (a_item: MIXUP_LILYPOND_ITEM) is
       do
          if dynamics /= Void then
+            if dynamics_is_open then
+               close_dynamics
+            end
             a_item.append_first(dynamics)
             dynamics := Void
          end
@@ -96,25 +99,26 @@ feature {MIXUP_ABSTRACT_STAFF}
          end
       end
 
-   set_dynamics (a_dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (a_dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
       do
-         if position = Void then
-            dynamics := "-\" + a_dynamics
-         elseif a_dynamics.out.is_equal("end") then
-            dynamics := "-\!"
+         if a_dynamics.out.is_equal("end") then
+            if dynamics_is_open then
+               close_dynamics
+               dynamics.append(once "-\!")
+            else
+               dynamics := "-\!"
+            end
          else
-            inspect
-               position.out
-            when "up" then
-               dynamics := "^\" + a_dynamics
-            when "down" then
-               dynamics := "_\" + a_dynamics
-            when "top" then
-               not_yet_implemented
-            when "bottom" then
-               not_yet_implemented
-            when "hidden" then
-               -- nothing
+            if not dynamics_is_open then
+               if dynamics = Void then
+                  dynamics := ""
+               end
+               open_dynamics(position)
+            elseif not dynamics_is_hidden then
+               dynamics.extend(' ')
+            end
+            if not dynamics_is_hidden then
+               dynamics.append(dyn_markup(a_dynamics, is_standard))
             end
          end
       end
@@ -201,5 +205,64 @@ feature {}
 
    dynamics: STRING
    slur: STRING
+
+   dynamics_is_open: BOOLEAN
+   dynamics_is_hidden: BOOLEAN
+
+   dyn_markup (a_dynamics: ABSTRACT_STRING; is_standard: BOOLEAN): ABSTRACT_STRING is
+      do
+         if is_standard then
+            Result := "\dynamic " + a_dynamics
+         else
+            Result := "\italic %"" + a_dynamics + "%""
+         end
+      end
+
+   open_dynamics (position: ABSTRACT_STRING) is
+      require
+         dynamics /= Void
+      do
+         if position = Void then
+            dynamics_is_hidden := False
+            dynamics.extend('-')
+         else
+            inspect
+               position.intern
+            when "up" then
+            dynamics_is_hidden := False
+               dynamics.extend('^')
+            when "down" then
+            dynamics_is_hidden := False
+               dynamics.extend('_')
+            when "top" then
+               not_yet_implemented
+            when "bottom" then
+               not_yet_implemented
+            when "hidden" then
+               dynamics_is_hidden := True
+            end
+         end
+         if not dynamics_is_hidden then
+            dynamics.append(once "\markup{")
+         end
+         dynamics_is_open := True
+      ensure
+         dynamics_is_open
+      end
+
+   close_dynamics is
+      require
+         dynamics_is_open
+      do
+         if not dynamics_is_hidden then
+            dynamics.extend('}')
+         end
+         dynamics_is_open := False
+      ensure
+         not dynamics_is_open
+      end
+
+invariant
+   dynamics_is_open implies dynamics /= Void
 
 end -- class MIXUP_LILYPOND_VOICE

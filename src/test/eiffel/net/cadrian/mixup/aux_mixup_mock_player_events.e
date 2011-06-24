@@ -60,14 +60,14 @@ feature {}
          create Result.make("end_voices".intern, [instrument.intern, a_staff_id])
       end
 
-   set_dynamics (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; dynamics, position: ABSTRACT_STRING): AUX_MIXUP_MOCK_EVENT is
+   set_dynamics (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN): AUX_MIXUP_MOCK_EVENT is
       local
          pos: FIXED_STRING
       do
          if position /= Void then
             pos := position.intern
          end
-         create Result.make("set_dynamics".intern, [instrument.intern, a_staff_id, dynamics.intern, pos])
+         create Result.make("set_dynamics".intern, [instrument.intern, a_staff_id, dynamics.intern, pos, is_standard])
       end
 
    set_note (instrument: ABSTRACT_STRING; a_staff_id: INTEGER; note: MIXUP_NOTE): AUX_MIXUP_MOCK_EVENT is

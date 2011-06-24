@@ -30,6 +30,7 @@ feature {ANY}
    anchor: MIXUP_NOTE_HEAD is do end
    text: FIXED_STRING
    position: FIXED_STRING
+   is_standard: BOOLEAN
 
    commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
       do
@@ -41,7 +42,7 @@ feature {ANY}
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
-         create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_SET_DYNAMICS}.make(a_context.event_data(source), text, position))
+         create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_SET_DYNAMICS}.make(a_context.event_data(source), text, position, is_standard))
       end
 
    out_in_tagged_out_memory is
@@ -60,7 +61,7 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
       end
 
 feature {}
-   make (a_source: like source; a_text, a_position: FIXED_STRING) is
+   make (a_source: like source; a_text, a_position: FIXED_STRING; a_standard: like is_standard) is
       require
          a_source /= Void
          a_text /= Void
@@ -68,10 +69,12 @@ feature {}
          source := a_source
          text := a_text
          position := a_position
+         is_standard := a_standard
       ensure
          source = a_source
          text = a_text
          position = a_position
+         is_standard = a_standard
       end
 
 invariant

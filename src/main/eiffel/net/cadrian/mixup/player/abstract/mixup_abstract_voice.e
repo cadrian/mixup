@@ -30,7 +30,7 @@ feature {MIXUP_ABSTRACT_STAFF}
          items.last = a_item
       end
 
-   set_dynamics (a_dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (a_dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
       deferred
       end
 

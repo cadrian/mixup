@@ -1126,32 +1126,32 @@ feature {} -- Dynamics
    build_dynamic_identifier (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          dynamic.node_at(0).accept(Current)
-         create last_dynamics.make(new_source(dynamic), name.intern, last_position)
+         create last_dynamics.make(new_source(dynamic), name.intern, last_position, True)
          last_compound_music.add_music(last_dynamics)
       end
 
    build_dynamic_string (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
          dynamic.node_at(0).accept(Current)
-         create last_dynamics.make(new_source(dynamic), last_string.intern, last_position)
+         create last_dynamics.make(new_source(dynamic), last_string.intern, last_position, False)
          last_compound_music.add_music(last_dynamics)
       end
 
    build_dynamic_hairpin_crescendo (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         create last_dynamics.make(new_source(dynamic), (once "<").intern, last_position)
+         create last_dynamics.make(new_source(dynamic), (once "<").intern, last_position, True)
          last_compound_music.add_music(last_dynamics)
       end
 
    build_dynamic_hairpin_decrescendo (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         create last_dynamics.make(new_source(dynamic), (once ">").intern, last_position)
+         create last_dynamics.make(new_source(dynamic), (once ">").intern, last_position, True)
          last_compound_music.add_music(last_dynamics)
       end
 
    build_dynamic_end (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
       do
-         create last_dynamics.make(new_source(dynamic), (once "end").intern, last_position)
+         create last_dynamics.make(new_source(dynamic), (once "end").intern, last_position, True)
          last_compound_music.add_music(last_dynamics)
       end
 

@@ -126,9 +126,9 @@ feature {ANY}
          add_event(end_voices_event(a_data.instrument, a_data.staff_id))
       end
 
-   play_set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING) is
+   play_set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
       do
-         add_event(set_dynamics_event(a_data.instrument, a_data.staff_id, dynamics, position))
+         add_event(set_dynamics_event(a_data.instrument, a_data.staff_id, dynamics, position, is_standard))
       end
 
    play_set_note (a_data: MIXUP_EVENT_DATA; note: MIXUP_NOTE) is

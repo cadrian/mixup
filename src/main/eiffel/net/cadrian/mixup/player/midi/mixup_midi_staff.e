@@ -37,12 +37,12 @@ feature {MIXUP_ABSTRACT_INSTRUMENT}
          all_dynamics.do_all(agent {MIXUP_MIDI_DYNAMICS}.generate(context, section, track, track_id))
       end
 
-   set_dynamics (a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
       local
          v: like voice; dyn: like last_dynamics
       do
          v := voice(a_voice_id)
-         v.set_dynamics(dynamics, position)
+         v.set_dynamics(dynamics, position, is_standard)
          dyn := v.dynamics
          if dyn /= last_dynamics then
             all_dynamics.add_last(dyn)

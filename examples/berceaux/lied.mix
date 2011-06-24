@@ -12,7 +12,7 @@ instrument lied
 
             R1. | R1. |
 
-            :up:p:--,"sempre":
+            :up:p,"sempre":
             { f4. bes4 bes8 aes4.~ aes4 aes8 |
             ges4.~ ges4 ges8 f2. } |
             { f4 des8 ees4 f8 aes4. f4 des8 |
@@ -26,15 +26,15 @@ instrument lied
             c4. } r4 r8 |
             \set_time("12/8")
 
-            --:"cresc. poco a poco":
+            :up:"cresc. poco a poco":
             { f4. c' bes f |
             ees f4 ges8 f2. } |
             { f4 f8 bes4. bes4 bes8 aes4 ges8 |
             f2. ges } |
-            --:"cresc. molto":
+            :up:"cresc. molto":
             { ges4. aes4 bes8 c2. |
             bes4. c4 des8 ees2. } |
-            :up:f:--,"sempre":
+            :up:f,"sempre":
             { fes4. ees4 des8 c4 bes8 a4 bes8 | -- TODO: bécarre d'aide
             f'1. |
             f,2.~ f4. } r4 r8 |
@@ -46,7 +46,7 @@ instrument lied
             ges4.~ ges4 ges8 f2. } |
             { f4. des4 ees8 f4 f8 ees4 des8 |
             c2. c } |
-            --:"cresc.":
+            :up:"cresc.":
             { f4. a4 c8 ees2. |
             des4. c4 bes8 c4. f, } |
             r2. { :up:mf: bes2. |

@@ -28,6 +28,7 @@ create {ANY}
 
 feature {ANY}
    dynamics: FIXED_STRING
+   is_standard: BOOLEAN
    position: FIXED_STRING
 
 feature {MIXUP_PLAYER}
@@ -36,11 +37,11 @@ feature {MIXUP_PLAYER}
          p: MIXUP_EVENT_SET_DYNAMICS_PLAYER
       do
          p ::= player
-         p.play_set_dynamics(data, dynamics, position)
+         p.play_set_dynamics(data, dynamics, position, is_standard)
       end
 
 feature {}
-   make (a_data: like data; a_dynamics: ABSTRACT_STRING; a_position: ABSTRACT_STRING) is
+   make (a_data: like data; a_dynamics: ABSTRACT_STRING; a_position: ABSTRACT_STRING; a_standard: like is_standard) is
       require
          a_dynamics /= Void
       do
@@ -49,10 +50,12 @@ feature {}
          if a_position /= Void then
             position := a_position.intern
          end
+         is_standard := a_standard
       ensure
          dynamics = a_dynamics
          a_position /= Void implies position = a_position.intern
          a_position = Void implies position = Void
+         is_standard = a_standard
       end
 
    out_in_extra_data is
@@ -62,6 +65,9 @@ feature {}
          if position /= Void then
             tagged_out_memory.append(once ", position=")
             position.out_in_tagged_out_memory
+         end
+         if is_standard then
+            tagged_out_memory.append(once ", is_standard")
          end
       end
 

@@ -63,9 +63,9 @@ feature {MIXUP_ABSTRACT_INSTRUMENT}
          end
       end
 
-   set_dynamics (a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
       do
-         voice(a_voice_id).set_dynamics(dynamics, position)
+         voice(a_voice_id).set_dynamics(dynamics, position, is_standard)
       end
 
    set_note (a_voice_id: INTEGER; time: INTEGER_64; note: MIXUP_NOTE) is

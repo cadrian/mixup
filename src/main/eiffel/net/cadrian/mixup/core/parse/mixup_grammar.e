@@ -302,7 +302,7 @@ feature {}
                                                                       {FAST_ARRAY[STRING] << "KW down", "KW :" >> }, Void; -- down current staff
                                                                       {FAST_ARRAY[STRING] << "KW top", "KW :" >> }, Void; -- up current instrument
                                                                       {FAST_ARRAY[STRING] << "KW bottom", "KW :" >> }, Void; -- down current instrument
-                                                                      {FAST_ARRAY[STRING] << "KW hidden", "KW :" >> }, Void; -- don't display, for midi control only
+                                                                      {FAST_ARRAY[STRING] << "KW hidden", "KW :" >> }, Void; -- don't display, e.g. for midi control only
                                                                       >> };
 
                                    "Staff+", list_of("Staff", False, Void);

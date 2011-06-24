@@ -85,10 +85,10 @@ feature {ANY}
          instruments.reference_at(a_data.instrument).end_voices(a_data.staff_id, a_data.voice_id)
       end
 
-   play_set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING) is
+   play_set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
       do
          log.info.put_line("playing dynamics: " + dynamics.out)
-         instruments.reference_at(a_data.instrument).set_dynamics(a_data.staff_id, a_data.voice_id, dynamics, position)
+         instruments.reference_at(a_data.instrument).set_dynamics(a_data.staff_id, a_data.voice_id, dynamics, position, is_standard)
       end
 
    play_set_note (a_data: MIXUP_EVENT_DATA; note: MIXUP_NOTE) is
