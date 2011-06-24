@@ -235,12 +235,12 @@ feature {}
 
                                    "Notes*", list_of("Notes", True, Void);
                                    "Notes", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "Next_Bar" >> }, Void; -- check bar
-                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Extern_Notes" >> }, Void; -- music insertion
-                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Voices" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Chord_Or_Tie" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Beam" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Phrasing_Slur" >> }, Void;
-                                                                   {FAST_ARRAY[STRING] << "Dynamics", "Slur" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Dynamics*", "Extern_Notes" >> }, Void; -- music insertion
+                                                                   {FAST_ARRAY[STRING] << "Dynamics*", "Voices" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Dynamics*", "Chord_Or_Tie" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Dynamics*", "Beam" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Dynamics*", "Phrasing_Slur" >> }, Void;
+                                                                   {FAST_ARRAY[STRING] << "Dynamics*", "Slur" >> }, Void;
                                                                    >> };
 
                                    "Next_Bar", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW |" >> }, Void;
@@ -275,8 +275,8 @@ feature {}
                                    "DotDot", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW .." >> }, Void;
                                                                  >> };
 
-                                   "Dynamics", {PARSE_NON_TERMINAL << epsilon, Void;
-                                                                      {FAST_ARRAY[STRING] << "KW :", "Position", "Dynamic+", "KW :" >> }, Void;
+                                   "Dynamics*", list_of("Dynamics", True, Void);
+                                   "Dynamics", {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW :", "Position", "Dynamic+", "KW :" >> }, Void;
                                                                       {FAST_ARRAY[STRING] << "KW :", "Position", "Dynamic+", "KW ...", "KW :" >> }, Void; -- dashed line along the whole dynamic section (not with hairpins!)
                                                                       >> };
                                    "Dynamic+", list_of("Dynamic", False, "KW ,");

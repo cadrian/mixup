@@ -101,24 +101,49 @@ feature {MIXUP_ABSTRACT_STAFF}
 
    set_dynamics (a_dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
       do
+         if (position /= Void and then (dynamics_position /= position.intern)) or else (position = Void and then dynamics_position /= Void) then
+            if dynamics_is_open then
+               close_dynamics
+            end
+            dynamics_position := position.intern
+         end
+
          if a_dynamics.out.is_equal("end") then
             if dynamics_is_open then
                close_dynamics
                dynamics.append(once "-\!")
             else
-               dynamics := "-\!"
-            end
-         else
-            if not dynamics_is_open then
                if dynamics = Void then
                   dynamics := ""
                end
-               open_dynamics(position)
-            elseif not dynamics_is_hidden then
-               dynamics.extend(' ')
+               dynamics.append(once "-\!")
             end
-            if not dynamics_is_hidden then
-               dynamics.append(dyn_markup(a_dynamics, is_standard))
+         else
+            inspect
+               a_dynamics.intern
+            when "<", ">" then
+               if dynamics_is_open then
+                  close_dynamics
+               elseif dynamics = Void then
+                  dynamics := ""
+               end
+               dyn_position(position)
+               if not dynamics_is_hidden then
+                  dynamics.extend('\')
+                  dynamics.append(a_dynamics)
+               end
+            else
+               if not dynamics_is_open then
+                  if dynamics = Void then
+                     dynamics := ""
+                  end
+                  open_dynamics(position)
+               elseif not dynamics_is_hidden then
+                  dynamics.extend(' ')
+               end
+               if not dynamics_is_hidden then
+                  dynamics.append(dyn_markup(a_dynamics, is_standard))
+               end
             end
          end
       end
@@ -208,6 +233,7 @@ feature {}
 
    dynamics_is_open: BOOLEAN
    dynamics_is_hidden: BOOLEAN
+   dynamics_position: FIXED_STRING
 
    dyn_markup (a_dynamics: ABSTRACT_STRING; is_standard: BOOLEAN): ABSTRACT_STRING is
       do
@@ -218,7 +244,7 @@ feature {}
          end
       end
 
-   open_dynamics (position: ABSTRACT_STRING) is
+   dyn_position (position: ABSTRACT_STRING) is
       require
          dynamics /= Void
       do
@@ -229,10 +255,10 @@ feature {}
             inspect
                position.intern
             when "up" then
-            dynamics_is_hidden := False
+               dynamics_is_hidden := False
                dynamics.extend('^')
             when "down" then
-            dynamics_is_hidden := False
+               dynamics_is_hidden := False
                dynamics.extend('_')
             when "top" then
                not_yet_implemented
@@ -242,6 +268,13 @@ feature {}
                dynamics_is_hidden := True
             end
          end
+      end
+
+   open_dynamics (position: ABSTRACT_STRING) is
+      require
+         dynamics /= Void
+      do
+         dyn_position(position)
          if not dynamics_is_hidden then
             dynamics.append(once "\markup{")
          end
