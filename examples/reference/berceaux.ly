@@ -25,21 +25,21 @@ composer = \markup{"Gabriel" \sans "Fauré"}
  \clef "G"
  \key des \major
  \override Staff.TimeSignature #'style = #'() \time 12/8
- R1. | R1. | f4.\(^\p bes4 bes8 aes4.~ aes4 aes8 | ges4.~ ges4 ges8 f2.\)
+ R1. | R1. | f4.\(^\markup{\dynamic p \italic "sempre"} bes4 bes8 aes4.~ aes4 aes8 | ges4.~ ges4 ges8 f2.\)
  | f4\( des8 ees4 f8 aes4. f4 des8 | c2. bes4.~ bes8\)
  r8 f'8\( | f4. bes4 bes8 aes2. | ges4.~ ges4 ges8 f2.\)
  | f4\( des8 ees4 f8 f4. ees4 des8 | c2. c2.~ | \override Staff.TimeSignature #'style = #'() \time 6/8
  c4.\)
  r4 r8 | \override Staff.TimeSignature #'style = #'() \time 12/8
- f4.\( c'4. bes4. f4. | ees4. f4 ges8 f2.\)
+ f4.\(^\markup{\italic "cresc. poco a poco"} c'4. bes4. f4. | ees4. f4 ges8 f2.\)
  | f4\( f8 bes4. bes4 bes8 aes4 ges8 | f2. ges2.\)
- | ges4.\( aes4 bes8 c2. | bes4. c4 des8 ees2.\)
- | fes4.\(^\f ees4 des8 c4 bes8 a4 bes8 | f'1. | f,2.~ f4.\)
- r4 r8 | R1. | f4.\(^\pp bes4 b8 aes4.~ aes4 aes8 | ges4.~ ges4 ges8 f2.\)
+ | ges4.\(^\markup{\italic "cresc. molto"} aes4 bes8 c2. | bes4. c4 des8 ees2.\)
+ | fes4.\(^\markup{\dynamic f \italic "sempre"} ees4 des8 c4 bes8 a4 bes8 | f'1. | f,2.~ f4.\)
+ r4 r8 | R1. | f4.\(^\markup{\dynamic pp} bes4 bes8 aes4.~ aes4 aes8 | ges4.~ ges4 ges8 f2.\)
  | f4.\( des4 ees8 f4 f8 ees4 des8 | c2. c2.\)
- | f4.\( a4 c8 ees2. | des4. c4 bes8 c4. f,4.\)
- | r2. bes2.^\mf\( | aes2. aes4. bes4 aes8 | aes2.~ aes4. ges4. | f1.\)
- | r2. f2.^\p\( | bes2. bes4. aes4 ges8 | f2.~ f4. f4. | bes,1.~ | bes2.\)
+ | f4.\(^\markup{\italic "cresc."} a4 c8 ees2. | des4. c4 bes8 c4. f,4.\)
+ | r2. bes2.^\markup{\dynamic mf}\( | aes2. aes4. bes4 aes8 | aes2.~ aes4. ges4. | f1.\)
+ | r2. f2.^\markup{\dynamic p}\( | bes2. bes4. aes4 ges8 | f2.~ f4. f4. | bes,1.~ | bes2.\)
  r2. | R1. |
 }
 }
@@ -58,7 +58,7 @@ composer = \markup{"Gabriel" \sans "Fauré"}
  \clef "G"
  \key des \major
  \override Staff.TimeSignature #'style = #'() \time 12/8
- bes4\(-\p f'8 bes4 f8
+ bes4\(-\markup{\dynamic p} f'8 bes4 f8
  bes,4 f'8 bes4 f8
  | bes,4 f'8 bes4 f8
  bes,4 f'8 bes4 f8\)
