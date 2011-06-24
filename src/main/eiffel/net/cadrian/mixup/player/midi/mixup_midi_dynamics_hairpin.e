@@ -46,7 +46,7 @@ feature {ANY}
          -- TODO: that code has much in common with MIXUP_MIDI_INSTRUMENT.mpc
          -- TO REFACTOR!
 
-         count := stop.nuance - start.nuance
+         count := stop.nuance - start.nuance + 1
          if count < 0 then
             count := -count
          end

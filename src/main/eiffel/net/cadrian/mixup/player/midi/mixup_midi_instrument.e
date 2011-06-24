@@ -54,12 +54,12 @@ feature {MIXUP_MIDI_PLAYER}
          sensible_end_time: INTEGER_64
          log_info: OUTPUT_STREAM
       do
-         count := a_end_value - a_start_value
+         count := a_end_value - a_start_value + 1
          if count < 0 then
             count := -count
          end
          if count > a_end_time - a_start_time then
-            count := (a_end_time - a_start_time).to_integer_32
+            count := (a_end_time - a_start_time + 1).to_integer_32
          end
          sensible_end_time := a_end_time - (a_end_time - a_start_time) \\ count
 

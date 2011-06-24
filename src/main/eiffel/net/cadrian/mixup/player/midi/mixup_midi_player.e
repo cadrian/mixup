@@ -177,6 +177,8 @@ feature {} -- native functions
             else
                create Result.make(a_source, controller_knob, value.value.to_integer_8)
                if not id.value.is_empty then
+                  log.info.put_string(once "Storing new MPC: ")
+                  log.info.put_line(id.value)
                   mpc_map.put(Result, id.value)
                end
             end
@@ -200,10 +202,12 @@ feature {} -- native functions
                mpc_start ::= args.first
             else
                id ::= args.first
+               log.info.put_string(once "Retrieving MPC: ")
+               log.info.put_line(id.value)
                mpc_start := mpc_map.fast_reference_at(id.value)
             end
             if mpc_start = Void then
-               error_at(mpc_start.source, "MIDI: bad argument value, unknown MPC")
+               error_at(args.first.source, "MIDI: bad argument value, unknown MPC")
             elseif mpc_start.mpc_end /= Void then
                error_at(mpc_start.source, "MIDI: bad argument value, this MPC already has an end point")
             elseif not value.value.in_range(0, 127) then
