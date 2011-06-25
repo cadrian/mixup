@@ -15,7 +15,7 @@ instrument piano
     set pattern_RH_fes  := music << fes4 ges8 fes'4 ges,8 >>
     set pattern_RH_f1   := music << f4 aes8 <des f>4 aes8 >>
     set pattern_RH_f2   := music << r4 aes8 <f f'>4 aes8 >> -- TODO accents
-    set pattern_RH_f3   := music << f4 ces8 -- TODO note in lower staff
+    set pattern_RH_f3   := music << f4 ces8 >> -- TODO note in lower staff
 
     -- left hand patterns
     set pattern_LH_bes  := music << [bes,8 f' des'~] [des des f,] >>
