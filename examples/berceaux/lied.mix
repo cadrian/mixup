@@ -7,7 +7,7 @@ instrument lied
         <<
             \set_clef(trebble) \set_key(bes_mol) \set_time("12/8")
             \midi_instrument(cello)
-            \midi_tempo(105)
+            \midi_tempo(96)
             \transpose(12)
 
             R1. | R1. |
