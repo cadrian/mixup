@@ -85,6 +85,25 @@ composer = \markup{"Gabriel" \sans "Fauré"}
  c4 f8 c'4 f,8\)
  | \override Staff.TimeSignature #'style = #'() \time 12/8
 
+ c4\( f8 c'4 f,8
+ bes,4 f'8 bes4 f8
+ | c4 ges'8 c4 ges8
+ ces,4 f8 ces'4 f,8
+ | bes,4 f'8 bes4 f8
+ c4 bes'8 c4 bes8
+ | d,4 a'8 d4 a8
+ ees,4 ges8 ees'4 ges,8
+ | ees4 ges8 ees'4 ges,8
+ ees4 ges8 ees'4 ges,8\)
+ |
+ ees4\( ges8 ees'4 ges,8
+ ees4 ges8 ees'4 ges,8
+ | fes4 ges8 fes'4 ges,8
+ fes4 ges8 fes'4 ges,8
+ | f4 aes8 <des f>4 aes8
+ f4 aes8 <des f>4 aes8
+ | r4 aes8 <f f'>4 aes8\)
+
 
 }
 }
