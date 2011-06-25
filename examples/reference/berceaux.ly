@@ -92,7 +92,7 @@ composer = \markup{"Gabriel" \sans "Fauré"}
  | bes,4 f'8 bes4 f8
  c4 bes'8 c4 bes8
  | d,4 a'8 d4 a8
- ees,4 ges8 ees'4 ges,8\)
+ ees4 ges8 ees'4 ges,8\)
  |
  ees4\(^\markup{\italic "cresc. molto"} ges8 ees'4 ges,8
  ees4 ges8 ees'4 ges,8
@@ -108,7 +108,7 @@ composer = \markup{"Gabriel" \sans "Fauré"}
  | f4 ces8 f,4 ces'8
  f4-\markup{\dynamic p} c8 f,4 c'8\)
  |
- bes'4\(-\markup{\dynamic pp} f'8 bes4 f8
+ bes4\(-\markup{\dynamic pp} f'8 bes4 f8
  aes,4 f'8 aes4 f8
  | ges,4 f'8 ges4 f8
  aes,4 f'8 aes4 f8
