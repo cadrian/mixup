@@ -7,6 +7,15 @@ instrument piano
     set pattern_RH_des  := music << des4 f8 des'4 f,8 >>
     set pattern_RH_c    := music << c4 f8 c'4 f,8 >>
     set pattern_RH_c_g  := music << c4 g'8 c4 g8 >>
+    set pattern_RH_ces  := music << ces4 f8 ces'4 f,8 >>
+    set pattern_RH_c_ges:= music << c4 ges'8 c4 ges8 >>
+    set pattern_RH_c7   := music << c4 bes'8 c4 bes8 >>
+    set pattern_RH_d    := music << d4 a'8 d4 a8 >>
+    set pattern_RH_ees  := music << ees4 ges8 ees'4 ges,8 >>
+    set pattern_RH_fes  := music << fes4 ges8 fes'4 ges,8 >>
+    set pattern_RH_f1   := music << f4 aes8 <des f>4 aes8 >>
+    set pattern_RH_f2   := music << r4 aes8 <f f'>4 aes8 >> -- TODO accents
+    set pattern_RH_f3   := music << f4 ces8 -- TODO note in lower staff
 
     -- left hand patterns
     set pattern_LH_bes  := music << [bes,8 f' des'~] [des des f,] >>
@@ -53,6 +62,19 @@ instrument piano
                 \set_time("6/8")
                 \pattern_RH_c                     |
                 \set_time("12/8")
+            }
+            {
+                \pattern_RH_c    \pattern_RH_bes  |
+                \pattern_RH_c_ges\pattern_RH_ces  |
+                \pattern_RH_bes  \pattern_RH_c7   |
+                \pattern_RH_d    \pattern_RH_ees  |
+                \pattern_RH_ees  \pattern_RH_ees  |
+            }
+            {
+                \pattern_RH_ees  \pattern_RH_ees  |
+                \pattern_RH_fes  \pattern_RH_fes  |
+                \pattern_RH_f1   \pattern_RH_f1   |
+                \pattern_RH_f2
             }
         >>
 
