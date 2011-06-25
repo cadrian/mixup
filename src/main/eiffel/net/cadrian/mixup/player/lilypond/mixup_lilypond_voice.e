@@ -105,7 +105,11 @@ feature {MIXUP_ABSTRACT_STAFF}
             if dynamics_is_open then
                close_dynamics
             end
-            dynamics_position := position.intern
+            if position = Void then
+               dynamics_position := Void
+            else
+               dynamics_position := position.intern
+            end
          end
 
          if a_dynamics.out.is_equal("end") then

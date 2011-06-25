@@ -24,10 +24,15 @@ feature {ANY}
    velocity (a_time: INTEGER_64): INTEGER_8 is
       do
          -- TODO: logarithmic progression instead of linear?
-         Result := (start.nuance + (stop.nuance - start.nuance) * (a_time - first_time) // (last_time - first_time)).to_integer_8
-         log.info.put_line("hairpin: velocity at " + a_time.out + " = " + Result.out
-                           + " (from " + first_time.out + ":" + start.nuance.out
-                           + " to " + last_time.out + ":" + stop.nuance.out + ")")
+         if stop = Void then
+            -- TODO: warning_at(start.source, "Unterminated hairpin")
+            Result := start.nuance
+         else
+            Result := (start.nuance + (stop.nuance - start.nuance) * (a_time - first_time) // (last_time - first_time)).to_integer_8
+            log.info.put_line("hairpin: velocity at " + a_time.out + " = " + Result.out
+                              + " (from " + first_time.out + ":" + start.nuance.out
+                                + " to " + last_time.out + ":" + stop.nuance.out + ")")
+         end
       end
 
    set_stop (a_stop: like stop) is
@@ -46,24 +51,26 @@ feature {ANY}
          -- TODO: that code has much in common with MIXUP_MIDI_INSTRUMENT.mpc
          -- TO REFACTOR!
 
-         count := stop.nuance - start.nuance + 1
-         if count < 0 then
-            count := -count
+         if stop /= Void then
+            count := stop.nuance - start.nuance + 1
+            if count < 0 then
+               count := -count
+            end
+
+            log_info := log.info
+            log_info.put_string(once "Playing hairpin: from time")
+            log_info.put_integer(last_time * section.precision)
+            log_info.put_string(once " (value: ")
+            log_info.put_integer(start.nuance)
+            log_info.put_string(once ") to time ")
+            log_info.put_integer(first_time)
+            log_info.put_string(once " (value: ")
+            log_info.put_integer(stop.nuance * section.precision)
+            log_info.put_line(once ")")
+
+            track.add_multi_point_controller(track_id.to_integer_8, first_time * section.precision, last_time * section.precision, count,
+                                             knobs.expression_controller, agent linear_expression)
          end
-
-         log_info := log.info
-         log_info.put_string(once "Playing hairpin: from time")
-         log_info.put_integer(last_time * section.precision)
-         log_info.put_string(once " (value: ")
-         log_info.put_integer(start.nuance)
-         log_info.put_string(once ") to time ")
-         log_info.put_integer(first_time)
-         log_info.put_string(once " (value: ")
-         log_info.put_integer(stop.nuance * section.precision)
-         log_info.put_line(once ")")
-
-         track.add_multi_point_controller(track_id.to_integer_8, first_time * section.precision, last_time * section.precision, count,
-                                          knobs.expression_controller, agent linear_expression)
       end
 
 feature {}
