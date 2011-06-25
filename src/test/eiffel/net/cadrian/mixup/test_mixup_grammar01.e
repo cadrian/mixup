@@ -80,14 +80,14 @@ feature {}
            set_instrument     ("bass"  , map(2, 4|..|6)                                                                                        ),
 
            start_voices       ("singer", 1, {FAST_ARRAY[INTEGER] << 1 >>}                                                                      ),
-           set_dynamics       ("singer", 1, "p", Void                                                                                          ),
-           set_dynamics       ("singer", 1, "<", Void                                                                                          ),
+           set_dynamics       ("singer", 1, "p", Void, True                                                                                    ),
+           set_dynamics       ("singer", 1, "<", Void, True                                                                                    ),
            start_voices       ("singer", 1, {FAST_ARRAY[INTEGER] << 2 >>}                                                                      ),
            start_voices       ("singer", 1, {FAST_ARRAY[INTEGER] << 3 >>}                                                                      ),
            start_slur         ("singer", 1, 3, 1, 1, ""                                                                                        ),
            set_note           ("singer", 1, {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("c", 3) >> }, source, << "doe" , "do"  >> }), -- a deer, a female deer
            start_voices       ("bass",   2, {FAST_ARRAY[INTEGER] << 4 >>}                                                                      ),
-           set_dynamics       ("bass",   2, "p", Void                                                                                          ),
+           set_dynamics       ("bass",   2, "p", Void, True                                                                                    ),
            set_note           ("bass",   2,               {MIXUP_CHORD duration_1 , source, << note("c", 2) >> }                               ),
            set_note           ("singer", 1, {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("d", 3) >> }, source, << "ray" , "re"  >> }), -- a drop of golden sun
            set_note           ("singer", 1, {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("e", 3) >> }, source, << "me"  , "mi"  >> }), -- a name I call myself
@@ -99,14 +99,14 @@ feature {}
            set_note           ("bass",   2,               {MIXUP_CHORD duration_1 , source, << note("g", 1) >> }                               ),
            set_note           ("singer", 1, {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("a", 4) >> }, source, << "la"  , "la"  >> }), -- a note to follow so
            set_note           ("singer", 1, {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("b", 4) >> }, source, << "tea" , "ti"  >> }), -- a drink with jam and bread
-           set_dynamics       ("singer", 1, "f", Void                                                                                         ),
+           set_dynamics       ("singer", 1, "f", Void, True                                                                                   ),
            set_note           ("singer", 1, {MIXUP_LYRICS {MIXUP_CHORD duration_4 , source, << note("c", 4) >> }, source, << "doe,", "do," >> }),
            end_slur           ("singer", 1                                                                                                     ),
            end_voices         ("singer", 1                                                                                                     ),
            end_voices         ("singer", 1                                                                                                     ),
 
            next_bar           ("singer", 1, Void                                                                                               ),
-           set_dynamics       ("singer", 1, "mp", "hidden"                                                                                     ), -- that will bring us back to
+           set_dynamics       ("singer", 1, "mp", "hidden", True                                                                               ), -- that will bring us back to
            set_note           ("singer", 1, {MIXUP_LYRICS {MIXUP_CHORD duration_1 , source, << note("c", 3) >> }, source, << "doe.", "do." >> }),
            end_voices         ("singer", 1                                                                                                     ),
            next_bar           ("bass",   2, Void                                                                                               ),
