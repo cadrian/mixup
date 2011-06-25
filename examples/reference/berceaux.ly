@@ -85,25 +85,60 @@ composer = \markup{"Gabriel" \sans "Fauré"}
  c4 f8 c'4 f,8\)
  | \override Staff.TimeSignature #'style = #'() \time 12/8
 
- c4\( f8 c'4 f,8
+ c4\(^\markup{\italic "cresc. poco a poco"} f8 c'4 f,8
  bes,4 f'8 bes4 f8
  | c4 ges'8 c4 ges8
  ces,4 f8 ces'4 f,8
  | bes,4 f'8 bes4 f8
  c4 bes'8 c4 bes8
  | d,4 a'8 d4 a8
- ees,4 ges8 ees'4 ges,8
+ ees,4 ges8 ees'4 ges,8\)
+ |
+ ees4\(^\markup{\italic "cresc. molto"} ges8 ees'4 ges,8
+ ees4 ges8 ees'4 ges,8
  | ees4 ges8 ees'4 ges,8
  ees4 ges8 ees'4 ges,8\)
  |
- ees4\( ges8 ees'4 ges,8
- ees4 ges8 ees'4 ges,8
- | fes4 ges8 fes'4 ges,8
+ fes4\(^\markup{\dynamic f \italic "sempre"} ges8 fes'4 ges,8
  fes4 ges8 fes'4 ges,8
  | f4 aes8 <des f>4 aes8
  f4 aes8 <des f>4 aes8
- | r4 aes8 <f f'>4 aes8\)
-
+ | r4 aes8 <f f'>4 aes8
+ f4 ces8 f,4 ces'8
+ | f4 ces8 f,4 ces'8
+ f4-\markup{\dynamic p} c8 f,4 c'8\)
+ |
+ bes'4\(-\markup{\dynamic pp} f'8 bes4 f8
+ aes,4 f'8 aes4 f8
+ | ges,4 f'8 ges4 f8
+ aes,4 f'8 aes4 f8
+ | bes,4 f'8 bes4 f8
+ c4 f8 c'4 f,8
+ | c4 g'8 c4 g8
+ c,4 f8 c'4 f,8\)
+ |
+ c4\(-\markup{\italic "cresc."} f8 <a c>4 f8
+ des4 ges8 <bes ees>4 ges8
+ | des4-\< bes'8 <des ees>4 bes8
+ f,4 c'8 f4 c8
+ | f,4-\markup{\dynamic mf} bes8 <d f>4 bes8
+ ees,4-\> bes'8 <des ees>4 bes8
+ | ees,4-\markup{\dynamic p} aes8 <c ees>4 aes8
+ des4 aes'8 <ces des>4 aes8
+ | des,4 aes'8 <bes des>4 aes8
+ c,4-\> ges'8 <bes c>4 ges8\)
+ |
+ bes,4\(-\markup{\dynamic pp} f'8 bes4 f8
+ aes,4 f'8 aes4 f8
+ | ges,4 f'8 ges4 f8
+ aes,4 f'8 aes4 f8
+ | bes,4 f'8 bes4 f8
+ c4 f8 c'4 f,8
+ | des4 f8 des'4 f,8
+ c4 f8 c'4 f,8
+ | bes,4 f'8 bes4 f8
+ bes,4 f'8 bes4 f8
+ | bes,4.~ bes4 f'8 bes4.~ bes4 f8~ | <bes, f'>2.~ <bes f'>4. r4 r8\) |
 
 }
 }

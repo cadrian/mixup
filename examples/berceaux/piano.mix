@@ -13,9 +13,22 @@ instrument piano
     set pattern_RH_d    := music << d4 a'8 d4 a8 >>
     set pattern_RH_ees  := music << ees4 ges8 ees'4 ges,8 >>
     set pattern_RH_fes  := music << fes4 ges8 fes'4 ges,8 >>
-    set pattern_RH_f1   := music << f4 aes8 <des f>4 aes8 >>
-    set pattern_RH_f2   := music << r4 aes8 <f f'>4 aes8 >> -- TODO accents
-    set pattern_RH_f3   := music << f4 ces8 >> -- TODO note in lower staff
+    -- first variation
+    set pattern_RH_v11  := music << f4 aes8 <des f>4 aes8 >>
+    set pattern_RH_v12  := music << r4 aes8 <f f'>4 aes8 >> -- TODO accents
+    set pattern_RH_v13  := music << f4 ces8 f,4 ces'8 >>    -- TODO note in lower staff
+    set pattern_RH_v14  := music << f4 c8 f,4 c'8 >>        -- TODO note in lower staff
+    -- second variation
+    set pattern_RH_v21  := music << c4 f8 <a c>4 f8 >>
+    set pattern_RH_v22  := music << des4 ges8 <bes ees>4 ges8 >>
+    set pattern_RH_v23  := music << des4 bes'8 <des ees>4 bes8 >>
+    set pattern_RH_v24  := music << f4 c'8 f4 c8 >>
+    set pattern_RH_v25  := music << f4 bes8 <d f>4 bes8 >>
+    set pattern_RH_v26  := music << ees4 bes'8 <des ees>4 bes8 >>
+    set pattern_RH_v27  := music << ees4 aes8 <c ees>4 aes8 >>
+    set pattern_RH_v28  := music << des4 aes'8 <ces des>4 aes8 >>
+    set pattern_RH_v29  := music << des4 aes'8 <bes des>4 aes8 >>
+    set pattern_RH_v2a  := music << c4 ges'8 <bes c>4 ges8 >>
 
     -- left hand patterns
     set pattern_LH_bes  := music << [bes,8 f' des'~] [des des f,] >>
@@ -63,18 +76,55 @@ instrument piano
                 \pattern_RH_c                     |
                 \set_time("12/8")
             }
+            :up:"cresc. poco a poco":
+            :hidden:mp,<:
             {
                 \pattern_RH_c    \pattern_RH_bes  |
                 \pattern_RH_c_ges\pattern_RH_ces  |
                 \pattern_RH_bes  \pattern_RH_c7   |
                 \pattern_RH_d    \pattern_RH_ees  |
-                \pattern_RH_ees  \pattern_RH_ees  |
             }
+            :up:"cresc. molto":
+            :hidden:mf:
             {
                 \pattern_RH_ees  \pattern_RH_ees  |
+                \pattern_RH_ees  \pattern_RH_ees  |
+            }
+            :up:f,"sempre":
+            :hidden:ff:
+            {
                 \pattern_RH_fes  \pattern_RH_fes  |
-                \pattern_RH_f1   \pattern_RH_f1   |
-                \pattern_RH_f2
+                \pattern_RH_v11  \pattern_RH_v11  |
+                \pattern_RH_v12  \pattern_RH_v13  |
+                \pattern_RH_v13 :p: \pattern_RH_v14 |
+            }
+            :pp:
+            {
+                \pattern_RH_bes  \pattern_RH_aes  |
+                \pattern_RH_ges  \pattern_RH_aes  |
+                \pattern_RH_bes  \pattern_RH_c    |
+                \pattern_RH_c_g  \pattern_RH_c    |
+            }
+            :"cresc.": :hidden:<:
+            {
+                \pattern_RH_v21  \pattern_RH_v22  |
+                :hidden:mp: :<:
+                \pattern_RH_v23  \pattern_RH_v24  |
+                :mf:
+                \pattern_RH_v25 :>: \pattern_RH_v26  |
+                :p:
+                \pattern_RH_v27  \pattern_RH_v28  |
+                \pattern_RH_v29 :>: \pattern_RH_v2a  |
+            }
+            :pp:
+            {
+                \pattern_RH_bes  \pattern_RH_aes  |
+                \pattern_RH_ges  \pattern_RH_aes  |
+                \pattern_RH_bes  \pattern_RH_c    |
+                \pattern_RH_des  \pattern_RH_c    |
+                \pattern_RH_bes  \pattern_RH_bes  |
+                bes4.~ bes4 f'8 bes4.~ bes4 f8~   |
+                <bes, f'>2.~ <bes f'>4. r4 r8       |
             }
         >>
 
