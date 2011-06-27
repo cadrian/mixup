@@ -25,7 +25,7 @@ insert
 feature {ANY}
    source: MIXUP_SOURCE
    start_time: INTEGER_64
-   instrument: FIXED_STRING
+   instrument: MIXUP_INSTRUMENT
    staff_id: INTEGER
    voice_id: INTEGER
 
@@ -62,7 +62,7 @@ feature {ANY}
             tagged_out_memory.append(once ", time=")
             start_time.append_in(tagged_out_memory)
             tagged_out_memory.append(once ", instrument=")
-            instrument.out_in_tagged_out_memory
+            instrument.name.out_in_tagged_out_memory
             tagged_out_memory.append(once ", staff=")
             staff_id.append_in(tagged_out_memory)
             tagged_out_memory.append(once ", voice=")

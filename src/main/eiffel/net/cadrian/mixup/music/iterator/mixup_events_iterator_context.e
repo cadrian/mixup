@@ -57,7 +57,7 @@ feature {ANY}
       require
          a_source /= Void
       do
-         Result.set(a_source, start_time, instrument.name, staff_id, voice_id)
+         Result.set(a_source, start_time, instrument, staff_id, voice_id)
       end
 
    add_time (duration: INTEGER_64) is

@@ -35,13 +35,11 @@ feature {ANY}
          a_event.fire(Current)
       end
 
-   native (a_def_source, a_call_source: MIXUP_SOURCE; fn_name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native (a_def_source: MIXUP_SOURCE; a_context: MIXUP_NATIVE_CONTEXT; fn_name: STRING): MIXUP_VALUE is
       require
          a_def_source /= Void
-         a_call_source /= Void
          fn_name /= Void
-         a_context /= Void
-         args /= Void
+         a_context.is_ready
       deferred
       end
 

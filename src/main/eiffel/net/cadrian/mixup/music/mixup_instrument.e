@@ -128,6 +128,35 @@ feature {ANY}
                           end (?, ids))
       end
 
+   relative_staff_id (a_staff_id: INTEGER): INTEGER is
+      local
+         i: INTEGER; found: BOOLEAN
+      do
+         from
+            Result := 1
+            i := staves.lower
+         until
+            found or else i > staves.upper
+         loop
+            if staves.item(i).id = a_staff_id then
+               found := True
+            else
+               Result := Result + 1
+            end
+            i := i + 1
+         end
+      end
+
+   valid_relative_staff_id (rel_staff_id: INTEGER): BOOLEAN is
+      do
+         Result := staves.valid_index(rel_staff_id - 1 + staves.lower)
+      end
+
+   absolute_staff_id (rel_staff_id: INTEGER): INTEGER is
+      do
+         Result := staves.item(rel_staff_id - 1 + staves.lower).id
+      end
+
 feature {MIXUP_CONTEXT}
    add_child (a_child: MIXUP_CONTEXT) is
       do

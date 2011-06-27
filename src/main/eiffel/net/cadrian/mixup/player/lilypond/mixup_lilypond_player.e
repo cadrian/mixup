@@ -35,36 +35,36 @@ feature {ANY}
          Result := "lilypond".intern
       end
 
-   native (a_def_source, a_call_source: MIXUP_SOURCE; fn_name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native (a_def_source: MIXUP_SOURCE; a_context: MIXUP_NATIVE_CONTEXT; fn_name: STRING): MIXUP_VALUE is
       local
          str: MIXUP_STRING
       do
          inspect
             fn_name
          when "current_bar_number" then
-            create {MIXUP_INTEGER} Result.make(a_call_source, bar_number)
+            create {MIXUP_INTEGER} Result.make(a_context.call_source, bar_number)
          when "string_event" then
-            if args.count /= 1 then
-               error_at(a_call_source, "Lilypond: bad argument count")
-            elseif str ?:= args.first then
-               str ::= args.first
+            if a_context.args.count /= 1 then
+               error_at(a_context.call_source, "Lilypond: bad argument count")
+            elseif str ?:= a_context.args.first then
+               str ::= a_context.args.first
                check str.value /= Void end
                create {MIXUP_LILYPOND_STRING_EVENT_FACTORY} Result.make(str.source, str.value)
             else
-               error_at(args.first.source, "Lilypond: expected a string")
+               error_at(a_context.args.first.source, "Lilypond: expected a string")
             end
          when "set_header" then
-            if args.count /= 1 then
-               error_at(a_call_source, "Lilypond: bad argument count")
-            elseif str ?:= args.first then
-               str ::= args.first
+            if a_context.args.count /= 1 then
+               error_at(a_context.call_source, "Lilypond: bad argument count")
+            elseif str ?:= a_context.args.first then
+               str ::= a_context.args.first
                check str.value /= Void end
                current_section.set_header(str.value)
             else
-               error_at(args.first.source, "Lilypond: expected a string")
+               error_at(a_context.args.first.source, "Lilypond: expected a string")
             end
          else
-            info_at(a_call_source, "Lilypond: ignored unknown native function: " + fn_name)
+            info_at(a_context.call_source, "Lilypond: ignored unknown native function: " + fn_name)
          end
       end
 
@@ -75,7 +75,7 @@ feature {ANY}
          a_string /= Void
       do
          log.info.put_line("Lilypond: string event")
-         instruments.reference_at(a_data.instrument).string_event(a_data.staff_id, a_data.voice_id, a_string)
+         instruments.reference_at(a_data.instrument.name).string_event(a_data.staff_id, a_data.voice_id, a_string)
       end
 
 feature {} -- section files management

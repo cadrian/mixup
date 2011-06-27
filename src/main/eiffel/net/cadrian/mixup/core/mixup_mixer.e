@@ -96,24 +96,26 @@ feature {}
       end
 
 feature {}
-   native_with_lyrics (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_with_lyrics (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+      require
+         context.is_ready
       local
          music: MIXUP_MUSIC_VALUE
          decorated: MIXUP_DECORATED_MUSIC
          bar_number: INTEGER
       do
-         if args.count /= 1 then
-            error_at(a_call_source, "bad argument count")
-         elseif not (music ?:= args.first) then
-            error_at(args.first.source, "bad argument type")
+         if context.args.count /= 1 then
+            error_at(context.call_source, "bad argument count")
+         elseif not (music ?:= context.args.first) then
+            error_at(context.args.first.source, "bad argument type")
          else
-            music ::= args.first
-            create decorated.make(a_call_source, once "with_lyrics", music.value,
+            music ::= context.args.first
+            create decorated.make(context.call_source, once "with_lyrics", music.value,
                                   Void, Void,
-                                  agent force_lyrics(a_def_source, a_call_source, ?, ?))
-            bar_number := decorated.commit(context, player, context.bar_number)
-            context.set_bar_number(bar_number)
-            create {MIXUP_MUSIC_VALUE} Result.make(a_call_source, decorated)
+                                  agent force_lyrics(a_def_source, context.call_source, ?, ?))
+            bar_number := decorated.commit(context.context, context.player, context.context.bar_number)
+            context.context.set_bar_number(bar_number)
+            create {MIXUP_MUSIC_VALUE} Result.make(context.call_source, decorated)
          end
       end
 
@@ -125,128 +127,194 @@ feature {}
          end
       end
 
-   native_bar (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_bar (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+      require
+         context.is_ready
       local
          string: MIXUP_STRING
          bar: MIXUP_BAR
          bar_number: INTEGER
       do
-         if args.count /= 1 then
-            error_at(a_call_source, "bad argument count")
-         elseif not (string ?:= args.first) then
-            error_at(args.first.source, "bad argument type")
+         if context.args.count /= 1 then
+            error_at(context.call_source, "bad argument count")
+         elseif not (string ?:= context.args.first) then
+            error_at(context.args.first.source, "bad argument type")
          else
-            string ::= args.first
-            create bar.make(a_call_source, string.value)
-            bar_number := bar.commit(context, player, context.bar_number)
-            context.set_bar_number(bar_number)
-            create {MIXUP_MUSIC_VALUE} Result.make(a_call_source, bar)
+            string ::= context.args.first
+            create bar.make(context.call_source, string.value)
+            bar_number := bar.commit(context.context, context.player, context.context.bar_number)
+            context.context.set_bar_number(bar_number)
+            create {MIXUP_MUSIC_VALUE} Result.make(context.call_source, bar)
          end
       end
 
-   native_seq (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_seq (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+      require
+         context.is_ready
       local
          low, up: MIXUP_INTEGER
       do
-         if args.count /= 2 then
-            error_at(a_call_source, "bad argument count")
-         elseif not (low ?:= args.first) then
-            error_at(args.first.source, "bad argument")
-         elseif not (up ?:= args.last) then
-            error_at(args.last.source, "bad argument")
+         if context.args.count /= 2 then
+            error_at(context.call_source, "bad argument count")
+         elseif not (low ?:= context.args.first) then
+            error_at(context.args.first.source, "bad argument")
+         elseif not (up ?:= context.args.last) then
+            error_at(context.args.last.source, "bad argument")
          else
-            low ::= args.first
-            up ::= args.last
-            create {MIXUP_SEQ} Result.make(a_call_source, low, up)
+            low ::= context.args.first
+            up ::= context.args.last
+            create {MIXUP_SEQ} Result.make(context.call_source, low, up)
          end
       end
 
-   native_new_music_store (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_new_music_store (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+      require
+         context.is_ready
       do
-         create {MIXUP_MUSIC_STORE} Result.make(a_call_source)
+         create {MIXUP_MUSIC_STORE} Result.make(context.call_source)
       end
 
-   native_store_music (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_store_music (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+      require
+         context.is_ready
       local
          music_store: MIXUP_MUSIC_STORE
          music: MIXUP_MUSIC_VALUE
          bar_number: INTEGER
       do
-         if args.count /= 2 then
-            error_at(a_call_source, "bad argument count")
-         elseif not (music_store ?:= args.first) then
-            error_at(args.first.source, "bad argument")
-         elseif not (music ?:= args.last) then
-            error_at(args.last.source, "bad argument")
+         if context.args.count /= 2 then
+            error_at(context.call_source, "bad argument count")
+         elseif not (music_store ?:= context.args.first) then
+            error_at(context.args.first.source, "bad argument")
+         elseif not (music ?:= context.args.last) then
+            error_at(context.args.last.source, "bad argument")
          else
-            music_store ::= args.first
+            music_store ::= context.args.first
             if not music_store.has_voice then
-               music_store.next_voice(a_call_source)
+               music_store.next_voice(context.call_source)
             end
-            music ::= args.last
+            music ::= context.args.last
             music_store.add_music(music.value)
-            bar_number := music_store.commit(context, player, context.bar_number)
-            context.set_bar_number(bar_number)
+            bar_number := music_store.commit(context.context, context.player, context.context.bar_number)
+            context.context.set_bar_number(bar_number)
          end
       end
 
-   native_store_text (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_store_text (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+      require
+         context.is_ready
       do
       end
 
-   native_current_player (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_current_player (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+      require
+         context.is_ready
       do
-         create {MIXUP_STRING} Result.make(a_call_source, player.name, player.name)
+         create {MIXUP_STRING} Result.make(context.call_source, context.player.name, context.player.name)
       end
 
-   native_map (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_map (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+      require
+         context.is_ready
       local
          sequence, seed: MIXUP_VALUE
          mapper: MIXUP_AGENT
          executor: MIXUP_AGENT_EXECUTOR
       do
-         if args.count /= 3 then
-            error_at(a_call_source, "bad argument count")
-         elseif not (mapper ?:= args.first) then
-            error_at(args.first.source, "bad argument")
+         if context.args.count /= 3 then
+            error_at(context.call_source, "bad argument count")
+         elseif not (mapper ?:= context.args.first) then
+            error_at(context.args.first.source, "bad argument")
          else
-            mapper ::= args.first
-            seed := args.item(args.lower+1)
-            sequence := args.last
-            create executor.make(a_call_source, sequence, mapper.expression.eval(context, player, False), seed)
-            Result := executor.call(context, player)
+            mapper ::= context.args.first
+            seed := context.args.item(context.args.lower+1)
+            sequence := context.args.last
+            create executor.make(context.call_source, sequence, mapper.expression.eval(context.context, context.player, False), seed)
+            Result := executor.call(context.context, context.player)
          end
       end
 
-   native_in_player (a_def_source, a_call_source: MIXUP_SOURCE; name: STRING; context: MIXUP_CONTEXT; player: MIXUP_PLAYER; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native_in_player (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT; name: STRING): MIXUP_VALUE is
+      require
+         context.is_ready
       do
-         Result := player.native(a_def_source, a_call_source, name, context, args)
+         Result := context.player.native(a_def_source, context, name)
+      end
+
+   native_staff_id (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+      require
+         context.is_ready
+      local
+         int: MIXUP_INTEGER
+      do
+         if context.args.count /= 1 then
+            error_at(context.call_source, "bad argument count")
+         elseif not (int ?:= context.args.first) then
+            error_at(context.args.first.source, "expected an integer")
+         else
+            int ::= context.args.first
+            create {MIXUP_VALUE_FACTORY} Result.make(context.call_source,
+                                                     agent (a_int: INTEGER; a_src: MIXUP_SOURCE; a_data: MIXUP_EVENT_DATA): MIXUP_STRING is
+                                                     local
+                                                        str: STRING
+                                                     do
+                                                        if not a_data.instrument.valid_relative_staff_id(a_int) then
+                                                           fatal_at(a_src, "Invalid staff id: " + a_int.out)
+                                                        end
+                                                        str := a_data.instrument.name + a_data.instrument.absolute_staff_id(a_int).out
+                                                        create Result.make(a_src, str.intern, ("%"" + str + "%"").intern)
+                                                     end(int.value.to_integer_32, ?, ?))
+         end
+      end
+
+   native_staff_index (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+      require
+         context.is_ready
+      do
+         create {MIXUP_VALUE_FACTORY} Result.make(context.call_source,
+                                                  agent (a_src: MIXUP_SOURCE; a_data: MIXUP_EVENT_DATA): MIXUP_INTEGER is
+                                                  do
+                                                     create Result.make(a_src, a_data.instrument.relative_staff_id(a_data.staff_id))
+                                                  end)
+      end
+
+   native_combine_events (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+      require
+         context.is_ready
+      do
+         sedb_breakpoint
       end
 
 feature {ANY}
-   item (a_source: like source; name: STRING): FUNCTION[TUPLE[MIXUP_SOURCE, MIXUP_CONTEXT, MIXUP_PLAYER, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE] is
+   item (a_source: like source; name: STRING): FUNCTION[TUPLE[MIXUP_NATIVE_CONTEXT], MIXUP_VALUE] is
       do
          log.trace.put_line("Preparing native function: " + name)
          inspect
             name
          when "bar" then
-            Result := agent native_bar(a_source, ?, ?, ?, ?)
+            Result := agent native_bar(a_source, ?)
          when "with_lyrics" then
-            Result := agent native_with_lyrics(a_source, ?, ?, ?, ?)
+            Result := agent native_with_lyrics(a_source, ?)
          when "seq" then
-            Result := agent native_seq(a_source, ?, ?, ?, ?)
+            Result := agent native_seq(a_source, ?)
          when "map" then
-            Result := agent native_map(a_source, ?, ?, ?, ?)
+            Result := agent native_map(a_source, ?)
          when "new_music_store" then
-            Result := agent native_new_music_store(a_source, ?, ?, ?, ?)
+            Result := agent native_new_music_store(a_source, ?)
          when "store_music" then
-            Result := agent native_store_music(a_source, ?, ?, ?, ?)
+            Result := agent native_store_music(a_source, ?)
          when "store_text" then
-            Result := agent native_store_text(a_source, ?, ?, ?, ?)
+            Result := agent native_store_text(a_source, ?)
          when "current_player" then
-            Result := agent native_current_player(a_source, ?, ?, ?, ?)
+            Result := agent native_current_player(a_source, ?)
+         when "staff_id" then
+            Result := agent native_staff_id(a_source, ?)
+         when "staff_index" then
+            Result := agent native_staff_index(a_source, ?)
+         when "combine_events" then
+            Result := agent native_combine_events(a_source, ?)
          else
-            Result := agent native_in_player(a_source, ?, name, ?, ?, ?)
+            Result := agent native_in_player(a_source, ?, name)
          end
       end
 
