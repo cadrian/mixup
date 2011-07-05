@@ -23,7 +23,12 @@ inherit
 create {ANY}
    make
 
+create {MIXUP_USER_FUNCTION_CONTEXT}
+   duplicate
+
 feature {ANY}
+   bar_number: INTEGER
+
    set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
       do
          if args.fast_has(a_name) then
@@ -44,9 +49,12 @@ feature {ANY}
          end
       end
 
-   commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER) is
+   commit (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
       do
-         set_bar_number(start_bar_number)
+         check
+            a_player = player
+         end
+         create Result.duplicate(source, name, parent, player, commit_values(a_player, a_start_bar_number), commit_imports(a_player, a_start_bar_number), args, a_start_bar_number)
       end
 
    accept (visitor: VISITOR) is
@@ -166,6 +174,20 @@ feature {}
          source = a_source
          player = a_player
          args = a_args
+      end
+
+   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_player: like player; a_values: like values; a_imports: like imports; a_args: like args; a_bar_number: like bar_number) is
+      do
+         source := a_source
+         name := a_name
+         parent := a_parent
+         values := a_values
+         imports := a_imports
+         player := a_player
+         args := a_args
+         create statements.make(1, 0)
+         create {HASHED_DICTIONARY[MIXUP_VALUE, FIXED_STRING]} locals.make
+         bar_number := a_bar_number
       end
 
 invariant

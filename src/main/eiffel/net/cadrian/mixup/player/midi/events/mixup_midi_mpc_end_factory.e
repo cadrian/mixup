@@ -15,26 +15,15 @@
 class MIXUP_MIDI_MPC_END_FACTORY
 
 inherit
-   MIXUP_VALUE
+   MIXUP_MIDI_MUSIC_EVENTS_FACTORY
       redefine
-         out_in_tagged_out_memory
-      end
-   MIXUP_MUSIC
-      redefine
-         out_in_tagged_out_memory
+         commit
       end
 
 create {MIXUP_MIDI_PLAYER}
    make
 
 feature {ANY}
-   is_callable: BOOLEAN is False
-
-   accept (visitor: VISITOR) is
-      do
-         (create {MIXUP_MUSIC_VALUE}.make(source, Current)).accept(visitor)
-      end
-
    out_in_tagged_out_memory is
       do
          tagged_out_memory.append(once "{MIXUP_MIDI_MPC_END_FACTORY ")
@@ -45,32 +34,29 @@ feature {ANY}
    value: INTEGER_8
    mpc_start: MIXUP_MIDI_MPC_START_FACTORY
 
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+      do
+         Result := Precursor(a_context, a_player, a_start_bar_number)
+         Result.set_mpc_start(mpc_start.last_commit)
+      end
+
 feature {ANY}
-   duration: INTEGER_64 is 0
-
-   valid_anchor: BOOLEAN is False
-
-   anchor: MIXUP_NOTE_HEAD is
-      do
-         crash
-      end
-
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
-      do
-      end
-
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
          create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_MIDI_MPC_END}.make(a_context.event_data(source), mpc_start.last_mpc_start, mpc_start.knob, mpc_start.value, value))
       end
 
-feature {MIXUP_MUSIC, MIXUP_VOICE}
-   consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
+feature {MIXUP_MIDI_MPC_END_FACTORY}
+   set_mpc_start (a_mpc_start: like mpc_start) is
+      require
+         a_mpc_start /= Void
+         a_mpc_start.mpc_end = Void
       do
-      end
-
-   add_voice_ids (a_ids: AVL_SET[INTEGER]) is
-      do
+         mpc_start := a_mpc_start
+         mpc_start.set_mpc_end(Current)
+      ensure
+         mpc_start = a_mpc_start
+         a_mpc_start.mpc_end = Current
       end
 
 feature {}
@@ -81,13 +67,12 @@ feature {}
          a_mpc_start.mpc_end = Void
       do
          source := a_source
-         mpc_start := a_mpc_start
-         mpc_start.set_mpc_end(Current)
          value := a_value
+         set_mpc_start(a_mpc_start)
       ensure
          source = a_source
-         mpc_start = a_mpc_start
          value = a_value
+         mpc_start = a_mpc_start
          a_mpc_start.mpc_end = Current
       end
 

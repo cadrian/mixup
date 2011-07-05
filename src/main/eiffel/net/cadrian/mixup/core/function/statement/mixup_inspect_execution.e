@@ -24,7 +24,7 @@ feature {ANY}
    match (a_inspect_branch: MIXUP_INSPECT_BRANCH): BOOLEAN is
       do
          match_ := False
-         value := a_inspect_branch.expression.eval(context, context.player, True)
+         value := a_inspect_branch.expression.eval(context, context.player, True, context.bar_number)
          if value = Void then
             fatal("value could not be computed")
          else
@@ -163,7 +163,7 @@ feature {}
       do
          source := a_source
          context := a_context
-         expression := a_expression.eval(a_context, a_context.player, True)
+         expression := a_expression.eval(a_context, a_context.player, True, a_context.bar_number)
       ensure
          source = a_source
          context = a_context

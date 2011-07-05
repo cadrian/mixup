@@ -17,7 +17,7 @@ class MIXUP_CHORD
 inherit
    MIXUP_NOTE
       redefine
-         is_equal, out_in_tagged_out_memory
+         is_equal, out_in_tagged_out_memory, duration
       end
    INDEXABLE[MIXUP_NOTE_HEAD]
       redefine
@@ -27,7 +27,17 @@ inherit
 create {ANY}
    make, manifest_creation
 
+create {MIXUP_CHORD}
+   duplicate
+
 feature {ANY}
+   timing: MIXUP_MUSIC_TIMING
+
+   duration: INTEGER_64 is
+      do
+         Result := note_duration
+      end
+
    count: INTEGER is
       do
          Result := capacity
@@ -58,7 +68,6 @@ feature {ANY}
       end
 
    capacity: INTEGER
-   duration: INTEGER_64
    tie: BOOLEAN
 
    is_equal (other: like Current): BOOLEAN is
@@ -204,6 +213,18 @@ feature {ANY}
          end
       end
 
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+      do
+         create Result.duplicate(source, capacity, storage, note_duration, tie)
+         Result.set_timing(note_duration, a_start_bar_number, 0)
+      end
+
+feature {MIXUP_MUSIC, MIXUP_VOICE}
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+      do
+         timing := timing.set(a_duration, a_first_bar_number, a_bars_count)
+      end
+
 feature {}
    make (a_source: like source; a_capacity: INTEGER; a_duration: INTEGER_64; a_tie: like tie) is
       require
@@ -217,6 +238,17 @@ feature {}
          tie = a_tie
       end
 
+   duplicate (a_source: like source; a_capacity: INTEGER; a_storage: like storage; a_duration: INTEGER_64; a_tie: like tie) is
+      do
+         source := a_source
+         capacity := a_capacity
+         note_duration := a_duration
+         storage := a_storage
+         tie := a_tie
+      end
+
+   note_duration: INTEGER_64
+
 feature {} -- Manifest create:
    manifest_make (a_capacity: INTEGER; a_duration: INTEGER_64; a_source: like source) is
       require
@@ -226,7 +258,7 @@ feature {} -- Manifest create:
       do
          source := a_source
          capacity := a_capacity
-         duration := a_duration
+         note_duration := a_duration
          storage := storage.calloc(a_capacity)
       end
 
@@ -239,5 +271,8 @@ feature {} -- Manifest create:
 
 feature {MIXUP_CHORD}
    storage: NATIVE_ARRAY[MIXUP_NOTE_HEAD]
+
+invariant
+   timing.is_set implies timing.duration = note_duration
 
 end -- class MIXUP_CHORD

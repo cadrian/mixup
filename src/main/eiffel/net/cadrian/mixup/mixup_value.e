@@ -18,7 +18,7 @@ inherit
    MIXUP_EXPRESSION
 
 feature {ANY}
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN): MIXUP_VALUE is
+   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
       do
          Result := Current
       end
@@ -35,7 +35,7 @@ feature {ANY}
       deferred
       end
 
-   call (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   call (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]; a_bar_number: INTEGER): MIXUP_VALUE is
       require
          is_callable
          a_args /= Void

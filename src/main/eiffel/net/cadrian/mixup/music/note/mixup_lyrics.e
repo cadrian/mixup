@@ -27,15 +27,18 @@ inherit
 create {ANY}
    make, manifest_creation
 
+create {MIXUP_LYRICS}
+   duplicate
+
 feature {ANY}
+   timing: MIXUP_MUSIC_TIMING is
+      do
+         Result := note.timing
+      end
+
    count: INTEGER is
       do
          Result := capacity
-      end
-
-   duration: INTEGER_64 is
-      do
-         Result := note.duration
       end
 
    valid_anchor: BOOLEAN is
@@ -132,6 +135,20 @@ feature {ANY}
 
    can_have_lyrics: BOOLEAN is True
 
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+      local
+         note_: like note
+      do
+         note_ := note.commit(a_context, a_player, a_start_bar_number)
+         create Result.duplicate(source, note_, capacity, storage)
+      end
+
+feature {MIXUP_MUSIC, MIXUP_VOICE}
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+      do
+         note.set_timing(a_duration, a_first_bar_number, a_bars_count)
+      end
+
 feature {}
    make (a_source: like source; a_note: MIXUP_NOTE; a_lyrics: TRAVERSABLE[MIXUP_SYLLABLE]) is
       require
@@ -150,6 +167,12 @@ feature {}
             storage.put(a_lyrics.item(i), i + a_lyrics.lower)
             i := i + 1
          end
+      end
+
+   duplicate (a_source: like source; a_note: MIXUP_NOTE; a_capacity: INTEGER; a_storage: like storage) is
+      do
+         manifest_make(a_capacity, a_note, a_source)
+         storage := a_storage
       end
 
 feature {} -- Manifest create (for tests):

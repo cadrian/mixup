@@ -72,7 +72,6 @@ feature {ANY}
          instrument := new_instrument(inst_name, voice_staff_ids)
          log.info.put_line("adding instrument: " + a_name.out)
          instruments.add(instrument, inst_name)
-         bar_number := 0
       end
 
    play_start_voices (a_data: MIXUP_EVENT_DATA; voice_ids: TRAVERSABLE[INTEGER]) is
@@ -101,7 +100,6 @@ feature {ANY}
       do
          log.info.put_line("playing bar")
          instruments.reference_at(a_data.instrument.name).next_bar(a_data.staff_id, a_data.voice_id, style)
-         bar_number := bar_number + 1
       end
 
    play_start_beam (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
@@ -264,7 +262,6 @@ feature {}
    opus_output: OUT_
    managed_output: BOOLEAN
    instruments: LINKED_HASHED_DICTIONARY[INST_, FIXED_STRING]
-   bar_number: INTEGER
    context: MIXUP_CONTEXT
 
    current_section: SEC_

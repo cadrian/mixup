@@ -35,7 +35,7 @@ feature {ANY}
          inspect
             fn_name
          when "current_bar_number" then
-            create {MIXUP_INTEGER} Result.make(bar_number)
+            create {MIXUP_VALUE_FACTORY} Result.make(a_context.call_source, agent (s: MIXUP_SOURCE; d: MIXUP_EVENT_DATA): INTEGER is do Result := d.bar_number end)
          else
             warning_at(a_source, "MusixTeX: unknown native function: " + fn_name)
          end

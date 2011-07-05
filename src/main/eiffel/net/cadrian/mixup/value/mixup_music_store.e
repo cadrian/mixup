@@ -27,6 +27,9 @@ inherit
 create {ANY}
    make
 
+create {MIXUP_MUSIC_STORE}
+   duplicate
+
 feature {ANY}
    is_callable: BOOLEAN is False
 

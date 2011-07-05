@@ -23,6 +23,9 @@ inherit
 create {ANY}
    make
 
+create {MIXUP_INSTRUMENT}
+   duplicate
+
 feature {ANY}
    set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
       do
@@ -86,21 +89,23 @@ feature {ANY}
          end
       end
 
-   commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER) is
+   commit (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
       local
-         bar_numbers: AGGREGATOR[MIXUP_STAFF, INTEGER]
-         a_bar_number: INTEGER
+         staves_: FAST_ARRAY[MIXUP_STAFF]
+         staves_zip: ZIP[MIXUP_STAFF, INTEGER]
       do
-         a_bar_number := bar_numbers.map(staves,
-                                         agent (staff: MIXUP_STAFF; a_bar_number, start_bar_number: INTEGER; a_player: MIXUP_PLAYER): INTEGER is
-                                            do
-                                               Result := staff.commit(Current, a_player, start_bar_number)
-                                               if a_bar_number /= start_bar_number and then a_bar_number /= Result then
-                                                  fatal_at(staff.source, "Differing bar numbers (" + a_bar_number.out + " ≠ " + start_bar_number.out + ")")
-                                               end
-                                            end(?, ?, start_bar_number, a_player),
-                                         start_bar_number)
-         set_bar_number(a_bar_number)
+         create staves_.make(staves.count)
+         create staves_zip.make(staves, staves_.lower |..| staves_.upper)
+         staves_zip.do_all(agent (staff: MIXUP_STAFF; index: INTEGER; a_staves: FAST_ARRAY[MIXUP_STAFF]; a_player: MIXUP_PLAYER; start_bar_number_: INTEGER) is
+                           local
+                              staff_: MIXUP_STAFF
+                           do
+                              staff_ := staff.commit(Current, a_player, start_bar_number_)
+                              a_staves.put(staff_, index)
+                           end(?, ?, staves_, a_player, a_start_bar_number))
+         create Result.duplicate(source, name, parent, commit_values(a_player, a_start_bar_number), commit_imports(a_player, a_start_bar_number), staves_, strophes)
+         -- TODO check timing durations
+         Result.set_timing(staves_.first.timing)
       end
 
    accept (visitor: VISITOR) is
@@ -109,11 +114,6 @@ feature {ANY}
       do
          v ::= visitor
          v.visit_instrument(Current)
-      end
-
-   bars: ITERABLE[INTEGER_64] is
-      do
-         Result := staves.first.bars
       end
 
    voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER] is
@@ -184,6 +184,25 @@ feature {}
          if a_parent /= Void then
             a_parent.add_child(Current)
          end
+      end
+
+   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports; a_staves: like staves; a_strophes: like strophes) is
+      do
+         source := a_source
+         name := a_name
+         parent := a_parent
+         values := a_values
+         imports := a_imports
+         staves := a_staves
+         strophes := a_strophes
+         create resolver.make(Current)
+      ensure
+         source = a_source
+         name = a_name
+         parent = a_parent
+         values = a_values
+         staves = a_staves
+         strophes = a_strophes
       end
 
    strophes: FAST_ARRAY[COLLECTION[MIXUP_SYLLABLE]]

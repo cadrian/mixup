@@ -57,7 +57,7 @@ feature {ANY}
       end
 
 feature {MIXUP_IDENTIFIER}
-   eval_args (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): TRAVERSABLE[MIXUP_VALUE] is
+   eval_args (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; bar_number: INTEGER): TRAVERSABLE[MIXUP_VALUE] is
       local
          actual_args: FAST_ARRAY[MIXUP_VALUE]
          arg: MIXUP_VALUE
@@ -72,7 +72,7 @@ feature {MIXUP_IDENTIFIER}
             until
                i > args.upper
             loop
-               arg := args.item(i).eval(a_context, a_player, True)
+               arg := args.item(i).eval(a_context, a_player, True, bar_number)
                if arg = Void then
                   sedb_breakpoint
                   actual_args.add_last(Void)
@@ -107,7 +107,7 @@ feature {MIXUP_IDENTIFIER}
          buffer.extend(')')
       end
 
-   append_eval_args_in (buffer: STRING; a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
+   append_eval_args_in (buffer: STRING; a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; bar_number: INTEGER) is
       require
          buffer /= Void
          args /= Void
@@ -123,7 +123,7 @@ feature {MIXUP_IDENTIFIER}
             if i > args.lower then
                buffer.append(once ", ")
             end
-            args.item(i).eval(a_context, a_player, True).as_name_in(buffer)
+            args.item(i).eval(a_context, a_player, True, bar_number).as_name_in(buffer)
             i := i + 1
          end
          buffer.extend(')')

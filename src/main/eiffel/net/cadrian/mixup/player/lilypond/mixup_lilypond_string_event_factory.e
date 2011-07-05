@@ -24,10 +24,11 @@ inherit
          out_in_tagged_out_memory
       end
 
-create {MIXUP_LILYPOND_PLAYER}
+create {MIXUP_LILYPOND_PLAYER, MIXUP_LILYPOND_STRING_EVENT_FACTORY}
    make
 
 feature {ANY}
+   timing: MIXUP_MUSIC_TIMING
    is_callable: BOOLEAN is False
 
    accept (visitor: VISITOR) is
@@ -43,8 +44,6 @@ feature {ANY}
       end
 
 feature {ANY}
-   duration: INTEGER_64 is 0
-
    valid_anchor: BOOLEAN is False
 
    anchor: MIXUP_NOTE_HEAD is
@@ -52,8 +51,10 @@ feature {ANY}
          crash
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
       do
+         create Result.make(source, string)
+         Result.set_timing(0, a_start_bar_number, 0)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
@@ -62,12 +63,13 @@ feature {ANY}
       end
 
 feature {MIXUP_MUSIC, MIXUP_VOICE}
-   consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
+   add_voice_ids (a_ids: AVL_SET[INTEGER]) is
       do
       end
 
-   add_voice_ids (a_ids: AVL_SET[INTEGER]) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
       do
+         timing := timing.set(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}

@@ -15,26 +15,15 @@
 class MIXUP_MIDI_MPC_START_FACTORY
 
 inherit
-   MIXUP_VALUE
+   MIXUP_MIDI_MUSIC_EVENTS_FACTORY
       redefine
-         out_in_tagged_out_memory
-      end
-   MIXUP_MUSIC
-      redefine
-         out_in_tagged_out_memory
+         commit
       end
 
 create {MIXUP_MIDI_PLAYER}
    make
 
 feature {ANY}
-   is_callable: BOOLEAN is False
-
-   accept (visitor: VISITOR) is
-      do
-         (create {MIXUP_MUSIC_VALUE}.make(source, Current)).accept(visitor)
-      end
-
    out_in_tagged_out_memory is
       do
          tagged_out_memory.append(once "{MIXUP_MIDI_MPC_START_FACTORY ")
@@ -56,20 +45,39 @@ feature {ANY}
          mpc_end = a_mpc_end
       end
 
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+      do
+         Result := Precursor(a_context, a_player, a_start_bar_number)
+         Result.clear_mpc_end
+         check
+            last_commit = Void
+         end
+         last_commit := Result
+      ensure then
+         last_commit /= Void
+      end
+
+feature {MIXUP_MIDI_MPC_START_FACTORY}
+   clear_mpc_end is
+      do
+         mpc_end := Void
+      ensure
+         mpc_end = Void
+      end
+
+feature {MIXUP_MIDI_MPC_END_FACTORY}
+   last_commit: like Current
+
+   clear_last_commit is
+      require
+         last_commit /= Void
+      do
+         last_commit := Void
+      ensure
+         last_commit = Void
+      end
+
 feature {ANY}
-   duration: INTEGER_64 is 0
-
-   valid_anchor: BOOLEAN is False
-
-   anchor: MIXUP_NOTE_HEAD is
-      do
-         crash
-      end
-
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
-      do
-      end
-
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
          create last_mpc_start.make(a_context.event_data(source))
@@ -77,15 +85,6 @@ feature {ANY}
       end
 
    last_mpc_start: MIXUP_MIDI_MPC_START
-
-feature {MIXUP_MUSIC, MIXUP_VOICE}
-   consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
-      do
-      end
-
-   add_voice_ids (a_ids: AVL_SET[INTEGER]) is
-      do
-      end
 
 feature {}
    make (a_source: like source; a_knob: like knob; a_value: like value) is

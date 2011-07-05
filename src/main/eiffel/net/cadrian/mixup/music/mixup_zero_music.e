@@ -24,14 +24,14 @@ create {ANY}
    make
 
 feature {ANY}
+   timing: MIXUP_MUSIC_TIMING
    valid_anchor: BOOLEAN is False
-
-   duration: INTEGER_64 is 0
    anchor: MIXUP_NOTE_HEAD is do end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
       do
-         Result := start_bar_number
+         create Result.make(source)
+         Result.set_timing(0, a_start_bar_number, 0)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
@@ -45,12 +45,13 @@ feature {ANY}
       end
 
 feature {MIXUP_MUSIC, MIXUP_VOICE}
-   frozen consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
+   frozen add_voice_ids (ids: AVL_SET[INTEGER]) is
       do
       end
 
-   frozen add_voice_ids (ids: AVL_SET[INTEGER]) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
       do
+         timing := timing.set(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}

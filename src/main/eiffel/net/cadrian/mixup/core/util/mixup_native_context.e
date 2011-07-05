@@ -19,8 +19,9 @@ feature {ANY}
    context: MIXUP_CONTEXT
    player: MIXUP_PLAYER
    args: TRAVERSABLE[MIXUP_VALUE]
+   bar_number: INTEGER
 
-   prepare (a_call_source: like call_source; a_context: like context; a_player: like player; a_args: like args) is
+   prepare (a_call_source: like call_source; a_context: like context; a_player: like player; a_args: like args; a_bar_number: like bar_number) is
       require
          not is_ready
 
@@ -33,11 +34,13 @@ feature {ANY}
          context := a_context
          player := a_player
          args := a_args
+         bar_number := a_bar_number
       ensure
          call_source = a_call_source
          context = a_context
          player = a_player
          args = a_args
+         bar_number = a_bar_number
 
          is_ready
       end

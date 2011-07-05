@@ -21,9 +21,9 @@ create {ANY}
    make
 
 feature {ANY}
-   duration: INTEGER_64 is
+   timing: MIXUP_MUSIC_TIMING is
       do
-         Result := music.duration
+         Result := music.timing
       end
 
    valid_anchor: BOOLEAN is
@@ -36,12 +36,12 @@ feature {ANY}
          Result := music.anchor
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+      local
+         music_: like music
       do
-         debug
-            log.trace.put_line("Committing decorated music: " + tag)
-         end
-         Result := music.commit(a_context, a_player, start_bar_number)
+         music_ := music.commit(a_context, a_player, a_start_bar_number)
+         create Result.make(source, tag, music_, start_event_factory, end_event_factory, event_modifier)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
@@ -53,17 +53,14 @@ feature {ANY}
       end
 
 feature {MIXUP_MUSIC, MIXUP_VOICE}
-   consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
-      do
-         debug
-            log.trace.put_line("Consolidating decorated music: " + tag)
-         end
-         music.consolidate_bars(bars, duration_offset)
-      end
-
    add_voice_ids (ids: AVL_SET[INTEGER]) is
       do
          music.add_voice_ids(ids)
+      end
+
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+      do
+         music.set_timing(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}
@@ -74,9 +71,6 @@ feature {}
          a_tag /= Void
          a_music /= Void
       do
-         debug
-            log.trace.put_line("Creating decorated music: " + a_tag)
-         end
          source := a_source
          tag := a_tag
          music := a_music
@@ -91,8 +85,8 @@ feature {}
          event_modifier = a_event_modifier
       end
 
-   tag: STRING
    music: MIXUP_MUSIC
+   tag: STRING
    start_event_factory: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT]
    event_modifier: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT, MIXUP_EVENT], MIXUP_EVENT]
    end_event_factory: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT]

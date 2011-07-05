@@ -56,16 +56,16 @@ feature {ANY}
          v.visit_identifier(Current)
       end
 
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN): MIXUP_VALUE is
+   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
       local
          value: MIXUP_VALUE
       do
-         value := lookup(a_context, a_player).first
+         value := lookup(a_context, a_player, bar_number).first
          if value /= Void and then value.is_callable then
             if do_call then
-               Result := value.call(parts.last.source, a_player, parts.last.eval_args(a_context, a_player))
+               Result := value.call(parts.last.source, a_player, parts.last.eval_args(a_context, a_player, bar_number), bar_number)
             else
-               create {MIXUP_AGENT_FUNCTION} Result.make(parts.last.source, value, parts.last.eval_args(a_context, a_player))
+               create {MIXUP_AGENT_FUNCTION} Result.make(parts.last.source, value, parts.last.eval_args(a_context, a_player, bar_number))
             end
          else
             Result := value
@@ -76,12 +76,12 @@ feature {ANY}
          end
       end
 
-   assign (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN) is
+   assign (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; bar_number: INTEGER; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN) is
       local
          context: like lookup
       do
-         context := lookup(a_context, a_player)
-         parts.last.append_eval_args_in(context.third, a_context, a_player)
+         context := lookup(a_context, a_player, bar_number)
+         parts.last.append_eval_args_in(context.third, a_context, a_player, bar_number)
          context.second.setup(context.third.intern, a_value, is_const, is_public, is_local)
       end
 
@@ -158,7 +158,7 @@ feature {}
    debug_name: STRING
    no_value: MIXUP_NO_VALUE
 
-   lookup (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): TUPLE[MIXUP_VALUE, MIXUP_CONTEXT, STRING] is
+   lookup (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_bar_number: INTEGER): TUPLE[MIXUP_VALUE, MIXUP_CONTEXT, STRING] is
       local
          context: MIXUP_CONTEXT
          i: INTEGER; name_buffer: STRING
@@ -184,7 +184,7 @@ feature {}
                   fatal("not a context")
                end
             elseif parts.item(i).args /= Void then
-               parts.item(i).append_eval_args_in(name_buffer, a_context, a_player)
+               parts.item(i).append_eval_args_in(name_buffer, a_context, a_player, a_bar_number)
             end
             i := i + 1
          end

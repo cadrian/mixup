@@ -135,11 +135,51 @@ feature {ANY} -- playing notes
          not is_on(channel, pitch)
       end
 
+   linear_mpc (track_id: INTEGER; a_knob: MIXUP_MIDI_CONTROLLER_KNOB; a_start_time: INTEGER_64; a_start_value: INTEGER_8; a_end_time: INTEGER_64; a_end_value: INTEGER_8) is
+      require
+         a_start_value >= 0
+         a_end_value >= 0
+      local
+         count: INTEGER
+         sensible_end_time: INTEGER_64
+         log_info: OUTPUT_STREAM
+      do
+         count := a_end_value - a_start_value + 1
+         if count < 0 then
+            count := -count
+         end
+         if count > a_end_time - a_start_time then
+            count := (a_end_time - a_start_time + 1).to_integer_32
+         end
+         sensible_end_time := a_end_time - (a_end_time - a_start_time) \\ count
+
+         log_info := log.info
+         log_info.put_string(once "Playing MPC ")
+         log_info.put_string(a_knob.name)
+         log_info.put_string(once ": from time ")
+         log_info.put_integer(a_start_time)
+         log_info.put_string(once " (value: ")
+         log_info.put_integer(a_start_value)
+         log_info.put_string(once ") to time ")
+         log_info.put_integer(sensible_end_time)
+         debug
+            log_info.put_string(once " [raw: ")
+            log_info.put_integer(a_end_time)
+            log_info.put_string(once "]")
+         end
+         log_info.put_string(once " (value: ")
+         log_info.put_integer(a_end_value)
+         log_info.put_line(once ")")
+
+         add_multi_point_controller(track_id.to_integer_8, a_start_time, sensible_end_time, count, a_knob, agent linear_curve(?, count, a_start_value, a_end_value))
+      end
+
+feature {}
    add_multi_point_controller (channel: INTEGER_8; start_time, end_time: INTEGER_64; count: INTEGER; knob: MIXUP_MIDI_CONTROLLER_KNOB; curve: FUNCTION[TUPLE[INTEGER], INTEGER]) is
          -- Idea coming right from NoteWorthy Composer: the "MPC". That's the most user-friendly MIDI tool I ever used.
       require
-         time_direction: end_time > start_time
-         sensible_count: count > 1
+         time_direction: end_time >= start_time
+         sensible_count: count >= 1
          sensible_division: start_time + ((end_time - start_time) // count) * count = end_time
       local
          i, value: INTEGER
@@ -157,7 +197,7 @@ feature {ANY} -- playing notes
          loop
             value := curve.item([i])
 
-            log_info.put_string(once "   at ")
+            log_info.put_string(once " at ")
             log_info.put_integer(time)
             log_info.put_string(once ": value=")
             log_info.put_integer(value)
@@ -166,6 +206,18 @@ feature {ANY} -- playing notes
             add_event(time, controller_event(channel, knob, value))
             time := time + delta
             i := i + 1
+         end
+      end
+
+   linear_curve (value: INTEGER; count, start_value, end_value: INTEGER): INTEGER is
+      require
+         start_value.in_range(0, 127)
+         end_value.in_range(0, 127)
+      do
+         if end_value < start_value then
+            Result := (start_value - value) * (start_value - end_value) // count
+         else
+            Result := (start_value + value) * (end_value - start_value) // count
          end
       end
 

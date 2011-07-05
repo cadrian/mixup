@@ -34,7 +34,7 @@ feature {ANY}
          v.visit_list(Current)
       end
 
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN): MIXUP_VALUE is
+   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
       local
          i: INTEGER
       do
@@ -44,7 +44,7 @@ feature {ANY}
          until
             i > expressions.upper
          loop
-            values.add_last(expressions.item(i).eval(a_context, a_player, True))
+            values.add_last(expressions.item(i).eval(a_context, a_player, True, bar_number))
             i := i + 1
          end
          Result := Current

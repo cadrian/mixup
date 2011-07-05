@@ -13,6 +13,13 @@
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
 expanded class MIXUP_EVENTS_ITERATOR_CONTEXT
+--
+-- Any information that must be sent down events when iterating. No
+-- information can be sent back to parent events (kinda same principle
+-- as Unix environment rules)
+--
+-- For example, it is not the place where to store the bar number.
+--
 
 insert
    ANY

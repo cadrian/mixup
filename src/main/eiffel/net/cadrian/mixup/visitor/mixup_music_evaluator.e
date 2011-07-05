@@ -30,11 +30,11 @@ create {ANY}
    make
 
 feature {ANY}
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): MIXUP_MUSIC is
+   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_bar_number: INTEGER): MIXUP_MUSIC is
       local
          value: MIXUP_VALUE
       do
-         value := a_context.resolver.resolve(identifier, a_player)
+         value := a_context.resolver.resolve(identifier, a_player, a_bar_number)
          if value = Void then
             create {MIXUP_ZERO_MUSIC} Result.make(source)
          else

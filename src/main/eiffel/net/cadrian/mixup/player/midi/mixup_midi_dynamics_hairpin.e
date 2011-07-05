@@ -45,41 +45,9 @@ feature {ANY}
    generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION; track: MIXUP_MIDI_TRACK; track_id: INTEGER) is
       local
          knobs: MIXUP_MIDI_CONTROLLER_KNOBS
-         count: INTEGER
-         log_info: OUTPUT_STREAM
       do
-         -- TODO: that code has much in common with MIXUP_MIDI_INSTRUMENT.mpc
-         -- TO REFACTOR!
-
          if stop /= Void then
-            count := stop.nuance - start.nuance + 1
-            if count < 0 then
-               count := -count
-            end
-
-            log_info := log.info
-            log_info.put_string(once "Playing hairpin: from time")
-            log_info.put_integer(last_time * section.precision)
-            log_info.put_string(once " (value: ")
-            log_info.put_integer(start.nuance)
-            log_info.put_string(once ") to time ")
-            log_info.put_integer(first_time)
-            log_info.put_string(once " (value: ")
-            log_info.put_integer(stop.nuance * section.precision)
-            log_info.put_line(once ")")
-
-            track.add_multi_point_controller(track_id.to_integer_8, first_time * section.precision, last_time * section.precision, count,
-                                             knobs.expression_controller, agent linear_expression)
-         end
-      end
-
-feature {}
-   linear_expression (index: INTEGER): INTEGER is
-      do
-         if stop.nuance < start.nuance then
-            Result := start.nuance - index
-         else
-            Result := start.nuance + index
+            track.linear_mpc(track_id, knobs.expression_controller, first_time * section.precision, start.nuance, last_time * section.precision, stop.nuance)
          end
       end
 

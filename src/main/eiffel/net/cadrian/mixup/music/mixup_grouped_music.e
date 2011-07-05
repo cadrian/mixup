@@ -22,12 +22,19 @@ inherit
 
 insert
    MIXUP_VOICE
+      rename
+         duplicate as duplicate_voice
+      undefine
+         duration
       redefine
-         new_events_iterator, valid_anchor, out_in_tagged_out_memory
+         new_events_iterator, valid_anchor, out_in_tagged_out_memory, do_duplicate
       end
 
 create {ANY}
    as_beam, as_slur, as_phrasing_slur
+
+create {MIXUP_GROUPED_MUSIC}
+   duplicate
 
 feature {ANY}
    valid_anchor: BOOLEAN is True
@@ -152,6 +159,30 @@ feature {}
       ensure
          source = a_source
          is_phrasing_slur
+      end
+
+   duplicate (a_source: like source; a_reference: like reference; a_id: like id; a_music: like music;
+              a_start_event_factory: like start_event_factory; a_end_event_factory: like end_event_factory; a_tag: like tag;
+              a_xuplet_numerator: like xuplet_numerator; a_xuplet_denominator: like xuplet_denominator; a_xuplet_text: like xuplet_text) is
+      do
+         duplicate_voice(a_source, a_reference, a_id, a_music)
+         start_event_factory := a_start_event_factory
+         end_event_factory := a_end_event_factory
+         tag := a_tag
+         xuplet_numerator := a_xuplet_numerator
+         xuplet_denominator := a_xuplet_denominator
+         xuplet_text := a_xuplet_text
+      end
+
+   do_duplicate (a_music: like music; a_timing: like timing): like Current is
+      do
+         create Result.duplicate(source, reference, id, a_music, start_event_factory, end_event_factory, tag,
+                                 xuplet_numerator, xuplet_denominator, xuplet_text)
+         Result.set_timing(a_timing.duration, a_timing.first_bar_number, a_timing.bars_count)
+      ensure then
+         --Result.start_event_factory = start_event_factory
+         --Result.end_event_factory = end_event_factory
+         --Result.tag = tag
       end
 
    start_event_factory: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT]

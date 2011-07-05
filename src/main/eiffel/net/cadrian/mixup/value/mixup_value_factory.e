@@ -26,7 +26,7 @@ create {ANY}
 feature {ANY}
    is_callable: BOOLEAN is False
 
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN): MIXUP_VALUE is
+   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
       do
          --Result := factory.item([])
       end

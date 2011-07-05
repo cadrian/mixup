@@ -24,9 +24,8 @@ create {ANY}
    make
 
 feature {ANY}
-   duration: INTEGER_64 is
+   timing: MIXUP_MUSIC_TIMING is
       do
-         Result := music.duration
       end
 
    valid_anchor: BOOLEAN is
@@ -39,10 +38,13 @@ feature {ANY}
          Result := music.anchor
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): MIXUP_MUSIC is
       do
-         music := music_evaluator.eval(a_context, a_player)
-         Result := music.commit(a_context, a_player, start_bar_number)
+         Result := music_evaluator.eval(a_context, a_player, a_start_bar_number)
+         if Result = Void then
+            fatal("Could not find identifier: " + identifier.out)
+         end
+         Result := Result.commit(a_context, a_player, a_start_bar_number)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
@@ -63,18 +65,15 @@ feature {ANY}
       end
 
 feature {MIXUP_MUSIC, MIXUP_VOICE}
-   consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
-      do
-         debug
-            log.trace.put_line("Consolidate bars for music identifier: " + identifier.as_name)
-         end
-         music.consolidate_bars(bars, duration_offset)
-      end
-
    add_voice_ids (ids: AVL_SET[INTEGER]) is
       do
          music.add_voice_ids(ids)
          log.info.put_line("Identifier " + identifier.out + " is music " + music.out + " (voices " + ids.out + ")")
+      end
+
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+      do
+         music.set_timing(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}

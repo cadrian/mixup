@@ -23,18 +23,13 @@ insert
 feature {ANY}
    name: FIXED_STRING
    resolver: MIXUP_RESOLVER
-   bar_number: INTEGER
+   timing: MIXUP_MUSIC_TIMING
 
-   set_bar_number (a_bar_number: like bar_number) is
-      do
-         bar_number := a_bar_number
-         if parent /= Void then
-            parent.set_bar_number(a_bar_number)
-         end
-      end
-
-   commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER) is
+   commit (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
       deferred
+      ensure
+         Result.timing.is_set
+         Result.timing.first_bar_number = a_start_bar_number
       end
 
    hook (hook_name: ABSTRACT_STRING; a_player: MIXUP_PLAYER): MIXUP_VALUE is
@@ -99,7 +94,7 @@ feature {ANY}
          if h = Void then
             -- nothing to do
          elseif h.is_callable then
-            res := h.call(a_source, a_player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
+            res := h.call(a_source, a_player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0), 0)
             if res /= Void then
                warning("lost result")
             end
@@ -213,6 +208,16 @@ feature {MIXUP_CONTEXT}
          imports.add_last(a_import)
       end
 
+   set_timing (a_timing: like timing) is
+      require
+         a_timing.is_set
+      do
+         timing := a_timing --.set(a_timing.duration, a_timing.first_bar_number, a_timing.bars_count)
+      ensure
+         timing.is_set
+         timing = a_timing
+      end
+
 feature {MIXUP_CONTEXT}
    lookup_tag: INTEGER
 
@@ -243,6 +248,24 @@ feature {}
    values: DICTIONARY[MIXUP_VALUE_IN_CONTEXT, FIXED_STRING]
    parent: MIXUP_CONTEXT
    imports: FAST_ARRAY[MIXUP_IMPORT]
+
+   commit_values (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like values is
+      local
+         values_: HASHED_DICTIONARY[MIXUP_VALUE_IN_CONTEXT, FIXED_STRING]
+      do
+         create values_.with_capacity(values.count)
+         values.do_all(agent values_.add)
+         Result := values_
+      end
+
+   commit_imports (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like imports is
+      do
+         create Result.with_capacity(imports.count)
+         imports.do_all(agent (a_imports: like imports; player_: MIXUP_PLAYER; start_bar_number_: INTEGER; a_import: MIXUP_IMPORT) is
+                        do
+                           a_imports.add_last(a_import.commit(player_, start_bar_number_))
+                        end(Result, a_player, a_start_bar_number, ?))
+      end
 
    lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is
       require
@@ -311,7 +334,6 @@ feature {}
          create imports.make(0)
 
          create resolver.make(Current)
-         bar_number := 1
       ensure
          source = a_source
          name = a_name.intern

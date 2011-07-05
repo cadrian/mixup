@@ -25,7 +25,7 @@ feature {ANY}
       local
          value: MIXUP_VALUE
       do
-         value := a_if.condition.eval(context, context.player, True)
+         value := a_if.condition.eval(context, context.player, True, context.bar_number)
          if value = Void then
             fatal("value could not be computed")
          else

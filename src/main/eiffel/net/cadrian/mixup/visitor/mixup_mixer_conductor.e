@@ -104,16 +104,14 @@ feature {MIXUP_INSTRUMENT}
       end
 
 feature {}
-   make (a_context: like current_context; a_player: like current_player; start_bar_number: INTEGER) is
+   make (a_context: like current_context; a_player: like current_player; a_bar_number: INTEGER) is
       require
          a_context /= Void
          a_player /= Void
       do
-         current_context := a_context
          current_player  := a_player
-         a_context.commit(a_player, start_bar_number)
+         current_context := a_context.commit(a_player, a_bar_number)
       ensure
-         current_context = a_context
          current_player  = a_player
       end
 

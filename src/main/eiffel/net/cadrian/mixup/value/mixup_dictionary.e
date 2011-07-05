@@ -40,7 +40,7 @@ feature {ANY}
          v.visit_dictionary(Current)
       end
 
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN): MIXUP_VALUE is
+   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
       local
          i: INTEGER; k, v: MIXUP_VALUE
       do
@@ -50,8 +50,8 @@ feature {ANY}
          until
             i > keys.upper
          loop
-            k := keys.item(i).eval(a_context, a_player, True)
-            v := values.item(i).eval(a_context, a_player, True)
+            k := keys.item(i).eval(a_context, a_player, True, bar_number)
+            v := values.item(i).eval(a_context, a_player, True, bar_number)
             if k = Void then
                fatal("could not compute key")
             elseif v = Void then

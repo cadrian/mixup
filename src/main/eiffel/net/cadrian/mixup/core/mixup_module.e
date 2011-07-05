@@ -23,6 +23,9 @@ insert
 create {ANY}
    make
 
+create {MIXUP_MODULE}
+   duplicate
+
 feature {ANY}
    set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
       do
@@ -34,8 +37,12 @@ feature {ANY}
          check Result = Void end
       end
 
-   commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER) is
+   commit (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+      local
+         timing_: like timing
       do
+         create Result.duplicate(source, name, parent, commit_values(a_player, a_start_bar_number), commit_imports(a_player, a_start_bar_number))
+         Result.set_timing(timing_.set(0, a_start_bar_number, 0))
       end
 
    accept (visitor: VISITOR) is
@@ -62,6 +69,17 @@ feature {MIXUP_CONTEXT}
             {MIXUP_USER_FUNCTION_CONTEXT} ?:= a_child
          end
          -- nothing to do
+      end
+
+feature {}
+   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports) is
+      do
+         source := a_source
+         name := a_name
+         parent := a_parent
+         values := a_values
+         imports := a_imports
+         create resolver.make(Current)
       end
 
 end -- class MIXUP_MODULE

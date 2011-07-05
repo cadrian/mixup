@@ -32,12 +32,12 @@ feature {ANY}
          v.visit_agent_function(Current)
       end
 
-   call (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   call (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]; a_bar_number: INTEGER): MIXUP_VALUE is
       local
          merger: MIXUP_ARGUMENTS_MERGER
       do
          create merger.make(a_source, args)
-         Result := value.call(a_source, a_player, merger.merge(a_args))
+         Result := value.call(a_source, a_player, merger.merge(a_args), a_bar_number)
       end
 
    out_in_tagged_out_memory is

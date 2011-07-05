@@ -78,9 +78,9 @@ feature {MIXUP_MODULE}
       end
 
 feature {MIXUP_IMPORT}
-   visit_import (a_import: MIXUP_IMPORT) is
+   visit_named_import (a_named_import: MIXUP_NAMED_IMPORT) is
       require
-         a_import /= Void
+         a_named_import /= Void
       do
       end
 

@@ -42,7 +42,7 @@ feature {ANY}
          inspect
             fn_name
          when "current_bar_number" then
-            create {MIXUP_INTEGER} Result.make(a_context.call_source, bar_number)
+            create {MIXUP_INTEGER} Result.make(a_context.call_source, a_context.bar_number)
          when "string_event" then
             if a_context.args.count /= 1 then
                error_at(a_context.call_source, "Lilypond: bad argument count")

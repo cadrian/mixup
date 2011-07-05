@@ -24,13 +24,14 @@ create {ANY}
    make
 
 feature {ANY}
-   call (a_context: like context; a_player: like player): MIXUP_VALUE is
+   call (a_context: like context; a_player: like player; a_bar_number: like bar_number): MIXUP_VALUE is
       require
          a_context /= Void
          a_player /= Void
       do
          context := a_context
          player := a_player
+         bar_number := a_bar_number
 
          log.info.put_line("Executing " + mapper.out)
 
@@ -49,13 +50,13 @@ feature {MIXUP_YIELD_ITERATOR}
       do
          from
             args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_yield_iterator.value >> }
-            concentrator := mapper.call(source, player, args)
+            concentrator := mapper.call(source, player, args, bar_number)
          until
             not a_yield_iterator.has_next
          loop
             a_yield_iterator.next
             args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_yield_iterator.value >> }
-            concentrator := mapper.call(source, player, args)
+            concentrator := mapper.call(source, player, args, bar_number)
          end
       end
 
@@ -77,7 +78,7 @@ feature {MIXUP_BOOLEAN}
          args: TRAVERSABLE[MIXUP_VALUE]
       do
          args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_boolean >> }
-         concentrator := mapper.call(source, player, args)
+         concentrator := mapper.call(source, player, args, bar_number)
       end
 
 feature {MIXUP_IDENTIFIER}
@@ -92,7 +93,7 @@ feature {MIXUP_RESULT}
          args: TRAVERSABLE[MIXUP_VALUE]
       do
          args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_result >> }
-         concentrator := mapper.call(source, player, args)
+         concentrator := mapper.call(source, player, args, bar_number)
       end
 
 feature {MIXUP_INTEGER}
@@ -101,7 +102,7 @@ feature {MIXUP_INTEGER}
          args: TRAVERSABLE[MIXUP_VALUE]
       do
          args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_integer >> }
-         concentrator := mapper.call(source, player, args)
+         concentrator := mapper.call(source, player, args, bar_number)
       end
 
 feature {MIXUP_REAL}
@@ -110,7 +111,7 @@ feature {MIXUP_REAL}
          args: TRAVERSABLE[MIXUP_VALUE]
       do
          args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_real >> }
-         concentrator := mapper.call(source, player, args)
+         concentrator := mapper.call(source, player, args, bar_number)
       end
 
 feature {MIXUP_STRING}
@@ -119,7 +120,7 @@ feature {MIXUP_STRING}
          args: TRAVERSABLE[MIXUP_VALUE]
       do
          args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_string >> }
-         concentrator := mapper.call(source, player, args)
+         concentrator := mapper.call(source, player, args, bar_number)
       end
 
 feature {MIXUP_TUPLE}
@@ -134,7 +135,7 @@ feature {MIXUP_TUPLE}
             i > a_tuple.upper
          loop
             args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_tuple.item(i) >> }
-            concentrator := mapper.call(source, player, args)
+            concentrator := mapper.call(source, player, args, bar_number)
             i := i + 1
          end
       end
@@ -151,7 +152,7 @@ feature {MIXUP_LIST}
             i > a_list.upper
          loop
             args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_list.item(i) >> }
-            concentrator := mapper.call(source, player, args)
+            concentrator := mapper.call(source, player, args, bar_number)
             i := i + 1
          end
       end
@@ -168,7 +169,7 @@ feature {MIXUP_SEQ}
             i > a_seq.upper
          loop
             args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_seq.item(i) >> }
-            concentrator := mapper.call(source, player, args)
+            concentrator := mapper.call(source, player, args, bar_number)
             i := i + 1
          end
       end
@@ -185,7 +186,7 @@ feature {MIXUP_DICTIONARY}
             i > a_dictionary.upper
          loop
             args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_dictionary.key(i), a_dictionary.item(i) >> }
-            concentrator := mapper.call(source, player, args)
+            concentrator := mapper.call(source, player, args, bar_number)
             i := i + 1
          end
       end
@@ -242,6 +243,7 @@ feature {}
 
    context: MIXUP_CONTEXT
    player: MIXUP_PLAYER
+   bar_number: INTEGER
 
    sequence: MIXUP_VALUE
    mapper: MIXUP_VALUE

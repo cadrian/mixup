@@ -36,8 +36,4 @@ feature {ANY}
       deferred
       end
 
-   bars: ITERABLE[INTEGER_64] is
-      deferred
-      end
-
 end -- class MIXUP_COMPOUND_MUSIC

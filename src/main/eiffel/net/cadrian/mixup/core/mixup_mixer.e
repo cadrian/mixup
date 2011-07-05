@@ -92,7 +92,7 @@ feature {}
          a_player /= Void
       do
          log.info.put_line("Now playing " + a_context.name.out + " using " + a_player.name.out)
-         (create {MIXUP_MIXER_CONDUCTOR}.make(a_context, a_player, a_context.bar_number)).play
+         (create {MIXUP_MIXER_CONDUCTOR}.make(a_context, a_player, a_context.timing.first_bar_number)).play
       end
 
 feature {}
@@ -102,7 +102,6 @@ feature {}
       local
          music: MIXUP_MUSIC_VALUE
          decorated: MIXUP_DECORATED_MUSIC
-         bar_number: INTEGER
       do
          if context.args.count /= 1 then
             error_at(context.call_source, "bad argument count")
@@ -113,9 +112,7 @@ feature {}
             create decorated.make(context.call_source, once "with_lyrics", music.value,
                                   Void, Void,
                                   agent force_lyrics(a_def_source, context.call_source, ?, ?))
-            bar_number := decorated.commit(context.context, context.player, context.context.bar_number)
-            context.context.set_bar_number(bar_number)
-            create {MIXUP_MUSIC_VALUE} Result.make(context.call_source, decorated)
+            create {MIXUP_MUSIC_VALUE} Result.make(context.call_source, decorated.commit(context.context, context.player, context.bar_number))
          end
       end
 
@@ -133,7 +130,6 @@ feature {}
       local
          string: MIXUP_STRING
          bar: MIXUP_BAR
-         bar_number: INTEGER
       do
          if context.args.count /= 1 then
             error_at(context.call_source, "bad argument count")
@@ -142,9 +138,7 @@ feature {}
          else
             string ::= context.args.first
             create bar.make(context.call_source, string.value)
-            bar_number := bar.commit(context.context, context.player, context.context.bar_number)
-            context.context.set_bar_number(bar_number)
-            create {MIXUP_MUSIC_VALUE} Result.make(context.call_source, bar)
+            create {MIXUP_MUSIC_VALUE} Result.make(context.call_source, bar.commit(context.context, context.player, context.bar_number))
          end
       end
 
@@ -180,7 +174,6 @@ feature {}
       local
          music_store: MIXUP_MUSIC_STORE
          music: MIXUP_MUSIC_VALUE
-         bar_number: INTEGER
       do
          if context.args.count /= 2 then
             error_at(context.call_source, "bad argument count")
@@ -195,8 +188,7 @@ feature {}
             end
             music ::= context.args.last
             music_store.add_music(music.value)
-            bar_number := music_store.commit(context.context, context.player, context.context.bar_number)
-            context.context.set_bar_number(bar_number)
+            Result := music_store.commit(context.context, context.player, context.bar_number)
          end
       end
 
@@ -229,8 +221,8 @@ feature {}
             mapper ::= context.args.first
             seed := context.args.item(context.args.lower+1)
             sequence := context.args.last
-            create executor.make(context.call_source, sequence, mapper.expression.eval(context.context, context.player, False), seed)
-            Result := executor.call(context.context, context.player)
+            create executor.make(context.call_source, sequence, mapper.expression.eval(context.context, context.player, False, context.bar_number), seed)
+            Result := executor.call(context.context, context.player, context.bar_number)
          end
       end
 

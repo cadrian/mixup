@@ -23,8 +23,17 @@ insert
 create {ANY}
    make
 
+create {MIXUP_VOICE}
+   duplicate
+
 feature {ANY}
    id: INTEGER
+   timing: MIXUP_MUSIC_TIMING
+
+   duration: INTEGER_64 is
+      do
+         Result := timing.duration
+      end
 
    valid_anchor: BOOLEAN is True
 
@@ -48,8 +57,6 @@ feature {ANY}
          end
       end
 
-   staff: INTEGER
-   duration: INTEGER_64
    reference: MIXUP_NOTE_HEAD
    allow_lyrics: BOOLEAN is True
 
@@ -58,15 +65,6 @@ feature {ANY}
          a_source /= Void
       do
          add_music(create {MIXUP_BAR}.make(a_source, style))
-      end
-
-   bars: ITERABLE[INTEGER_64] is
-      local
-         barset: AVL_SET[INTEGER_64]
-      do
-         create barset.make
-         consolidate_bars(barset, 0)
-         Result := barset
       end
 
    add_music (a_music: MIXUP_MUSIC) is
@@ -115,16 +113,27 @@ feature {ANY}
          end
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
       local
-         bar_counter: AGGREGATOR[MIXUP_MUSIC, INTEGER]
-         aggregator: AGGREGATOR[MIXUP_MUSIC, INTEGER_64]
+         music_: FAST_ARRAY[MIXUP_MUSIC]
+         music_zip: AGGREGATOR[MIXUP_MUSIC, MIXUP_MUSIC_TIMING]
+         timing_: MIXUP_MUSIC_TIMING
       do
-         debug
-            log.trace.put_line("Committing voice")
-         end
-         Result := bar_counter.map(music, commit_agent(a_context, a_player, start_bar_number), start_bar_number)
-         duration := aggregator.map(music, duration_agent(a_context, a_player), 0)
+         create music_.make(music.count)
+         timing_ := music_zip.map_index(music,
+                                        agent (music0: MIXUP_MUSIC; a_music: FAST_ARRAY[MIXUP_MUSIC]; context_: MIXUP_CONTEXT; player_: MIXUP_PLAYER;
+                                               accu: MIXUP_MUSIC_TIMING; index: INTEGER): MIXUP_MUSIC_TIMING is
+                                        local
+                                           music0_: MIXUP_MUSIC
+                                        do
+                                           music0_ := music0.commit(context_, player_, accu.first_bar_number + accu.bars_count)
+                                           Result := accu + music0_.timing
+                                           a_music.put(music0_, index)
+                                        end(?, music_, a_context, a_player, ?, ?),
+                                        timing_.set(0, a_start_bar_number, 0))
+         Result := do_duplicate(music_, timing_)
+      ensure
+         Result.timing.is_set
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
@@ -146,43 +155,7 @@ feature {ANY}
          tagged_out_memory.extend('>')
       end
 
-feature {}
-   commit_agent (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): FUNCTION[TUPLE[MIXUP_MUSIC, INTEGER], INTEGER] is
-      do
-         Result := agent (mus: MIXUP_MUSIC; ctx: MIXUP_CONTEXT; plr: MIXUP_PLAYER; start, max: INTEGER): INTEGER is
-            do
-               Result := mus.commit(ctx, plr, start).max(max)
-            end (?, a_context, a_player, start_bar_number, ?)
-      end
-
-   duration_agent (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER): FUNCTION[TUPLE[MIXUP_MUSIC, INTEGER_64], INTEGER_64] is
-      do
-         Result := agent (mus: MIXUP_MUSIC; dur: INTEGER_64): INTEGER_64 is
-            do
-               Result := dur + mus.duration
-            end
-      end
-
 feature {MIXUP_MUSIC, MIXUP_VOICE}
-   consolidate_bars (barset: SET[INTEGER_64]; duration_offset: like duration) is
-      local
-         d: like duration
-         i: INTEGER
-      do
-         from
-            i := music.lower
-         until
-            i > music.upper
-         loop
-            music.item(i).consolidate_bars(barset, d)
-            d := d + music.item(i).duration
-            i := i + 1
-         end
-         check
-            d = duration
-         end
-      end
-
    add_voice_ids (ids: AVL_SET[INTEGER]) is
       do
          if not ids.fast_has(id) then
@@ -192,6 +165,11 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
                                a_music.add_voice_ids(a_ids)
                             end(?, ids))
          end
+      end
+
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+      do
+         timing := timing.set(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}
@@ -208,6 +186,30 @@ feature {}
       ensure
          source = a_source
          reference = a_reference
+      end
+
+   duplicate (a_source: like source; a_reference: like reference; a_id: like id; a_music: like music) is
+      do
+         source := a_source
+         reference := a_reference
+         id := a_id
+         music := a_music
+      end
+
+   do_duplicate (a_music: like music; a_timing: like timing): like Current is
+      require
+         a_music /= Void
+         a_timing.is_set
+      do
+         create Result.duplicate(source, reference, id, a_music)
+         Result.set_timing(a_timing.duration, a_timing.first_bar_number, a_timing.bars_count)
+      ensure
+         Result /= Void
+         Result /= Current
+         Result.source = source
+         Result.reference = reference
+         Result.id = id
+         --Result.music = a_music
       end
 
    music: COLLECTION[MIXUP_MUSIC]

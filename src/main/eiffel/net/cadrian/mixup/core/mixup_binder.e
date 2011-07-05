@@ -31,13 +31,27 @@ feature {ANY}
          check Result = Void end
       end
 
-   commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER) is
+   commit (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
       require
          a_player /= Void
       local
-         bar_counter: AGGREGATOR[MIXUP_CONTEXT, INTEGER]
+         children_: like children
+         children_zip: MAP_AGGREGATOR[MIXUP_CONTEXT, FIXED_STRING, MIXUP_MUSIC_TIMING]
+         timing_: MIXUP_MUSIC_TIMING
       do
-         set_bar_number(bar_counter.map(children, agent commit_child(?, a_player, start_bar_number, ?), start_bar_number))
+         create children_.with_capacity(children.count)
+         timing_ := children_zip.map(children,
+                                     agent (a_children: like children; player_: MIXUP_PLAYER; a_child: MIXUP_CONTEXT; a_key: FIXED_STRING; a_timing: MIXUP_MUSIC_TIMING): MIXUP_MUSIC_TIMING is
+                                     local
+                                        child_: MIXUP_CONTEXT
+                                     do
+                                        child_ := a_child.commit(player_, a_timing.first_bar_number + a_timing.bars_count)
+                                        a_children.add(child_, a_key)
+                                        Result := a_timing + child_.timing
+                                     end(children_, a_player, ?, ?, ?),
+                                     timing_.set(0, a_start_bar_number, 0))
+         Result := do_duplicate(source, name, parent, commit_values(a_player, a_start_bar_number), commit_imports(a_player, a_start_bar_number), children_)
+         Result.set_timing(timing_)
       end
 
    accept (visitor: VISITOR) is
@@ -57,12 +71,6 @@ feature {MIXUP_CONTEXT}
       end
 
 feature {}
-   commit_child (a_child: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number, max_bar_number: INTEGER): INTEGER is
-      do
-         a_child.commit(a_player, start_bar_number)
-         Result := a_child.bar_number.max(max_bar_number)
-      end
-
    lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is
       local
          id_prefix: FIXED_STRING; i: INTEGER
@@ -113,6 +121,28 @@ feature {}
          if a_parent /= Void then
             a_parent.add_child(Current)
          end
+      end
+
+   do_duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports; a_children: like children): like Current is
+      deferred
+      ensure
+         Result /= Void
+         Result /= Current
+         Result.source = a_source
+         Result.name = a_name.intern
+         --Result.parent = a_parent
+         --Result.children = a_children
+      end
+
+   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports; a_children: like children) is
+      do
+         source := a_source
+         name := a_name
+         parent := a_parent
+         values := a_values
+         imports := a_imports
+         children := a_children
+         create resolver.make(Current)
       end
 
 invariant

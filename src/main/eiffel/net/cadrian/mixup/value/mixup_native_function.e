@@ -34,11 +34,11 @@ feature {ANY}
          v.visit_native_function(Current)
       end
 
-   call (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   call (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]; a_bar_number: INTEGER): MIXUP_VALUE is
       local
          native_context: MIXUP_NATIVE_CONTEXT
       do
-         native_context.prepare(a_source, context, a_player, a_args)
+         native_context.prepare(a_source, context, a_player, a_args, a_bar_number)
          Result := native_caller.item([native_context])
       end
 

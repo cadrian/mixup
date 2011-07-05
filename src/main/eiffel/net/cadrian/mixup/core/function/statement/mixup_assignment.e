@@ -31,11 +31,11 @@ feature {ANY}
       local
          value: MIXUP_VALUE
       do
-         value := expression.eval(a_context, a_context.player, True)
+         value := expression.eval(a_context, a_context.player, True, a_context.bar_number)
          if value = Void then
             error("value could not be computed")
          else
-            identifier.assign(a_context, a_context.player, value, False, True, True)
+            identifier.assign(a_context, a_context.player, a_context.bar_number, value, False, True, True)
          end
       end
 

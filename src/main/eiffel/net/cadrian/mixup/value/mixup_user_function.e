@@ -32,7 +32,7 @@ feature {ANY}
          v.visit_user_function(Current)
       end
 
-   call (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   call (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]; a_bar_number: INTEGER): MIXUP_VALUE is
       local
          fn_context: MIXUP_USER_FUNCTION_CONTEXT
       do
@@ -89,7 +89,6 @@ feature {}
                zip.do_all(agent args.add)
             end
             create Result.make(source, context, a_player, args)
-            Result.set_bar_number(context.bar_number)
             Result.add_statements(statements)
          end
       ensure

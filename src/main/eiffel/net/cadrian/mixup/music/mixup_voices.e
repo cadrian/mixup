@@ -23,10 +23,15 @@ inherit
 create {ANY}
    make
 
-feature {ANY}
-   duration: INTEGER_64
+create {MIXUP_VOICES}
+   duplicate
 
 feature {ANY}
+   timing: MIXUP_MUSIC_TIMING is
+      do
+         Result := voices.first.timing
+      end
+
    staff_count: INTEGER
 
    anchor: MIXUP_NOTE_HEAD is
@@ -85,42 +90,35 @@ feature {ANY}
          voices.count = old voices.count + 1
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
       local
-         durations: AVL_SET[INTEGER_64]
-         bar_counter: AGGREGATOR[MIXUP_VOICE, INTEGER]
+         timings: AVL_SET[MIXUP_MUSIC_TIMING]
+         voices_: like voices
+         voices_zip: ZIP[MIXUP_VOICE, INTEGER]
       do
-         debug
-            log.trace.put_line("Committing voices")
+         create timings.make
+         create voices_.make(voices.count)
+         create voices_zip.make(voices, voices_.lower |..| voices_.upper)
+         voices_zip.do_all(agent (voice: MIXUP_VOICE; index: INTEGER; a_voices: like voices; start_bar_number_: INTEGER;
+                                  context_: MIXUP_CONTEXT; player_: MIXUP_PLAYER; timings_set: SET[MIXUP_MUSIC_TIMING]) is
+                           local
+                              voice_: MIXUP_VOICE
+                           do
+                              voice_ := voice.commit(context_, player_, start_bar_number_)
+                              a_voices.put(voice_, index)
+                              timings_set.add(voice_.timing)
+                           end (?, ?, voices_, a_start_bar_number, a_context, a_player, timings))
+         if timings.count > 1 then
+            voices_.do_all(agent (voice: MIXUP_VOICE) is
+                           do
+                              warning_at(voice.source, "timing: " + voice.timing.out + " " + voice.out)
+                           end)
+            warning("all voices don't have the same timing (details above)")
          end
-         Result := bar_counter.map(voices, commit_agent(a_context, a_player, start_bar_number), start_bar_number)
-         debug
-            log.trace.put_line("Checking voices bars")
-         end
-         create durations.make
-         voices.do_all(agent (voice: MIXUP_VOICE; durations_set: SET[INTEGER_64]) is
-                          do
-                             if not voice.bars.is_equal(bars) then
-                                warning_at(voice.source, "bar durations mismatch")
-                             end
-                             durations_set.add(voice.duration)
-                          end (?, durations))
-         if durations.count > 1 then
-            voices.do_all(agent (voice: MIXUP_VOICE; durations_set: SET[INTEGER_64]) is
-                             do
-                                warning_at(voice.source, "duration = " + voice.duration.out + " " + voice.out)
-                             end (?, durations))
-            warning("all voices don't have the same duration (details above)")
-         end
-         duration := durations.first
          debug
             log.trace.put_line("Voices duration = " + duration.out)
          end
-      end
-
-   bars: ITERABLE[INTEGER_64] is
-      do
-         Result := voices.first.bars
+         create Result.duplicate(source, reference_, voices_)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
@@ -144,19 +142,12 @@ feature {ANY}
          tagged_out_memory.append(once " >>")
       end
 
-feature {MIXUP_MUSIC, MIXUP_VOICE}
-   consolidate_bars (bars_: SET[INTEGER_64]; duration_offset: like duration) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
       do
-         if consolidating then
-            sedb_breakpoint
-         end
-         consolidating := True
-         voices.first.consolidate_bars(bars_, duration_offset)
-         consolidating := False
+         voices.do_all(agent {MIXUP_VOICE}.set_timing(a_duration, a_first_bar_number, a_bars_count))
       end
 
-   consolidating: BOOLEAN
-
+feature {MIXUP_MUSIC, MIXUP_VOICE}
    add_voice_ids (ids: AVL_SET[INTEGER]) is
       do
          voices.do_all(agent (a_voice: MIXUP_VOICE; a_ids: AVL_SET[INTEGER]) is
@@ -178,18 +169,22 @@ feature {}
          reference_ = a_reference
       end
 
+   duplicate (a_source: like source; a_reference: like reference_; a_voices: like voices) is
+      require
+         not a_voices.is_empty
+         a_voices.first.timing.is_set
+      do
+         source := a_source
+         voices := a_voices
+         reference_ := a_reference
+      ensure
+         source = a_source
+         voices = a_voices
+         reference_ = a_reference
+      end
+
    voices: FAST_ARRAY[MIXUP_VOICE]
    reference_: MIXUP_NOTE_HEAD
-
-   commit_agent (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): FUNCTION[TUPLE[MIXUP_VOICE, INTEGER], INTEGER] is
-      do
-         Result := agent commit_voice(a_context, a_player, start_bar_number, ?, ?)
-      end
-
-   commit_voice (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER; a_voice: MIXUP_VOICE; bar_number: INTEGER): INTEGER is
-      do
-         Result := a_voice.commit(a_context, a_player, start_bar_number).max(bar_number)
-      end
 
 invariant
    voices /= Void

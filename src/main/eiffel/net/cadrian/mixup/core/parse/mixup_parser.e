@@ -700,7 +700,7 @@ feature {} -- Functions
          ctx := context_factory.item([source_, ctx_name])
          if import.count = 2 then
             log.trace.put_line("Adding import from " + ctx_name.out + " to " + current_context.name.out)
-            create {MIXUP_IMPORT} ctx.make(source_, ctx_name, current_context, ctx)
+            create {MIXUP_NAMED_IMPORT} ctx.make(source_, ctx_name, current_context, ctx)
          else
             check last_identifiers = Void end
             create last_identifiers.make(0)

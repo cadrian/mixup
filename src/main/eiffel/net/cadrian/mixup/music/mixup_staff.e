@@ -23,13 +23,16 @@ inherit
 create {ANY}
    make
 
-feature {ANY}
-   id: INTEGER
+create {MIXUP_STAFF}
+   duplicate
 
-   duration: INTEGER_64 is
+feature {ANY}
+   timing: MIXUP_MUSIC_TIMING is
       do
-         Result := voices.duration
+         Result := voices.timing
       end
+
+   id: INTEGER
 
    valid_anchor: BOOLEAN is
       do
@@ -41,20 +44,18 @@ feature {ANY}
          Result := voices.anchor
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
+   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+      local
+         voices_: like voices
       do
-         Result := voices.commit(a_context, a_player, start_bar_number)
+         voices_ := voices.commit(a_context, a_player, a_start_bar_number)
+         create Result.duplicate(source, id, voices_)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
          a_context.set_staff_id(id)
          Result := voices.new_events_iterator(a_context)
-      end
-
-   bars: ITERABLE[INTEGER_64] is
-      do
-         Result := voices.bars
       end
 
    voice_ids: TRAVERSABLE[INTEGER] is
@@ -72,14 +73,14 @@ feature {ANY}
       end
 
 feature {MIXUP_MUSIC, MIXUP_VOICE}
-   consolidate_bars (a_bars: SET[INTEGER_64]; duration_offset: like duration) is
-      do
-         voices.consolidate_bars(a_bars, duration_offset)
-      end
-
    add_voice_ids (ids: AVL_SET[INTEGER]) is
       do
          check False end
+      end
+
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+      do
+         voices.set_timing(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}
@@ -98,6 +99,13 @@ feature {}
       ensure
          source = a_source
          voices = a_voices
+      end
+
+   duplicate (a_source: like source; a_id: like id; a_voices: like voices) is
+      do
+         source := a_source
+         id := a_id
+         voices := a_voices
       end
 
    voices: MIXUP_VOICES

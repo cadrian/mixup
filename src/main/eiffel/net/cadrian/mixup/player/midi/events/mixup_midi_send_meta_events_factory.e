@@ -15,26 +15,12 @@
 class MIXUP_MIDI_SEND_META_EVENTS_FACTORY
 
 inherit
-   MIXUP_VALUE
-      redefine
-         out_in_tagged_out_memory
-      end
-   MIXUP_MUSIC
-      redefine
-         out_in_tagged_out_memory
-      end
+   MIXUP_MIDI_MUSIC_EVENTS_FACTORY
 
 create {MIXUP_MIDI_PLAYER}
    make
 
 feature {ANY}
-   is_callable: BOOLEAN is False
-
-   accept (visitor: VISITOR) is
-      do
-         (create {MIXUP_MUSIC_VALUE}.make(source, Current)).accept(visitor)
-      end
-
    out_in_tagged_out_memory is
       do
          tagged_out_memory.append(once "{MIXUP_MIDI_SEND_EVENTS_FACTORY ")
@@ -43,19 +29,6 @@ feature {ANY}
       end
 
 feature {ANY}
-   duration: INTEGER_64 is 0
-
-   valid_anchor: BOOLEAN is False
-
-   anchor: MIXUP_NOTE_HEAD is
-      do
-         crash
-      end
-
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; start_bar_number: INTEGER): INTEGER is
-      do
-      end
-
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
          create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_MIDI_SEND_META_EVENTS}.make(a_context.event_data(source), events))
@@ -66,15 +39,6 @@ feature {ANY}
          a_event /= Void
       do
          events.add_last(a_event)
-      end
-
-feature {MIXUP_MUSIC, MIXUP_VOICE}
-   consolidate_bars (bars: SET[INTEGER_64]; duration_offset: like duration) is
-      do
-      end
-
-   add_voice_ids (a_ids: AVL_SET[INTEGER]) is
-      do
       end
 
 feature {}

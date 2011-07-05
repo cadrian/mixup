@@ -87,7 +87,7 @@ feature {}
          item: MIXUP_VALUE
       do
          if iterable = Void then
-            iterable ::= a_iterable.eval(context, context.player, True)
+            iterable ::= a_iterable.eval(context, context.player, True, context.bar_number)
             if iterable = Void then
                fatal("could not compute value")
             else

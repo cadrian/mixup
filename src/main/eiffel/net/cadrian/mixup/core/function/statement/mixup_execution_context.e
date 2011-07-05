@@ -25,7 +25,7 @@ feature {MIXUP_IDENTIFIER}
       local
          value: MIXUP_VALUE
       do
-         value := context.resolver.resolve(a_identifier, context.player)
+         value := context.resolver.resolve(a_identifier, context.player, context.bar_number)
          if value = Void then
             error("value could not be computed")
          else
@@ -49,11 +49,11 @@ feature {MIXUP_AGENT}
             until
                i > a_agent.args.upper
             loop
-               args.add_last(a_agent.args.item(i).eval(context, context.player, True))
+               args.add_last(a_agent.args.item(i).eval(context, context.player, True, context.bar_number))
                i := i + 1
             end
          end
-         create fun.make(a_agent.source, a_agent.expression.eval(context, context.player, True), args)
+         create fun.make(a_agent.source, a_agent.expression.eval(context, context.player, True, context.bar_number), args)
          fun.accept(Current)
       end
 
@@ -92,7 +92,7 @@ feature {}
       local
          value: MIXUP_VALUE
       do
-         value := a_function.call(source, context.player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
+         value := a_function.call(source, context.player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0), context.bar_number)
          if value = Void then
             error("value could not be computed")
          else
