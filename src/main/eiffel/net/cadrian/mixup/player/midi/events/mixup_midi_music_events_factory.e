@@ -47,7 +47,7 @@ feature {ANY}
          crash
       end
 
-feature {MIXUP_MUSIC, MIXUP_VOICE}
+feature {MIXUP_MUSIC, MIXUP_SPANNER}
    add_voice_ids (a_ids: AVL_SET[INTEGER]) is
       do
       end
@@ -55,6 +55,12 @@ feature {MIXUP_MUSIC, MIXUP_VOICE}
    set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
       do
          timing := timing.set(a_duration, a_first_bar_number, a_bars_count)
+      end
+
+feature {}
+   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+      do
+         Result := Current
       end
 
 end -- class MIXUP_MIDI_MUSIC_EVENTS_FACTORY

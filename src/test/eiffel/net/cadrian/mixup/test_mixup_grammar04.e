@@ -104,7 +104,7 @@ feature {}
          mixer.add_player(player)
          mixer.add_piece(grammar.root_node, "test")
 
-         player.when_native("current_bar_number", agent (a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+         player.when_native("current_bar_number", agent (a_context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
                                                      local
                                                         s: AUX_MIXUP_MOCK_SOURCE
                                                      do

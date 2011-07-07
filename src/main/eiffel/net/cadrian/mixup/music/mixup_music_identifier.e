@@ -44,7 +44,6 @@ feature {ANY}
          if Result = Void then
             fatal("Could not find identifier: " + identifier.out)
          end
-         Result := Result.commit(a_context, a_player, a_start_bar_number)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
@@ -64,7 +63,7 @@ feature {ANY}
          end
       end
 
-feature {MIXUP_MUSIC, MIXUP_VOICE}
+feature {MIXUP_MUSIC, MIXUP_SPANNER}
    add_voice_ids (ids: AVL_SET[INTEGER]) is
       do
          music.add_voice_ids(ids)

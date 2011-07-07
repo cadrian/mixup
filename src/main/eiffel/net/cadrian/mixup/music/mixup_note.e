@@ -31,7 +31,7 @@ feature {ANY}
       deferred
       end
 
-feature {MIXUP_MUSIC, MIXUP_VOICE}
+feature {MIXUP_MUSIC, MIXUP_SPANNER}
    frozen add_voice_ids (ids: AVL_SET[INTEGER]) is
       do
       end

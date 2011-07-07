@@ -56,20 +56,20 @@ feature {ANY}
          Result := events_list
       end
 
-   when_native (a_name: STRING; then_call: FUNCTION[TUPLE[MIXUP_CONTEXT, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE]) is
+   when_native (a_name: STRING; then_call: FUNCTION[TUPLE[MIXUP_NATIVE_CONTEXT], MIXUP_VALUE]) is
       require
          a_name /= Void
       do
          native_map.put(then_call, a_name.intern)
       end
 
-   native (a_def_source, a_call_source: MIXUP_SOURCE; a_name: STRING; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   native (a_def_source: MIXUP_SOURCE; a_context: MIXUP_NATIVE_CONTEXT; fn_name: STRING): MIXUP_VALUE is
       local
-         fun: FUNCTION[TUPLE[MIXUP_CONTEXT, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE]
+         fun: FUNCTION[TUPLE[MIXUP_NATIVE_CONTEXT], MIXUP_VALUE]
       do
-         fun := native_map.reference_at(a_name.intern)
+         fun := native_map.reference_at(fn_name.intern)
          if fun /= Void then
-            Result := fun.item([a_context, args])
+            Result := fun.item([a_context])
          end
       end
 
@@ -118,72 +118,72 @@ feature {ANY}
 
    play_start_voices (a_data: MIXUP_EVENT_DATA; voice_ids: TRAVERSABLE[INTEGER]) is
       do
-         add_event(start_voices_event(a_data.instrument, a_data.staff_id, voice_ids))
+         add_event(start_voices_event(a_data.instrument.name, a_data.staff_id, voice_ids))
       end
 
    play_end_voices (a_data: MIXUP_EVENT_DATA) is
       do
-         add_event(end_voices_event(a_data.instrument, a_data.staff_id))
+         add_event(end_voices_event(a_data.instrument.name, a_data.staff_id))
       end
 
    play_set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
       do
-         add_event(set_dynamics_event(a_data.instrument, a_data.staff_id, dynamics, position, is_standard))
+         add_event(set_dynamics_event(a_data.instrument.name, a_data.staff_id, dynamics, position, is_standard))
       end
 
    play_set_note (a_data: MIXUP_EVENT_DATA; note: MIXUP_NOTE) is
       do
-         add_event(set_note_event(a_data.instrument, a_data.staff_id, note))
+         add_event(set_note_event(a_data.instrument.name, a_data.staff_id, note))
       end
 
    play_next_bar (a_data: MIXUP_EVENT_DATA; style: STRING) is
       do
-         add_event(next_bar_event(a_data.instrument, a_data.staff_id, style))
+         add_event(next_bar_event(a_data.instrument.name, a_data.staff_id, style))
       end
 
    play_start_beam (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         add_event(start_beam_event(a_data.instrument, a_data.staff_id, a_data.voice_id, xuplet_numerator, xuplet_denominator, text))
+         add_event(start_beam_event(a_data.instrument.name, a_data.staff_id, a_data.voice_id, xuplet_numerator, xuplet_denominator, text))
       end
 
    play_end_beam (a_data: MIXUP_EVENT_DATA) is
       do
-         add_event(end_beam_event(a_data.instrument, a_data.staff_id))
+         add_event(end_beam_event(a_data.instrument.name, a_data.staff_id))
       end
 
    play_start_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         add_event(start_slur_event(a_data.instrument, a_data.staff_id, a_data.voice_id, xuplet_numerator, xuplet_denominator, text))
+         add_event(start_slur_event(a_data.instrument.name, a_data.staff_id, a_data.voice_id, xuplet_numerator, xuplet_denominator, text))
       end
 
    play_end_slur (a_data: MIXUP_EVENT_DATA) is
       do
-         add_event(end_slur_event(a_data.instrument, a_data.staff_id))
+         add_event(end_slur_event(a_data.instrument.name, a_data.staff_id))
       end
 
    play_start_phrasing_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         add_event(start_phrasing_slur_event(a_data.instrument, a_data.staff_id, a_data.voice_id, xuplet_numerator, xuplet_denominator, text))
+         add_event(start_phrasing_slur_event(a_data.instrument.name, a_data.staff_id, a_data.voice_id, xuplet_numerator, xuplet_denominator, text))
       end
 
    play_end_phrasing_slur (a_data: MIXUP_EVENT_DATA) is
       do
-         add_event(end_phrasing_slur_event(a_data.instrument, a_data.staff_id))
+         add_event(end_phrasing_slur_event(a_data.instrument.name, a_data.staff_id))
       end
 
    play_start_repeat (a_data: MIXUP_EVENT_DATA; volte: INTEGER_64) is
       do
-         add_event(start_repeat_event(a_data.instrument, a_data.staff_id, volte))
+         add_event(start_repeat_event(a_data.instrument.name, a_data.staff_id, volte))
       end
 
    play_end_repeat (a_data: MIXUP_EVENT_DATA) is
       do
-         add_event(end_repeat_event(a_data.instrument, a_data.staff_id))
+         add_event(end_repeat_event(a_data.instrument.name, a_data.staff_id))
       end
 
 feature {}
    events_list: COLLECTION[AUX_MIXUP_MOCK_EVENT]
-   native_map: DICTIONARY[FUNCTION[TUPLE[MIXUP_CONTEXT, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE], FIXED_STRING]
+   native_map: DICTIONARY[FUNCTION[TUPLE[MIXUP_NATIVE_CONTEXT], MIXUP_VALUE], FIXED_STRING]
 
    add_event (a_event: AUX_MIXUP_MOCK_EVENT) is
       do
@@ -194,7 +194,7 @@ feature {}
    make is
       do
          create {FAST_ARRAY[AUX_MIXUP_MOCK_EVENT]} events_list.make(0)
-         create {HASHED_DICTIONARY[FUNCTION[TUPLE[MIXUP_CONTEXT, TRAVERSABLE[MIXUP_VALUE]], MIXUP_VALUE], FIXED_STRING]} native_map.make
+         create {HASHED_DICTIONARY[FUNCTION[TUPLE[MIXUP_NATIVE_CONTEXT], MIXUP_VALUE], FIXED_STRING]} native_map.make
       end
 
 invariant

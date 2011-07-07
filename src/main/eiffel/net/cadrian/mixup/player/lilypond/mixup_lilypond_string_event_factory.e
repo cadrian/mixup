@@ -62,7 +62,7 @@ feature {ANY}
          create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_LILYPOND_STRING_EVENT}.make(a_context.event_data(source), string))
       end
 
-feature {MIXUP_MUSIC, MIXUP_VOICE}
+feature {MIXUP_MUSIC, MIXUP_SPANNER}
    add_voice_ids (a_ids: AVL_SET[INTEGER]) is
       do
       end
@@ -86,6 +86,11 @@ feature {}
       end
 
    string: FIXED_STRING
+
+   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+      do
+         Result := Current
+      end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
    as_name_in (a_name: STRING) is

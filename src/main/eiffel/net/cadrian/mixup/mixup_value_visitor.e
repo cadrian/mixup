@@ -136,6 +136,15 @@ feature {MIXUP_OPEN_ARGUMENT}
       deferred
       end
 
+feature {MIXUP_VALUE_FACTORY}
+   visit_value_factory (a_value_factory: MIXUP_VALUE_FACTORY) is
+      require
+         a_value_factory /= Void
+      do
+         -- defaults to nothing
+         sedb_breakpoint
+      end
+
 feature {MIXUP_YIELD_ITERATOR}
    visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR) is
       require

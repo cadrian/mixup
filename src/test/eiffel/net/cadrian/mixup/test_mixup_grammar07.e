@@ -79,13 +79,7 @@ feature {}
          create mixer.make(agent read_file)
          create player.make
 
-         player.when_native("current_bar_number", agent (a_player: AUX_MIXUP_MOCK_PLAYER; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
-                                                     local
-                                                        s: AUX_MIXUP_MOCK_SOURCE
-                                                     do
-                                                        create s.make
-                                                        create {MIXUP_INTEGER} Result.make(s, a_context.bar_number)
-                                                     end (player, ?, ?))
+         player.when_native("current_bar_number", agent current_bar_number_factory(player, ?))
 
          mixer.add_player(player)
 

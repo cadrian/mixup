@@ -36,14 +36,15 @@ feature {ANY}
       do
          value := a_context.resolver.resolve(identifier, a_player, a_bar_number)
          if value = Void then
-            create {MIXUP_ZERO_MUSIC} Result.make(source)
+            Result := (create {MIXUP_ZERO_MUSIC}.make(source)).commit(a_context, a_player, a_bar_number)
          else
             music := Void
             value.accept(Current)
-            Result := music
+            Result := music.commit(a_context, a_player, a_bar_number)
          end
       ensure
          Result /= Void
+         Result.timing.is_set
       end
 
 feature {MIXUP_AGENT}

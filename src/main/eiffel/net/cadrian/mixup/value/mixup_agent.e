@@ -66,6 +66,11 @@ feature {}
          expression = a_expression
       end
 
+   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+      do
+         Result := Current
+      end
+
 invariant
    expression /= Void
 

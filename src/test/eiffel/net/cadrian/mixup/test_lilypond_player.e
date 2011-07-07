@@ -39,9 +39,11 @@ feature {}
          Result := ids
       end
 
-   event_data (instr: STRING; time: INTEGER_64; staff_id, voice_id: INTEGER): MIXUP_EVENT_DATA is
+   my_instrument: MIXUP_INSTRUMENT
+
+   event_data (time: INTEGER_64; staff_id, voice_id: INTEGER): MIXUP_EVENT_DATA is
       do
-         Result.set(source, time, instr.intern, staff_id, voice_id)
+         Result.set(source, time, my_instrument, staff_id, voice_id)
       end
 
    make is
@@ -52,21 +54,23 @@ feature {}
          context: AUX_MIXUP_MOCK_CONTEXT
       do
          create source.make
+         create my_instrument.make(source, "MyInstr", Void)
+
          create buffer.make
          create lilypond.connect_to(buffer)
          create context.make(source, "test context", Void)
          lilypond.set_context(context)
 
-         lilypond.play_set_partitur("test"                                                                                                                                 )
-         lilypond.play_set_instrument("MyInstr", map(1, 1|..|2)                                                                                                            )
-         lilypond.play_start_voices(event_data("MyInstr",   0, 1, 0), 1|..|1                                                                                          )
-         lilypond.play_set_note(event_data("MyInstr",       0, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("c", 4) >> }, source, << "doe", "do" >> })
-         lilypond.play_set_note(event_data("MyInstr",      64, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("d", 4) >> }, source, << "ray", "re" >> })
-         lilypond.play_start_voices(event_data("MyInstr",   0, 1, 1), 2|..|2                                                                                          )
-         lilypond.play_set_note(event_data("MyInstr",     128, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("e", 4) >> }, source, << "me" , "mi" >> })
-         lilypond.play_set_note(event_data("MyInstr",     128, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("e", 5) >> }, source, << "me" , "mi" >> })
-         lilypond.play_end_voices(event_data("MyInstr",   192, 1, 1)                                                                                                  )
-         lilypond.play_end_voices(event_data("MyInstr",   192, 1, 0)                                                                                                  )
+         lilypond.play_set_partitur("test"                                                                                                                 )
+         lilypond.play_set_instrument(my_instrument.name, map(1, 1|..|2)                                                                                   )
+         lilypond.play_start_voices(event_data(  0, 1, 0), 1|..|1                                                                                          )
+         lilypond.play_set_note(event_data(      0, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("c", 4) >> }, source, << "doe", "do" >> })
+         lilypond.play_set_note(event_data(     64, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("d", 4) >> }, source, << "ray", "re" >> })
+         lilypond.play_start_voices(event_data(  0, 1, 1), 2|..|2                                                                                          )
+         lilypond.play_set_note(event_data(    128, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("e", 4) >> }, source, << "me" , "mi" >> })
+         lilypond.play_set_note(event_data(    128, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("e", 5) >> }, source, << "me" , "mi" >> })
+         lilypond.play_end_voices(event_data(  192, 1, 1)                                                                                                  )
+         lilypond.play_end_voices(event_data(  192, 1, 0)                                                                                                  )
          lilypond.play_end_partitur
 
          expected := "[

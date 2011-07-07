@@ -27,7 +27,10 @@ create {MIXUP_USER_FUNCTION_CONTEXT}
    duplicate
 
 feature {ANY}
-   bar_number: INTEGER
+   bar_number: INTEGER is
+      do
+         Result := timing.first_bar_number
+      end
 
    set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
       do
@@ -50,11 +53,14 @@ feature {ANY}
       end
 
    commit (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+      local
+         timing_: MIXUP_MUSIC_TIMING
       do
          check
             a_player = player
          end
-         create Result.duplicate(source, name, parent, player, commit_values(a_player, a_start_bar_number), commit_imports(a_player, a_start_bar_number), args, a_start_bar_number)
+         create Result.duplicate(source, name, parent, player, commit_values(a_player, a_start_bar_number), commit_imports(a_player, a_start_bar_number), args)
+         Result.set_timing(timing_.set(0, a_start_bar_number, 0))
       end
 
    accept (visitor: VISITOR) is
@@ -176,7 +182,7 @@ feature {}
          args = a_args
       end
 
-   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_player: like player; a_values: like values; a_imports: like imports; a_args: like args; a_bar_number: like bar_number) is
+   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_player: like player; a_values: like values; a_imports: like imports; a_args: like args) is
       do
          source := a_source
          name := a_name
@@ -187,7 +193,7 @@ feature {}
          args := a_args
          create statements.make(1, 0)
          create {HASHED_DICTIONARY[MIXUP_VALUE, FIXED_STRING]} locals.make
-         bar_number := a_bar_number
+         create resolver.make(Current)
       end
 
 invariant

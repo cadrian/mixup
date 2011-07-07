@@ -19,6 +19,7 @@ inherit
 
 insert
    MIXUP_NOTE_DURATIONS
+   MIXUP_MIDI_META_EVENTS
 
 create {ANY}
    make
@@ -76,6 +77,7 @@ feature {}
          set_precision(12)
          create track0.make
          file.add_track(track0)
+         track0.add_event(0, track_name_event(section + ": " + a_name))
       end
 
    file: MIXUP_MIDI_FILE

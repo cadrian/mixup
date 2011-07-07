@@ -36,7 +36,7 @@ feature {ANY}
       local
          fn_context: MIXUP_USER_FUNCTION_CONTEXT
       do
-         fn_context := prepare(a_source, a_player, a_args)
+         fn_context := prepare(a_source, a_player, a_args, a_bar_number)
          fn_context.execute
          if fn_context.yielded then
             create {MIXUP_YIELD_ITERATOR} Result.make(source, fn_context) -- TODO: wrong! must get the yield instruction source!
@@ -73,7 +73,7 @@ feature {}
    statements: TRAVERSABLE[MIXUP_STATEMENT]
    signature: TRAVERSABLE[FIXED_STRING]
 
-   prepare (a_source: like source; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_USER_FUNCTION_CONTEXT is
+   prepare (a_source: like source; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]; a_bar_number: INTEGER): MIXUP_USER_FUNCTION_CONTEXT is
       local
          args: DICTIONARY[MIXUP_VALUE, FIXED_STRING]
          zip: ZIP[MIXUP_VALUE, FIXED_STRING]
@@ -89,6 +89,7 @@ feature {}
                zip.do_all(agent args.add)
             end
             create Result.make(source, context, a_player, args)
+            Result := Result.commit(a_player, a_bar_number)
             Result.add_statements(statements)
          end
       ensure

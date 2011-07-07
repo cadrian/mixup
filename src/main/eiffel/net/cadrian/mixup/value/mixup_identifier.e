@@ -17,7 +17,7 @@ class MIXUP_IDENTIFIER
 inherit
    MIXUP_VALUE
       redefine
-         eval, out_in_tagged_out_memory
+         out_in_tagged_out_memory
       end
 
 create {ANY}
@@ -54,26 +54,6 @@ feature {ANY}
       do
          v ::= visitor
          v.visit_identifier(Current)
-      end
-
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
-      local
-         value: MIXUP_VALUE
-      do
-         value := lookup(a_context, a_player, bar_number).first
-         if value /= Void and then value.is_callable then
-            if do_call then
-               Result := value.call(parts.last.source, a_player, parts.last.eval_args(a_context, a_player, bar_number), bar_number)
-            else
-               create {MIXUP_AGENT_FUNCTION} Result.make(parts.last.source, value, parts.last.eval_args(a_context, a_player, bar_number))
-            end
-         else
-            Result := value
-         end
-         if Result = Void then
-            info("nothing returned")
-            value := no_value
-         end
       end
 
    assign (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; bar_number: INTEGER; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN) is
@@ -157,6 +137,29 @@ feature {}
 
    debug_name: STRING
    no_value: MIXUP_NO_VALUE
+
+   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+      local
+         value: MIXUP_VALUE
+      do
+         value := lookup(a_context, a_player, bar_number).first
+         if value /= Void then
+            value := value.eval(a_context, a_player, do_call, bar_number)
+         end
+         if value /= Void and then value.is_callable then
+            if do_call then
+               Result := value.call(parts.last.source, a_player, parts.last.eval_args(a_context, a_player, bar_number), bar_number)
+            else
+               create {MIXUP_AGENT_FUNCTION} Result.make(parts.last.source, value, parts.last.eval_args(a_context, a_player, bar_number))
+            end
+         else
+            Result := value
+         end
+         if Result = Void then
+            info("nothing returned")
+            value := no_value
+         end
+      end
 
    lookup (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_bar_number: INTEGER): TUPLE[MIXUP_VALUE, MIXUP_CONTEXT, STRING] is
       local

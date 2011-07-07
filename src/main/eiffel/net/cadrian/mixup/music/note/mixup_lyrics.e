@@ -143,7 +143,7 @@ feature {ANY}
          create Result.duplicate(source, note_, capacity, storage)
       end
 
-feature {MIXUP_MUSIC, MIXUP_VOICE}
+feature {MIXUP_MUSIC, MIXUP_SPANNER}
    set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
       do
          note.set_timing(a_duration, a_first_bar_number, a_bars_count)

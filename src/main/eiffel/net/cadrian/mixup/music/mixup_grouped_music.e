@@ -17,18 +17,11 @@ class MIXUP_GROUPED_MUSIC
 inherit
    MIXUP_COMPOUND_MUSIC
       redefine
-         valid_anchor, out_in_tagged_out_memory
+         out_in_tagged_out_memory
       end
 
 insert
-   MIXUP_VOICE
-      rename
-         duplicate as duplicate_voice
-      undefine
-         duration
-      redefine
-         new_events_iterator, valid_anchor, out_in_tagged_out_memory, do_duplicate
-      end
+   MIXUP_SPANNER
 
 create {ANY}
    as_beam, as_slur, as_phrasing_slur
@@ -37,8 +30,6 @@ create {MIXUP_GROUPED_MUSIC}
    duplicate
 
 feature {ANY}
-   valid_anchor: BOOLEAN is True
-
    xuplet_numerator: INTEGER_64
    xuplet_denominator: INTEGER_64
    xuplet_text: FIXED_STRING
@@ -75,7 +66,8 @@ feature {ANY}
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
-         create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_voices, end_voices, Void, new_events_iterator_(a_context, Precursor(a_context)))
+         create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_voices, end_voices, Void,
+                                                                       new_events_iterator_(a_context, create {MIXUP_EVENTS_ITERATOR_ON_VOICE}.make(a_context, music)))
       end
 
    out_in_tagged_out_memory is
@@ -165,7 +157,11 @@ feature {}
               a_start_event_factory: like start_event_factory; a_end_event_factory: like end_event_factory; a_tag: like tag;
               a_xuplet_numerator: like xuplet_numerator; a_xuplet_denominator: like xuplet_denominator; a_xuplet_text: like xuplet_text) is
       do
-         duplicate_voice(a_source, a_reference, a_id, a_music)
+         source := a_source
+         reference := a_reference
+         id := a_id
+         music := a_music
+
          start_event_factory := a_start_event_factory
          end_event_factory := a_end_event_factory
          tag := a_tag
@@ -198,7 +194,7 @@ feature {}
          create {MIXUP_EVENT_START_BEAM} Result.make(a_context.event_data(source), a_context.xuplet_numerator, a_context.xuplet_denominator, a_context.xuplet_text)
       end
 
-   end_beam : FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
+   end_beam: FUNCTION[TUPLE[MIXUP_EVENTS_ITERATOR_CONTEXT], MIXUP_EVENT] is
       do
          Result := agent create_end_beam
       end

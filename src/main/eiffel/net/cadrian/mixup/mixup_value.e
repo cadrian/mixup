@@ -18,9 +18,12 @@ inherit
    MIXUP_EXPRESSION
 
 feature {ANY}
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+   frozen eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
       do
-         Result := Current
+         Result := eval_(a_context, a_player, do_call, bar_number)
+         if Result /= Current and then Result /= Void then
+            Result := Result.eval(a_context, a_player, do_call, bar_number)
+         end
       end
 
    is_context: BOOLEAN is False
@@ -49,6 +52,11 @@ feature {ANY}
          values /= Void
       do
          values.add_last(Current)
+      end
+
+feature {}
+   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+      deferred
       end
 
 end -- class MIXUP_VALUE

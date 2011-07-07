@@ -43,9 +43,11 @@ feature {}
          Result := ids
       end
 
-   event_data (instr: STRING; time: INTEGER_64; staff_id, voice_id: INTEGER): MIXUP_EVENT_DATA is
+   my_instrument: MIXUP_INSTRUMENT
+
+   event_data (time: INTEGER_64; staff_id, voice_id: INTEGER): MIXUP_EVENT_DATA is
       do
-         Result.set(source, time, instr.intern, staff_id, voice_id)
+         Result.set(source, time, my_instrument, staff_id, voice_id)
       end
 
    make is
@@ -57,21 +59,23 @@ feature {}
          expected, actual: STRING
       do
          create source.make
+         create my_instrument.make(source, "MyInstr", Void)
+
          create buffer.make
          create midi.connect_to(buffer)
          create context.make(source, "test context", Void)
          midi.set_context(context)
 
-         midi.play_set_partitur("test"                                                                                                                                 )
-         midi.play_set_instrument("MyInstr", map(1, 1|..|2)                                                                                                            )
-         midi.play_start_voices(event_data("MyInstr",   0, 1, 0), 1|..|1                                                                                          )
-         midi.play_set_note(event_data("MyInstr",       0, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("c", 4) >> }, source, << "doe", "do" >> })
-         midi.play_set_note(event_data("MyInstr",      64, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("d", 4) >> }, source, << "ray", "re" >> })
-         midi.play_start_voices(event_data("MyInstr",   0, 1, 1), 2|..|2                                                                                          )
-         midi.play_set_note(event_data("MyInstr",     128, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("e", 4) >> }, source, << "me" , "mi" >> })
-         midi.play_set_note(event_data("MyInstr",     128, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("e", 5) >> }, source, << "me" , "mi" >> })
-         midi.play_end_voices(event_data("MyInstr",   192, 1, 1)                                                                                                  )
-         midi.play_end_voices(event_data("MyInstr",   192, 1, 0)                                                                                                  )
+         midi.play_set_partitur  ("test"                                                                                                                 )
+         midi.play_set_instrument(my_instrument.name, map(1, 1|..|2)                                                                                     )
+         midi.play_transpose     (event_data(  0, 1, 0), 12                                                                                              )
+         midi.play_start_voices  (event_data(  0, 1, 0), 1|..|1                                                                                          )
+         midi.play_set_note      (event_data(  0, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("c", 4) >> }, source, << "doe", "do" >> })
+         midi.play_set_note      (event_data( 64, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("d", 4) >> }, source, << "ray", "re" >> })
+         midi.play_start_voices  (event_data(  0, 1, 1), 2|..|2                                                                                          )
+         midi.play_set_note      (event_data(128, 1, 1), {MIXUP_LYRICS {MIXUP_CHORD duration_4, source, << note("e", 4) >> }, source, << "me" , "mi" >> })
+         midi.play_end_voices    (event_data(192, 1, 1)                                                                                                  )
+         midi.play_end_voices    (event_data(192, 1, 0)                                                                                                  )
          midi.play_end_partitur
 
          expected := expected_stream
@@ -86,6 +90,8 @@ feature {}
          file: MIXUP_MIDI_FILE
          track0, track1: MIXUP_MIDI_TRACK
          stream: AUX_MIXUP_MOCK_MIDI_OUTPUT
+
+         start0, start1, start2, end0, end1, end2, delta: INTEGER
       do
          create file.make(768)
          create track0.make
@@ -93,26 +99,34 @@ feature {}
          file.add_track(track0)
          file.add_track(track1)
 
-         track0.add_event(  0, track_name_event("partitur: test"))
-         track0.add_event(192, end_of_track_event)
+         delta := 64 * 12 * 7 // 8
+         start0 :=   0      ; end0 := start0 + delta
+         start1 :=  64 * 12 ; end1 := start1 + delta
+         start2 := 128 * 12 ; end2 := start2 + delta
 
-         track1.add_event(  0, track_name_event("MyInstr"))
-         track1.add_event(  0, controller_event(0, bank_controller, 0))
-         track1.add_event(  0, controller_event(0, channel_volume_controller, 64))
-         track1.add_event(  0, program_change_event(0, 0))
-         track1.add_event(  0, lyrics_event("doe%N"))
-         track1.add_event(  0, lyrics_event("do%N"))
-         track1.add_event(  0, note_event(0, True,  60, 64))
-         track1.add_event( 64, note_event(0, False, 60, 64))
-         track1.add_event( 64, lyrics_event("ray%N"))
-         track1.add_event( 64, lyrics_event("re%N"))
-         track1.add_event( 64, note_event(0, True,  62, 64))
-         track1.add_event(128, note_event(0, False, 62, 64))
-         track1.add_event(128, lyrics_event("me%N"))
-         track1.add_event(128, lyrics_event("mi%N"))
-         track1.add_event(128, note_event(0, True,  64, 64))
-         track1.add_event(192, note_event(0, False, 64, 64))
-         track1.add_event(192, end_of_track_event)
+         track0.add_event(start0, track_name_event("partitur: test"))
+         track0.add_event(  end2, end_of_track_event)
+
+         track1.add_event(start0, track_name_event("MyInstr"))
+         track1.add_event(start0, note_event(0, True,  60, 64))
+         track1.add_event(start0, lyrics_event(" doe"))
+         track1.add_event(start0, lyrics_event(" do"))
+         track1.add_event(start0, controller_event(0, expression_controller, 64))
+
+         track1.add_event(  end0, note_event(0, False, 60, 64))
+
+         track1.add_event(start1, note_event(0, True,  62, 64))
+         track1.add_event(start1, lyrics_event(" ray"))
+         track1.add_event(start1, lyrics_event(" re"))
+
+         track1.add_event(  end1, note_event(0, False, 62, 64))
+
+         track1.add_event(start2, note_event(0, True,  64, 64))
+         track1.add_event(start2, lyrics_event(" me"))
+         track1.add_event(start2, lyrics_event(" mi"))
+
+         track1.add_event(  end2, note_event(0, False, 64, 64))
+         track1.add_event(  end2, end_of_track_event)
 
          create stream.make
          file.encode_to(stream)

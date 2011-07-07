@@ -16,9 +16,6 @@ class MIXUP_RESULT
 
 inherit
    MIXUP_VALUE
-      redefine
-         eval
-      end
 
 create {ANY}
    make
@@ -32,17 +29,6 @@ feature {ANY}
       do
          v ::= visitor
          v.visit_result(Current)
-      end
-
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
-      local
-         user_function: MIXUP_USER_FUNCTION_CONTEXT
-      do
-         if not (user_function ?:= a_context) then
-            fatal("Result not in a function")
-         end
-         user_function ::= a_context
-         Result := user_function.value
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
@@ -59,6 +45,17 @@ feature {}
          source := a_source
       ensure
          source = a_source
+      end
+
+   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+      local
+         user_function: MIXUP_USER_FUNCTION_CONTEXT
+      do
+         if not (user_function ?:= a_context) then
+            fatal("Result not in a function")
+         end
+         user_function ::= a_context
+         Result := user_function.value
       end
 
 end -- class MIXUP_RESULT

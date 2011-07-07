@@ -77,4 +77,15 @@ feature {}
          Result := ids
       end
 
+   current_bar_number_factory (a_player: AUX_MIXUP_MOCK_PLAYER; a_context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+      do
+         create {MIXUP_VALUE_FACTORY} Result.make(create {AUX_MIXUP_MOCK_SOURCE}.make, agent current_bar_number)
+      end
+
+   current_bar_number (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_bar_number: INTEGER): MIXUP_VALUE is
+      do
+         log.trace.put_line("TEST: native bar number: " + a_bar_number.out)
+         create {MIXUP_INTEGER} Result.make(a_source, a_bar_number)
+      end
+
 end -- class AUX_MIXUP_TESTS

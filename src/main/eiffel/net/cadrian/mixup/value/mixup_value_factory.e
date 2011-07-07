@@ -17,7 +17,7 @@ class MIXUP_VALUE_FACTORY
 inherit
    MIXUP_VALUE
       redefine
-         out_in_tagged_out_memory, eval
+         out_in_tagged_out_memory
       end
 
 create {ANY}
@@ -26,14 +26,12 @@ create {ANY}
 feature {ANY}
    is_callable: BOOLEAN is False
 
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
-      do
-         --Result := factory.item([])
-      end
-
    accept (visitor: VISITOR) is
+      local
+         v: MIXUP_VALUE_VISITOR
       do
-         sedb_breakpoint
+         v ::= visitor
+         v.visit_value_factory(Current)
       end
 
    out_in_tagged_out_memory is
@@ -59,7 +57,17 @@ feature {}
          factory = a_factory
       end
 
-   factory: FUNCTION[TUPLE[MIXUP_SOURCE, MIXUP_EVENT_DATA], MIXUP_VALUE]
+   factory: FUNCTION[TUPLE[MIXUP_SOURCE, MIXUP_PLAYER, INTEGER], MIXUP_VALUE]
+
+   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+      do
+         Result := factory.item([source, a_player, bar_number])
+      end
+
+   no_args: FAST_ARRAY[MIXUP_VALUE] is
+      once
+         create Result.make(0)
+      end
 
 invariant
    factory /= Void

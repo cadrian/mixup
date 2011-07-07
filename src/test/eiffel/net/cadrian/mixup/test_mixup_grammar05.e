@@ -94,13 +94,7 @@ feature {}
          mixer.add_player(player)
          mixer.add_piece(grammar.root_node, "test")
 
-         player.when_native("current_bar_number", agent (a_player: AUX_MIXUP_MOCK_PLAYER; a_context: MIXUP_CONTEXT; args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
-                                                     local
-                                                        s: AUX_MIXUP_MOCK_SOURCE
-                                                     do
-                                                        create s.make
-                                                        create {MIXUP_INTEGER} Result.make(s, a_context.bar_number)
-                                                     end (player, ?, ?))
+         player.when_native("current_bar_number", agent current_bar_number_factory(player, ?))
 
          mixer.play
 
@@ -158,7 +152,7 @@ feature {}
          loop
             expected_event := expected.item(i)
             played_event := player.events.item(i + player.events.lower - expected.lower)
-            log.info.put_line(i.out + "%T" + played_event.out + "%N vs.%T" + expected_event.out)
+            log.info.put_line(i.out + "%Tactual    " + played_event.out + "%N vs.%Texpected  " + expected_event.out)
             assert(played_event.is_equal(expected_event))
             i := i + 1
          end

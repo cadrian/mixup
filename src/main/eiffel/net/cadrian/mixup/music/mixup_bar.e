@@ -35,6 +35,9 @@ feature {ANY}
       do
          create Result.make(source, style)
          Result.set_timing(0, a_start_bar_number, 1)
+         log.trace.put_string(once "COMMIT: bar: from ")
+         log.trace.put_integer(a_start_bar_number)
+         log.trace.put_new_line
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
@@ -51,7 +54,7 @@ feature {ANY}
          end
       end
 
-feature {MIXUP_MUSIC, MIXUP_VOICE}
+feature {MIXUP_MUSIC, MIXUP_SPANNER}
    frozen add_voice_ids (ids: AVL_SET[INTEGER]) is
       do
       end

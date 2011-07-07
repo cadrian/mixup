@@ -72,7 +72,7 @@ feature {ANY}
          tagged_out_memory.extend(']')
       end
 
-feature {MIXUP_MUSIC, MIXUP_VOICE}
+feature {MIXUP_MUSIC, MIXUP_SPANNER}
    add_voice_ids (ids: AVL_SET[INTEGER]) is
       do
          check False end

@@ -17,7 +17,7 @@ class MIXUP_TUPLE
 inherit
    MIXUP_ITERABLE
       redefine
-         eval, append_to
+         append_to
       end
 
 create {ANY}
@@ -32,22 +32,6 @@ feature {ANY}
       do
          v ::= visitor
          v.visit_tuple(Current)
-      end
-
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
-      local
-         i: INTEGER
-      do
-         create values.with_capacity(expressions.count)
-         from
-            i := expressions.lower
-         until
-            i > expressions.upper
-         loop
-            values.add_last(expressions.item(i).eval(a_context, a_player, True, bar_number))
-            i := i + 1
-         end
-         Result := Current
       end
 
    count: INTEGER is
@@ -137,6 +121,22 @@ feature {}
 
    expressions: TRAVERSABLE[MIXUP_EXPRESSION]
    values: FAST_ARRAY[MIXUP_VALUE]
+
+   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+      local
+         i: INTEGER
+      do
+         create values.with_capacity(expressions.count)
+         from
+            i := expressions.lower
+         until
+            i > expressions.upper
+         loop
+            values.add_last(expressions.item(i).eval(a_context, a_player, True, bar_number))
+            i := i + 1
+         end
+         Result := Current
+      end
 
 invariant
    expressions /= Void

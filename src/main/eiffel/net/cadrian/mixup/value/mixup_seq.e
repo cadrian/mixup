@@ -92,6 +92,11 @@ feature {}
          source = a_source
       end
 
+   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+      do
+         Result := Current
+      end
+
    error_message: STRING is "integer too big, only 32-bit supported in sequences (is your score that big?)"
 
 end -- class MIXUP_SEQ

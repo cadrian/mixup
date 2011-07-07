@@ -147,7 +147,7 @@ feature {ANY}
          voices.do_all(agent {MIXUP_VOICE}.set_timing(a_duration, a_first_bar_number, a_bars_count))
       end
 
-feature {MIXUP_MUSIC, MIXUP_VOICE}
+feature {MIXUP_MUSIC, MIXUP_SPANNER}
    add_voice_ids (ids: AVL_SET[INTEGER]) is
       do
          voices.do_all(agent (a_voice: MIXUP_VOICE; a_ids: AVL_SET[INTEGER]) is

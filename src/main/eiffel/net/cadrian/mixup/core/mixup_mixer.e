@@ -246,16 +246,17 @@ feature {}
          else
             int ::= context.args.first
             create {MIXUP_VALUE_FACTORY} Result.make(context.call_source,
-                                                     agent (a_int: INTEGER; a_src: MIXUP_SOURCE; a_data: MIXUP_EVENT_DATA): MIXUP_STRING is
+                                                     agent (a_int: INTEGER; a_src: MIXUP_SOURCE; a_pl: MIXUP_PLAYER; a_bar_number: INTEGER): MIXUP_STRING is
                                                      local
                                                         str: STRING
                                                      do
-                                                        if not a_data.instrument.valid_relative_staff_id(a_int) then
-                                                           fatal_at(a_src, "Invalid staff id: " + a_int.out)
-                                                        end
-                                                        str := a_data.instrument.name + a_data.instrument.absolute_staff_id(a_int).out
+                                                        --TODO: if not a_data.instrument.valid_relative_staff_id(a_int) then
+                                                        --TODO:    fatal_at(a_src, "Invalid staff id: " + a_int.out)
+                                                        --TODO: end
+                                                        --TODO: str := a_data.instrument.name + a_data.instrument.absolute_staff_id(a_int).out
+                                                        str := "TODO"
                                                         create Result.make(a_src, str.intern, ("%"" + str + "%"").intern)
-                                                     end(int.value.to_integer_32, ?, ?))
+                                                     end(int.value.to_integer_32, ?, ?, ?))
          end
       end
 
@@ -264,9 +265,9 @@ feature {}
          context.is_ready
       do
          create {MIXUP_VALUE_FACTORY} Result.make(context.call_source,
-                                                  agent (a_src: MIXUP_SOURCE; a_data: MIXUP_EVENT_DATA): MIXUP_INTEGER is
+                                                  agent (a_src: MIXUP_SOURCE; a_pl: MIXUP_PLAYER; a_bar_number: INTEGER): MIXUP_INTEGER is
                                                   do
-                                                     create Result.make(a_src, a_data.instrument.relative_staff_id(a_data.staff_id))
+                                                     create Result.make(a_src, 0) --TODO: a_data.instrument.relative_staff_id(a_data.staff_id))
                                                   end)
       end
 

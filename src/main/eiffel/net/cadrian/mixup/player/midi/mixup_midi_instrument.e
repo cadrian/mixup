@@ -28,6 +28,7 @@ inherit
 
 insert
    LOGGING
+   MIXUP_MIDI_META_EVENTS
 
 create {ANY}
    make
@@ -64,6 +65,7 @@ feature {}
          track_id := a_track_id
          file.add_track(track)
          make_abstract(a_context, a_name, a_voice_staff_ids)
+         track.add_event(0, track_name_event(a_name))
       end
 
    new_staff (voice_ids: TRAVERSABLE[INTEGER]; id: INTEGER): MIXUP_MIDI_STAFF is

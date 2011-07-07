@@ -219,7 +219,7 @@ feature {ANY}
          Result.set_timing(note_duration, a_start_bar_number, 0)
       end
 
-feature {MIXUP_MUSIC, MIXUP_VOICE}
+feature {MIXUP_MUSIC, MIXUP_SPANNER}
    set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
       do
          timing := timing.set(a_duration, a_first_bar_number, a_bars_count)

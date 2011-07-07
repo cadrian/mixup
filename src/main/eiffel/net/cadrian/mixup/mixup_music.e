@@ -40,11 +40,10 @@ feature {ANY}
       end
 
    commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
-      require
-         not timing.is_set
       deferred
       ensure
          Result /= Void
+         Result /= Current
          Result.timing.is_set
       end
 
@@ -52,7 +51,7 @@ feature {ANY}
       deferred
       end
 
-feature {MIXUP_MUSIC, MIXUP_VOICE}
+feature {MIXUP_MUSIC, MIXUP_SPANNER}
    add_voice_ids (a_ids: AVL_SET[INTEGER]) is
       require
          a_ids /= Void

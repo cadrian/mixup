@@ -18,8 +18,6 @@ inherit
    MIXUP_VALUE
       undefine
          out_in_tagged_out_memory
-      redefine
-         eval
       end
    MAP[MIXUP_VALUE, MIXUP_VALUE]
       undefine
@@ -38,30 +36,6 @@ feature {ANY}
       do
          v ::= visitor
          v.visit_dictionary(Current)
-      end
-
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
-      local
-         i: INTEGER; k, v: MIXUP_VALUE
-      do
-         create evaled.with_capacity(agent hashcoder.hash_code, keys.count)
-         from
-            i := keys.lower
-         until
-            i > keys.upper
-         loop
-            k := keys.item(i).eval(a_context, a_player, True, bar_number)
-            v := values.item(i).eval(a_context, a_player, True, bar_number)
-            if k = Void then
-               fatal("could not compute key")
-            elseif v = Void then
-               fatal("could not compute value")
-            else
-               evaled.add(v, k)
-            end
-            i := i + 1
-         end
-         Result := Current
       end
 
    count: INTEGER is
@@ -183,6 +157,30 @@ feature {}
    values: FAST_ARRAY[MIXUP_EXPRESSION]
 
    evaled: EXT_HASHED_DICTIONARY[MIXUP_VALUE, MIXUP_VALUE]
+
+   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+      local
+         i: INTEGER; k, v: MIXUP_VALUE
+      do
+         create evaled.with_capacity(agent hashcoder.hash_code, keys.count)
+         from
+            i := keys.lower
+         until
+            i > keys.upper
+         loop
+            k := keys.item(i).eval(a_context, a_player, True, bar_number)
+            v := values.item(i).eval(a_context, a_player, True, bar_number)
+            if k = Void then
+               fatal("could not compute key")
+            elseif v = Void then
+               fatal("could not compute value")
+            else
+               evaled.add(v, k)
+            end
+            i := i + 1
+         end
+         Result := Current
+      end
 
 invariant
    keys.count = values.count

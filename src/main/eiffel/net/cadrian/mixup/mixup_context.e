@@ -28,6 +28,8 @@ feature {ANY}
    commit (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
       deferred
       ensure
+         Result /= Void
+         Result /= Current
          Result.timing.is_set
          Result.timing.first_bar_number = a_start_bar_number
       end
