@@ -151,7 +151,7 @@ do_ci() {
     test -d $OUTDIR/release || mkdir $OUTDIR/release
 
     export CI_CLEAN=clean
-    log=$($(pwd)/src/test/eiffel/ci)
+    log=$(nice 19 $(pwd)/src/test/eiffel/ci)
     cp $log $OUTDIR/log/
     buildlog=$OUTDIR/log/build-$(basename $log)
 
