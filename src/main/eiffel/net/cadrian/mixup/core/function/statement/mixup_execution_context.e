@@ -25,7 +25,7 @@ feature {MIXUP_IDENTIFIER}
       local
          value: MIXUP_VALUE
       do
-         value := context.resolver.resolve(a_identifier, context.player, context.bar_number)
+         value := context.resolver.resolve(a_identifier, commit_context)
          if value = Void then
             error("value could not be computed")
          else
@@ -49,11 +49,11 @@ feature {MIXUP_AGENT}
             until
                i > a_agent.args.upper
             loop
-               args.add_last(a_agent.args.item(i).eval(context, context.player, True, context.bar_number))
+               args.add_last(a_agent.args.item(i).eval(commit_context, True))
                i := i + 1
             end
          end
-         create fun.make(a_agent.source, a_agent.expression.eval(context, context.player, True, context.bar_number), args)
+         create fun.make(a_agent.source, a_agent.expression.eval(commit_context, True), args)
          fun.accept(Current)
       end
 
@@ -92,7 +92,7 @@ feature {}
       local
          value: MIXUP_VALUE
       do
-         value := a_function.call(source, context.player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0), context.bar_number)
+         value := a_function.call(source, commit_context, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
          if value = Void then
             error("value could not be computed")
          else
@@ -100,9 +100,15 @@ feature {}
          end
       end
 
-   context: MIXUP_USER_FUNCTION_CONTEXT
+   commit_context: MIXUP_COMMIT_CONTEXT
+
+   context: MIXUP_USER_FUNCTION_CONTEXT is
+      do
+         Result ::= commit_context.context
+      end
 
 invariant
+   {MIXUP_USER_FUNCTION_CONTEXT} ?:= commit_context.context
    context /= Void
 
 end -- class MIXUP_EXECUTION_CONTEXT

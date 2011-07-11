@@ -26,15 +26,17 @@ create {ANY}
 feature {ANY}
    expression: MIXUP_EXPRESSION
 
-   call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
+   call (a_commit_context: MIXUP_COMMIT_CONTEXT) is
       local
          value: MIXUP_VALUE
+         context: MIXUP_USER_FUNCTION_CONTEXT
       do
-         value := expression.eval(a_context, a_context.player, True, a_context.bar_number)
+         value := expression.eval(a_commit_context, True)
          if value = Void then
             error("value could not be computed")
          else
-            a_context.yield(value)
+            context ::= a_commit_context.context
+            context.yield(expression.source, value)
          end
       end
 

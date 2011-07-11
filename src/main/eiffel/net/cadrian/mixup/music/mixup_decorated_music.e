@@ -36,11 +36,11 @@ feature {ANY}
          Result := music.anchor
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       local
          music_: like music
       do
-         music_ := music.commit(a_context, a_player, a_start_bar_number)
+         music_ := music.commit(a_commit_context)
          create Result.make(source, tag, music_, start_event_factory, end_event_factory, event_modifier)
       end
 

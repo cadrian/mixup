@@ -24,14 +24,15 @@ create {ANY}
    make
 
 feature {ANY}
-   call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
+   call (a_commit_context: MIXUP_COMMIT_CONTEXT) is
       local
          i: INTEGER; done: BOOLEAN; execution_context: MIXUP_IF_THEN_ELSE_EXECUTION
-         branch: MIXUP_IF
+         branch: MIXUP_IF; context: MIXUP_USER_FUNCTION_CONTEXT
       do
          from
+            context ::= a_commit_context.context
             i := condition_list.lower
-            create execution_context.make(source, a_context)
+            create execution_context.make(source, a_commit_context)
          until
             done or else i > condition_list.upper
          loop
@@ -39,14 +40,13 @@ feature {ANY}
             done := execution_context.match(branch)
             if done then
                log.trace.put_line("Entering branch #" + i.out)
-               a_context.add_statements(branch.statements)
+               context.add_statements(branch.statements)
             end
             i := i + 1
          end
          if not done and then otherwise /= Void then
             log.trace.put_line("Entering branch #else")
-            sedb_breakpoint
-            a_context.add_statements(otherwise.statements)
+            context.add_statements(otherwise.statements)
          end
       end
 

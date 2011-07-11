@@ -39,7 +39,7 @@ feature {ANY}
          not Result.is_rest
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       deferred
       ensure
          Result /= Void

@@ -28,15 +28,17 @@ feature {ANY}
    expression: MIXUP_EXPRESSION
    statements: TRAVERSABLE[MIXUP_STATEMENT]
 
-   call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
+   call (a_commit_context: MIXUP_COMMIT_CONTEXT) is
       local
          value: MIXUP_VALUE
+         context: MIXUP_USER_FUNCTION_CONTEXT
       do
-         value := expression.eval(a_context, a_context.player, True, a_context.bar_number)
+         value := expression.eval(a_commit_context, True)
          if value = Void then
             error("value could not be computed")
          else
-            a_context.add_statement(create {MIXUP_LOOP_EXECUTION}.make(source, a_context, Current, value))
+            context ::= a_commit_context.context
+            context.add_statement(create {MIXUP_LOOP_EXECUTION}.make(source, a_commit_context, Current, value))
          end
       end
 

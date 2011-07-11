@@ -90,7 +90,7 @@ feature {ANY}
          voices.count = old voices.count + 1
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       local
          timings: AVL_SET[MIXUP_MUSIC_TIMING]
          voices_: like voices
@@ -99,15 +99,14 @@ feature {ANY}
          create timings.make
          create voices_.make(voices.count)
          create voices_zip.make(voices, voices_.lower |..| voices_.upper)
-         voices_zip.do_all(agent (voice: MIXUP_VOICE; index: INTEGER; a_voices: like voices; start_bar_number_: INTEGER;
-                                  context_: MIXUP_CONTEXT; player_: MIXUP_PLAYER; timings_set: SET[MIXUP_MUSIC_TIMING]) is
+         voices_zip.do_all(agent (voice: MIXUP_VOICE; index: INTEGER; a_voices: like voices; commit_context_: MIXUP_COMMIT_CONTEXT; timings_set: SET[MIXUP_MUSIC_TIMING]) is
                            local
                               voice_: MIXUP_VOICE
                            do
-                              voice_ := voice.commit(context_, player_, start_bar_number_)
+                              voice_ := voice.commit(commit_context_)
                               a_voices.put(voice_, index)
                               timings_set.add(voice_.timing)
-                           end (?, ?, voices_, a_start_bar_number, a_context, a_player, timings))
+                           end (?, ?, voices_, a_commit_context, timings))
          if timings.count > 1 then
             voices_.do_all(agent (voice: MIXUP_VOICE) is
                            do

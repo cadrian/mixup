@@ -36,7 +36,7 @@ feature {}
          val: MIXUP_VALUE; str: MIXUP_STRING
       do
          if context /= Void then
-            val := context.lookup(context_data_name, player, True)
+            val := context.lookup(context_data_name, True)
          end
          if val /= Void then
             if str ?:= val then
@@ -79,12 +79,6 @@ feature {}
    template_instrument_abbrev: FIXED_STRING is
       once
          Result := "template.instrument_abbrev".intern
-      end
-
-   player: MIXUP_LILYPOND_PLAYER is
-      deferred
-      ensure
-         Result /= Void
       end
 
 end -- class MIXUP_LILYPOND_CONTEXT

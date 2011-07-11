@@ -28,10 +28,10 @@ feature {ANY}
    valid_anchor: BOOLEAN is False
    anchor: MIXUP_NOTE_HEAD is do end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       do
          create Result.make(source)
-         Result.set_timing(0, a_start_bar_number, 0)
+         Result.set_timing(0, a_commit_context.bar_number, 0)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is

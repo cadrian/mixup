@@ -31,26 +31,28 @@ feature {ANY}
          check Result = Void end
       end
 
-   commit (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       require
-         a_player /= Void
+         a_commit_context.player /= Void
       local
          children_: like children
          children_zip: MAP_AGGREGATOR[MIXUP_CONTEXT, FIXED_STRING, MIXUP_MUSIC_TIMING]
          timing_: MIXUP_MUSIC_TIMING
       do
          create children_.with_capacity(children.count)
+         a_commit_context.set_context(Current)
          timing_ := children_zip.map(children,
-                                     agent (a_children: like children; player_: MIXUP_PLAYER; a_child: MIXUP_CONTEXT; a_key: FIXED_STRING; a_timing: MIXUP_MUSIC_TIMING): MIXUP_MUSIC_TIMING is
+                                     agent (a_children: like children; commit_context_: MIXUP_COMMIT_CONTEXT; a_child: MIXUP_CONTEXT; a_key: FIXED_STRING; a_timing: MIXUP_MUSIC_TIMING): MIXUP_MUSIC_TIMING is
                                      local
                                         child_: MIXUP_CONTEXT
                                      do
-                                        child_ := a_child.commit(player_, a_timing.first_bar_number + a_timing.bars_count)
+                                        commit_context_.set_bar_number(a_timing.first_bar_number + a_timing.bars_count)
+                                        child_ := a_child.commit(commit_context_)
                                         a_children.add(child_, a_key)
                                         Result := a_timing + child_.timing
-                                     end(children_, a_player, ?, ?, ?),
-                                     timing_.set(0, a_start_bar_number, 0))
-         Result := do_duplicate(source, name, parent, commit_values(a_player, a_start_bar_number), commit_imports(a_player, a_start_bar_number), children_)
+                                     end(children_, a_commit_context, ?, ?, ?),
+                                     timing_.set(0, a_commit_context.bar_number, 0))
+         Result := do_duplicate(source, name, parent, commit_values(a_commit_context), commit_imports(a_commit_context), children_)
          Result.set_timing(timing_)
       end
 

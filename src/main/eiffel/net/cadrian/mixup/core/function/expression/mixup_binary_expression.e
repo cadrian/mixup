@@ -18,12 +18,12 @@ inherit
    MIXUP_EXPRESSION
 
 feature {ANY}
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+   eval (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
       local
          left_val, right_val: MIXUP_VALUE
       do
-         left_val := left.eval(a_context, a_player, True, bar_number)
-         right_val := right.eval(a_context, a_player, True, bar_number)
+         left_val := left.eval(a_commit_context, True)
+         right_val := right.eval(a_commit_context, True)
          if left_val = Void then
             error("could not compute the left value")
          elseif right_val = Void then

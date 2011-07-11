@@ -32,12 +32,13 @@ feature {ANY}
          v.visit_from_import(Current)
       end
 
-   commit (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       local
          timing_: MIXUP_MUSIC_TIMING
       do
-         create Result.duplicate(source, name, parent, child.commit(a_player, a_start_bar_number), commit_values(a_player, a_start_bar_number), commit_imports(a_player, a_start_bar_number), identifiers)
-         Result.set_timing(timing_.set(0, a_start_bar_number, 0))
+         a_commit_context.set_context(Current)
+         create Result.duplicate(source, name, parent, child.commit(a_commit_context), commit_values(a_commit_context), commit_imports(a_commit_context), identifiers)
+         Result.set_timing(timing_.set(0, a_commit_context.bar_number, 0))
       end
 
 feature {}

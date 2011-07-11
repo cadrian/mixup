@@ -16,6 +16,9 @@ class MIXUP_VOICE
 
 inherit
    MIXUP_SPANNER
+      redefine
+         commit
+      end
 
 create {ANY}
    make
@@ -29,6 +32,12 @@ feature {ANY}
    duration: INTEGER_64 is
       do
          Result := timing.duration
+      end
+
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+      do
+         a_commit_context.set_voice(Current)
+         Result := Precursor(a_commit_context)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is

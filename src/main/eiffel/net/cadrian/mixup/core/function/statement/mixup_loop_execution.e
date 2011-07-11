@@ -22,8 +22,11 @@ create {ANY}
    make
 
 feature {ANY}
-   call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
+   call (a_commit_context: MIXUP_COMMIT_CONTEXT) is
       do
+         check
+            commit_context = a_commit_context
+         end
          value.accept(Current)
       end
 
@@ -87,7 +90,7 @@ feature {}
          item: MIXUP_VALUE
       do
          if iterable = Void then
-            iterable ::= a_iterable.eval(context, context.player, True, context.bar_number)
+            iterable ::= a_iterable.eval(commit_context, True)
             if iterable = Void then
                fatal("could not compute value")
             else
@@ -113,7 +116,7 @@ feature {MIXUP_YIELD_ITERATOR}
    visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR) is
       do
          if more and then a_yield_iterator.has_next then
-            a_yield_iterator.next
+            a_yield_iterator.next(commit_context)
          end
          context.set_local(loop_.identifier, a_yield_iterator.value)
          if a_yield_iterator.has_next then
@@ -124,20 +127,21 @@ feature {MIXUP_YIELD_ITERATOR}
       end
 
 feature {}
-   make (a_source: like source; a_context: like context; a_loop: like loop_; a_value: like value) is
+   make (a_source: like source; a_commit_context: like commit_context; a_loop: like loop_; a_value: like value) is
       require
          a_source /= Void
-         a_context /= Void
+         a_commit_context.context /= Void
+         {MIXUP_USER_FUNCTION_CONTEXT} ?:= a_commit_context.context
          a_loop /= Void
          a_value /= Void
       do
          source := a_source
-         context := a_context
+         commit_context := a_commit_context
          loop_ := a_loop
          value := a_value
       ensure
          source = a_source
-         context = a_context
+         commit_context = a_commit_context
          loop_ = a_loop
          value = a_value
       end

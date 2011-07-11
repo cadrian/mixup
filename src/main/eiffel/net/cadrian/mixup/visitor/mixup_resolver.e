@@ -24,19 +24,21 @@ create {ANY}
    make
 
 feature {ANY}
-   resolve (a_identifier: MIXUP_IDENTIFIER; a_player: MIXUP_PLAYER; a_bar_number: like bar_number): MIXUP_VALUE is
+   resolve (a_identifier: MIXUP_IDENTIFIER; a_commit_context: MIXUP_COMMIT_CONTEXT): MIXUP_VALUE is
       local
          identifier: MIXUP_IDENTIFIER
       do
-         current_player := a_player
-         bar_number := a_bar_number
+         check
+            a_commit_context.context = context
+         end
+         commit_context := a_commit_context
          identifier := resolved_identifier(a_identifier)
          if identifier /= Void then
             if identifier.is_simple then
                Result := context.get_local(identifier.simple_name)
             end
             if Result = Void then
-               Result := identifier.eval(context, a_player, True, bar_number)
+               Result := identifier.eval(a_commit_context, True)
             end
          end
       end
@@ -73,7 +75,7 @@ feature {}
          until
             i > args.upper
          loop
-            arg := args.item(i).eval(context, current_player, True, bar_number)
+            arg := args.item(i).eval(commit_context, True)
             if arg /= Void then
                arg.accept(Current)
             else
@@ -113,7 +115,7 @@ feature {MIXUP_BOOLEAN}
 feature {MIXUP_IDENTIFIER}
    visit_identifier (a_identifier: MIXUP_IDENTIFIER) is
       do
-         value := resolve(a_identifier, current_player, bar_number)
+         value := resolve(a_identifier, commit_context)
       end
 
 feature {MIXUP_RESULT}
@@ -206,8 +208,8 @@ feature {}
 
    context: MIXUP_CONTEXT
    value: MIXUP_VALUE
-   current_player: MIXUP_PLAYER
-   bar_number: INTEGER
+
+   commit_context: MIXUP_COMMIT_CONTEXT
 
 invariant
    context /= Void

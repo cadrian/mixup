@@ -66,8 +66,7 @@ feature {ANY}
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
-         create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_voices, end_voices, Void,
-                                                                       new_events_iterator_(a_context, create {MIXUP_EVENTS_ITERATOR_ON_VOICE}.make(a_context, music)))
+         create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_voices, end_voices, Void, new_events_iterator_(a_context))
       end
 
    out_in_tagged_out_memory is
@@ -102,16 +101,20 @@ feature {ANY}
       end
 
 feature {}
-   new_events_iterator_ (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT; precursor_iterator: MIXUP_EVENTS_ITERATOR): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator_ (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       local
          lyrics_manager: MIXUP_GROUPED_MUSIC_LYRICS_MANAGER
+         voice_iterator: MIXUP_EVENTS_ITERATOR_ON_VOICE
       do
          a_context.set_voice_id(id)
+
+         create voice_iterator.make(a_context, music)
+
          if xuplet_text /= Void then
             a_context.set_xuplet(xuplet_numerator, xuplet_denominator, xuplet_text)
          end
          create lyrics_manager.make(not is_slur)
-         create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_event_factory, end_event_factory, agent lyrics_manager.manage_lyrics, precursor_iterator)
+         create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_event_factory, end_event_factory, agent lyrics_manager.manage_lyrics, voice_iterator)
       end
 
    as_beam (a_source: like source; a_reference: like reference) is

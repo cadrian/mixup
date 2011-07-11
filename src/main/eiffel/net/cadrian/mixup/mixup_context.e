@@ -25,16 +25,25 @@ feature {ANY}
    resolver: MIXUP_RESOLVER
    timing: MIXUP_MUSIC_TIMING
 
-   commit (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   set_commit_context (a_commit_context: MIXUP_COMMIT_CONTEXT): MIXUP_COMMIT_CONTEXT is
+      require
+         timing.is_set
+      do
+         Result := a_commit_context
+         Result.set_context(Current)
+         Result.set_bar_number(timing.first_bar_number)
+      end
+
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       deferred
       ensure
          Result /= Void
          Result /= Current
          Result.timing.is_set
-         Result.timing.first_bar_number = a_start_bar_number
+         Result.timing.first_bar_number = a_commit_context.bar_number
       end
 
-   hook (hook_name: ABSTRACT_STRING; a_player: MIXUP_PLAYER): MIXUP_VALUE is
+   hook (hook_name: ABSTRACT_STRING): MIXUP_VALUE is
       local
          full_hook_name: STRING
       do
@@ -42,13 +51,12 @@ feature {ANY}
          full_hook_name.clear_count
          full_hook_name.append(once "hook.")
          full_hook_name.append(hook_name)
-         Result := lookup(full_hook_name.intern, a_player, False)
+         Result := lookup(full_hook_name.intern, False)
       end
 
-   lookup (identifier: FIXED_STRING; a_player: MIXUP_PLAYER; search_parent: BOOLEAN): MIXUP_VALUE is
+   lookup (identifier: FIXED_STRING; search_parent: BOOLEAN): MIXUP_VALUE is
       require
          identifier /= Void
-         a_player /= Void
       do
          lookup_tag_counter.next
          Result := lookup_value(identifier, search_parent, lookup_tag_counter.item)
@@ -88,15 +96,16 @@ feature {ANY}
       deferred
       end
 
-   run_hook (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; hook_name: STRING) is
+   run_hook (a_source: MIXUP_SOURCE; a_commit_context: MIXUP_COMMIT_CONTEXT; hook_name: STRING) is
       local
          h, res: MIXUP_VALUE
       do
-         h := hook(hook_name, a_player)
+         h := hook(hook_name)
          if h = Void then
             -- nothing to do
          elseif h.is_callable then
-            res := h.call(a_source, a_player, create {FAST_ARRAY[MIXUP_VALUE]}.make(0), 0)
+            a_commit_context.set_context(Current)
+            res := h.call(a_source, a_commit_context, create {FAST_ARRAY[MIXUP_VALUE]}.make(0))
             if res /= Void then
                warning("lost result")
             end
@@ -251,7 +260,7 @@ feature {}
    parent: MIXUP_CONTEXT
    imports: FAST_ARRAY[MIXUP_IMPORT]
 
-   commit_values (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like values is
+   commit_values (a_commit_context: MIXUP_COMMIT_CONTEXT): like values is
       local
          values_: HASHED_DICTIONARY[MIXUP_VALUE_IN_CONTEXT, FIXED_STRING]
       do
@@ -260,13 +269,13 @@ feature {}
          Result := values_
       end
 
-   commit_imports (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like imports is
+   commit_imports (a_commit_context: MIXUP_COMMIT_CONTEXT): like imports is
       do
          create Result.with_capacity(imports.count)
-         imports.do_all(agent (a_imports: like imports; player_: MIXUP_PLAYER; start_bar_number_: INTEGER; a_import: MIXUP_IMPORT) is
+         imports.do_all(agent (a_imports: like imports; commit_context_: MIXUP_COMMIT_CONTEXT; a_import: MIXUP_IMPORT) is
                         do
-                           a_imports.add_last(a_import.commit(player_, start_bar_number_))
-                        end(Result, a_player, a_start_bar_number, ?))
+                           a_imports.add_last(a_import.commit(commit_context_))
+                        end(Result, a_commit_context, ?))
       end
 
    lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is

@@ -56,12 +56,12 @@ feature {ANY}
          v.visit_identifier(Current)
       end
 
-   assign (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; bar_number: INTEGER; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN) is
+   assign (a_commit_context: MIXUP_COMMIT_CONTEXT; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN) is
       local
          context: like lookup
       do
-         context := lookup(a_context, a_player, bar_number)
-         parts.last.append_eval_args_in(context.third, a_context, a_player, bar_number)
+         context := lookup(a_commit_context)
+         parts.last.append_eval_args_in(context.third, a_commit_context)
          context.second.setup(context.third.intern, a_value, is_const, is_public, is_local)
       end
 
@@ -138,19 +138,19 @@ feature {}
    debug_name: STRING
    no_value: MIXUP_NO_VALUE
 
-   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
       local
          value: MIXUP_VALUE
       do
-         value := lookup(a_context, a_player, bar_number).first
+         value := lookup(a_commit_context).first
          if value /= Void then
-            value := value.eval(a_context, a_player, do_call, bar_number)
+            value := value.eval(a_commit_context, do_call)
          end
          if value /= Void and then value.is_callable then
             if do_call then
-               Result := value.call(parts.last.source, a_player, parts.last.eval_args(a_context, a_player, bar_number), bar_number)
+               Result := value.call(parts.last.source, a_commit_context, parts.last.eval_args(a_commit_context))
             else
-               create {MIXUP_AGENT_FUNCTION} Result.make(parts.last.source, value, parts.last.eval_args(a_context, a_player, bar_number))
+               create {MIXUP_AGENT_FUNCTION} Result.make(parts.last.source, value, parts.last.eval_args(a_commit_context))
             end
          else
             Result := value
@@ -161,13 +161,13 @@ feature {}
          end
       end
 
-   lookup (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_bar_number: INTEGER): TUPLE[MIXUP_VALUE, MIXUP_CONTEXT, STRING] is
+   lookup (a_commit_context: MIXUP_COMMIT_CONTEXT): TUPLE[MIXUP_VALUE, MIXUP_CONTEXT, STRING] is
       local
          context: MIXUP_CONTEXT
          i: INTEGER; name_buffer: STRING
          value: MIXUP_VALUE
       do
-         context := a_context
+         context := a_commit_context.context
          name_buffer := ""
          from
             i := parts.lower
@@ -178,7 +178,7 @@ feature {}
                name_buffer.extend('.')
             end
             name_buffer.append(parts.item(i).name)
-            value := a_context.lookup(name_buffer.intern, a_player, True)
+            value := context.lookup(name_buffer.intern, True)
             if value /= Void then
                if value.is_context then
                   context := value.as_context
@@ -187,7 +187,7 @@ feature {}
                   fatal("not a context")
                end
             elseif parts.item(i).args /= Void then
-               parts.item(i).append_eval_args_in(name_buffer, a_context, a_player, a_bar_number)
+               parts.item(i).append_eval_args_in(name_buffer, a_commit_context)
             end
             i := i + 1
          end

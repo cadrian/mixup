@@ -34,17 +34,11 @@ feature {ANY}
          v.visit_native_function(Current)
       end
 
-   call (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]; a_bar_number: INTEGER): MIXUP_VALUE is
+   call (a_source: MIXUP_SOURCE; a_commit_context: MIXUP_COMMIT_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       local
          native_context: MIXUP_NATIVE_CONTEXT
       do
-         log.trace.put_string(once "CALL: native function: '")
-         log.trace.put_string(name)
-         log.trace.put_string(once "' at bar ")
-         log.trace.put_integer(a_bar_number)
-         log.trace.put_new_line
-
-         native_context.prepare(a_source, context, a_player, a_args, a_bar_number)
+         native_context.prepare(a_source, a_commit_context, a_args)
          Result := native_caller.item([native_context])
       end
 

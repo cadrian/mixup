@@ -44,11 +44,12 @@ feature {ANY}
          Result := voices.anchor
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       local
          voices_: like voices
       do
-         voices_ := voices.commit(a_context, a_player, a_start_bar_number)
+         a_commit_context.set_staff(Current)
+         voices_ := voices.commit(a_commit_context)
          create Result.duplicate(source, id, voices_)
       end
 

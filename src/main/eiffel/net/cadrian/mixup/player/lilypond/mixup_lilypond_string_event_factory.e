@@ -51,10 +51,10 @@ feature {ANY}
          crash
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       do
          create Result.make(source, string)
-         Result.set_timing(0, a_start_bar_number, 0)
+         Result.set_timing(0, a_commit_context.bar_number, 0)
       end
 
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
@@ -87,7 +87,7 @@ feature {}
 
    string: FIXED_STRING
 
-   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
       do
          Result := Current
       end

@@ -118,7 +118,7 @@ feature {} -- System call to lilypond
 feature {}
    new_instrument (a_name: FIXED_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]): MIXUP_LILYPOND_INSTRUMENT is
       do
-         create Result.make(context, Current, a_name, voice_staff_ids)
+         create Result.make(context, a_name, voice_staff_ids)
       end
 
    new_section (section, a_name: ABSTRACT_STRING): MIXUP_LILYPOND_SECTION is

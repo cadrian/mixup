@@ -28,11 +28,16 @@ feature {ANY}
          Result := context.value
       end
 
-   next is
+   next (a_commit_context: MIXUP_COMMIT_CONTEXT) is
       require
          has_next
+         a_commit_context.context /= Void
+         {MIXUP_USER_FUNCTION_CONTEXT} ?:= a_commit_context.context
       do
-         context.execute
+         context.execute(a_commit_context)
+         if context.yielded then
+            source := context.yield_source
+         end
       end
 
    has_next: BOOLEAN is
@@ -55,20 +60,20 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       end
 
 feature {}
-   make (a_source: like source; a_context: like context) is
+   make (a_context: like context) is
       require
-         a_source /= Void
+         a_context.yielded
       do
-         source := a_source
          context := a_context
+         source := a_context.yield_source
       ensure
-         source = a_source
+         source = a_context.yield_source
          context = a_context
       end
 
    context: MIXUP_USER_FUNCTION_CONTEXT
 
-   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
       do
          Result := Current
       end

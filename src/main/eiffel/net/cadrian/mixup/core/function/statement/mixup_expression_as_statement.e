@@ -26,11 +26,11 @@ create {ANY}
 feature {ANY}
    expression: MIXUP_EXPRESSION
 
-   call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
+   call (a_commit_context: MIXUP_COMMIT_CONTEXT) is
       local
          ignored_value: MIXUP_VALUE
       do
-         ignored_value := expression.eval(a_context, a_context.player, True, a_context.bar_number)
+         ignored_value := expression.eval(a_commit_context, True)
       end
 
    accept (visitor: VISITOR) is

@@ -34,9 +34,9 @@ feature {ANY}
    value: INTEGER_8
    mpc_start: MIXUP_MIDI_MPC_START_FACTORY
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       do
-         Result := Precursor(a_context, a_player, a_start_bar_number)
+         Result := Precursor(a_commit_context)
          Result.set_mpc_start(mpc_start.last_commit)
       end
 

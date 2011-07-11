@@ -90,9 +90,20 @@ feature {}
       require
          a_context /= Void
          a_player /= Void
+      local
+         context_: MIXUP_CONTEXT
+         commit_context: MIXUP_COMMIT_CONTEXT
+         conductor: MIXUP_MIXER_CONDUCTOR
       do
          log.info.put_line("Now playing " + a_context.name.out + " using " + a_player.name.out)
-         (create {MIXUP_MIXER_CONDUCTOR}.make(a_context, a_player, a_context.timing.first_bar_number)).play
+
+         commit_context.set_player(a_player)
+         context_ := a_context.commit(commit_context)
+
+         commit_context := context_.set_commit_context(commit_context)
+
+         create conductor.make(commit_context)
+         conductor.play
       end
 
 feature {}
@@ -112,7 +123,7 @@ feature {}
             create decorated.make(context.call_source, once "with_lyrics", music.value,
                                   Void, Void,
                                   agent force_lyrics(a_def_source, context.call_source, ?, ?))
-            create {MIXUP_MUSIC_VALUE} Result.make(context.call_source, decorated.commit(context.context, context.player, context.bar_number))
+            create {MIXUP_MUSIC_VALUE} Result.make(context.call_source, decorated.commit(context.commit_context))
          end
       end
 
@@ -138,7 +149,7 @@ feature {}
          else
             string ::= context.args.first
             create bar.make(context.call_source, string.value)
-            create {MIXUP_MUSIC_VALUE} Result.make(context.call_source, bar.commit(context.context, context.player, context.bar_number))
+            create {MIXUP_MUSIC_VALUE} Result.make(context.call_source, bar.commit(context.commit_context))
          end
       end
 
@@ -188,7 +199,7 @@ feature {}
             end
             music ::= context.args.last
             music_store.add_music(music.value)
-            Result := music_store.commit(context.context, context.player, context.bar_number)
+            Result := music_store.commit(context.commit_context)
          end
       end
 
@@ -221,8 +232,8 @@ feature {}
             mapper ::= context.args.first
             seed := context.args.item(context.args.lower+1)
             sequence := context.args.last
-            create executor.make(context.call_source, sequence, mapper.expression.eval(context.context, context.player, False, context.bar_number), seed)
-            Result := executor.call(context.context, context.player, context.bar_number)
+            create executor.make(context.call_source, sequence, mapper.expression.eval(context.commit_context, False), seed)
+            Result := executor.call(context.commit_context)
          end
       end
 
@@ -246,17 +257,16 @@ feature {}
          else
             int ::= context.args.first
             create {MIXUP_VALUE_FACTORY} Result.make(context.call_source,
-                                                     agent (a_int: INTEGER; a_src: MIXUP_SOURCE; a_pl: MIXUP_PLAYER; a_bar_number: INTEGER): MIXUP_STRING is
+                                                     agent (a_int: INTEGER; a_src: MIXUP_SOURCE; a_cc: MIXUP_COMMIT_CONTEXT): MIXUP_STRING is
                                                      local
                                                         str: STRING
                                                      do
-                                                        --TODO: if not a_data.instrument.valid_relative_staff_id(a_int) then
-                                                        --TODO:    fatal_at(a_src, "Invalid staff id: " + a_int.out)
-                                                        --TODO: end
-                                                        --TODO: str := a_data.instrument.name + a_data.instrument.absolute_staff_id(a_int).out
-                                                        str := "TODO"
+                                                        if not a_cc.instrument.valid_relative_staff_id(a_int) then
+                                                           fatal_at(a_src, "Invalid staff id: " + a_int.out)
+                                                        end
+                                                        str := a_cc.instrument.name + a_cc.instrument.absolute_staff_id(a_int).out
                                                         create Result.make(a_src, str.intern, ("%"" + str + "%"").intern)
-                                                     end(int.value.to_integer_32, ?, ?, ?))
+                                                     end(int.value.to_integer_32, ?, ?))
          end
       end
 
@@ -265,9 +275,9 @@ feature {}
          context.is_ready
       do
          create {MIXUP_VALUE_FACTORY} Result.make(context.call_source,
-                                                  agent (a_src: MIXUP_SOURCE; a_pl: MIXUP_PLAYER; a_bar_number: INTEGER): MIXUP_INTEGER is
+                                                  agent (a_src: MIXUP_SOURCE; a_cc: MIXUP_COMMIT_CONTEXT): MIXUP_INTEGER is
                                                   do
-                                                     create Result.make(a_src, 0) --TODO: a_data.instrument.relative_staff_id(a_data.staff_id))
+                                                     create Result.make(a_src, a_cc.instrument.relative_staff_id(a_cc.staff.id))
                                                   end)
       end
 

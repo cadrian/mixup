@@ -38,9 +38,9 @@ feature {ANY}
          Result := music.anchor
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): MIXUP_MUSIC is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): MIXUP_MUSIC is
       do
-         Result := music_evaluator.eval(a_context, a_player, a_start_bar_number)
+         Result := music_evaluator.eval(a_commit_context)
          if Result = Void then
             fatal("Could not find identifier: " + identifier.out)
          end

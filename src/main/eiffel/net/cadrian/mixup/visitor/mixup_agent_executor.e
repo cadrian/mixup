@@ -24,14 +24,12 @@ create {ANY}
    make
 
 feature {ANY}
-   call (a_context: like context; a_player: like player; a_bar_number: like bar_number): MIXUP_VALUE is
+   call (a_commit_context: like commit_context): MIXUP_VALUE is
       require
-         a_context /= Void
-         a_player /= Void
+         a_commit_context.context /= Void
+         a_commit_context.player /= Void
       do
-         context := a_context
-         player := a_player
-         bar_number := a_bar_number
+         commit_context := a_commit_context
 
          log.info.put_line("Executing " + mapper.out)
 
@@ -39,8 +37,7 @@ feature {ANY}
          sequence.accept(Current)
          Result := concentrator
 
-         context := Void
-         player := Void
+         commit_context.reset
       end
 
 feature {MIXUP_YIELD_ITERATOR}
@@ -50,13 +47,13 @@ feature {MIXUP_YIELD_ITERATOR}
       do
          from
             args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_yield_iterator.value >> }
-            concentrator := mapper.call(source, player, args, bar_number)
+            concentrator := mapper.call(source, commit_context, args)
          until
             not a_yield_iterator.has_next
          loop
-            a_yield_iterator.next
+            a_yield_iterator.next(commit_context)
             args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_yield_iterator.value >> }
-            concentrator := mapper.call(source, player, args, bar_number)
+            concentrator := mapper.call(source, commit_context, args)
          end
       end
 
@@ -78,7 +75,7 @@ feature {MIXUP_BOOLEAN}
          args: TRAVERSABLE[MIXUP_VALUE]
       do
          args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_boolean >> }
-         concentrator := mapper.call(source, player, args, bar_number)
+         concentrator := mapper.call(source, commit_context, args)
       end
 
 feature {MIXUP_IDENTIFIER}
@@ -93,7 +90,7 @@ feature {MIXUP_RESULT}
          args: TRAVERSABLE[MIXUP_VALUE]
       do
          args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_result >> }
-         concentrator := mapper.call(source, player, args, bar_number)
+         concentrator := mapper.call(source, commit_context, args)
       end
 
 feature {MIXUP_INTEGER}
@@ -102,7 +99,7 @@ feature {MIXUP_INTEGER}
          args: TRAVERSABLE[MIXUP_VALUE]
       do
          args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_integer >> }
-         concentrator := mapper.call(source, player, args, bar_number)
+         concentrator := mapper.call(source, commit_context, args)
       end
 
 feature {MIXUP_REAL}
@@ -111,7 +108,7 @@ feature {MIXUP_REAL}
          args: TRAVERSABLE[MIXUP_VALUE]
       do
          args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_real >> }
-         concentrator := mapper.call(source, player, args, bar_number)
+         concentrator := mapper.call(source, commit_context, args)
       end
 
 feature {MIXUP_STRING}
@@ -120,7 +117,7 @@ feature {MIXUP_STRING}
          args: TRAVERSABLE[MIXUP_VALUE]
       do
          args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_string >> }
-         concentrator := mapper.call(source, player, args, bar_number)
+         concentrator := mapper.call(source, commit_context, args)
       end
 
 feature {MIXUP_TUPLE}
@@ -135,7 +132,7 @@ feature {MIXUP_TUPLE}
             i > a_tuple.upper
          loop
             args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_tuple.item(i) >> }
-            concentrator := mapper.call(source, player, args, bar_number)
+            concentrator := mapper.call(source, commit_context, args)
             i := i + 1
          end
       end
@@ -152,7 +149,7 @@ feature {MIXUP_LIST}
             i > a_list.upper
          loop
             args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_list.item(i) >> }
-            concentrator := mapper.call(source, player, args, bar_number)
+            concentrator := mapper.call(source, commit_context, args)
             i := i + 1
          end
       end
@@ -169,7 +166,7 @@ feature {MIXUP_SEQ}
             i > a_seq.upper
          loop
             args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_seq.item(i) >> }
-            concentrator := mapper.call(source, player, args, bar_number)
+            concentrator := mapper.call(source, commit_context, args)
             i := i + 1
          end
       end
@@ -186,7 +183,7 @@ feature {MIXUP_DICTIONARY}
             i > a_dictionary.upper
          loop
             args := {FAST_ARRAY[MIXUP_VALUE] << concentrator, a_dictionary.key(i), a_dictionary.item(i) >> }
-            concentrator := mapper.call(source, player, args, bar_number)
+            concentrator := mapper.call(source, commit_context, args)
             i := i + 1
          end
       end
@@ -241,9 +238,7 @@ feature {}
          seed = a_seed
       end
 
-   context: MIXUP_CONTEXT
-   player: MIXUP_PLAYER
-   bar_number: INTEGER
+   commit_context: MIXUP_COMMIT_CONTEXT
 
    sequence: MIXUP_VALUE
    mapper: MIXUP_VALUE

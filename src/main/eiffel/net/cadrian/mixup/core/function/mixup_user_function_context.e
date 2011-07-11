@@ -27,11 +27,6 @@ create {MIXUP_USER_FUNCTION_CONTEXT}
    duplicate
 
 feature {ANY}
-   bar_number: INTEGER is
-      do
-         Result := timing.first_bar_number
-      end
-
    set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
       do
          if args.fast_has(a_name) then
@@ -52,15 +47,13 @@ feature {ANY}
          end
       end
 
-   commit (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       local
          timing_: MIXUP_MUSIC_TIMING
       do
-         check
-            a_player = player
-         end
-         create Result.duplicate(source, name, parent, player, commit_values(a_player, a_start_bar_number), commit_imports(a_player, a_start_bar_number), args)
-         Result.set_timing(timing_.set(0, a_start_bar_number, 0))
+         a_commit_context.set_context(Current)
+         create Result.duplicate(source, name, parent, commit_values(a_commit_context), commit_imports(a_commit_context), args)
+         Result.set_timing(timing_.set(0, a_commit_context.bar_number, 0))
       end
 
    accept (visitor: VISITOR) is
@@ -98,36 +91,44 @@ feature {ANY}
          end
       end
 
-   execute is
+   execute (a_commit_context: MIXUP_COMMIT_CONTEXT) is
       local
          statement: MIXUP_STATEMENT
       do
          from
-            yielded := False
+            a_commit_context.set_context(Current)
+            yield_source := Void
          until
             yielded or else statements.is_empty
          loop
             statement := statements.first
             statements.remove_first
             log.trace.put_line("Calling statement: " + statement.out)
-            statement.call(Current)
+            statement.call(a_commit_context)
          end
       ensure
          yielded or else statements.is_empty
       end
 
-   yielded: BOOLEAN
-
-   yield (a_value: like value) is
+   yield (a_source: MIXUP_SOURCE; a_value: like value) is
       require
          not yielded
+         a_source /= Void
       do
          value := a_value
-         yielded := True
+         yield_source := a_source
       ensure
          value = a_value
+         yield_source = a_source
          yielded
       end
+
+   yielded: BOOLEAN is
+      do
+         Result := yield_source /= Void
+      end
+
+   yield_source: MIXUP_SOURCE
 
    set_result (a_value: like value) is
       require
@@ -139,7 +140,6 @@ feature {ANY}
       end
 
    value: MIXUP_VALUE
-   player: MIXUP_PLAYER
    args: MAP[MIXUP_VALUE, FIXED_STRING]
 
 feature {MIXUP_CONTEXT}
@@ -164,32 +164,27 @@ feature {}
    statements: RING_ARRAY[MIXUP_STATEMENT]
    locals: DICTIONARY[MIXUP_VALUE, FIXED_STRING]
 
-   make (a_source: like source; a_parent: MIXUP_CONTEXT; a_player: like player; a_args: like args) is
+   make (a_source: like source; a_parent: like parent; a_args: like args) is
       require
          a_source /= Void
-         a_parent /= Void
-         a_player /= Void
          a_args /= Void
       do
-         player := a_player
          args := a_args
          create statements.make(1, 0)
          create {HASHED_DICTIONARY[MIXUP_VALUE, FIXED_STRING]} locals.make
          make_context(a_source, once "<function>", a_parent)
       ensure
          source = a_source
-         player = a_player
          args = a_args
       end
 
-   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_player: like player; a_values: like values; a_imports: like imports; a_args: like args) is
+   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports; a_args: like args) is
       do
          source := a_source
-         name := a_name
          parent := a_parent
+         name := a_name
          values := a_values
          imports := a_imports
-         player := a_player
          args := a_args
          create statements.make(1, 0)
          create {HASHED_DICTIONARY[MIXUP_VALUE, FIXED_STRING]} locals.make
@@ -197,9 +192,9 @@ feature {}
       end
 
 invariant
-   player /= Void
    args /= Void
    statements /= Void
    locals /= Void
+   parent /= Void
 
 end -- class MIXUP_USER_FUNCTION_CONTEXT

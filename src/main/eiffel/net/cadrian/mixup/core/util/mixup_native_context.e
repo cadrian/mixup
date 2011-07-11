@@ -16,32 +16,39 @@ expanded class MIXUP_NATIVE_CONTEXT
 
 feature {ANY}
    call_source: MIXUP_SOURCE
-   context: MIXUP_CONTEXT
-   player: MIXUP_PLAYER
    args: TRAVERSABLE[MIXUP_VALUE]
-   bar_number: INTEGER
+   commit_context: MIXUP_COMMIT_CONTEXT
 
-   prepare (a_call_source: like call_source; a_context: like context; a_player: like player; a_args: like args; a_bar_number: like bar_number) is
+   context: MIXUP_CONTEXT is
+      do
+         Result := commit_context.context
+      end
+
+   player: MIXUP_PLAYER is
+      do
+         Result := commit_context.player
+      end
+
+   bar_number: INTEGER is
+      do
+         Result := commit_context.bar_number
+      end
+
+   prepare (a_call_source: like call_source; a_commit_context: like commit_context; a_args: like args) is
       require
          not is_ready
-
          a_call_source /= Void
-         a_context /= Void
-         a_player /= Void
+         a_commit_context.context /= Void
+         a_commit_context.player /= Void
          a_args /= Void
       do
          call_source := a_call_source
-         context := a_context
-         player := a_player
          args := a_args
-         bar_number := a_bar_number
+         commit_context := a_commit_context
       ensure
          call_source = a_call_source
-         context = a_context
-         player = a_player
          args = a_args
-         bar_number = a_bar_number
-
+         commit_context = a_commit_context
          is_ready
       end
 

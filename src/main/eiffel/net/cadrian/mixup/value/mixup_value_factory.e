@@ -57,11 +57,11 @@ feature {}
          factory = a_factory
       end
 
-   factory: FUNCTION[TUPLE[MIXUP_SOURCE, MIXUP_PLAYER, INTEGER], MIXUP_VALUE]
+   factory: FUNCTION[TUPLE[MIXUP_SOURCE, MIXUP_COMMIT_CONTEXT], MIXUP_VALUE]
 
-   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
       do
-         Result := factory.item([source, a_player, bar_number])
+         Result := factory.item([source, a_commit_context])
       end
 
    no_args: FAST_ARRAY[MIXUP_VALUE] is

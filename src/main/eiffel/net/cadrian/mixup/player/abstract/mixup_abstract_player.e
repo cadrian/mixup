@@ -86,67 +86,67 @@ feature {ANY}
 
    play_set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
       do
-         log.info.put_line("playing dynamics: " + dynamics.out)
+         log.info.put_line(a_data.out + ": playing dynamics: " + dynamics.out)
          instruments.reference_at(a_data.instrument.name).set_dynamics(a_data.staff_id, a_data.voice_id, dynamics, position, is_standard)
       end
 
    play_set_note (a_data: MIXUP_EVENT_DATA; note: MIXUP_NOTE) is
       do
-         log.info.put_line("playing note: " + note.out)
+         log.info.put_line(a_data.out + ": playing note: " + note.out)
          instruments.reference_at(a_data.instrument.name).set_note(a_data.staff_id, a_data.voice_id, a_data.start_time, note)
       end
 
    play_next_bar (a_data: MIXUP_EVENT_DATA; style: ABSTRACT_STRING) is
       do
-         log.info.put_line("playing bar")
+         log.info.put_line(a_data.out + ": playing bar")
          instruments.reference_at(a_data.instrument.name).next_bar(a_data.staff_id, a_data.voice_id, style)
       end
 
    play_start_beam (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         log.info.put_line("starting beam")
+         log.info.put_line(a_data.out + ": starting beam")
          instruments.reference_at(a_data.instrument.name).start_beam(a_data.staff_id, a_data.voice_id, xuplet_numerator, xuplet_denominator, text)
       end
 
    play_end_beam (a_data: MIXUP_EVENT_DATA) is
       do
-         log.info.put_line("ending beam")
+         log.info.put_line(a_data.out + ": ending beam")
          instruments.reference_at(a_data.instrument.name).end_beam(a_data.staff_id, a_data.voice_id)
       end
 
    play_start_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         log.info.put_line("starting slur")
+         log.info.put_line(a_data.out + ": starting slur")
          instruments.reference_at(a_data.instrument.name).start_slur(a_data.staff_id, a_data.voice_id, xuplet_numerator, xuplet_denominator, text)
       end
 
    play_end_slur (a_data: MIXUP_EVENT_DATA) is
       do
-         log.info.put_line("ending slur")
+         log.info.put_line(a_data.out + ": ending slur")
          instruments.reference_at(a_data.instrument.name).end_slur(a_data.staff_id, a_data.voice_id)
       end
 
    play_start_phrasing_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
-         log.info.put_line("starting phrasing slur")
+         log.info.put_line(a_data.out + ": starting phrasing slur")
          instruments.reference_at(a_data.instrument.name).start_phrasing_slur(a_data.staff_id, a_data.voice_id, xuplet_numerator, xuplet_denominator, text)
       end
 
    play_end_phrasing_slur (a_data: MIXUP_EVENT_DATA) is
       do
-         log.info.put_line("ending phrasing slur")
+         log.info.put_line(a_data.out + ": ending phrasing slur")
          instruments.reference_at(a_data.instrument.name).end_phrasing_slur(a_data.staff_id, a_data.voice_id)
       end
 
    play_start_repeat (a_data: MIXUP_EVENT_DATA; volte: INTEGER_64) is
       do
-         log.info.put_line("starting repeat x" + volte.out)
+         log.info.put_line(a_data.out + ": starting repeat x" + volte.out)
          instruments.reference_at(a_data.instrument.name).start_repeat(a_data.staff_id, a_data.voice_id, volte)
       end
 
    play_end_repeat (a_data: MIXUP_EVENT_DATA) is
       do
-         log.info.put_line("ending repeat")
+         log.info.put_line(a_data.out + ": ending repeat")
          instruments.reference_at(a_data.instrument.name).end_repeat(a_data.staff_id, a_data.voice_id)
       end
 

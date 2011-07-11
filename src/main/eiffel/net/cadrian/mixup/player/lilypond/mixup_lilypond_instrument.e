@@ -21,8 +21,6 @@ inherit
                              MIXUP_LILYPOND_VOICE,
                              MIXUP_LILYPOND_VOICES,
                              MIXUP_LILYPOND_STAFF]
-      rename
-         make as make_abstract
       redefine
          generate
       end
@@ -68,25 +66,7 @@ feature {MIXUP_ABSTRACT_PLAYER}
       end
 
 feature {}
-   make (a_context: like context; a_player: like player; a_name: like name; a_voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
-      require
-         a_context /= Void
-         a_player /= Void
-         a_name /= Void
-         a_voice_staff_ids /= Void
-      do
-         player := a_player
-         make_abstract(a_context, a_name, a_voice_staff_ids)
-      ensure
-         context = a_context
-         player = a_player
-         name = a_name
-         staffs.count = a_voice_staff_ids.count
-         a_voice_staff_ids.for_all(agent (a_voice_ids: TRAVERSABLE[INTEGER]; a_id: INTEGER): BOOLEAN is do Result := staffs.fast_has(a_id) and then staffs.fast_reference_at(a_id).id = a_id end)
-      end
-
    context_name: FIXED_STRING
-   player: MIXUP_LILYPOND_PLAYER
 
    absolute_reference: MIXUP_NOTE_HEAD is
       once
@@ -100,7 +80,7 @@ feature {}
 
    new_staff (voice_ids: TRAVERSABLE[INTEGER]; id: INTEGER): MIXUP_LILYPOND_STAFF is
       do
-         create Result.make(Current, player, id, voice_ids, absolute_reference)
+         create Result.make(Current, id, voice_ids, absolute_reference)
       end
 
 end -- class MIXUP_LILYPOND_INSTRUMENT

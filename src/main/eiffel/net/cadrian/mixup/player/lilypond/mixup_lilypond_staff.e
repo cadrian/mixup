@@ -120,20 +120,17 @@ feature {}
       end
 
 feature {}
-   make (a_instrument: like instrument; a_player: like player; a_id: like id; a_voice_ids: TRAVERSABLE[INTEGER]; a_reference: like reference) is
+   make (a_instrument: like instrument; a_id: like id; a_voice_ids: TRAVERSABLE[INTEGER]; a_reference: like reference) is
       require
          a_instrument /= Void
-         a_player /= Void
          a_id > 0
       do
          make_abstract(a_id, a_voice_ids)
          reference := a_reference
          instrument := a_instrument
-         player := a_player
       ensure
          reference = a_reference
          instrument = a_instrument
-         player = a_player
       end
 
    context_name: FIXED_STRING is
@@ -162,8 +159,6 @@ feature {}
          end
          create Result.make(voice_ids, ref, lyrics_gatherer)
       end
-
-   player: MIXUP_LILYPOND_PLAYER
 
 invariant
    instrument /= Void

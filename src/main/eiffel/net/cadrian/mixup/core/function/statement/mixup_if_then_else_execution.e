@@ -25,7 +25,7 @@ feature {ANY}
       local
          value: MIXUP_VALUE
       do
-         value := a_if.condition.eval(context, context.player, True, context.bar_number)
+         value := a_if.condition.eval(commit_context, True)
          if value = Void then
             fatal("value could not be computed")
          else
@@ -105,16 +105,17 @@ feature {MIXUP_YIELD_ITERATOR}
       end
 
 feature {}
-   make (a_source: like source; a_context: like context) is
+   make (a_source: like source; a_commit_context: like commit_context) is
       require
+         a_commit_context.context /= Void
+         {MIXUP_USER_FUNCTION_CONTEXT} ?:= a_commit_context.context
          a_source /= Void
-         a_context /= Void
       do
          source := a_source
-         context := a_context
+         commit_context := a_commit_context
       ensure
          source = a_source
-         context = a_context
+         commit_context = a_commit_context
       end
 
 end -- class MIXUP_IF_THEN_ELSE_EXECUTION

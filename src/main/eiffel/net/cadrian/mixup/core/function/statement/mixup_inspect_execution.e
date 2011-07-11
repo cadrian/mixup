@@ -24,7 +24,7 @@ feature {ANY}
    match (a_inspect_branch: MIXUP_INSPECT_BRANCH): BOOLEAN is
       do
          match_ := False
-         value := a_inspect_branch.expression.eval(context, context.player, True, context.bar_number)
+         value := a_inspect_branch.expression.eval(commit_context, True)
          if value = Void then
             fatal("value could not be computed")
          else
@@ -155,18 +155,19 @@ feature {MIXUP_YIELD_ITERATOR}
       end
 
 feature {}
-   make (a_source: like source; a_context: like context; a_expression: MIXUP_EXPRESSION) is
+   make (a_source: like source; a_commit_context: like commit_context; a_expression: MIXUP_EXPRESSION) is
       require
+         a_commit_context.context /= Void
+         {MIXUP_USER_FUNCTION_CONTEXT} ?:= a_commit_context.context
          a_source /= Void
-         a_context /= Void
          a_expression /= Void
       do
          source := a_source
-         context := a_context
-         expression := a_expression.eval(a_context, a_context.player, True, a_context.bar_number)
+         commit_context := a_commit_context
+         expression := a_expression.eval(a_commit_context, True)
       ensure
          source = a_source
-         context = a_context
+         commit_context = a_commit_context
       end
 
    expression: MIXUP_VALUE

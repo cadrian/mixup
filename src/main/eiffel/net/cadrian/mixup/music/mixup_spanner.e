@@ -107,7 +107,7 @@ feature {ANY}
          end
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       local
          music_: FAST_ARRAY[MIXUP_MUSIC]
          music_zip: AGGREGATOR[MIXUP_MUSIC, MIXUP_MUSIC_TIMING]
@@ -115,19 +115,19 @@ feature {ANY}
       do
          create music_.make(music.count)
          timing_ := music_zip.map_index(music,
-                                        agent (music0: MIXUP_MUSIC; a_music: FAST_ARRAY[MIXUP_MUSIC]; context_: MIXUP_CONTEXT; player_: MIXUP_PLAYER;
-                                               accu: MIXUP_MUSIC_TIMING; index: INTEGER): MIXUP_MUSIC_TIMING is
+                                        agent (music0: MIXUP_MUSIC; a_music: FAST_ARRAY[MIXUP_MUSIC]; accu: MIXUP_MUSIC_TIMING; commit_context_: MIXUP_COMMIT_CONTEXT; index: INTEGER): MIXUP_MUSIC_TIMING is
                                         local
                                            music0_: MIXUP_MUSIC
                                         do
                                            log.trace.put_string(once "COMMIT: span: bar number is ")
                                            log.trace.put_integer(accu.first_bar_number + accu.bars_count)
                                            log.trace.put_new_line
-                                           music0_ := music0.commit(context_, player_, accu.first_bar_number + accu.bars_count)
+                                           commit_context_.set_bar_number(accu.first_bar_number + accu.bars_count)
+                                           music0_ := music0.commit(commit_context_)
                                            Result := accu + music0_.timing
                                            a_music.put(music0_, index)
-                                        end(?, music_, a_context, a_player, ?, ?),
-                                        timing_.set(0, a_start_bar_number, 0))
+                                        end(?, music_, ?, a_commit_context, ?),
+                                        timing_.set(0, a_commit_context.bar_number, 0))
          Result := do_duplicate(music_, timing_)
       ensure
          Result.timing.is_set

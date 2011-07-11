@@ -18,11 +18,11 @@ inherit
    MIXUP_EXPRESSION
 
 feature {ANY}
-   frozen eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+   frozen eval (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
       do
-         Result := eval_(a_context, a_player, do_call, bar_number)
+         Result := eval_(a_commit_context, do_call)
          if Result /= Current and then Result /= Void then
-            Result := Result.eval(a_context, a_player, do_call, bar_number)
+            Result := Result.eval(a_commit_context, do_call)
          end
       end
 
@@ -38,11 +38,12 @@ feature {ANY}
       deferred
       end
 
-   call (a_source: MIXUP_SOURCE; a_player: MIXUP_PLAYER; a_args: TRAVERSABLE[MIXUP_VALUE]; a_bar_number: INTEGER): MIXUP_VALUE is
+   call (a_source: MIXUP_SOURCE; a_commit_context: MIXUP_COMMIT_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
       require
          is_callable
          a_args /= Void
          a_source /= Void
+         a_commit_context.context /= Void
       do
          crash
       end
@@ -55,7 +56,7 @@ feature {ANY}
       end
 
 feature {}
-   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
       deferred
       end
 

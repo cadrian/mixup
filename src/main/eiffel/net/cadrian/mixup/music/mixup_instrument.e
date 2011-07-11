@@ -89,21 +89,22 @@ feature {ANY}
          end
       end
 
-   commit (a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       local
          staves_: FAST_ARRAY[MIXUP_STAFF]
          staves_zip: ZIP[MIXUP_STAFF, INTEGER]
       do
+         a_commit_context.set_instrument(Current)
          create staves_.make(staves.count)
          create staves_zip.make(staves, staves_.lower |..| staves_.upper)
-         staves_zip.do_all(agent (staff: MIXUP_STAFF; index: INTEGER; a_staves: FAST_ARRAY[MIXUP_STAFF]; a_player: MIXUP_PLAYER; start_bar_number_: INTEGER) is
+         staves_zip.do_all(agent (staff: MIXUP_STAFF; index: INTEGER; a_staves: FAST_ARRAY[MIXUP_STAFF]; commit_context_: MIXUP_COMMIT_CONTEXT) is
                            local
                               staff_: MIXUP_STAFF
                            do
-                              staff_ := staff.commit(Current, a_player, start_bar_number_)
+                              staff_ := staff.commit(commit_context_)
                               a_staves.put(staff_, index)
-                           end(?, ?, staves_, a_player, a_start_bar_number))
-         create Result.duplicate(source, name, parent, commit_values(a_player, a_start_bar_number), commit_imports(a_player, a_start_bar_number), staves_, strophes)
+                           end(?, ?, staves_, a_commit_context))
+         create Result.duplicate(source, name, parent, commit_values(a_commit_context), commit_imports(a_commit_context), staves_, strophes)
          -- TODO check timing durations
          Result.set_timing(staves_.first.timing)
       end

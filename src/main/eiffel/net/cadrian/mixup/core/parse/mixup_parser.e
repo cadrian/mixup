@@ -37,6 +37,8 @@ feature {ANY}
          old_context_factory: like context_factory
          old_piece: like current_piece
          old_file: like current_file
+
+         commit_context: MIXUP_COMMIT_CONTEXT
       do
          old_root := root_context
          root_context := Void
@@ -59,7 +61,8 @@ feature {ANY}
          current_file := old_file
          current_piece := old_piece
 
-         Result.run_hook(create {MIXUP_SOURCE_UNKNOWN}, seed_player, once "at_load")
+         commit_context.set_player(seed_player)
+         Result.run_hook(create {MIXUP_SOURCE_UNKNOWN}, commit_context, once "at_load")
       end
 
    current_piece: MIXUP_NODE

@@ -56,75 +56,75 @@ instrument piano
 
             :p:
             {
-                \pattern_RH_bes  \pattern_RH_bes  |
-                \pattern_RH_bes  \pattern_RH_bes  |
+                \pattern_RH_bes  \pattern_RH_bes     |
+                \pattern_RH_bes  \pattern_RH_bes     |
             }
             {
-                \pattern_RH_bes  \pattern_RH_aes  |
-                \pattern_RH_ges  \pattern_RH_aes  |
-                \pattern_RH_bes  \pattern_RH_des  |
+                \pattern_RH_bes  \pattern_RH_aes     |
+                \pattern_RH_ges  \pattern_RH_aes     |
+                \pattern_RH_bes  \pattern_RH_des     |
             }
             {
-                \pattern_RH_c    \pattern_RH_bes  |
-                \pattern_RH_bes  \pattern_RH_aes  |
-                \pattern_RH_ges  \pattern_RH_aes  |
+                \pattern_RH_c    \pattern_RH_bes     |
+                \pattern_RH_bes  \pattern_RH_aes     |
+                \pattern_RH_ges  \pattern_RH_aes     |
             }
             {
-                \pattern_RH_bes  \pattern_RH_c    |
-                \pattern_RH_c_g  \pattern_RH_c    |
+                \pattern_RH_bes  \pattern_RH_c       |
+                \pattern_RH_c_g  \pattern_RH_c       |
                 \set_time("6/8")
-                \pattern_RH_c                     |
+                \pattern_RH_c                        |
                 \set_time("12/8")
             }
             :up:"cresc. poco a poco":
             :hidden:mp,<:
             {
-                \pattern_RH_c    \pattern_RH_bes  |
-                \pattern_RH_c_ges\pattern_RH_ces  |
-                \pattern_RH_bes  \pattern_RH_c7   |
-                \pattern_RH_d    \pattern_RH_ees  |
+                \pattern_RH_c    \pattern_RH_bes     |
+                \pattern_RH_c_ges\pattern_RH_ces     |
+                \pattern_RH_bes  \pattern_RH_c7      |
+                \pattern_RH_d    \pattern_RH_ees     |
             }
             :up:"cresc. molto":
             :hidden:mf:
             {
-                \pattern_RH_ees  \pattern_RH_ees  |
-                \pattern_RH_ees  \pattern_RH_ees  |
+                \pattern_RH_ees  \pattern_RH_ees     |
+                \pattern_RH_ees  \pattern_RH_ees     |
             }
             :up:f,"sempre":
             :hidden:ff:
             {
-                \pattern_RH_fes  \pattern_RH_fes  |
-                \pattern_RH_v11  \pattern_RH_v11  |
-                \pattern_RH_v12  \pattern_RH_v13  |
+                \pattern_RH_fes  \pattern_RH_fes     |
+                \pattern_RH_v11  \pattern_RH_v11     |
+                \pattern_RH_v12  \pattern_RH_v13     |
                 \pattern_RH_v13 :p: \pattern_RH_v14 |
             }
             :pp:
             {
-                \pattern_RH_bes  \pattern_RH_aes  |
-                \pattern_RH_ges  \pattern_RH_aes  |
-                \pattern_RH_bes  \pattern_RH_c    |
-                \pattern_RH_c_g  \pattern_RH_c    |
+                \pattern_RH_bes  \pattern_RH_aes     |
+                \pattern_RH_ges  \pattern_RH_aes     |
+                \pattern_RH_bes  \pattern_RH_c       |
+                \pattern_RH_c_g  \pattern_RH_c       |
             }
             :"cresc.": :hidden:<:
             {
-                \pattern_RH_v21  \pattern_RH_v22  |
+                \pattern_RH_v21  \pattern_RH_v22     |
                 :hidden:mp: :<:
-                \pattern_RH_v23  \pattern_RH_v24  |
+                \pattern_RH_v23  \pattern_RH_v24     |
                 :mf:
                 \pattern_RH_v25 :>: \pattern_RH_v26  |
                 :p:
-                \pattern_RH_v27  \pattern_RH_v28  |
+                \pattern_RH_v27  \pattern_RH_v28     |
                 \pattern_RH_v29 :>: \pattern_RH_v2a  |
             }
             :pp:
             {
-                \pattern_RH_bes  \pattern_RH_aes  |
-                \pattern_RH_ges  \pattern_RH_aes  |
-                \pattern_RH_bes  \pattern_RH_c    |
-                \pattern_RH_des  \pattern_RH_c    |
-                \pattern_RH_bes  \pattern_RH_bes  |
-                bes4.~ bes4 f'8 bes4.~ bes4 f8~   |
-                <bes, f'>2.~ <bes f'>4. r4 r8       |
+                \pattern_RH_bes  \pattern_RH_aes     |
+                \pattern_RH_ges  \pattern_RH_aes     |
+                \pattern_RH_bes  \pattern_RH_c       |
+                \pattern_RH_des  \pattern_RH_c       |
+                \pattern_RH_bes  \pattern_RH_bes     |
+                bes4.~ bes4 f'8 bes4.~ bes4 f8~      |
+                <bes, f'>2.~ <bes f'>4. r4 r8        |
             }
         >>
 

@@ -33,10 +33,10 @@ feature {ANY}
          (create {MIXUP_MUSIC_VALUE}.make(source, Current)).accept(visitor)
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       do
          Result := twin
-         Result.set_timing(0, a_start_bar_number, 0)
+         Result.set_timing(0, a_commit_context.bar_number, 0)
       end
 
 feature {ANY}
@@ -58,7 +58,7 @@ feature {MIXUP_MUSIC, MIXUP_SPANNER}
       end
 
 feature {}
-   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
       do
          Result := Current
       end

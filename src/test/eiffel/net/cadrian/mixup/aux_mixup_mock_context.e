@@ -31,10 +31,10 @@ feature {ANY}
          check Result = Void end
       end
 
-   commit (a_player: MIXUP_PLAYER; start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       do
          Result := Current
-         set_timing(timing.set(0, start_bar_number, 0))
+         set_timing(timing.set(0, a_commit_context.bar_number, 0))
       end
 
    add_child (a_child: MIXUP_CONTEXT) is

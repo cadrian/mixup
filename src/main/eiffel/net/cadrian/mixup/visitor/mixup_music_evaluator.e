@@ -30,17 +30,17 @@ create {ANY}
    make
 
 feature {ANY}
-   eval (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_bar_number: INTEGER): MIXUP_MUSIC is
+   eval (a_commit_context: MIXUP_COMMIT_CONTEXT): MIXUP_MUSIC is
       local
          value: MIXUP_VALUE
       do
-         value := a_context.resolver.resolve(identifier, a_player, a_bar_number)
+         value := a_commit_context.context.resolver.resolve(identifier, a_commit_context)
          if value = Void then
-            Result := (create {MIXUP_ZERO_MUSIC}.make(source)).commit(a_context, a_player, a_bar_number)
+            Result := (create {MIXUP_ZERO_MUSIC}.make(source)).commit(a_commit_context)
          else
             music := Void
             value.accept(Current)
-            Result := music.commit(a_context, a_player, a_bar_number)
+            Result := music.commit(a_commit_context)
          end
       ensure
          Result /= Void

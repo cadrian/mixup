@@ -158,7 +158,7 @@ feature {}
 
    evaled: EXT_HASHED_DICTIONARY[MIXUP_VALUE, MIXUP_VALUE]
 
-   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
       local
          i: INTEGER; k, v: MIXUP_VALUE
       do
@@ -168,8 +168,8 @@ feature {}
          until
             i > keys.upper
          loop
-            k := keys.item(i).eval(a_context, a_player, True, bar_number)
-            v := values.item(i).eval(a_context, a_player, True, bar_number)
+            k := keys.item(i).eval(a_commit_context, True)
+            v := values.item(i).eval(a_commit_context, True)
             if k = Void then
                fatal("could not compute key")
             elseif v = Void then

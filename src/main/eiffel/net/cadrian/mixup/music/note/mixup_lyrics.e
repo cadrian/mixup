@@ -135,11 +135,11 @@ feature {ANY}
 
    can_have_lyrics: BOOLEAN is True
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       local
          note_: like note
       do
-         note_ := note.commit(a_context, a_player, a_start_bar_number)
+         note_ := note.commit(a_commit_context)
          create Result.duplicate(source, note_, capacity, storage)
       end
 

@@ -15,6 +15,7 @@
 class MIXUP_LILYPOND_VOICE
 
 inherit
+   MIXUP_LILYPOND_ITEM
    MIXUP_ABSTRACT_VOICE[MIXUP_LILYPOND_OUTPUT, MIXUP_LILYPOND_SECTION, MIXUP_LILYPOND_ITEM]
       rename
          make as make_abstract
@@ -78,16 +79,18 @@ feature {ANY}
 feature {MIXUP_ABSTRACT_STAFF}
    add_item (a_item: MIXUP_LILYPOND_ITEM) is
       do
-         if dynamics /= Void then
-            if dynamics_is_open then
-               close_dynamics
+         if a_item.can_append then
+            if dynamics /= Void then
+               if dynamics_is_open then
+                  close_dynamics
+               end
+               a_item.append_first(dynamics)
+               dynamics := Void
             end
-            a_item.append_first(dynamics)
-            dynamics := Void
-         end
-         if slur /= Void then
-            a_item.append_first(slur)
-            slur := Void
+            if slur /= Void then
+               a_item.append_first(slur)
+               slur := Void
+            end
          end
          items.add_last(a_item)
          if a_item.valid_reference then
@@ -187,7 +190,11 @@ feature {MIXUP_ABSTRACT_STAFF}
 
    end_slur is
       do
-         append_last(once ")")
+         if slur = Void then
+            append_last(once ")")
+         else
+            sedb_breakpoint
+         end
       end
 
    start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
@@ -197,7 +204,11 @@ feature {MIXUP_ABSTRACT_STAFF}
 
    end_phrasing_slur is
       do
-         append_last(once "\)")
+         if slur = Void then
+            append_last(once "\)")
+         else
+            sedb_breakpoint
+         end
       end
 
    start_repeat (volte: INTEGER_64) is
@@ -216,7 +227,7 @@ feature {MIXUP_LILYPOND_STAFF}
          add_item(create {MIXUP_LILYPOND_STRING}.make(a_string))
       end
 
-feature {MIXUP_ABSTRACT_VOICES}
+feature {ANY}
    generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
       do
          items.do_all(agent {MIXUP_LILYPOND_ITEM}.generate(context, section))

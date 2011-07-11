@@ -24,13 +24,15 @@ create {ANY}
    make
 
 feature {ANY}
-   call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
+   call (a_commit_context: MIXUP_COMMIT_CONTEXT) is
       local
          i: INTEGER; done: BOOLEAN; execution_context: MIXUP_INSPECT_EXECUTION
+         context: MIXUP_USER_FUNCTION_CONTEXT
       do
          from
+            context ::= a_commit_context.context
             i := branch_list.lower
-            create execution_context.make(source, a_context, expression)
+            create execution_context.make(source, a_commit_context, expression)
          until
             done or else i > branch_list.upper
          loop
@@ -38,7 +40,7 @@ feature {ANY}
             i := i + 1
          end
          if not done and then otherwise /= Void then
-            a_context.add_statements(otherwise.statements)
+            context.add_statements(otherwise.statements)
          end
       end
 

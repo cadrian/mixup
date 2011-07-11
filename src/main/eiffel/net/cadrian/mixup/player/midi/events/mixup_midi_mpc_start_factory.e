@@ -45,9 +45,9 @@ feature {ANY}
          mpc_end = a_mpc_end
       end
 
-   commit (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; a_start_bar_number: INTEGER): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
       do
-         Result := Precursor(a_context, a_player, a_start_bar_number)
+         Result := Precursor(a_commit_context)
          Result.clear_mpc_end
          check
             last_commit = Void

@@ -21,9 +21,10 @@ insert
    MIXUP_ERRORS
 
 feature {ANY}
-   call (a_context: MIXUP_USER_FUNCTION_CONTEXT) is
+   call (a_commit_context: MIXUP_COMMIT_CONTEXT) is
       require
-         a_context /= Void
+         a_commit_context.context /= Void
+         {MIXUP_USER_FUNCTION_CONTEXT} ?:= a_commit_context.context
       deferred
       end
 

@@ -47,14 +47,14 @@ feature {}
          source = a_source
       end
 
-   eval_ (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER; do_call: BOOLEAN; bar_number: INTEGER): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
       local
          user_function: MIXUP_USER_FUNCTION_CONTEXT
       do
-         if not (user_function ?:= a_context) then
+         if not (user_function ?:= a_commit_context.context) then
             fatal("Result not in a function")
          end
-         user_function ::= a_context
+         user_function ::= a_commit_context.context
          Result := user_function.value
       end
 
