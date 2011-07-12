@@ -24,7 +24,7 @@ status_failures_weather() {
         else
             echo failure
         fi
-    done | awk 'BEGIN { status=""; count=0; trn=0 } {if ($1 == "failure") { if (status != "" && $1 != status) { trn++ } count+=(6-NR); } status=$1 } END {printf("%d\n", count/3+trn)}'
+    done | awk 'BEGIN { status=""; count=0; trn=0 } {if ($1 == "failure") { if (status != "" && $1 != status) { trn++ } count+=(6-NR); } status=$1 } END {printf("%d\n", (count/3+trn+.5)/2)}'
 }
 
 status_failures_count() {
@@ -164,7 +164,7 @@ do_ci() {
         mv $buildir $builddir
     fi
 
-    if $(pwd)/release/build.sh -clean > $buildlog; then
+    if nice -n 19 $(pwd)/release/build.sh -clean > $buildlog; then
         pkg=$(grep Done: $buildlog | awk '{print $5}')
         test -e $pkg && cp $pkg $OUTDIR/release/mixup$(basename $log | cut -c4-).tgz
     else
