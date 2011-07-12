@@ -59,7 +59,7 @@ feature {ANY}
             elseif str ?:= a_context.args.first then
                str ::= a_context.args.first
                check str.value /= Void end
-               current_section.set_header(str.value)
+               create {MIXUP_LILYPOND_HEADER_EVENT_FACTORY} Result.make(str.source, str.value)
             else
                error_at(a_context.args.first.source, "Lilypond: expected a string")
             end
@@ -76,6 +76,15 @@ feature {ANY}
       do
          log.info.put_line("Lilypond: string event")
          instruments.reference_at(a_data.instrument.name).string_event(a_data.staff_id, a_data.voice_id, a_string)
+      end
+
+   play_header_event (a_data: MIXUP_EVENT_DATA; a_string: FIXED_STRING) is
+         -- Lilypond-specific
+      require
+         a_string /= Void
+      do
+         log.info.put_line("Lilypond: header event")
+         current_section.set_header(a_string)
       end
 
 feature {} -- section files management

@@ -16,8 +16,8 @@ instrument piano
     -- first variation
     set pattern_RH_v11  := music << f'4 aes8 <des f>4 aes8 >>
     set pattern_RH_v12  := music << r4 aes'8 <f f'>4 aes8 >> -- TODO accents
-    set pattern_RH_v13  := music << f'4 ces8 f,4 ces'8 >>    -- TODO note in lower staff
-    set pattern_RH_v14  := music << f'4 c8 f,4 c'8 >>        -- TODO note in lower staff
+    set pattern_RH_v13  := music << f'4 ces8 \other_staff(music << f,4 >>) ces'8 >>
+    set pattern_RH_v14  := music << f'4 c8 \other_staff(music << f,4 >>) c'8 >>
     -- second variation
     set pattern_RH_v21  := music << c4 f8 <a c>4 f8 >>
     set pattern_RH_v22  := music << des4 ges8 <bes ees>4 ges8 >>

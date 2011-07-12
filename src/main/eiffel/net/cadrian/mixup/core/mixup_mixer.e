@@ -184,21 +184,23 @@ feature {}
          context.is_ready
       local
          music_store: MIXUP_MUSIC_STORE
-         music: MIXUP_MUSIC_VALUE
+         evaluator: MIXUP_MUSIC_EVALUATOR
+         music: MIXUP_MUSIC
       do
          if context.args.count /= 2 then
             error_at(context.call_source, "bad argument count")
          elseif not (music_store ?:= context.args.first) then
             error_at(context.args.first.source, "bad argument")
-         elseif not (music ?:= context.args.last) then
-            error_at(context.args.last.source, "bad argument")
          else
             music_store ::= context.args.first
             if not music_store.has_voice then
                music_store.next_voice(context.call_source)
             end
-            music ::= context.args.last
-            music_store.add_music(music.value)
+            create evaluator.make(context.call_source)
+            music := evaluator.eval(context.commit_context, context.args.last)
+            if music /= Void then
+               music_store.add_music(music)
+            end
             Result := music_store.commit(context.commit_context)
          end
       end
@@ -220,6 +222,29 @@ feature {}
       require
          context.is_ready
       local
+         sequence: MIXUP_VALUE
+         mapper: MIXUP_AGENT
+         executor: MIXUP_AGENT_EXECUTOR
+      do
+         if context.args.count /= 2 then
+            error_at(context.call_source, "bad argument count")
+         elseif not (mapper ?:= context.args.first) then
+            error_at(context.args.first.source, "bad argument")
+         else
+            mapper ::= context.args.first
+            sequence := context.args.last.eval(context.commit_context, True)
+            create executor.map(context.call_source, sequence, mapper.expression.eval(context.commit_context, False))
+            Result := executor.call(context.commit_context)
+            check
+               Result = Void
+            end
+         end
+      end
+
+   native_reduce (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+      require
+         context.is_ready
+      local
          sequence, seed: MIXUP_VALUE
          mapper: MIXUP_AGENT
          executor: MIXUP_AGENT_EXECUTOR
@@ -231,8 +256,8 @@ feature {}
          else
             mapper ::= context.args.first
             seed := context.args.item(context.args.lower+1)
-            sequence := context.args.last
-            create executor.make(context.call_source, sequence, mapper.expression.eval(context.commit_context, False), seed)
+            sequence := context.args.last.eval(context.commit_context, True)
+            create executor.reduce(context.call_source, sequence, mapper.expression.eval(context.commit_context, False), seed)
             Result := executor.call(context.commit_context)
          end
       end
@@ -281,13 +306,6 @@ feature {}
                                                   end)
       end
 
-   native_combine_events (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
-      require
-         context.is_ready
-      do
-         sedb_breakpoint
-      end
-
 feature {ANY}
    item (a_source: like source; name: STRING): FUNCTION[TUPLE[MIXUP_NATIVE_CONTEXT], MIXUP_VALUE] is
       do
@@ -302,6 +320,8 @@ feature {ANY}
             Result := agent native_seq(a_source, ?)
          when "map" then
             Result := agent native_map(a_source, ?)
+         when "reduce" then
+            Result := agent native_reduce(a_source, ?)
          when "new_music_store" then
             Result := agent native_new_music_store(a_source, ?)
          when "store_music" then
@@ -314,8 +334,6 @@ feature {ANY}
             Result := agent native_staff_id(a_source, ?)
          when "staff_index" then
             Result := agent native_staff_index(a_source, ?)
-         when "combine_events" then
-            Result := agent native_combine_events(a_source, ?)
          else
             Result := agent native_in_player(a_source, ?, name)
          end

@@ -13,6 +13,9 @@
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
 class MIXUP_IDENTIFIER
+   --
+   -- Using a symbol. Note: symbol definition is simply a STRING (see MIXUP_CONTEXT values)
+   --
 
 inherit
    MIXUP_VALUE
@@ -61,7 +64,9 @@ feature {ANY}
          context: like lookup
       do
          context := lookup(a_commit_context)
-         parts.last.append_eval_args_in(context.third, a_commit_context)
+         if parts.last.args /= Void then
+            parts.last.append_eval_args_in(context.third, a_commit_context)
+         end
          context.second.setup(context.third.intern, a_value, is_const, is_public, is_local)
       end
 
@@ -157,7 +162,7 @@ feature {}
          end
          if Result = Void then
             info("nothing returned")
-            value := no_value
+            Result := no_value
          end
       end
 

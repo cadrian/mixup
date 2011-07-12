@@ -39,10 +39,18 @@ feature {ANY}
       end
 
    commit (a_commit_context: MIXUP_COMMIT_CONTEXT): MIXUP_MUSIC is
+      local
+         value: MIXUP_VALUE
       do
-         Result := music_evaluator.eval(a_commit_context)
-         if Result = Void then
-            fatal("Could not find identifier: " + identifier.out)
+         value := a_commit_context.context.resolver.resolve(identifier, a_commit_context)
+         if value = Void then
+            -- some function not found, maybe because it is specific to some different player
+            Result := (create {MIXUP_ZERO_MUSIC}.make(source)).commit(a_commit_context)
+         else
+            Result := music_evaluator.eval(a_commit_context, value)
+            if Result = Void then
+               fatal("Could not find identifier: " + identifier.out)
+            end
          end
       end
 
@@ -87,7 +95,7 @@ feature {}
          source := a_source
          identifier := a_identifier
 
-         create music_evaluator.make(a_source, a_identifier)
+         create music_evaluator.make(a_source)
       ensure
          source = a_source
          identifier = a_identifier

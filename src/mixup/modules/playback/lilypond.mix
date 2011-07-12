@@ -2,7 +2,12 @@ module lilypond
 
 set hook.at_load := function native "playback_lilypond"
 set string_event := function(str) native "string_event"
+set set_header := function(string) native "set_header"
 set current_player := function native "current_player"
+set staff_id := function(relative_id) native "staff_id"
+set staff_index := function native "staff_index"
+set map := function(agent, seed, sequence) native "map"
+set reduce := function(agent, sequence) native "reduce"
 
 export set_clef := function(clef)
                    do
@@ -64,22 +69,19 @@ export set_time := function(time)
                        end
                    end
 
-set set_header := function(string) native "set_header"
-set map := function(agent, seed, sequence) native "map"
-
 set cat_header := function(s1, s2, s3, s4) do Result := s1 + s2 + s3 + s4 end
 
 export set_title := function(title)
                     do
                         set_header("title = \markup{\sans\huge\center-column{{"
-                                   + map('cat_header(?, "\line{%"", ?, "%"}%N"), "", title)
+                                   + reduce('cat_header(?, "\line{%"", ?, "%"}%N"), "", title)
                                    + "}}}%N")
                     end
 
 export set_subtitle := function(title)
                        do
                            set_header("subtitle = \markup{\override #'(box-padding . 1.0) \override #'(baseline-skip . 2)%N\small{\italic\center-column{"
-                                      + map('cat_header(?, "\line{%"", ?, "%"}%N"), "", title)
+                                      + reduce('cat_header(?, "\line{%"", ?, "%"}%N"), "", title)
                                       + "}}}%N")
                        end
 
@@ -92,5 +94,22 @@ export set_poet := function(firstname, surname)
                    do
                        set_header("poet = \markup{%"" + firstname + "%"" + " \sans %"" + surname + "%"}%N")
                    end
+
+export other_staff := function(mus)
+                      do
+                          index := staff_index
+                          if index = 1 then
+                              other_index := 2
+                          else
+                              other_index := 1
+                          end
+                          Result := reduce('store_music,
+                                           new_music_store,
+                                           <<
+                                               string_event("%N\context Staff=%"" + staff_id(other_index) + "%""),
+                                               mus,
+                                               string_event("%N\context Staff=%"" + staff_id(index) + "%""),
+                                           >>)
+                      end
 
 end

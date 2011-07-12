@@ -1,5 +1,5 @@
 ./
 abstract/
-lilypond/
+lilypond/loadpath.se
 musixtex/
 midi/loadpath.se

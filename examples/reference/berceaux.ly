@@ -4,13 +4,6 @@
 \include "mixup.ily"
 \header {
 mixuppartitur = "berceaux"
-title = \markup{\sans\huge\center-column{{\line{"Les Berceaux"}
-}}}
-subtitle = \markup{\override #'(box-padding . 1.0) \override #'(baseline-skip . 2)
-\small{\italic\center-column{\line{"Mélodie"}
-}}}
-poet = \markup{"Sully" \sans "Prudhomme"}
-composer = \markup{"Gabriel" \sans "Fauré"}
 }
 
 \book {
@@ -104,11 +97,23 @@ composer = \markup{"Gabriel" \sans "Fauré"}
  | f4 aes8 <des f>4 aes8
  f4 aes8 <des f>4 aes8
  | r4 aes8 <f f'>4 aes8
- f4 ces8 f,4 ces'8
- | f4 ces8 f,4 ces'8
- f4-\markup{\dynamic p} c8 f,4 c'8\)
+ f4 ces8
+\context Staff="piano3" f,,4
+
+\context Staff="piano2"
+ ces'''8
+ | f,4 ces8
+\context Staff="piano3" f,,4
+
+\context Staff="piano2"
+ ces'''8
+ f,4-\markup{\dynamic p} c8
+\context Staff="piano3" f,,4
+
+\context Staff="piano2"
+ c'''8\)
  |
- bes4\(-\markup{\dynamic pp} f'8 bes4 f8
+ bes,4\(-\markup{\dynamic pp} f'8 bes4 f8
  aes,4 f'8 aes4 f8
  | ges,4 f'8 ges4 f8
  aes,4 f'8 aes4 f8

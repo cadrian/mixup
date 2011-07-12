@@ -27,6 +27,9 @@ inherit
 create {ANY}
    make
 
+create {MIXUP_DICTIONARY}
+   duplicate
+
 feature {ANY}
    is_callable: BOOLEAN is False
 
@@ -153,6 +156,26 @@ feature {}
          source = a_source
       end
 
+   duplicate (a_source: like source; a_evaled: like evaled) is
+      require
+         a_source /= Void
+      local
+         a_keys, a_values: FAST_ARRAY[MIXUP_VALUE]
+      do
+         source := a_source
+
+         create a_keys.with_capacity(a_evaled.count)
+         a_evaled.key_map_in(a_keys)
+         keys := a_keys
+
+         create a_values.with_capacity(a_evaled.count)
+         a_evaled.item_map_in(a_values)
+         values := a_values
+      ensure
+         source = a_source
+         evaled = a_evaled
+      end
+
    keys: FAST_ARRAY[MIXUP_EXPRESSION]
    values: FAST_ARRAY[MIXUP_EXPRESSION]
 
@@ -160,26 +183,30 @@ feature {}
 
    eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
       local
-         i: INTEGER; k, v: MIXUP_VALUE
+         i: INTEGER; k, v: MIXUP_VALUE; a_evaled: like evaled
       do
-         create evaled.with_capacity(agent hashcoder.hash_code, keys.count)
-         from
-            i := keys.lower
-         until
-            i > keys.upper
-         loop
-            k := keys.item(i).eval(a_commit_context, True)
-            v := values.item(i).eval(a_commit_context, True)
-            if k = Void then
-               fatal("could not compute key")
-            elseif v = Void then
-               fatal("could not compute value")
-            else
-               evaled.add(v, k)
+         if evaled /= Void then
+            Result := Current
+         else
+            create a_evaled.with_capacity(agent hashcoder.hash_code, keys.count)
+            from
+               i := keys.lower
+            until
+               i > keys.upper
+            loop
+               k := keys.item(i).eval(a_commit_context, True)
+               v := values.item(i).eval(a_commit_context, True)
+               if k = Void then
+                  fatal("could not compute key")
+               elseif v = Void then
+                  fatal("could not compute value")
+               else
+                  a_evaled.add(v, k)
+               end
+               i := i + 1
             end
-            i := i + 1
+            create {MIXUP_DICTIONARY} Result.duplicate(source, a_evaled)
          end
-         Result := Current
       end
 
 invariant

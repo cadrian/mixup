@@ -30,21 +30,21 @@ create {ANY}
    make
 
 feature {ANY}
-   eval (a_commit_context: MIXUP_COMMIT_CONTEXT): MIXUP_MUSIC is
+   eval (a_commit_context: MIXUP_COMMIT_CONTEXT; a_value: MIXUP_VALUE): MIXUP_MUSIC is
+      require
+         a_value /= Void
       local
-         value: MIXUP_VALUE
+         old_music: like music
       do
-         value := a_commit_context.context.resolver.resolve(identifier, a_commit_context)
-         if value = Void then
-            Result := (create {MIXUP_ZERO_MUSIC}.make(source)).commit(a_commit_context)
-         else
-            music := Void
-            value.accept(Current)
-            Result := music.commit(a_commit_context)
-         end
+         old_music := music
+         music := Void
+         a_value.accept(Current)
+         Result := music.commit(a_commit_context)
+         music := old_music
       ensure
          Result /= Void
          Result.timing.is_set
+         music = old music
       end
 
 feature {MIXUP_AGENT}
@@ -162,23 +162,18 @@ feature {MIXUP_NO_VALUE}
       end
 
 feature {}
-   make (a_source: like source; a_identifier: like identifier) is
+   make (a_source: like source) is
       require
          a_source /= Void
-         a_identifier /= Void
       do
          source := a_source
-         identifier := a_identifier
       ensure
          source = a_source
-         identifier = a_identifier
       end
 
-   identifier: MIXUP_IDENTIFIER
    music: MIXUP_MUSIC
 
 invariant
    source /= Void
-   identifier /= Void
 
 end -- class MIXUP_MUSIC_EVALUATOR

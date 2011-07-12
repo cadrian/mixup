@@ -89,6 +89,7 @@ feature {}
                                                 >> }
             else
                Result := {PARSE_NON_TERMINAL << epsilon, agent build_empty_list(list_name);
+                                                {FAST_ARRAY[STRING] << separator >> }, agent build_empty_list(list_name);
                                                 {FAST_ARRAY[STRING] << element_name >> }, agent build_new_list(element_name, list_name);
                                                 accumulator_rule, action;
                                                 >> }

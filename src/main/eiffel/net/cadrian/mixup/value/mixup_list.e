@@ -20,6 +20,9 @@ inherit
 create {ANY}
    make
 
+create {MIXUP_LIST}
+   duplicate
+
 feature {ANY}
    is_callable: BOOLEAN is False
 
@@ -106,27 +109,44 @@ feature {}
          expressions = a_expressions
       end
 
+   duplicate (a_source: like source; a_values: like values) is
+      require
+         a_source /= Void
+         a_values /= Void
+      do
+         source := a_source
+         expressions := a_values
+         values := a_values
+      ensure
+         source = a_source
+         values = a_values
+      end
+
    expressions: TRAVERSABLE[MIXUP_EXPRESSION]
    values: FAST_ARRAY[MIXUP_VALUE]
 
    eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
       local
-         i: INTEGER
+         i: INTEGER; a_values: like values
       do
-         create values.with_capacity(expressions.count)
-         from
-            i := expressions.lower
-         until
-            i > expressions.upper
-         loop
-            values.add_last(expressions.item(i).eval(a_commit_context, True))
-            i := i + 1
+         if values /= Void then
+            Result := Current
+         else
+            create a_values.with_capacity(expressions.count)
+            from
+               i := expressions.lower
+            until
+               i > expressions.upper
+            loop
+               a_values.add_last(expressions.item(i).eval(a_commit_context, True))
+               i := i + 1
+            end
+            create {MIXUP_LIST} Result.duplicate(source, a_values)
          end
-         Result := Current
       end
 
 invariant
    expressions /= Void
-   values /= Void implies values.count = expressions.count
+   values /= Void implies values = expressions
 
 end -- class MIXUP_LIST

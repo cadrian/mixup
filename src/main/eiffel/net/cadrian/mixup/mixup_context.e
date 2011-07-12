@@ -246,7 +246,12 @@ feature {}
             if is_local then
                log.trace.put_string("local ")
             end
-            log.trace.put_line("identifier '" + identifier.out + "' to {" + generating_type + "}." + name)
+            log.trace.put_string(once "identifier '")
+            log.trace.put_string(identifier)
+            log.trace.put_string(once "' to {")
+            log.trace.put_string(generating_type)
+            log.trace.put_string(once "}.")
+            log.trace.put_line(name)
          end
          if is_local then
             set_local(identifier, a_value)
