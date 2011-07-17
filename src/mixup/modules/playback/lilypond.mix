@@ -73,26 +73,26 @@ set cat_header := function(s1, s2, s3, s4) do Result := s1 + s2 + s3 + s4 end
 
 export set_title := function(title)
                     do
-                        set_header("title = \markup{\sans\huge\center-column{{"
-                                   + reduce('cat_header(?, "\line{%"", ?, "%"}%N"), "", title)
-                                   + "}}}%N")
+                        Result := set_header("title = \markup{\sans\huge\center-column{{"
+                                             + reduce('cat_header(?, "\line{%"", ?, "%"}%N"), "", title)
+                                             + "}}}%N")
                     end
 
 export set_subtitle := function(title)
                        do
-                           set_header("subtitle = \markup{\override #'(box-padding . 1.0) \override #'(baseline-skip . 2)%N\small{\italic\center-column{"
-                                      + reduce('cat_header(?, "\line{%"", ?, "%"}%N"), "", title)
-                                      + "}}}%N")
+                           Result := set_header("subtitle = \markup{\override #'(box-padding . 1.0) \override #'(baseline-skip . 2)%N\small{\italic\center-column{"
+                                                + reduce('cat_header(?, "\line{%"", ?, "%"}%N"), "", title)
+                                                + "}}}%N")
                        end
 
 export set_composer := function(firstname, surname)
                        do
-                           set_header("composer = \markup{%"" + firstname + "%"" + " \sans %"" + surname + "%"}%N")
+                           Result := set_header("composer = \markup{%"" + firstname + "%"" + " \sans %"" + surname + "%"}%N")
                        end
 
 export set_poet := function(firstname, surname)
                    do
-                       set_header("poet = \markup{%"" + firstname + "%"" + " \sans %"" + surname + "%"}%N")
+                       Result := set_header("poet = \markup{%"" + firstname + "%"" + " \sans %"" + surname + "%"}%N")
                    end
 
 export other_staff := function(mus)

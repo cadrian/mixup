@@ -74,7 +74,8 @@ feature {ANY}
       require
          a_string /= Void
       do
-         log.info.put_line("Lilypond: string event")
+         log.info.put_string(once "Lilypond: string event: ")
+         log.info.put_line(a_string)
          instruments.reference_at(a_data.instrument.name).string_event(a_data.staff_id, a_data.voice_id, a_string)
       end
 
@@ -83,7 +84,8 @@ feature {ANY}
       require
          a_string /= Void
       do
-         log.info.put_line("Lilypond: header event")
+         log.info.put_string(once "Lilypond: header event: ")
+         log.info.put_line(a_string)
          current_section.set_header(a_string)
       end
 
