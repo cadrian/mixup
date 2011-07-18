@@ -29,6 +29,8 @@ create {ANY}
 feature {ANY}
    volte: INTEGER_64
 
+   needs_instrument: BOOLEAN is True
+
 feature {MIXUP_PLAYER}
    fire (player: MIXUP_PLAYER) is
       local

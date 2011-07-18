@@ -31,6 +31,8 @@ feature {ANY}
    xuplet_denominator: INTEGER_64
    text: FIXED_STRING
 
+   needs_instrument: BOOLEAN is True
+
 feature {MIXUP_PLAYER}
    fire (player: MIXUP_PLAYER) is
       local

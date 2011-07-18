@@ -31,6 +31,8 @@ feature {ANY}
    start: MIXUP_MIDI_MPC_START
    start_value, end_value: INTEGER_8
 
+   needs_instrument: BOOLEAN is True
+
 feature {MIXUP_PLAYER}
    fire (player: MIXUP_PLAYER) is
       local

@@ -35,11 +35,15 @@ feature {ANY}
          tagged_out_memory.extend(']')
       end
 
+   needs_instrument: BOOLEAN is
+      deferred
+      end
+
 feature {}
    make (a_data: like data) is
       require
          a_data.source /= Void
-         a_data.instrument /= Void
+         needs_instrument implies a_data.instrument /= Void
       do
          source := a_data.source
          data := a_data
@@ -53,6 +57,6 @@ feature {}
 
 invariant
    source = data.source
-   data.instrument /= Void
+   needs_instrument implies data.instrument /= Void
 
 end -- class MIXUP_EVENT_WITH_DATA

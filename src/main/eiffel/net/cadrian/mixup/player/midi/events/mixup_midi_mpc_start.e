@@ -24,6 +24,8 @@ create {MIXUP_MIDI_MPC_START_FACTORY}
 feature {ANY}
    start_time: INTEGER_64
 
+   needs_instrument: BOOLEAN is True
+
 feature {MIXUP_PLAYER}
    fire (player: MIXUP_PLAYER) is
       do

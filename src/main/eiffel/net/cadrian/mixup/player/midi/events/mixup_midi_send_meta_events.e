@@ -26,6 +26,9 @@ inherit
 create {MIXUP_MIDI_SEND_META_EVENTS_FACTORY}
    make
 
+feature {ANY}
+   needs_instrument: BOOLEAN is False
+
 feature {MIXUP_PLAYER}
    fire (player: MIXUP_PLAYER) is
       local

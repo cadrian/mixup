@@ -29,6 +29,8 @@ create {ANY}
 feature {ANY}
    style: FIXED_STRING
 
+   needs_instrument: BOOLEAN is True
+
 feature {MIXUP_PLAYER}
    fire (player: MIXUP_PLAYER) is
       local

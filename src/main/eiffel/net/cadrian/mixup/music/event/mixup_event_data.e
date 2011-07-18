@@ -32,7 +32,6 @@ feature {ANY}
    set (a_source: like source; a_start_time: like start_time; a_instrument: like instrument; a_staff_id: like staff_id; a_voice_id: like voice_id) is
       require
          a_source /= Void
-         a_instrument /= Void
          not is_set
       do
          source := a_source
@@ -62,7 +61,11 @@ feature {ANY}
             tagged_out_memory.append(once ", time=")
             start_time.append_in(tagged_out_memory)
             tagged_out_memory.append(once ", instrument=")
-            instrument.name.out_in_tagged_out_memory
+            if instrument = Void then
+               tagged_out_memory.append(once "(not set)")
+            else
+               instrument.name.out_in_tagged_out_memory
+            end
             tagged_out_memory.append(once ", staff=")
             staff_id.append_in(tagged_out_memory)
             tagged_out_memory.append(once ", voice=")
@@ -71,8 +74,5 @@ feature {ANY}
             tagged_out_memory.append(once "data not set")
          end
       end
-
-invariant
-   is_set implies instrument /= Void
 
 end -- class MIXUP_EVENT_DATA
