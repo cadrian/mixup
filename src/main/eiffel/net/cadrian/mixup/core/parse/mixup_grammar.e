@@ -260,8 +260,10 @@ feature {}
                                    "Note_Head",  {PARSE_NON_TERMINAL << {FAST_ARRAY[STRING] << "KW note head" >> }, Void;
                                                                         {FAST_ARRAY[STRING] << "KW note head", "KW '" >> }, Void;
                                                                         {FAST_ARRAY[STRING] << "KW note head", "KW '", "KW '" >> }, Void;
+                                                                        {FAST_ARRAY[STRING] << "KW note head", "KW '", "KW '", "KW '" >> }, Void;
                                                                         {FAST_ARRAY[STRING] << "KW note head", "KW ," >> }, Void;
                                                                         {FAST_ARRAY[STRING] << "KW note head", "KW ,", "KW ," >> }, Void;
+                                                                        {FAST_ARRAY[STRING] << "KW note head", "KW ,", "KW ,", "KW ," >> }, Void;
                                                                         >> };
 
                                    "Note_Length", {PARSE_NON_TERMINAL << epsilon, Void;

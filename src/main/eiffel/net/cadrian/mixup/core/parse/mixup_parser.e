@@ -1064,6 +1064,7 @@ feature {}
    build_note_head (note_head: MIXUP_NON_TERMINAL_NODE_IMPL) is
       local
          token: MIXUP_TERMINAL_NODE_IMPL
+         i: INTEGER
       do
          note_head.node_at(0).accept(Current)
          if note_head.count > 1 then
@@ -1072,11 +1073,14 @@ feature {}
             when 'r', 'R' then
                error("unexpected octave change for rest")
             else
-               token ::= note_head.node_at(1)
-               last_note_head.append(token.image.image)
-               if note_head.count = 3 then
-                  token ::= note_head.node_at(2)
+               from
+                  i := 1
+               until
+                  i = note_head.count
+               loop
+                  token ::= note_head.node_at(i)
                   last_note_head.append(token.image.image)
+                  i := i + 1
                end
             end
          end
