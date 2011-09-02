@@ -50,7 +50,7 @@ feature {ANY}
             i := i + 1
          end
          if not found then
-            Result := reference_
+            Result := reference
          end
       end
 

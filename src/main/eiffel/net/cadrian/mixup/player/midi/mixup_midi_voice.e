@@ -61,6 +61,11 @@ feature {MIXUP_ABSTRACT_STAFF}
       do
       end
 
+   skip_octave (a_time: INTEGER_64; skip: INTEGER_8) is
+      do
+         track.add_event(a_time, create {MIXUP_MIDI_TRANSPOSE_EVENT}.make(12 * skip))
+      end
+
    start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
          fix_slur(11, 12)

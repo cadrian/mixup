@@ -283,15 +283,15 @@ feature {}
             int ::= context.args.first
             create {MIXUP_VALUE_FACTORY} Result.make(context.call_source,
                                                      agent (a_int: INTEGER; a_src: MIXUP_SOURCE; a_cc: MIXUP_COMMIT_CONTEXT): MIXUP_STRING is
-                                                     local
-                                                        str: STRING
-                                                     do
-                                                        if not a_cc.instrument.valid_relative_staff_id(a_int) then
-                                                           fatal_at(a_src, "Invalid staff id: " + a_int.out)
-                                                        end
-                                                        str := a_cc.instrument.name + a_cc.instrument.absolute_staff_id(a_int).out
-                                                        create Result.make(a_src, str.intern, ("%"" + str + "%"").intern)
-                                                     end(int.value.to_integer_32, ?, ?))
+                                                        local
+                                                           str: STRING
+                                                        do
+                                                           if not a_cc.instrument.valid_relative_staff_id(a_int) then
+                                                              fatal_at(a_src, "Invalid staff id: " + a_int.out)
+                                                           end
+                                                           str := a_cc.instrument.name + a_cc.instrument.absolute_staff_id(a_int).out
+                                                           create Result.make(a_src, str.intern, ("%"" + str + "%"").intern)
+                                                        end(int.value.to_integer_32, ?, ?))
          end
       end
 
@@ -301,9 +301,27 @@ feature {}
       do
          create {MIXUP_VALUE_FACTORY} Result.make(context.call_source,
                                                   agent (a_src: MIXUP_SOURCE; a_cc: MIXUP_COMMIT_CONTEXT): MIXUP_INTEGER is
-                                                  do
-                                                     create Result.make(a_src, a_cc.instrument.relative_staff_id(a_cc.staff.id))
-                                                  end)
+                                                     do
+                                                        create Result.make(a_src, a_cc.instrument.relative_staff_id(a_cc.staff.id))
+                                                     end)
+      end
+
+   native_skip_octave (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+      require
+         context.is_ready
+      local
+         int: MIXUP_INTEGER
+         skip: MIXUP_SKIP_OCTAVE
+      do
+         if context.args.count /= 1 then
+            error_at(context.call_source, "bad argument count")
+         elseif not (int ?:= context.args.first) then
+            error_at(context.args.first.source, "expected an integer")
+         else
+            int ::= context.args.first
+            create skip.make(context.call_source, int.value.to_integer_8)
+            create {MIXUP_MUSIC_VALUE} Result.make(context.call_source, skip.commit(context.commit_context))
+         end
       end
 
 feature {ANY}
@@ -334,6 +352,8 @@ feature {ANY}
             Result := agent native_staff_id(a_source, ?)
          when "staff_index" then
             Result := agent native_staff_index(a_source, ?)
+         when "skip_octave" then
+            Result := agent native_skip_octave(a_source, ?)
          else
             Result := agent native_in_player(a_source, ?, name)
          end

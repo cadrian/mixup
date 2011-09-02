@@ -1,5 +1,4 @@
 instrument piano
-
     -- right hand patterns
     set pattern_RH_bes  := music << bes4 f'8 bes4 f8 >>
     set pattern_RH_aes  := music << aes4 f'8 aes4 f8 >>
@@ -16,8 +15,8 @@ instrument piano
     -- first variation
     set pattern_RH_v11  := music << f'4 aes8 <des f>4 aes8 >>
     set pattern_RH_v12  := music << r4 aes'8 <f f'>4 aes8 >> -- TODO accents
-    set pattern_RH_v13  := music << f'4 ces8 \other_staff(music << f,4 >>) ces'8 >>
-    set pattern_RH_v14  := music << f'4 c8 \other_staff(music << f,4 >>) c'8 >>
+    set pattern_RH_v13  := music << f'4 ces8 \other_staff(music << f4 >>) ces'8 >> -- TODO beam up, offset right
+    set pattern_RH_v14  := music << f'4 c8 \other_staff(music << f4 >>) c'8 >>
     -- second variation
     set pattern_RH_v21  := music << c4 f8 <a c>4 f8 >>
     set pattern_RH_v22  := music << des4 ges8 <bes ees>4 ges8 >>
@@ -26,9 +25,9 @@ instrument piano
     set pattern_RH_v25  := music << f4 bes8 <d f>4 bes8 >>
     set pattern_RH_v26  := music << ees4 bes'8 <des ees>4 bes8 >>
     set pattern_RH_v27  := music << ees4 aes8 <c ees>4 aes8 >>
-    set pattern_RH_v28  := music << des4 aes'8 <ces des>4 aes8 >>
-    set pattern_RH_v29  := music << des4 aes'8 <bes des>4 aes8 >>
-    set pattern_RH_v2a  := music << c4 ges'8 <bes c>4 ges8 >>
+    set pattern_RH_v28  := music << des,4 aes'8 <ces des>4 aes8 >>
+    set pattern_RH_v29  := music << des,4 aes'8 <bes des>4 aes8 >>
+    set pattern_RH_v2a  := music << c,4 ges'8 <bes c>4 ges8 >>
 
     -- left hand patterns
     set pattern_LH_bes  := music << [bes,8 f' des'~] [des des f,] >>
@@ -41,6 +40,42 @@ instrument piano
     set pattern_LH_g    := music << [g,8 f' des'~] [des des f,] >>
     set pattern_LH_c7   := music << [c,8 bes' e~] [e e bes] >>
     set pattern_LH_f_c  := music << [f,8 c' a'~] [a a c,] >>
+    set pattern_LH_aesE := music << [aes,8 aes' ees'~] [ees ees aes,] >>
+    set pattern_LH_aesD := music << [aes,8 aes' d~] [d d aes] >>
+    set pattern_LH_gesE := music << [ges,8 bes' ees~] [ees ees bes] >>
+    set pattern_LH_besF := music << [bes,8 bes' f'~] [f f bes,] >>
+    set pattern_LH_ees  := music << [ees8 bes' ees~] [ees ees bes] >>
+    -- first variation
+    set pattern_LH_v11  := music << r8 [ges bes~] [bes bes ges]
+                                    r8 [ges c~] [c c ges]
+                                 // c4.~ c4 bes8 a2.
+                                 >>
+    set pattern_LH_v12  := music << r8 [bes' ees~] [ees ees bes]
+                                    r8 [a ees'~] [ees ees a,]
+                                 // ees4.~ ees4 des8 c2.
+                                 >>
+    set pattern_LH_v13  := music << r8 [ges bes~] [bes bes des,]
+                                    r8 [des bes'~] [bes bes des,]
+                                 // des2. ges,2.
+                                 >>
+    set pattern_LH_v14  := music << r8 [aes des~] [des aes] r8
+                                    r8 [des f~] [f des] r8
+                                 // <des, des,>4.~ <des des,>4 <f f,>8 <aes aes,>4.~ <aes aes,>4 <des des,>8
+                                 >>
+    set pattern_LH_v15  := music << <f' f,>4. s4. s2.
+                                 // [f8 ees' ces~] [ces aes f]
+                                    [f, ees' aes~] [aes ees f,]
+                                 >>
+    set pattern_LH_fAes := music << [f8 ees' aes~] [aes aes ees] >>
+    set pattern_LH_fA   := music << [f8 ees' a~] [a a ees] >>
+    -- second variation
+    set pattern_LH_v21  := music << [f,8 ees' bes'~] [bes bes ees,] >>
+    set pattern_LH_v22  := music << [g,8 ees' bes'~] [bes bes ees,] >>
+    set pattern_LH_v23  := music << [a,8 f' ees'~] [ees ees f,] >>
+    set pattern_LH_v24  := music << [bes,8 aes' d~] [d d f,] >>
+    set pattern_LH_v25  := music << [ees,8 g' des'~] [des des g,] >>
+    set pattern_LH_v26  := music << [aes,8 ges' c~] [c c ges] >>
+    set pattern_LH_v27  := music << [des,,8 f' ces'~] [ces ces f,] >>
 
     -- misc declarations
     set template.instrument_name := "Piano"
@@ -109,13 +144,13 @@ instrument piano
             {
                 \pattern_RH_v21  \pattern_RH_v22     |
                 :hidden:mp: :<:
-                \pattern_RH_v23  \pattern_RH_v24     |
+                \pattern_RH_v23 \skip_octave(1) \pattern_RH_v24     |
                 :mf:
                 \pattern_RH_v25 :>: \pattern_RH_v26  |
                 :p:
                 \pattern_RH_v27  \pattern_RH_v28     |
                 \pattern_RH_v29 :>: \pattern_RH_v2a  |
-            }
+            } \skip_octave(-1)
             :pp:
             {
                 \pattern_RH_bes  \pattern_RH_aes     |
@@ -144,6 +179,28 @@ instrument piano
             \set_time("6/8")
             \pattern_LH_f_c                   |
             \set_time("12/8")
+            \pattern_LH_f_c  \pattern_LH_ges  |
+            \pattern_LH_aesE \pattern_LH_aesE |
+            \pattern_LH_aesD \pattern_LH_gesE |
+            \pattern_LH_besF \pattern_LH_ees  |
+            \pattern_LH_v11                   |
+            \pattern_LH_v12                   |
+            \pattern_LH_v13                   |
+            \pattern_LH_v14                   |
+            \pattern_LH_v15                   |
+            \pattern_LH_fAes \pattern_LH_fA   |
+            :hidden:pp: \skip_octave(1)
+            \pattern_LH_bes  \pattern_LH_bes9 |
+            \pattern_LH_bes_ \pattern_LH_aes  |
+            \pattern_LH_g    \pattern_LH_aes  |
+            \pattern_LH_c7   \pattern_LH_f_c  |
+            :hidden:<:
+            \pattern_LH_f_c  \pattern_LH_v21  |
+            \pattern_LH_v22  \pattern_LH_v23  |
+            :hidden:mf:
+            \pattern_LH_v24 :hidden:>: \pattern_LH_v25  |
+            :hidden:p:
+            \pattern_LH_v26  \pattern_LH_v27  |
         >>
     end
 

@@ -47,8 +47,9 @@ feature {ANY}
             found := voices.item(i).valid_reference
             if found then
                Result := voices.item(i).reference
+            else
+               i := i + 1
             end
-            i := i + 1
          end
       end
 
@@ -106,7 +107,8 @@ feature {ANY}
                                if not first then
                                   a_section.set_body(once "\\%N")
                                end
-                               a_section.set_body(once "{%N")
+                               voice.generate_relative(a_context, a_section)
+                               a_section.set_body(once " {%N")
                                voice.generate(a_context, a_section)
                                a_section.set_body(once "}%N")
                             ensure

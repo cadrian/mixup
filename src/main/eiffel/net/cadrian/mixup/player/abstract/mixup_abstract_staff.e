@@ -78,6 +78,11 @@ feature {MIXUP_ABSTRACT_INSTRUMENT}
          voice(a_voice_id).next_bar(style)
       end
 
+   skip_octave (a_voice_id: INTEGER; time: INTEGER_64; skip: INTEGER_8) is
+      do
+         voice(a_voice_id).skip_octave(time, skip)
+      end
+
    start_beam (a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
          voice(a_voice_id).start_beam(xuplet_numerator, xuplet_denominator, text)

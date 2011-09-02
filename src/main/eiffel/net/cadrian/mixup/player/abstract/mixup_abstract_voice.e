@@ -42,6 +42,10 @@ feature {MIXUP_ABSTRACT_STAFF}
       deferred
       end
 
+   skip_octave (time: INTEGER_64; skip: INTEGER_8) is
+      deferred
+      end
+
    start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       deferred
       end

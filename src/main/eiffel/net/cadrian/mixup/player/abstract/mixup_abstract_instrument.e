@@ -49,6 +49,11 @@ feature {MIXUP_ABSTRACT_PLAYER}
          staffs.reference_at(a_staff_id).next_bar(a_voice_id, style)
       end
 
+   skip_octave (a_staff_id, a_voice_id: INTEGER; time: INTEGER_64; skip: INTEGER_8) is
+      do
+         staffs.reference_at(a_staff_id).skip_octave(a_voice_id, time, skip)
+      end
+
    start_beam (a_staff_id, a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
          staffs.reference_at(a_staff_id).start_beam(a_voice_id, xuplet_numerator, xuplet_denominator, text)

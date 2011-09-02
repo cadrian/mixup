@@ -25,7 +25,11 @@ create {ANY}
    make
 
 feature {ANY}
-   valid_reference: BOOLEAN is True
+   valid_reference: BOOLEAN is
+      do
+         Result := not reference.is_rest
+      end
+
    reference: MIXUP_NOTE_HEAD
 
 feature {MIXUP_CHORD}

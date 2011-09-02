@@ -102,6 +102,12 @@ feature {ANY}
          instruments.reference_at(a_data.instrument.name).next_bar(a_data.staff_id, a_data.voice_id, style)
       end
 
+   play_skip_octave (a_data: MIXUP_EVENT_DATA; skip: INTEGER_8) is
+      do
+         log.info.put_line(a_data.out + ": skip octave (" + skip.out + ")")
+         instruments.reference_at(a_data.instrument.name).skip_octave(a_data.staff_id, a_data.voice_id, a_data.start_time, skip)
+      end
+
    play_start_beam (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
          log.info.put_line(a_data.out + ": starting beam")

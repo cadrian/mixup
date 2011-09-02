@@ -105,20 +105,20 @@ composer = \markup{"Gabriel" \sans "Fauré"}
  f4 aes8 <des f>4 aes8
  | r4 aes8 <f f'>4 aes8
  f4 ces8
-\context Staff="piano3" f,,4
+\context Staff="piano3" f,4
 
 \context Staff="piano2"
- ces'''8
+ ces''8
  | f,4 ces8
-\context Staff="piano3" f,,4
+\context Staff="piano3" f,4
 
 \context Staff="piano2"
- ces'''8
+ ces''8
  f,4-\markup{\dynamic p} c8
-\context Staff="piano3" f,,4
+\context Staff="piano3" f,4
 
 \context Staff="piano2"
- c'''8\)
+ c''8\)
  |
  bes,4\(-\markup{\dynamic pp} f'8 bes4 f8
  aes,4 f'8 aes4 f8
@@ -132,11 +132,11 @@ composer = \markup{"Gabriel" \sans "Fauré"}
  c4\(-\markup{\italic "cresc."} f8 <a c>4 f8
  des4 ges8 <bes ees>4 ges8
  | des4-\< bes'8 <des ees>4 bes8
- f,4 c'8 f4 c8
+ f4 c'8 f4 c8
  | f,4-\markup{\dynamic mf} bes8 <d f>4 bes8
  ees,4-\> bes'8 <des ees>4 bes8
  | ees,4-\markup{\dynamic p} aes8 <c ees>4 aes8
- des4 aes'8 <ces des>4 aes8
+ des,4 aes'8 <ces des>4 aes8
  | des,4 aes'8 <bes des>4 aes8
  c,4-\> ges'8 <bes c>4 ges8\)
  |
@@ -226,7 +226,150 @@ composer = \markup{"Gabriel" \sans "Fauré"}
  a8 a8 c,8
 
  | \override Staff.TimeSignature #'style = #'() \time 12/8
+ f,8 c'8 a'8~
+ a8 a8 c,8
 
+ ges8 f'8 des'8~
+ des8 des8 f,8
+
+ | aes,8 aes'8 ees'8~
+ ees8 ees8 aes,8
+
+ aes,8 aes'8 ees'8~
+ ees8 ees8 aes,8
+
+ | aes,8 aes'8 d8~
+ d8 d8 aes8
+
+ ges,8 bes'8 ees8~
+ ees8 ees8 bes8
+
+ | bes,8 bes'8 f'8~
+ f8 f8 bes,8
+
+ ees,8 bes'8 ees8~
+ ees8 ees8 bes8
+
+ |<<
+\relative c' {
+ r8 ges8 bes8~
+ bes8 bes8 ges8
+ r8 ges8 c8~
+ c8 c8 ges8
+
+}
+\\
+\relative c' {
+ c4.~ c4 bes8 a2.
+}
+>>
+ |<<
+\relative c {
+ r8 bes'8 ees8~
+ ees8 ees8 bes8
+ r8 a8 ees'8~
+ ees8 ees8 a,8
+
+}
+\\
+\relative c {
+ ees4.~ ees4 des8 c2.
+}
+>>
+ |<<
+\relative c'' {
+ r8 ges,8 bes8~
+ bes8 bes8 des,8
+ r8 des8 bes'8~
+ bes8 bes8 des,8
+
+}
+\\
+\relative c' {
+ des,2. ges,2.
+}
+>>
+ |<<
+\relative c {
+ r8 aes'8 des8~
+ des8 aes8
+ r8 r8 des8 f8~
+ f8 des8
+ r8
+}
+\\
+\relative c {
+ <des des,>4.~ <des des,>4 <f f,>8 <aes aes,>4.~ <aes aes,>4 <des des,>8
+}
+>>
+ |<<
+\relative c' {
+ <f f,>4. s4. s2.
+}
+\\
+\relative c' {
+ f,8 ees'8 ces8~
+ ces8 aes8 f8
+ f,8 ees'8 aes8~
+ aes8 ees8 f,8
+
+}
+>>
+ | f,8 ees'8 aes8~
+ aes8 aes8 ees8
+
+ f,8 ees'8 a8~
+ a8 a8 ees8
+
+ | bes8 f'8 des'8~
+ des8 des8 f,8
+
+ bes,8 f'8 c'8~
+ c8 c8 f,8
+
+ | bes,8 f'8 bes8~
+ bes8 bes8 f8
+
+ aes,8 f'8 c'8~
+ c8 c8 f,8
+
+ | g,8 f'8 des'8~
+ des8 des8 f,8
+
+ aes,8 f'8 c'8~
+ c8 c8 f,8
+
+ | c8 bes'8 e8~
+ e8 e8 bes8
+
+ f,8 c'8 a'8~
+ a8 a8 c,8
+
+ | f,8 c'8 a'8~
+ a8 a8 c,8
+
+ f,8 ees'8 bes'8~
+ bes8 bes8 ees,8
+
+ | g,8 ees'8 bes'8~
+ bes8 bes8 ees,8
+
+ a,8 f'8 ees'8~
+ ees8 ees8 f,8
+
+ | bes,8 aes'8 d8~
+ d8 d8 f,8
+
+ ees,8 g'8 des'8~
+ des8 des8 g,8
+
+ | aes,8 ges'8 c8~
+ c8 c8 ges8
+
+ des,8 f'8 ces'8~
+ ces8 ces8 f,8
+
+ |
 }
 }
 >>

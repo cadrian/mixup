@@ -175,6 +175,11 @@ feature {MIXUP_ABSTRACT_STAFF}
          add_item(create {MIXUP_LILYPOND_STRING}.make(str))
       end
 
+   skip_octave (time: INTEGER_64; skip: INTEGER_8) is
+      do
+         reference.set(reference.source, reference.note, reference.octave - skip.to_integer_32)
+      end
+
    start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
       do
       end
@@ -228,6 +233,45 @@ feature {MIXUP_LILYPOND_STAFF}
       end
 
 feature {ANY}
+   generate_relative (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
+      local
+         ref: MIXUP_NOTE_HEAD; found: BOOLEAN; i, octave: INTEGER
+      do
+         section.set_body("\relative c")
+         from
+            i := items.lower
+         until
+            found or else i > items.upper
+         loop
+            found := items.item(i).valid_reference
+            if found then
+               ref := items.item(i).reference
+            else
+               i := i + 1
+            end
+         end
+         if found then
+            octave := ref.octave
+            if octave < 3 then
+               from
+               until
+                  octave < 0
+               loop
+                  section.set_body(once ",")
+                  octave := octave - 1
+               end
+            elseif octave > 3 then
+               from
+               until
+                  octave = 3
+               loop
+                  section.set_body(once "'")
+                  octave := octave - 1
+               end
+            end
+         end
+      end
+
    generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
       do
          items.do_all(agent {MIXUP_LILYPOND_ITEM}.generate(context, section))
