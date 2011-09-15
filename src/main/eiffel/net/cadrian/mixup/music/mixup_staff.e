@@ -95,7 +95,7 @@ feature {}
          id_provider.next
          id := id_provider.item
          debug
-            log.trace.put_line("Staff #" + id.out + ": voices=" + a_voices.out)
+            log.trace.put_line(once "Staff #" | &id | once ": voices=" | &a_voices)
          end
       ensure
          source = a_source

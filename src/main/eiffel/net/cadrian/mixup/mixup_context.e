@@ -61,11 +61,11 @@ feature {ANY}
          lookup_tag_counter.next
          Result := lookup_value(identifier, search_parent, lookup_tag_counter.item)
          debug
-            log.trace.put_string("Look-up of '" + identifier + "' returned ")
+            log.trace.put_string(once "Look-up of '" | identifier | once "' returned ")
             if Result = Void then
-               log.trace.put_line("nothing")
+               log.trace.put_line(once "nothing")
             else
-               log.trace.put_line(Result.out)
+               log.trace.put_line(&Result)
             end
          end
       end
@@ -128,22 +128,22 @@ feature {MIXUP_CONTEXT}
             val := values.reference_at(identifier)
             if val /= Void then
                Result := val.value
-               log.trace.put_line("Found identifier '" + identifier.out + "' in {" + generating_type + "}." + name + " => " + Result.out)
+               log.trace.put_line(once "Found identifier '" | identifier | once "' in {" | generating_type | once "}." | name | once " => " | &Result)
             end
          end
          if Result = Void then
             debug
-               log.trace.put_line("{" + generating_type + "}." + name + ": look-up identifier '" + identifier.out + "' in children")
+               log.trace.put_line(once "{" | generating_type | once "}." | name | once ": look-up identifier '" | identifier | once "' in children")
             end
             Result := lookup_in_children(identifier)
             if Result = Void then
                debug
-                  log.trace.put_line("{" + generating_type + "}." + name + ": look-up identifier '" + identifier.out + "' in imports")
+                  log.trace.put_line(once "{" | generating_type | once "}." | name | once ": look-up identifier '" | identifier | once "' in imports")
                end
                Result := lookup_in_imports(identifier)
                if Result = Void and then search_parent and then parent /= Void and then parent.lookup_tag < a_tag then
                   debug
-                     log.trace.put_line("{" + generating_type + "}." + name + ": look-up identifier '" + identifier.out + "' in parent")
+                     log.trace.put_line(once "{" | generating_type | once "}." | name | once ": look-up identifier '" | identifier | once "' in parent")
                   end
                   Result := parent.lookup_value(identifier, True, a_tag)
                end
@@ -177,7 +177,7 @@ feature {MIXUP_CONTEXT}
                elseif is_const then
                   warning_at(a_value.source, "Setting const in place of non-const")
                else
-                  log.trace.put_line("Found identifier '" + identifier.out + "' in {" + generating_type + "}." + name)
+                  log.trace.put_line(once "Found identifier '" | identifier | once "' in {" | generating_type | once "}." | name)
                end
                set_value(identifier, a_value, is_const, is_public, is_local)
                Result := True
@@ -189,7 +189,7 @@ feature {MIXUP_CONTEXT}
                      Result := parent.setup_value(identifier, False, a_value, is_const, is_public, is_local, a_tag)
                   end
                   if not Result and then assign_if_new then
-                     log.trace.put_line("Assigning new identifier '" + identifier.out + "' to {" + generating_type + "}." + name)
+                     log.trace.put_line(once "Assigning new identifier '" | identifier | once "' to {" | generating_type | once "}." | name)
                      set_value(identifier, a_value, is_const, is_public, is_local)
                      Result := True
                   end
@@ -199,7 +199,7 @@ feature {MIXUP_CONTEXT}
 
          debug
             if not Result then
-               log.trace.put_line("Did not find identifier '" + identifier.out + "' in {" + generating_type + "}." + name)
+               log.trace.put_line(once "Did not find identifier '" | identifier | once "' in {" | generating_type | once "}." | name)
             end
          end
       end
@@ -236,22 +236,17 @@ feature {}
    set_value (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN) is
       do
          if log.is_trace then
-            log.trace.put_string("Setting ")
+            log.trace.put_string(once "Setting ")
             if is_public then
-               log.trace.put_string("public ")
+               log.trace.put_string(once "public ")
             end
             if is_const then
-               log.trace.put_string("const ")
+               log.trace.put_string(once "const ")
             end
             if is_local then
-               log.trace.put_string("local ")
+               log.trace.put_string(once "local ")
             end
-            log.trace.put_string(once "identifier '")
-            log.trace.put_string(identifier)
-            log.trace.put_string(once "' to {")
-            log.trace.put_string(generating_type)
-            log.trace.put_string(once "}.")
-            log.trace.put_line(name)
+            log.trace.put_line(once "identifier '" | identifier | once "' to {" | generating_type | once "}." | name)
          end
          if is_local then
             set_local(identifier, a_value)
@@ -307,8 +302,7 @@ feature {}
          until
             Result /= Void or else i > imports.upper
          loop
-            log.trace.put_line("TAG: " + name.out + "=" + lookup_tag.out
-                               + " - " + imports.item(i).name.out + "=" + imports.item(i).lookup_tag.out)
+            log.trace.put_line(once "TAG: " | name | once "=" | &lookup_tag | once " - " | imports.item(i).name | once "=" | &imports.item(i).lookup_tag)
             if imports.item(i).lookup_tag < lookup_tag then
                Result := imports.item(i).lookup_value(identifier, False, lookup_tag)
             end

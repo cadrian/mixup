@@ -50,7 +50,7 @@ feature {ANY}
          current_file := a_file
          debug
             log.trace.put_line(once "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            log.trace.put_line(a_file.out + ":")
+            log.trace.put_line(&a_file | once ":")
             a_piece.display(log.trace, 0, "")
             log.trace.put_line(once "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
          end
@@ -84,7 +84,7 @@ feature {MIXUP_LIST_NODE_IMPL}
             build_identifier_list(node)
          else
             debug
-               log.trace.put_line("Generic list node: " + node.name)
+               log.trace.put_line(once "Generic list node: " | node.name)
             end
             node.accept_all(Current)
          end
@@ -239,7 +239,7 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
             build_expression_pair(node)
          else
             debug
-               log.trace.put_line("Generic non-terminal node: " + node.name)
+               log.trace.put_line(once "Generic non-terminal node: " | node.name)
             end
             node.accept_all(Current)
          end
@@ -282,7 +282,7 @@ feature {MIXUP_TERMINAL_NODE_IMPL}
             last_note_head.copy(node.image.image)
          else
             debug
-               log.trace.put_line("Skipped terminal node: " + node.name)
+               log.trace.put_line(once "Skipped terminal node: " | node.name)
             end
             -- skipped
          end
@@ -702,13 +702,13 @@ feature {} -- Functions
          source_ := new_source(import)
          ctx := context_factory.item([source_, ctx_name])
          if import.count = 2 then
-            log.trace.put_line("Adding import from " + ctx_name.out + " to " + current_context.name.out)
+            log.trace.put_line(once "Adding import from " | ctx_name | once " to " | current_context.name)
             create {MIXUP_NAMED_IMPORT} ctx.make(source_, ctx_name, current_context, ctx)
          else
             check last_identifiers = Void end
             create last_identifiers.make(0)
             import.node_at(3).accept(Current)
-            log.trace.put_line("Adding imports from " + ctx_name.out + " to " + current_context.name.out)
+            log.trace.put_line(once "Adding imports from " | ctx_name | once " to " | current_context.name)
             create {MIXUP_FROM_IMPORT} ctx.make(source_, ctx_name, current_context, ctx, last_identifiers)
             last_identifiers := Void
          end

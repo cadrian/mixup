@@ -26,7 +26,7 @@ feature {ANY}
    encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
       do
          debug
-            log.trace.put_line("transpose=" + half_tones.out)
+            log.trace.put_line(once "transpose=" | &half_tones)
          end
          context.set_transpose_half_tones(half_tones)
       end

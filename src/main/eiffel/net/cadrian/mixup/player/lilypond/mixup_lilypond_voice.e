@@ -98,7 +98,7 @@ feature {MIXUP_ABSTRACT_STAFF}
                not a_item.reference.is_rest
             end
             reference := a_item.reference
-            log.trace.put_line("Lilypond voice #" + id.out + ": anchor = " + reference.out)
+            log.trace.put_line(once "Lilypond voice #" | &id | once ": anchor = " | &reference)
          end
       end
 

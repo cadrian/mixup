@@ -39,12 +39,12 @@ feature {}
          Result := notes.first.item
          debug
             log.trace.put_line(once "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            log.trace.put_line(" * " + generating_type + " * ")
+            log.trace.put_line(once " * " | generating_type | once " * ")
             log.trace.put_new_line
             notes.do_all(agent (i: MIXUP_EVENTS_ITERATOR) is
                          do
                             if not i.is_off then
-                               log.trace.put_line(once "    " + i.item.out)
+                               log.trace.put_line(once "    " | &i.item)
                             end
                          end)
             log.trace.put_line(once "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")

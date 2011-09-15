@@ -29,7 +29,7 @@ feature {ANY}
          if Result = Void then
             Result := fetch_item
             debug
-               log.trace.put_line(generating_type + ": item=" + Result.out)
+               log.trace.put_line(generating_type | once ": item=" | &Result)
             end
             item_memory := Result
          end

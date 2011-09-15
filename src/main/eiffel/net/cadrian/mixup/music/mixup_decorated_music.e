@@ -47,7 +47,7 @@ feature {ANY}
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
          debug
-            log.trace.put_line("Iterating over decorated music: " + tag)
+            log.trace.put_line(once "Iterating over decorated music: " | tag)
          end
          create {MIXUP_EVENTS_ITERATOR_ON_DECORATED_MUSIC} Result.make(a_context, start_event_factory, end_event_factory, event_modifier, music.new_events_iterator(a_context))
       end

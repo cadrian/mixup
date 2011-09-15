@@ -44,7 +44,7 @@ feature {ANY}
          Result := item_
          debug
             if not shown then
-               log.trace.put_line(generating_type + ": item=" + Result.out)
+               log.trace.put_line(generating_type | once ": item=" | &Result)
                shown := True
             end
          end

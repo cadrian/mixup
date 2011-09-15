@@ -57,7 +57,7 @@ feature {ANY}
    new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
       do
          debug
-            log.trace.put_line("New events iterator for music identifier: " + identifier.as_name)
+            log.trace.put_line(once "New events iterator for music identifier: " | identifier.as_name)
          end
          Result := music.new_events_iterator(a_context)
       end
@@ -90,7 +90,7 @@ feature {}
          a_identifier /= Void
       do
          debug
-            log.trace.put_line("Creating music identifier: " + a_identifier.as_name)
+            log.trace.put_line(once "Creating music identifier: " | a_identifier.as_name)
          end
          source := a_source
          identifier := a_identifier

@@ -46,7 +46,7 @@ feature {}
    put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
       do
          debug
-            log.trace.put_line("channel " + channel.out + ": key=" + pitch.out + " on")
+            log.trace.put_line(once "channel " | &channel | once ": key=" | &pitch | once " on")
          end
          stream.put_byte(pitch + context.transpose_half_tones)
          stream.put_byte(velocity)

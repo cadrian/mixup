@@ -115,7 +115,7 @@ feature {ANY}
             warning("all voices don't have the same timing (details above)")
          end
          debug
-            log.trace.put_line("Voices duration = " + duration.out)
+            log.trace.put_line(once "Voices duration = " | &duration)
          end
          create Result.duplicate(source, reference_, voices_)
       end

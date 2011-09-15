@@ -46,7 +46,7 @@ feature {ANY}
          debug
             a_staves.do_all(agent (staff: MIXUP_STAFF) is
                                do
-                                  log.trace.put_line("Instrument " + name.out + ": " + staff.out)
+                                  log.trace.put_line(once "Instrument " | name | once ": " | &staff)
                                end)
          end
       ensure

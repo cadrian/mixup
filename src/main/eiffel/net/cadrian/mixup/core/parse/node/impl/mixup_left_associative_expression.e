@@ -51,9 +51,9 @@ feature {MIXUP_GRAMMAR}
          end
       end
 
-   operator_names_out: STRING is
+   operator_names_out: ABSTRACT_STRING is
       do
-         Result := operator_names.out
+         Result := &operator_names
       end
 
 feature {}

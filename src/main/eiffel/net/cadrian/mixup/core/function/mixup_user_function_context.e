@@ -33,7 +33,7 @@ feature {ANY}
             error("cannot assign a parameter")
          else
             debug
-               log.trace.put_line("Setting local: '" + a_name.out + "' => " + a_value.out)
+               log.trace.put_line(once "Setting local: '" | a_name | once "' => " | &a_value)
             end
             locals.put(a_value, a_name)
          end
@@ -71,7 +71,7 @@ feature {ANY}
       do
          statements.add_first(a_statement)
          debug
-            log.trace.put_line("statements queue size = " + statements.count.out)
+            log.trace.put_line(once "statements queue size = " | &statements.count)
          end
       end
 
@@ -103,7 +103,7 @@ feature {ANY}
          loop
             statement := statements.first
             statements.remove_first
-            log.trace.put_line("Calling statement: " + statement.out)
+            log.trace.put_line(once "Calling statement: " | &statement)
             statement.call(a_commit_context)
          end
       ensure

@@ -35,7 +35,7 @@ feature {ANY}
    encode_to (message_code: INTEGER_8; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM) is
       do
          debug
-            log.trace.put_line(name.out + "=" + value.out)
+            log.trace.put_line(name | once "=" | &value)
          end
          stream.put_byte(message_code)
          stream.put_byte(code)

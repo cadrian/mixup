@@ -39,13 +39,13 @@ feature {ANY}
             branch := condition_list.item(i)
             done := execution_context.match(branch)
             if done then
-               log.trace.put_line("Entering branch #" + i.out)
+               log.trace.put_line("Entering branch #" | &i)
                context.add_statements(branch.statements)
             end
             i := i + 1
          end
          if not done and then otherwise /= Void then
-            log.trace.put_line("Entering branch #else")
+            log.trace.put_line(once "Entering branch #else")
             context.add_statements(otherwise.statements)
          end
       end

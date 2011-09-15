@@ -1547,9 +1547,7 @@ feature {}
          until
             i > stack.upper
          loop
-            log.trace.put_integer(i)
-            log.trace.put_string(once ":%T")
-            log.trace.put_line(stack.item(i).name)
+            log.trace.put_line(&i | once ":%T" | stack.item(i).name)
             i := i + 1
          end
          log.trace.put_line(once "-------->8-- <end stack>")
@@ -1582,11 +1580,7 @@ feature {}
          i: INTEGER; new_node: MIXUP_NON_TERMINAL_NODE; node: MIXUP_NODE
       do
          debug ("parse/mixup/build")
-            log.trace.put_string(once "Building non-terminal node: ")
-            log.trace.put_character('"')
-            log.trace.put_string(node_name)
-            log.trace.put_character('"')
-            log.trace.put_new_line
+            log.trace.put_line(once "Building non-terminal node: %"" | node_name | once "%"")
          end
          new_node := factory.non_terminal(node_name, node_content)
          from
@@ -1598,8 +1592,7 @@ feature {}
             stack.remove_last
             new_node.set(i, node)
             debug ("parse/mixup/build")
-               log.trace.put_string(once "   aggregating: ")
-               log.trace.put_line(node_content.item(i))
+               log.trace.put_line(once "   aggregating: " | node_content.item(i))
             end
             i := i - 1
          end
@@ -1619,11 +1612,7 @@ feature {}
       do
          mixup_image ::= node_image
          debug ("parse/mixup/build")
-            log.trace.put_string(once "Building terminal node: ")
-            log.trace.put_character('"')
-            log.trace.put_string(node_name)
-            log.trace.put_string(once "%": ")
-            log.trace.put_line(mixup_image.image)
+            log.trace.put_line(once "Building terminal node: %"" | node_name | once "%": " | mixup_image.image)
          end
          stack.add_last(factory.terminal(node_name, mixup_image))
          debug ("parse/mixup/build")
@@ -1639,10 +1628,7 @@ feature {}
          list: MIXUP_LIST_NODE
       do
          debug ("parse/mixup/build")
-            log.trace.put_string(once "Building new empty list %"")
-            log.trace.put_string(list_name)
-            log.trace.put_character('"')
-            log.trace.put_character('%N')
+            log.trace.put_line(once "Building new empty list %"" | list_name | once "%"")
          end
          list := factory.list(list_name.intern)
          stack.add_last(list)
@@ -1664,14 +1650,8 @@ feature {}
          atom := stack.last
          stack.remove_last
          debug ("parse/mixup/build")
-            log.trace.put_string(once "Building new list %"")
-            log.trace.put_string(list_name)
-            log.trace.put_string(once "%" with one atom: atom should be %"")
-            log.trace.put_string(atom_name)
-            log.trace.put_character('"')
-            log.trace.put_character('%N')
-            log.trace.put_string(once "   Found atom: ")
-            log.trace.put_line(atom.name)
+            log.trace.put_line(once "Building new list %"" | list_name | once "%" with one atom: atom should be %"" | atom_name | once "%"")
+            log.trace.put_line(once "   Found atom: " | atom.name)
          end
          list := factory.list(list_name.intern)
          list.add(atom)
@@ -1717,16 +1697,9 @@ feature {}
             atom.name = atom_name.intern
          end
          debug ("parse/mixup/build")
-            log.trace.put_string(once "Building list %"")
-            log.trace.put_string(list_name)
-            log.trace.put_string(once "%" (continuation): atom should be %"")
-            log.trace.put_string(atom_name)
-            log.trace.put_character('"')
-            log.trace.put_character('%N')
-            log.trace.put_string(once "   Found list: ")
-            log.trace.put_line(list.name)
-            log.trace.put_string(once "   Found atom: ")
-            log.trace.put_line(atom.name)
+            log.trace.put_line(once "Building list %"" | list_name | once "%" (continuation): atom should be %"" | atom_name | once "%"")
+            log.trace.put_line(once "   Found list: " | list.name)
+            log.trace.put_line(once "   Found atom: " | atom.name)
          end
          list.add(atom)
          stack.add_last(list)
@@ -1746,17 +1719,13 @@ feature {} -- expressions
          i: INTEGER
       do
          debug ("parse/mixup/build")
-            log.trace.put_string(once "Building left-associative expression ")
-            log.trace.put_string(expression_name)
-            log.trace.put_string(once " using operator ")
-            log.trace.put_line(operator_names.out)
+            log.trace.put_line(once "Building left-associative expression " | expression_name | once " using operator " | &operator_names)
          end
 
          exp := ensure_expression(stack.last, expression_name)
          stack.remove_last
          debug ("parse/mixup/build")
-            log.trace.put_string(once "  => setting aside: ")
-            log.trace.put_line(exp.name)
+            log.trace.put_line(once "  => setting aside: " | exp.name)
          end
          create {FAST_ARRAY[MIXUP_NODE]} operator_nodes.with_capacity(operator_names.count)
          from
@@ -1804,8 +1773,7 @@ feature {} -- expressions
          i: INTEGER; name: STRING
       do
          debug ("parse/mixup/build")
-            log.trace.put_string(once "Building simple expression ")
-            log.trace.put_line(expression_name)
+            log.trace.put_line(once "Building simple expression " | expression_name)
          end
 
          name := once "..-exp"
@@ -1821,8 +1789,7 @@ feature {} -- expressions
             left_assoc_stack.is_empty
          loop
             debug ("parse/mixup/build")
-               log.trace.put_string(once "  left: ")
-               log.trace.put_line(left.name)
+               log.trace.put_line(once "  left: " | left.name)
             end
 
             tail := left_assoc_stack.last
@@ -1830,10 +1797,8 @@ feature {} -- expressions
 
             right := ensure_expression(tail.right_node, expression_name)
             debug ("parse/mixup/build")
-               log.trace.put_string(once "  op: ")
-               log.trace.put_line(tail.operator_names_out)
-               log.trace.put_string(once "  right: ")
-               log.trace.put_line(right.name)
+               log.trace.put_line(once "  op: " | tail.operator_names_out)
+               log.trace.put_line(once "  right: " | right.name)
             end
 
             left_assoc_names.clear_count
@@ -1845,8 +1810,7 @@ feature {} -- expressions
             nt.set(nt.lower, left)
             nt.set(nt.upper, right)
             debug ("parse/mixup/build")
-               log.trace.put_string(once "  => nt: ")
-               log.trace.put_line(nt.name)
+               log.trace.put_line(once "  => nt: " | nt.name)
             end
             check
                tail.operator_nodes.lower = 0
@@ -1872,8 +1836,7 @@ feature {} -- expressions
    build_expression_epsilon (expression_name: FIXED_STRING) is
       do
          debug ("parse/mixup/build")
-            log.trace.put_string(once "Building epsilon expression ")
-            log.trace.put_line(expression_name)
+            log.trace.put_line(once "Building epsilon expression " | expression_name)
          end
 
          stack.put(ensure_expression(stack.last, expression_name), stack.upper)

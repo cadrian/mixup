@@ -91,7 +91,7 @@ feature {ANY}
          loop
             time := events.key(i)
             debug
-               log.trace.put_string("Track #" + id.out + ": at tick " + time.out)
+               log.trace.put_string(once "Track #" | &id | once ": at tick " | &time)
             end
             encode_events(events.item(i), a_stream, (time - current_time).to_integer_32)
             current_time := time
@@ -261,7 +261,7 @@ feature {}
          event: MIXUP_MIDI_CODEC
       do
          debug
-            log.trace.put_line(" (delta=" + delta_time.out + ")")
+            log.trace.put_line(once " (delta=" | &delta_time | once ")")
          end
          from
             time := delta_time

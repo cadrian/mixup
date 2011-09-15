@@ -39,7 +39,7 @@ feature {ANY}
          code: INTEGER_8
       do
          debug
-            log.trace.put_string("channel " + channel.out + ": controller ")
+            log.trace.put_string(once "channel " | &channel | once ": controller ")
          end
          code := event_type | channel
          knob.encode_to(code, value, stream)

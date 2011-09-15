@@ -327,7 +327,7 @@ feature {}
 feature {ANY}
    item (a_source: like source; name: STRING): FUNCTION[TUPLE[MIXUP_NATIVE_CONTEXT], MIXUP_VALUE] is
       do
-         log.trace.put_line("Preparing native function: " + name)
+         log.trace.put_line(once "Preparing native function: " | name)
          inspect
             name
          when "bar" then

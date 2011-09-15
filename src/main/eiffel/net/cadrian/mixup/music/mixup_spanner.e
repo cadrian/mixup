@@ -66,7 +66,7 @@ feature {ANY}
          a_music /= Void
       do
          debug
-            log.trace.put_line("Voice #" + id.out + ": adding music: " + a_music.out)
+            log.trace.put_line(once "Voice #" | &id | once ": adding music: " | &a_music)
          end
          music.add_last(a_music)
          if a_music.valid_anchor then
@@ -99,7 +99,7 @@ feature {ANY}
             i := i + 1
          end
          debug
-            log.trace.put_line("Voice #" + id.out + ": adding chord: " + chord.out)
+            log.trace.put_line(once "Voice #" | &id | once ": adding chord: " | &chord)
          end
          music.add_last(chord)
          if chord.valid_anchor then
@@ -119,9 +119,7 @@ feature {ANY}
                                         local
                                            music0_: MIXUP_MUSIC
                                         do
-                                           log.trace.put_string(once "COMMIT: span: bar number is ")
-                                           log.trace.put_integer(accu.first_bar_number + accu.bars_count)
-                                           log.trace.put_new_line
+                                           log.trace.put_line(once "COMMIT: span: bar number is " | &(accu.first_bar_number + accu.bars_count))
                                            commit_context_.set_bar_number(accu.first_bar_number + accu.bars_count)
                                            music0_ := music0.commit(commit_context_)
                                            Result := accu + music0_.timing
