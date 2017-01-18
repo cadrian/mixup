@@ -21,14 +21,14 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_8 is
+   event_type: INTEGER_32 is
       once
          Result := event_program_change
       end
 
    byte_size: INTEGER is 2
 
-   patch: INTEGER_8
+   patch: INTEGER_32
 
 feature {}
    make (a_channel: like channel; a_patch: like patch) is

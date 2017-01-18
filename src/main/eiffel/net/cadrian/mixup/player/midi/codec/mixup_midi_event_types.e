@@ -15,28 +15,28 @@
 deferred class MIXUP_MIDI_EVENT_TYPES
 
 feature {ANY}
-   event_channel_pressure:     INTEGER_8 is 0xd0
-   event_controller:           INTEGER_8 is 0xb0
-   event_key_pressure:         INTEGER_8 is 0xa0
-   event_note_off:             INTEGER_8 is 0x80
-   event_note_on:              INTEGER_8 is 0x90
-   event_pitch_bend:           INTEGER_8 is 0xe0
-   event_program_change:       INTEGER_8 is 0xc0
+   event_channel_pressure:     INTEGER_32 is 0x000000d0
+   event_controller:           INTEGER_32 is 0x000000b0
+   event_key_pressure:         INTEGER_32 is 0x000000a0
+   event_note_off:             INTEGER_32 is 0x00000080
+   event_note_on:              INTEGER_32 is 0x00000090
+   event_pitch_bend:           INTEGER_32 is 0x000000e0
+   event_program_change:       INTEGER_32 is 0x000000c0
 
-   event_meta_event:           INTEGER_8 is 0xff
+   event_meta_event:           INTEGER_32 is 0x000000ff
 
-   meta_event_sequence_number: INTEGER_8 is 0x00
-   meta_event_text:            INTEGER_8 is 0x01
-   meta_event_copyright:       INTEGER_8 is 0x02
-   meta_event_track_name:      INTEGER_8 is 0x03
-   meta_event_instrument_name: INTEGER_8 is 0x04
-   meta_event_lyrics:          INTEGER_8 is 0x05
-   meta_event_marker_text:     INTEGER_8 is 0x06
-   meta_event_cue_point:       INTEGER_8 is 0x07
-   meta_event_channel_prefix:  INTEGER_8 is 0x20
-   meta_event_end_of_track:    INTEGER_8 is 0x2f
-   meta_event_tempo_setting:   INTEGER_8 is 0x51
-   meta_event_time_signature:  INTEGER_8 is 0x58
-   meta_event_key_signature:   INTEGER_8 is 0x59
+   meta_event_sequence_number: INTEGER_32 is 0x00000000
+   meta_event_text:            INTEGER_32 is 0x00000001
+   meta_event_copyright:       INTEGER_32 is 0x00000002
+   meta_event_track_name:      INTEGER_32 is 0x00000003
+   meta_event_instrument_name: INTEGER_32 is 0x00000004
+   meta_event_lyrics:          INTEGER_32 is 0x00000005
+   meta_event_marker_text:     INTEGER_32 is 0x00000006
+   meta_event_cue_point:       INTEGER_32 is 0x00000007
+   meta_event_channel_prefix:  INTEGER_32 is 0x00000020
+   meta_event_end_of_track:    INTEGER_32 is 0x0000002f
+   meta_event_tempo_setting:   INTEGER_32 is 0x00000051
+   meta_event_time_signature:  INTEGER_32 is 0x00000058
+   meta_event_key_signature:   INTEGER_32 is 0x00000059
 
 end -- class MIXUP_MIDI_EVENT_TYPES

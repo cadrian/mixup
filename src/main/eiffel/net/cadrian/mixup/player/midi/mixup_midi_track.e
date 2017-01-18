@@ -313,6 +313,6 @@ feature {}
 
 invariant
    id > 0
-   events.for_all(agent (events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]): BOOLEAN is do Result := not events_at_time.is_empty end)
+   events.for_all(agent (events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]): BOOLEAN is do Result := not events_at_time.is_empty end (?))
 
 end -- class MIXUP_MIDI_TRACK

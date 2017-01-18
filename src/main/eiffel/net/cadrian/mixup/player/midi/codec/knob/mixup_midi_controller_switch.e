@@ -23,7 +23,7 @@ create {ANY}
 feature {ANY}
    name: FIXED_STRING
 
-   code: INTEGER_8
+   code: INTEGER_32
 
    byte_size: INTEGER is 3
 
@@ -32,18 +32,18 @@ feature {ANY}
          Result := value.in_range(63, 64)
       end
 
-   encode_to (message_code: INTEGER_8; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   encode_to (message_code: INTEGER_32; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM) is
       do
          debug
             log.trace.put_line(name | once "=" | &value)
          end
          stream.put_byte(message_code)
          stream.put_byte(code)
-         stream.put_byte(value.to_integer_8)
+         stream.put_byte(value)
       end
 
 feature {}
-   make (cod: INTEGER_8; a_name: ABSTRACT_STRING) is
+   make (cod: INTEGER_32; a_name: ABSTRACT_STRING) is
       require
          a_name /= Void
       do

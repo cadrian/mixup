@@ -21,15 +21,15 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_8 is
+   event_type: INTEGER_32 is
       once
          Result := event_note_off
       end
 
    byte_size: INTEGER is 3
 
-   pitch: INTEGER_8
-   velocity: INTEGER_8
+   pitch: INTEGER_32
+   velocity: INTEGER_32
 
 feature {}
    make (a_channel: like channel; a_pitch: like pitch; a_velocity: like velocity) is

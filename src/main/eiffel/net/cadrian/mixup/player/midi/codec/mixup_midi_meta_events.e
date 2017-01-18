@@ -90,13 +90,13 @@ feature {}
       end
 
 feature {ANY}
-   valid_code (a_code: INTEGER_8): BOOLEAN is
+   valid_code (a_code: INTEGER_32): BOOLEAN is
       do
          Result := valid_codes.fast_has(a_code)
       end
 
 feature {}
-   valid_codes: AVL_SET[INTEGER_8] is
+   valid_codes: AVL_SET[INTEGER_32] is
       once
          create Result.make
          Result.add(meta_event_sequence_number )

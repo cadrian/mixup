@@ -1,6 +1,7 @@
 ./
 core/loadpath.se
 music/loadpath.se
+player/loadpath.se
+tools/
 value/
 visitor/
-player/loadpath.se

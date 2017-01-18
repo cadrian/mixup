@@ -31,7 +31,7 @@ feature {ANY}
          context.set_transpose_half_tones(half_tones)
       end
 
-   half_tones: INTEGER_8
+   half_tones: INTEGER_32
 
 feature {}
    make (a_half_tones: like half_tones) is

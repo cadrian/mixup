@@ -15,7 +15,7 @@
 expanded class MIXUP_MIDI_EVENTS
 
 feature {ANY}
-   controller_event (channel: INTEGER_8; knob: MIXUP_MIDI_CONTROLLER_KNOB; value: INTEGER): MIXUP_MIDI_EVENT is
+   controller_event (channel: INTEGER_32; knob: MIXUP_MIDI_CONTROLLER_KNOB; value: INTEGER): MIXUP_MIDI_EVENT is
       require
          channel.in_range(0, 15)
          knob.valid_value(value)
@@ -23,7 +23,7 @@ feature {ANY}
          create {MIXUP_MIDI_CONTROLLER} Result.make(channel, knob, value)
       end
 
-   program_change_event (channel: INTEGER_8; patch: INTEGER_8): MIXUP_MIDI_EVENT is
+   program_change_event (channel: INTEGER_32; patch: INTEGER_32): MIXUP_MIDI_EVENT is
       require
          channel.in_range(0, 15)
          patch >= 0
@@ -31,7 +31,7 @@ feature {ANY}
          create {MIXUP_MIDI_PROGRAM_CHANGE} Result.make(channel, patch)
       end
 
-   note_event (channel: INTEGER_8; on_off: BOOLEAN; pitch: INTEGER_8; velocity: INTEGER_8): MIXUP_MIDI_EVENT is
+   note_event (channel: INTEGER_32; on_off: BOOLEAN; pitch: INTEGER_32; velocity: INTEGER_32): MIXUP_MIDI_EVENT is
       require
          channel.in_range(0, 15)
       do
@@ -42,7 +42,7 @@ feature {ANY}
          end
       end
 
-   pitch_bend_event (channel: INTEGER_8; pitch: INTEGER): MIXUP_MIDI_EVENT is
+   pitch_bend_event (channel: INTEGER_32; pitch: INTEGER): MIXUP_MIDI_EVENT is
       require
          channel.in_range(0, 15)
          pitch.in_range(0, 0x00003fff)
@@ -50,7 +50,7 @@ feature {ANY}
          create {MIXUP_MIDI_PITCH_BEND} Result.make(channel, pitch)
       end
 
-   channel_pressure_event (channel: INTEGER_8; pressure: INTEGER_8): MIXUP_MIDI_EVENT is
+   channel_pressure_event (channel: INTEGER_32; pressure: INTEGER_32): MIXUP_MIDI_EVENT is
       require
          channel.in_range(0, 15)
          pressure >= 0
@@ -58,7 +58,7 @@ feature {ANY}
          create {MIXUP_MIDI_CHANNEL_PRESSURE} Result.make(channel, pressure)
       end
 
-   key_pressure_event (channel: INTEGER_8; key: INTEGER_8; pressure: INTEGER_8): MIXUP_MIDI_EVENT is
+   key_pressure_event (channel: INTEGER_32; key: INTEGER_32; pressure: INTEGER_32): MIXUP_MIDI_EVENT is
       require
          channel.in_range(0, 15)
          key >= 0

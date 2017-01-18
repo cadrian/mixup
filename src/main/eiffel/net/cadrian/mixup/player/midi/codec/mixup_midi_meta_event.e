@@ -29,7 +29,7 @@ create {ANY}
 
 feature {ANY}
    name: FIXED_STRING
-   code: INTEGER_8
+   code: INTEGER_32
    data: FIXED_STRING
 
    byte_size: INTEGER is

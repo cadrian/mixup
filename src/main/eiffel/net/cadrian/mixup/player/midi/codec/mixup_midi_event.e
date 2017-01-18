@@ -29,18 +29,18 @@ feature {ANY}
 
    encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
       local
-         code: INTEGER_8
+         code: INTEGER_32
       do
          code := event_type | channel
          stream.put_byte(code)
          put_args(stream, context)
       end
 
-   event_type: INTEGER_8 is
+   event_type: INTEGER_32 is
       deferred
       end
 
-   channel: INTEGER_8
+   channel: INTEGER_32
 
    set_channel (a_channel: like channel) is
       require
@@ -61,6 +61,6 @@ feature {}
 
 invariant
    channel.in_range(0, 15)
-   event_type & 0xf0 = event_type
+   event_type & 0x000000f0 = event_type
 
 end -- class MIXUP_MIDI_EVENT

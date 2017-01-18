@@ -52,11 +52,12 @@ feature {ANY}
          put_variable_byte_and_continue(variable, False)
       end
 
-   put_byte (byte: INTEGER_8) is
+   put_byte (byte: INTEGER_32) is
       require
          is_connected
+         byte.in_range(0, 0x000000ff)
       do
-         put_integer_8(byte.to_integer_32 & 0x000000ff)
+         put_integer_8(byte)
       end
 
 feature {}

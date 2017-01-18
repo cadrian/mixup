@@ -26,7 +26,7 @@ feature {ANY}
       deferred
       end
 
-   encode_to (message_code: INTEGER_8; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   encode_to (message_code: INTEGER_32; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM) is
       require
          valid_value(value)
          stream.is_connected

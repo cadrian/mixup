@@ -12,10 +12,10 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_MIDI_FILE_WRITE
+class MIXUP_MIDI_FILE_READ
 
 inherit
-   MIXUP_MIDI_OUTPUT_STREAM
+   MIXUP_MIDI_INPUT_STREAM
 
 create {ANY}
    make, connect_to
@@ -43,16 +43,26 @@ feature {ANY}
          stream := Void
       end
 
+   end_of_input: BOOLEAN is
+      do
+         Result := stream.end_of_input
+      end
+
 feature {}
    make is
       do
       end
 
-   put_integer_8 (byte: INTEGER_32) is
+   do_read_integer_8: INTEGER_32 is
       do
-         stream.put_byte(byte)
+         stream.read_byte
+         if stream.end_of_input then
+            error := "Premature end of MIDI stream"
+         else
+            Result := stream.last_byte
+         end
       end
 
-   stream: BINARY_FILE_WRITE
+   stream: BINARY_FILE_READ
 
-end -- class MIXUP_MIDI_FILE_WRITE
+end -- class MIXUP_MIDI_FILE_READ

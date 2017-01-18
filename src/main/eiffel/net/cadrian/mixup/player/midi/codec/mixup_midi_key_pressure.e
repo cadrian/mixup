@@ -21,15 +21,15 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_8 is
+   event_type: INTEGER_32 is
       once
          Result := event_key_pressure
       end
 
    byte_size: INTEGER is 3
 
-   key: INTEGER_8
-   pressure: INTEGER_8
+   key: INTEGER_32
+   pressure: INTEGER_32
 
 feature {}
    make (a_channel: like channel; a_key: like key; a_pressure: like pressure) is

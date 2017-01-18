@@ -18,10 +18,12 @@ inherit
    MIXUP_ABSTRACT_INPUT
 
 insert
-   MIXUP_MIDI_STREAM_CONSTANTS
-   MIXUP_MIDI_EVENTS
-   MIXUP_MIDI_META_EVENTS
    MIXUP_MIDI_CONTROLLER_KNOBS
+   MIXUP_MIDI_EVENTS
+   MIXUP_MIDI_EVENT_TYPES
+   MIXUP_MIDI_META_EVENTS
+   MIXUP_MIDI_STREAM_CONSTANTS
+   LOGGING
 
 feature {ANY}
    has_error: BOOLEAN is
@@ -31,19 +33,21 @@ feature {ANY}
 
    error: ABSTRACT_STRING
 
-   decode: MIXUP_MIDI_FILE is
+   decode is
+      require
+         decoded = Void
       local
          magic, size, type, tracks_count, division, tracknum: INTEGER_32
       do
          magic := read_integer_32(Void)
          if has_error then
          elseif magic /= header_magic then
-            error := "Invalid midi file: bad header magic"
+            error := "Invalid midi file: bad header magic #(1) /= #(2)" # hex(magic) # hex(header_magic)
          else
             size := read_integer_32(Void)
             if has_error then
-            elseif magic /= header_size then
-               error := "Invalid midi file: bad header size"
+            elseif size /= header_size then
+               error := "Invalid midi file: bad header size #(1) /= #(2)" # hex(size) # hex(header_size)
             else
                type := read_integer_16(Void)
                if has_error then
@@ -53,30 +57,41 @@ feature {ANY}
                   tracks_count := read_integer_16(Void)
                   if has_error then
                   elseif tracks_count <= 0 then
-                     error := "Invalid midi file: bad tracks count: #(1)" # &tracks_count
+                     error := "Invalid midi file: bad tracks count: #(1)" # hex(tracks_count)
                   else
                      division := read_integer_16(Void)
                      if has_error then
                      elseif division <= 0 then
-                        error := "Invalid midi file: bad division: #(1)" # &division
+                        error := "Invalid midi file: bad division: #(1)" # hex(division)
                      else
-                        create Result.make(division.to_integer_16)
+                        create decoded.make(division.to_integer_16)
                         from
                            tracknum := 1
                         until
-                           tracknum > tracks_count
+                           has_error or else tracknum > tracks_count
                         loop
-                           read_track(Result, tracknum)
+                           read_track(decoded, tracknum)
                            tracknum := tracknum + 1
                         end
-                        Result.end_all_tracks
+                        if not has_error then
+                           decoded.end_all_tracks
+                        end
                      end
                   end
                end
             end
          end
+         if not has_error and then not end_of_input then
+            error := "Expected end of MIDI stream"
+         end
       ensure
-         (not has_error) implies Result /= Void
+         (not has_error) implies decoded /= Void
+      end
+
+   decoded: MIXUP_MIDI_FILE
+
+   end_of_input: BOOLEAN is
+      deferred
       end
 
 feature {}
@@ -89,48 +104,57 @@ feature {}
       local
          track: MIXUP_MIDI_TRACK
          event: MIXUP_MIDI_CODEC
-         magic, delta_time: INTEGER_32
-         length, time: INTEGER_64
+         magic: INTEGER_32
+         length, delta_time, time: INTEGER_64
          tracklen: REFERENCE[INTEGER_64]
       do
+         log.info.put_line("Reading track #(1)" # &tracknum)
+
          magic := read_integer_32(Void)
          if has_error then
          elseif magic /= track_magic then
-            error := "Invalid track #(1): bad track header" # &tracknum
+            error := "Invalid track #(1): bad track header #(2) /= #(3)" # hex(tracknum) # hex(magic) # hex(track_magic)
          else
-            length := read_variable(Void)
+            length := read_integer_32(Void)
             if has_error then
-               error := "Invalid track #(1): #(2)" # &tracknum # error
+               error := "Invalid track #(1): #(2)" # hex(tracknum) # error
             elseif length <= 0 then
-               error := "Invalid track #(1): bad length: #(2)" # &tracknum # &length
+               error := "Invalid track #(1): bad length: #(2)" # hex(tracknum) # &length
             else
+               log.info.put_line("track #(1) length: #(2)" # hex(tracknum) # &length)
                create track.make
                from
                   create tracklen
+               variant
+                  length - tracklen.item
                until
-                  tracklen.item >= length
+                  has_error or else tracklen.item >= length
                loop
-                  delta_time := read_integer_32(tracklen)
+                  delta_time := read_variable(tracklen)
                   if has_error then
-                     error := "Invalid track #(1): #(2)" # &tracknum # error
+                     error := "Invalid track #(1): #(2)" # hex(tracknum) # error
                   elseif delta_time < 0 then
-                     error := "Invalid track #(1): invalid time: #(2)" # &tracknum # &delta_time
+                     error := "Invalid track #(1): invalid delta_time #(2) (negative)" # hex(tracknum) # hex(delta_time)
                   else
                      event := read_event(tracklen)
                      if has_error then
-                        error := "Invalid track #(1): #(2)" # &tracknum # error
+                        error := "Invalid track #(1): #(2)" # hex(tracknum) # error
                      else
-                        time := time + delta_time.to_integer_64
+                        time := time + delta_time
                         track.add_event(time, event)
                      end
                   end
                end
                if tracklen.item > length then
-                  error := "Invalid track #(1): length mismatch #(2) /= #(3)" # &tracknum # &(tracklen.item) # &length
+                  error := "Invalid track #(1): length mismatch #(2) /= #(3)" # hex(tracknum) # &(tracklen.item) # &length
                else
                   file.add_track(track)
                end
             end
+         end
+
+         if has_error then
+            error := "#(1) at track byte #(2)" # error # &(tracklen.item)
          end
       ensure
          (not has_error) implies file.track_count = tracknum
@@ -138,13 +162,63 @@ feature {}
 
    read_event (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_CODEC is
       local
-         code, event_type, channel: INTEGER_32
+         code: INTEGER_32
       do
          code := read_integer_8(count)
          if has_error then
          else
+            Result := decode_event(code, count)
+         end
+      ensure
+         (not has_error) implies Result /= Void
+      end
+
+   decode_event (code: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_CODEC is
+      require
+         code.in_range(0, 0x000000ff)
+      local
+         event_type, channel: INTEGER_32
+      do
+         if code = event_meta_event then
+            event_type := read_integer_8(count)
+            if has_error then
+            else
+               inspect
+                  event_type
+               when meta_event_sequence_number then
+                  -- TODO
+               when meta_event_text then
+                  -- TODO
+               when meta_event_copyright then
+                  -- TODO
+               when meta_event_track_name then
+                  -- TODO
+               when meta_event_instrument_name then
+                  -- TODO
+               when meta_event_lyrics then
+                  -- TODO
+               when meta_event_marker_text then
+                  -- TODO
+               when meta_event_cue_point then
+                  -- TODO
+               when meta_event_channel_prefix then
+                  -- TODO
+               when meta_event_end_of_track then
+                  -- TODO
+               when meta_event_tempo_setting then
+                  -- TODO
+               when meta_event_time_signature then
+                  -- TODO
+               when meta_event_key_signature then
+                  -- TODO
+               else
+                  error := "Invalid meta event: #(1)" # hex(event_type)
+               end
+            end
+         else
             event_type := code & 0x000000f0
             channel := code & 0x0000000f
+            log.info.put_line("Read event => event type: #(1) -- channel: #(2)" # hex(event_type) # hex(channel))
             inspect
                event_type
             when event_channel_pressure then
@@ -161,33 +235,12 @@ feature {}
                Result := read_event_pitch_bend(channel, count)
             when event_program_change then
                Result := read_event_program_change(channel, count)
-            when event_meta_event then
-               event_type := read_integer_8(count)
-               if has_error then
-               else
-                  inspect
-                     event_type
-                  when meta_event_sequence_number then
-                  when meta_event_text then
-                  when meta_event_copyright then
-                  when meta_event_track_name then
-                  when meta_event_instrument_name then
-                  when meta_event_lyrics then
-                  when meta_event_marker_text then
-                  when meta_event_cue_point then
-                  when meta_event_channel_prefix then
-                  when meta_event_end_of_track then
-                  when meta_event_tempo_setting then
-                  when meta_event_time_signature then
-                  when meta_event_key_signature then
-                  else
-                     error := "Invalid meta event: #(1)" # &event_type
-                  end
-               end
             else
-               error := "Invalid event: #(1)" # &event_type
+               error := "Invalid event: #(1)" # hex(event_type)
             end
          end
+      ensure
+         (not has_error) implies Result /= Void
       end
 
    read_event_channel_pressure (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_CHANNEL_PRESSURE is
@@ -196,11 +249,13 @@ feature {}
       do
          pressure := read_integer_8(count)
          if has_error then
-         elseif pressure < 0 then
-            error := "Invalid CHANNEL PRESSURE event: pressure: #(1)" # &pressure
+         elseif pressure > 0x0000007f then
+            error := "Invalid CHANNEL PRESSURE event: pressure: #(1)" # hex(pressure)
          else
-            create Result.make(channel.to_integer_8, pressure.to_integer_8)
+            create Result.make(channel, pressure)
          end
+      ensure
+         (not has_error) implies Result /= Void
       end
 
    read_event_controller (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_CONTROLLER is
@@ -212,13 +267,13 @@ feature {}
       do
          knob_number := read_integer_8(count)
          if has_error then
-         elseif knob_number < 0 then
-            error := "Invalid knob: #(1)" # &knob
+         elseif knob_number > 0x0000007f then
+            error := "Invalid knob: #(1)" # hex(knob_number)
          else
             knob_value := read_integer_8(count)
             if has_error then
-            elseif knob_value < 0 then
-               error := "Invalid knob value: #(1)" # &knob
+            elseif knob_value > 0x0000007f then
+               error := "Invalid knob value: #(1)" # hex(knob_value)
             else
                inspect
                   knob_number
@@ -313,13 +368,13 @@ feature {}
                   knob := legato_footswitch_controller
 
                else
-                  error := "Invalid or not supported controller knob: #(1)" # &knob_number
+                  error := "Invalid or not supported controller knob: #(1)" # hex(knob_number)
                end
             end
          end
 
          if not has_error then
-            create Result.make(channel.to_integer_8, knob, knob_value)
+            create Result.make(channel, knob, knob_value)
          end
       ensure
          (not has_error) implies Result /= Void
@@ -334,17 +389,17 @@ feature {}
          byte := read_integer_8(count)
          if has_error then
          elseif byte /= 0 then
-            error := "Invalid non-null fine byte: #(1)" # &byte
+            error := "Invalid non-null fine byte: #(1)" # hex(byte)
          else
             byte := read_integer_8(count)
             if has_error then
-            elseif byte /= event_controller.to_integer_32 | channel then
-               error := "Invalid fine message byte: #(1) /= #(2)" # &byte # &(event_controller.to_integer_32 | channel)
+            elseif byte /= event_controller | channel then
+               error := "Invalid fine message byte: #(1) /= #(2)" # hex(byte) # hex(event_controller | channel)
             else
                byte := read_integer_8(count)
                if has_error then
                elseif byte /= knob.msb_code then
-                  error := "Invalid fine message MSB: #(1) /= #(2)" # &byte # &(knob.msb_code)
+                  error := "Invalid fine message MSB: #(1) /= #(2)" # hex(byte) # hex(knob.msb_code)
                else
                   Result := knob
                end
@@ -360,8 +415,8 @@ feature {}
          else
             Result := read_integer_8(count)
             if has_error then
-            elseif Result < 0 then
-               error := "Invalid knob fine value: #(1)" # &Result
+            elseif Result > 0x0000007f then
+               error := "Invalid knob fine value: #(1)" # hex(Result)
             else
                Result := (value |<< 7) | Result
             end
@@ -374,17 +429,19 @@ feature {}
       do
          key := read_integer_8(count)
          if has_error then
-         elseif key < 0 then
-            error := "Invalid key: #(1)" # &key
+         elseif key > 0x0000007f then
+            error := "Invalid key: #(1)" # hex(key)
          else
             pressure := read_integer_8(count)
             if has_error then
-            elseif pressure < 0 then
-               error := "Invalid pressure: #(1)" # &pressure
+            elseif pressure > 0x0000007f then
+               error := "Invalid pressure: #(1)" # hex(pressure)
             else
-               create Result.make(channel.to_integer_8, key.to_integer_8, pressure.to_integer_8)
+               create Result.make(channel, key, pressure)
             end
          end
+      ensure
+         (not has_error) implies Result /= Void
       end
 
    read_event_note_off (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_NOTE_OFF is
@@ -393,17 +450,19 @@ feature {}
       do
          pitch := read_integer_8(count)
          if has_error then
-         elseif pitch < 0 then
-            error := "Invalid pitch: #(1)" # &pitch
+         elseif pitch > 0x0000007f then
+            error := "Invalid pitch: #(1)" # hex(pitch)
          else
             pressure := read_integer_8(count)
             if has_error then
-            elseif pressure < 0 then
-               error := "Invalid pressure: #(1)" # &pressure
+            elseif pressure > 0x0000007f then
+               error := "Invalid pressure: #(1)" # hex(pressure)
             else
-               create Result.make(channel.to_integer_8, pitch.to_integer_8, pressure.to_integer_8)
+               create Result.make(channel, pitch, pressure)
             end
          end
+      ensure
+         (not has_error) implies Result /= Void
       end
 
    read_event_note_on (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_NOTE_ON is
@@ -412,17 +471,19 @@ feature {}
       do
          pitch := read_integer_8(count)
          if has_error then
-         elseif pitch < 0 then
-            error := "Invalid pitch: #(1)" # &pitch
+         elseif pitch > 0x0000007f then
+            error := "Invalid pitch: #(1)" # hex(pitch)
          else
             pressure := read_integer_8(count)
             if has_error then
-            elseif pressure < 0 then
-               error := "Invalid pressure: #(1)" # &pressure
+            elseif pressure > 0x0000007f then
+               error := "Invalid pressure: #(1)" # hex(pressure)
             else
-               create Result.make(channel.to_integer_8, pitch.to_integer_8, pressure.to_integer_8)
+               create Result.make(channel, pitch, pressure)
             end
          end
+      ensure
+         (not has_error) implies Result /= Void
       end
 
    read_event_pitch_bend (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_PITCH_BEND is
@@ -431,18 +492,20 @@ feature {}
       do
          lsb := read_integer_8(count)
          if has_error then
-         elseif lsb < 0 then
-            error := "Invalid pitch LSB: #(1)" # &lsb
+         elseif lsb > 0x0000007f then
+            error := "Invalid pitch LSB: #(1)" # hex(lsb)
          else
             msb := read_integer_8(count)
             if has_error then
-            elseif msb < 0 then
-               error := "Invalid pitch MSB: #(1)" # &msb
+            elseif msb > 0x0000007f then
+               error := "Invalid pitch MSB: #(1)" # hex(msb)
             else
                pitch := (msb |<< 7) | lsb
-               create Result.make(channel.to_integer_8, pitch)
+               create Result.make(channel, pitch)
             end
          end
+      ensure
+         (not has_error) implies Result /= Void
       end
 
    read_event_program_change (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_PROGRAM_CHANGE is
@@ -451,11 +514,13 @@ feature {}
       do
          patch := read_integer_8(count)
          if has_error then
-         elseif patch < 0 then
-            error := "Invalid program patch: #(1)" # &patch
+         elseif patch > 0x0000007f then
+            error := "Invalid program patch: #(1)" # hex(patch)
          else
-            create Result.make(channel.to_integer_8, patch.to_integer_8)
+            create Result.make(channel, patch)
          end
+      ensure
+         (not has_error) implies Result /= Void
       end
 
 feature {}
@@ -526,7 +591,7 @@ feature {}
          is_connected
       do
          Result := do_read_integer_8
-         if count /= Void and then not has_error then
+         if count /= Void then
             count.set_item(count.item + 1)
          end
       ensure
@@ -539,6 +604,29 @@ feature {}
       deferred
       ensure
          Result.in_range(0, 0x000000ff)
+      end
+
+   hex (int: INTEGER_64): LAZY_STRING is
+      do
+         create Result.make(agent hex2str(int))
+      end
+
+   hex2str (int: INTEGER_64): ABSTRACT_STRING is
+      local
+         s: STRING
+      do
+         s := ("000000000000000000#(1)" # int.to_hexadecimal).out
+         if int.in_range(0, 0x00000000000000ff) then
+            s := s.substring(s.upper -  1 - 2, s.upper)
+         elseif int.in_range(0, 0x000000000000ffff) then
+            s := s.substring(s.upper -  3 - 2, s.upper)
+         elseif int.in_range(0, 0x00000000ffffffff) then
+            s := s.substring(s.upper -  7 - 2, s.upper)
+         else
+            s := s.substring(s.upper - 15 - 2, s.upper)
+         end
+         s.put('x', s.lower + 1)
+         Result := s
       end
 
 end -- class MIXUP_MIDI_INPUT_STREAM

@@ -21,7 +21,7 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_8 is
+   event_type: INTEGER_32 is
       once
          Result := event_pitch_bend
       end

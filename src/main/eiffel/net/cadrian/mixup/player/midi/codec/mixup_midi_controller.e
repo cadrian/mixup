@@ -24,7 +24,7 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_8 is
+   event_type: INTEGER_32 is
       once
          Result := event_controller
       end
@@ -39,7 +39,7 @@ feature {ANY}
 
    encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
       local
-         code: INTEGER_8
+         code: INTEGER_32
       do
          debug
             log.trace.put_string(once "channel " | &channel | once ": controller ")
