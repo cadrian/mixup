@@ -21,7 +21,11 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_8 is 0xc0
+   event_type: INTEGER_8 is
+      once
+         Result := event_program_change
+      end
+
    byte_size: INTEGER is 2
 
    patch: INTEGER_8

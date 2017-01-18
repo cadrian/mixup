@@ -21,7 +21,11 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_8 is 0xa0
+   event_type: INTEGER_8 is
+      once
+         Result := event_key_pressure
+      end
+
    byte_size: INTEGER is 3
 
    key: INTEGER_8

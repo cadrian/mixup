@@ -44,7 +44,7 @@ feature {ANY}
          debug
             log.trace.put_line(name)
          end
-         stream.put_byte(0xff)
+         stream.put_byte(event_meta_event)
          stream.put_byte(code)
          stream.put_variable(data.count)
          from

@@ -21,7 +21,10 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_8 is 0xd0
+   event_type: INTEGER_8 is
+      once
+         Result := event_channel_pressure
+      end
    byte_size: INTEGER is 2
 
    pressure: INTEGER_8

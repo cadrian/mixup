@@ -21,7 +21,11 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_8 is 0x90
+   event_type: INTEGER_8 is
+      once
+         Result := event_note_on
+      end
+
    byte_size: INTEGER is 3
 
    pitch: INTEGER_8

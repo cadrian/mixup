@@ -17,6 +17,9 @@ deferred class MIXUP_MIDI_OUTPUT_STREAM
 inherit
    MIXUP_ABSTRACT_OUTPUT
 
+insert
+   MIXUP_MIDI_STREAM_CONSTANTS
+
 feature {ANY}
    start (tracks_count: INTEGER_16; division: INTEGER_16) is
       require
@@ -73,12 +76,6 @@ feature {}
          end
          put_integer_8(byte)
       end
-
-   header_magic: INTEGER is 0x4d546864 -- "MThd"
-   header_size: INTEGER is 6
-   header_type: INTEGER_16 is 1
-
-   track_magic: INTEGER is 0x4d54726b -- "MTrk"
 
 feature {}
    frozen put_integer_32 (int: INTEGER_32) is

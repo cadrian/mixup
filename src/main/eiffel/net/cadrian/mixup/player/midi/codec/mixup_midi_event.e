@@ -17,6 +17,9 @@ deferred class MIXUP_MIDI_EVENT
 inherit
    MIXUP_MIDI_CODEC
 
+insert
+   MIXUP_MIDI_EVENT_TYPES
+
 feature {ANY}
    byte_size: INTEGER is
       deferred

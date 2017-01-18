@@ -82,6 +82,11 @@ feature {ANY}
          tracks.for_all(agent (track: MIXUP_MIDI_TRACK): BOOLEAN is do Result := not track.can_add_event end)
       end
 
+   track_count: INTEGER is
+      do
+         Result := tracks.count
+      end
+
 feature {}
    make (a_division: like division) is
       require

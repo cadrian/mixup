@@ -24,7 +24,10 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_8 is 0xb0
+   event_type: INTEGER_8 is
+      once
+         Result := event_controller
+      end
 
    knob: MIXUP_MIDI_CONTROLLER_KNOB
    value: INTEGER
