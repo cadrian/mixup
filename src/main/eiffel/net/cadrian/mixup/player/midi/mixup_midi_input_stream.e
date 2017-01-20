@@ -663,18 +663,86 @@ feature {}
       end
 
    read_meta_event_tempo_setting (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      local
+         length: INTEGER_64; up, low: INTEGER_32
       do
-         error := "tempo setting: not implemented"
+         length := read_variable(count)
+         if has_error then
+         elseif length /= 3 then
+            error := "Invalid tempo setting: length #(1) /= 3" # &length
+         else
+            up := read_integer_8(count)
+            if has_error then
+            else
+               low := read_integer_16(count)
+               if has_error then
+               else
+                  Result := tempo_setting_event_mpq((up |<< 16) | low)
+               end
+            end
+         end
       end
 
    read_meta_event_time_signature (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      local
+         length: INTEGER_64; n, d, m, t: INTEGER_32
       do
-         error := "time signature: not implemented"
+         length := read_variable(count)
+         if has_error then
+         elseif length /= 4 then
+            error := "Invalid time signature setting: length #(1) /= 4" # &length
+         else
+            n := read_integer_8(count)
+            if has_error then
+            else
+               d := read_integer_8(count)
+               if has_error then
+               elseif not d.in_range(0, 5) then
+                  error := "Invalid time signature setting: denominator #(1) not between 0 and 5" # &length
+               else
+                  m := read_integer_8(count)
+                  if has_error then
+                  else
+                     t := read_integer_8(count)
+                     if has_error then
+                     else
+                        if t /= 8 then
+                           log.info.put_line("Unusual time signature: #(1) 32nds per quarter" # &t)
+                        end
+                        Result := time_signature_event(n, (2 ^ d.to_integer_8).to_integer_32, m, t)
+                     end
+                  end
+               end
+            end
+         end
       end
 
    read_meta_event_key_signature (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      local
+         length: INTEGER_64; keysig, mode: INTEGER_32
       do
-         error := "key signature: not implemented"
+         length := read_variable(count)
+         if has_error then
+         elseif length /= 2 then
+            error := "Invalid key signature setting: length #(1) /= 2" # &length
+         else
+            keysig := read_integer_8(count)
+            if keysig >= 0x80 then
+               keysig := keysig | 0xffffff00 -- sign extension
+            end
+            if has_error then
+            elseif not keysig.in_range(-7, 7) then
+               error := "Invalid key signature setting: key signature #(1) not between -7 and 7" # &keysig
+            else
+               mode := read_integer_8(count)
+               if has_error then
+               elseif mode /= 0 and then mode /= 1 then
+               error := "Invalid key signature setting: mode #(1) not between 0 and 1" # &keysig
+               else
+                  Result := key_signature_event(keysig, mode)
+               end
+            end
+         end
       end
 
 feature {}

@@ -129,7 +129,7 @@ feature {} -- native functions
                error_at(bpm.source, "MIDI: bad argument value, expected 0..16383 but got " + bpm.value.out)
             else
                create Result.make(a_context.call_source)
-               Result.add_event(tempo_setting_event(bpm.value.to_integer_32))
+               Result.add_event(tempo_setting_event_bpm(bpm.value.to_integer_32))
             end
          end
       end
