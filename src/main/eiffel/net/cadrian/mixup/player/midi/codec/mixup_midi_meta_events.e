@@ -25,6 +25,20 @@ feature {ANY}
          create Result.make(meta_event_end_of_track, "", "end_of_track_event")
       end
 
+   sequence_number_event (sequence_number: INTEGER_32): MIXUP_MIDI_META_EVENT is
+      require
+         sequence_number.in_range(0, 0x0000ffff)
+      local
+         bytes: STRING; int: INTEGER_8
+      do
+         create bytes.make_filled('%U', 2)
+         int := (sequence_number |>> 8).to_integer_8
+         bytes.put(int.to_character, 0)
+         int := (sequence_number & 0x000000ff).to_integer_8
+         bytes.put(int.to_character, 1)
+         create Result.make(meta_event_sequence_number, bytes, "sequence_number_event")
+      end
+
    text_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
       require
          a_text /= Void
@@ -67,6 +81,13 @@ feature {ANY}
          create Result.make(meta_event_marker_text, a_text, "marker_text_event: '" + a_text + "'")
       end
 
+   cue_point_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
+      require
+         a_text /= Void
+      do
+         create Result.make(meta_event_cue_point, a_text, "copyright_event: '" + a_text + "'")
+      end
+
    tempo_setting_event (bpm: INTEGER): MIXUP_MIDI_META_EVENT is
       require
          bpm.in_range(1, 0x00003fff)
@@ -92,7 +113,7 @@ feature {}
 feature {ANY}
    valid_code (a_code: INTEGER_32): BOOLEAN is
       do
-         Result := valid_codes.fast_has(a_code)
+         Result := valid_codes.has(a_code)
       end
 
 feature {}

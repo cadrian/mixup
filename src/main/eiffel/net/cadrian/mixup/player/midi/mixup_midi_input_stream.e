@@ -186,31 +186,31 @@ feature {}
                inspect
                   event_type
                when meta_event_sequence_number then
-                  -- TODO
+                  Result := read_meta_event_sequence_number(count)
                when meta_event_text then
-                  -- TODO
+                  Result := read_meta_event_text(count)
                when meta_event_copyright then
-                  -- TODO
+                  Result := read_meta_event_copyright(count)
                when meta_event_track_name then
-                  -- TODO
+                  Result := read_meta_event_track_name(count)
                when meta_event_instrument_name then
-                  -- TODO
+                  Result := read_meta_event_instrument_name(count)
                when meta_event_lyrics then
-                  -- TODO
+                  Result := read_meta_event_lyrics(count)
                when meta_event_marker_text then
-                  -- TODO
+                  Result := read_meta_event_marker_text(count)
                when meta_event_cue_point then
-                  -- TODO
+                  Result := read_meta_event_cue_point(count)
                when meta_event_channel_prefix then
-                  -- TODO
+                  Result := read_meta_event_channel_prefix(count)
                when meta_event_end_of_track then
-                  -- TODO
+                  Result := read_meta_event_end_of_track(count)
                when meta_event_tempo_setting then
-                  -- TODO
+                  Result := read_meta_event_tempo_setting(count)
                when meta_event_time_signature then
-                  -- TODO
+                  Result := read_meta_event_time_signature(count)
                when meta_event_key_signature then
-                  -- TODO
+                  Result := read_meta_event_key_signature(count)
                else
                   error := "Invalid meta event: #(1)" # hex(event_type)
                end
@@ -521,6 +521,160 @@ feature {}
          end
       ensure
          (not has_error) implies Result /= Void
+      end
+
+   read_meta_event_sequence_number (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      local
+         length: INTEGER_64; seqnum: INTEGER_32
+      do
+         length := read_variable(count)
+         if has_error then
+         elseif length /= 2 then
+            error := "Invalid sequence number: length #(1) /= 2" # &length
+         else
+            seqnum := read_integer_16(count)
+            if has_error then
+            else
+               Result := sequence_number_event(seqnum)
+            end
+         end
+      end
+
+   meta_text (count: REFERENCE[INTEGER_64]): STRING is
+      local
+         length, i: INTEGER_64; byte: INTEGER_32
+      do
+         length := read_variable(count)
+         if has_error then
+         elseif length > 0x000000007fffffff then
+            error := "Invalid text: length #(1) does not fit into STRING" # &length
+         else
+            from
+               create Result.with_capacity(length.to_integer_32)
+               i := 1
+            until
+               has_error or else i > length
+            loop
+               byte := read_integer_8(count)
+               if has_error then
+               else
+                  Result.add_last(byte.to_character)
+               end
+               i := i + 1
+            end
+         end
+      ensure
+         (not has_error) implies Result /= Void
+      end
+
+   read_meta_event_text (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      local
+         text: STRING
+      do
+         text := meta_text(count)
+         if has_error then
+         else
+            Result := text_event(text)
+         end
+      end
+
+   read_meta_event_copyright (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      local
+         text: STRING
+      do
+         text := meta_text(count)
+         if has_error then
+         else
+            Result := copyright_event(text)
+         end
+      end
+
+   read_meta_event_track_name (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      local
+         text: STRING
+      do
+         text := meta_text(count)
+         if has_error then
+         else
+            Result := track_name_event(text)
+         end
+      end
+
+   read_meta_event_instrument_name (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      local
+         text: STRING
+      do
+         text := meta_text(count)
+         if has_error then
+         else
+            Result := instrument_name_event(text)
+         end
+      end
+
+   read_meta_event_lyrics (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      local
+         text: STRING
+      do
+         text := meta_text(count)
+         if has_error then
+         else
+            Result := lyrics_event(text)
+         end
+      end
+
+   read_meta_event_marker_text (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      local
+         text: STRING
+      do
+         text := meta_text(count)
+         if has_error then
+         else
+            Result := marker_text_event(text)
+         end
+      end
+
+   read_meta_event_cue_point (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      local
+         text: STRING
+      do
+         text := meta_text(count)
+         if has_error then
+         else
+            Result := cue_point_event(text)
+         end
+      end
+
+   read_meta_event_channel_prefix (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      do
+         error := "channel prefix: not implemented"
+      end
+
+   read_meta_event_end_of_track (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      local
+         length: INTEGER_64
+      do
+         length := read_variable(count)
+         if has_error then
+         elseif length /= 0 then
+            error := "Invalid end of track: length #(1) /= 0" # &length
+         else
+            Result := end_of_track_event
+         end
+      end
+
+   read_meta_event_tempo_setting (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      do
+         error := "tempo setting: not implemented"
+      end
+
+   read_meta_event_time_signature (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      do
+         error := "time signature: not implemented"
+      end
+
+   read_meta_event_key_signature (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      do
+         error := "key signature: not implemented"
       end
 
 feature {}
