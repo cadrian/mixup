@@ -37,7 +37,7 @@ feature {ANY}
       require
          decoded = Void
       local
-         magic, size, type, tracks_count, division, tracknum: INTEGER_32
+         magic, size, type, tracks_count, division, tracknum, tail: INTEGER_32, tail_ok: BOOLEAN
       do
          magic := read_integer_32(Void)
          if has_error then
@@ -82,7 +82,33 @@ feature {ANY}
             end
          end
          if not has_error and then not end_of_input then
-            error := "Expected end of MIDI stream"
+            tail := read_integer_8(Void)
+            if has_error then
+               if end_of_input then
+                  error := Void
+               end
+            else
+               if tail = 0 then
+                  -- an extra 0 does no harm
+                  tail_ok := True
+               else
+                  log.error.put_line("Extra byte: #(1)" # hex(tail))
+               end
+               from
+                  tail := read_integer_8(Void)
+               until
+                  end_of_input
+               loop
+                  tail_ok := False -- don't allow more than one extra byte
+                  log.error.put_line("Extra byte: #(1)" # hex(tail))
+                  tail := read_integer_8(Void)
+               end
+               if end_of_input and then tail_ok then
+                  error := Void
+               else
+                  error := "Expected end of MIDI stream"
+               end
+            end
          end
       ensure
          (not has_error) implies decoded /= Void
@@ -212,13 +238,13 @@ feature {}
                when meta_event_key_signature then
                   Result := read_meta_event_key_signature(count)
                else
-                  error := "Invalid meta event: #(1)" # hex(event_type)
+                  Result := read_unknown_meta_event(event_type, count)
                end
             end
          else
             event_type := code & 0x000000f0
             channel := code & 0x0000000f
-            log.info.put_line("Read event => event type: #(1) -- channel: #(2)" # hex(event_type) # hex(channel))
+            --log.info.put_line("Read event => event type: #(1) -- channel: #(2)" # hex(event_type) # hex(channel))
             inspect
                event_type
             when event_channel_pressure then
@@ -744,6 +770,33 @@ feature {}
             end
          end
       end
+
+   read_unknown_meta_event (event_type: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+      local
+         length, i: INTEGER_64; byte: INTEGER_32; data: FAST_ARRAY[INTEGER_32]
+      do
+         length := read_variable(count)
+         if has_error then
+         elseif length > 0x000000007fffffff then
+            error := "Invalid meta event: length #(1) does not fit into FAST_ARRAY" # &length
+         else
+            create data.with_capacity(length.to_integer_32)
+            from
+               i := 1
+            until
+               has_error or else i > length
+            loop
+               byte := read_integer_8(count)
+               if has_error then
+               else
+                  data.add_last(byte)
+               end
+               i := i + 1
+            end
+            Result := unknown_meta_event(event_type, data)
+         end
+      end
+
 
 feature {}
    frozen read_variable (count: REFERENCE[INTEGER_64]): INTEGER_64 is

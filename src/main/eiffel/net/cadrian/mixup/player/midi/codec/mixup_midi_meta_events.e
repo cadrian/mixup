@@ -263,6 +263,21 @@ feature {ANY}
          end
       end
 
+   unknown_meta_event (code: INTEGER; data: COLLECTION[INTEGER]): MIXUP_MIDI_META_EVENT is
+      require
+         code.in_range(0, 255)
+         data.for_all(agent (int: INTEGER): BOOLEAN then int.in_range(0, 255) end (?))
+      local
+         setting: STRING
+      do
+         create setting.with_capacity(data.count)
+         data.for_each(agent (int: INTEGER) is
+                       do
+                          setting.extend(force_character(int))
+                       end (?))
+         create Result.make(code, setting, "unknown_meta_event")
+      end
+
 feature {}
    force_character (int: INTEGER_32): CHARACTER is
       do
