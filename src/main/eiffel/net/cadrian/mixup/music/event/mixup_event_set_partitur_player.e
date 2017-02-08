@@ -18,7 +18,7 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_SET_PARTITUR}
-   play_set_partitur (a_name: ABSTRACT_STRING) is
+   play_set_partitur (a_name: ABSTRACT_STRING)
       require
          a_name /= Void
       deferred

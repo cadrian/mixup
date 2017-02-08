@@ -18,7 +18,7 @@ create {MIXUP_MUSIXTEX_INSTRUMENT}
    chord, note, rest
 
 feature {MIXUP_MUSIXTEX_INSTRUMENT}
-   emit (context: MIXUP_MUSIXTEX_EMIT_CONTEXT) is
+   emit (context: MIXUP_MUSIXTEX_EMIT_CONTEXT)
       require
          context /= Void
       do
@@ -32,14 +32,14 @@ feature {MIXUP_MUSIXTEX_INSTRUMENT}
       end
 
 feature {}
-   note (a_name: FIXED_STRING; a_octave, a_duration: INTEGER_64) is
+   note (a_name: FIXED_STRING; a_octave, a_duration: INTEGER_64)
       do
          name := a_name
          octave := a_octave
          duration := a_duration
       end
 
-   chord (a_name: FIXED_STRING; a_octave, a_duration: INTEGER_64) is
+   chord (a_name: FIXED_STRING; a_octave, a_duration: INTEGER_64)
       do
          zero_spacing := True
          name := a_name
@@ -47,7 +47,7 @@ feature {}
          duration := a_duration
       end
 
-   rest (a_name: FIXED_STRING; a_duration: INTEGER_64) is
+   rest (a_name: FIXED_STRING; a_duration: INTEGER_64)
       do
          name := a_name
          octave := rest_octave

@@ -21,7 +21,7 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_32 is
+   event_type: INTEGER_32
       once
          Result := event_key_pressure
       end
@@ -32,7 +32,7 @@ feature {ANY}
    pressure: INTEGER_32
 
 feature {}
-   make (a_channel: like channel; a_key: like key; a_pressure: like pressure) is
+   make (a_channel: like channel; a_key: like key; a_pressure: like pressure)
       require
          a_channel.in_range(0, 15)
          a_key >= 0
@@ -47,7 +47,7 @@ feature {}
          pressure = a_pressure
       end
 
-   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
+   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT)
       do
          debug
             log.trace.put_line(once "channel " | &channel | once ": pressure=" | &pressure | once " on key " | &key)

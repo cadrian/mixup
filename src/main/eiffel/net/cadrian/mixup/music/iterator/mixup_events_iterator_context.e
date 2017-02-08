@@ -39,40 +39,40 @@ feature {ANY}
    xuplet_denominator: INTEGER_64
    xuplet_text: FIXED_STRING
 
-   set_instrument (a_instrument: like instrument) is
+   set_instrument (a_instrument: like instrument)
       do
          instrument := a_instrument
       ensure
          instrument = a_instrument
       end
 
-   set_staff_id (a_staff_id: like staff_id) is
+   set_staff_id (a_staff_id: like staff_id)
       do
          staff_id := a_staff_id
       ensure
          staff_id = a_staff_id
       end
 
-   set_voice_id (a_voice_id: like voice_id) is
+   set_voice_id (a_voice_id: like voice_id)
       do
          voice_id := a_voice_id
       ensure
          voice_id = a_voice_id
       end
 
-   event_data (a_source: MIXUP_SOURCE): MIXUP_EVENT_DATA is
+   event_data (a_source: MIXUP_SOURCE): MIXUP_EVENT_DATA
       require
          a_source /= Void
       do
          Result.set(a_source, start_time, instrument, staff_id, voice_id)
       end
 
-   add_time (duration: INTEGER_64) is
+   add_time (duration: INTEGER_64)
       do
          start_time := start_time + duration * xuplet_denominator // xuplet_numerator -- yes, musical fractions are written in reverse (3/2 => three parts in two => multiply times by 2/3)
       end
 
-   set_xuplet (num, den: INTEGER_64; txt: FIXED_STRING) is
+   set_xuplet (num, den: INTEGER_64; txt: FIXED_STRING)
       do
          xuplet_numerator   := num * xuplet_numerator
          xuplet_denominator := den * xuplet_denominator
@@ -80,7 +80,7 @@ feature {ANY}
       end
 
 feature {}
-   default_create is
+   default_create
       do
          instrument := Void
          start_time := 0
@@ -89,7 +89,7 @@ feature {}
          xuplet_text := no_text
       end
 
-   no_text: FIXED_STRING is
+   no_text: FIXED_STRING
       once
          Result := "".intern
       end

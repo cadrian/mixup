@@ -18,12 +18,12 @@ expanded class MIXUP_CONFIGURATION
    --
 
 feature {ANY}
-   lilypond_exe_path: REFERENCE[FIXED_STRING] is
+   lilypond_exe_path: REFERENCE[FIXED_STRING]
       once
          create Result.set_item("lilypond".intern)
       end
 
-   lilypond_include_directories: FAST_ARRAY[FIXED_STRING] is
+   lilypond_include_directories: FAST_ARRAY[FIXED_STRING]
       once
          create Result.with_capacity(4)
       end

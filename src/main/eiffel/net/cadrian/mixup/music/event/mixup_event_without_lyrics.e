@@ -21,17 +21,17 @@ feature {ANY}
    allow_lyrics: BOOLEAN is False
    has_lyrics: BOOLEAN is False
 
-   set_has_lyrics (enable: BOOLEAN) is
+   set_has_lyrics (enable: BOOLEAN)
       do
          crash
       end
 
-   set_lyrics (a_lyrics: like lyrics) is
+   set_lyrics (a_lyrics: like lyrics)
       do
          crash
       end
 
-   lyrics: TRAVERSABLE[MIXUP_SYLLABLE] is
+   lyrics: TRAVERSABLE[MIXUP_SYLLABLE]
       do
          check Result = Void end
       end

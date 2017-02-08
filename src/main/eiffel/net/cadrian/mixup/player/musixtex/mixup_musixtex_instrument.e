@@ -23,7 +23,7 @@ feature {ANY}
    staffs: INTEGER
 
 feature {MIXUP_MUSIXTEX_PLAYER}
-   emit_instrument (output: OUTPUT_STREAM) is
+   emit_instrument (output: OUTPUT_STREAM)
       require
          output.is_connected
       do
@@ -39,7 +39,7 @@ feature {MIXUP_MUSIXTEX_PLAYER}
          output.put_line(once "}")
       end
 
-   emit (output: OUTPUT_STREAM) is
+   emit (output: OUTPUT_STREAM)
       require
          output /= Void
       local
@@ -52,7 +52,7 @@ feature {MIXUP_MUSIXTEX_PLAYER}
       end
 
 feature {}
-   make (a_index: like index; a_name: ABSTRACT_STRING) is
+   make (a_index: like index; a_name: ABSTRACT_STRING)
       require
          a_name /= Void
       do

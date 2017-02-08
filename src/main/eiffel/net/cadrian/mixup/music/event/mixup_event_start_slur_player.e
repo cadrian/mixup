@@ -19,7 +19,7 @@ inherit
 
 feature {MIXUP_EVENT_START_SLUR}
    play_start_slur (a_data: MIXUP_EVENT_DATA; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64
-      a_text: ABSTRACT_STRING) is
+      a_text: ABSTRACT_STRING)
       require
          a_data.instrument /= Void
          a_text /= Void

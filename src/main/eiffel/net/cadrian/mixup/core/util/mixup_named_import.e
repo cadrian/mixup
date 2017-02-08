@@ -24,7 +24,7 @@ create {MIXUP_IMPORT}
    duplicate
 
 feature {ANY}
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       local
          timing_: MIXUP_MUSIC_TIMING
       do
@@ -33,7 +33,7 @@ feature {ANY}
          Result.set_timing(timing_.set(0, a_commit_context.bar_number, 0))
       end
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_CONTEXT_VISITOR
       do
@@ -42,20 +42,20 @@ feature {ANY}
       end
 
 feature {}
-   valid_identifier (identifier: FIXED_STRING): BOOLEAN is
+   valid_identifier (identifier: FIXED_STRING): BOOLEAN
       do
          Result := identifier.has_prefix(name)
             and then identifier.count > name.count
             and then identifier.item(identifier.lower + name.count) = '.'
       end
 
-   child_identifier (identifier: FIXED_STRING): FIXED_STRING is
+   child_identifier (identifier: FIXED_STRING): FIXED_STRING
       do
          Result := identifier.substring(name.count + 1 + identifier.lower, identifier.upper)
       end
 
 feature {}
-   make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent; child_context: like child) is
+   make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent; child_context: like child)
       require
          child_context /= Void
          a_parent /= Void
@@ -68,7 +68,7 @@ feature {}
          child = child_context
       end
 
-   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_child: like child; a_values: like values; a_imports: like imports) is
+   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_child: like child; a_values: like values; a_imports: like imports)
       do
          source := a_source
          name := a_name

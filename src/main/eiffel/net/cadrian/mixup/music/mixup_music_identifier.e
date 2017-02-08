@@ -24,21 +24,21 @@ create {ANY}
    make
 
 feature {ANY}
-   timing: MIXUP_MUSIC_TIMING is
+   timing: MIXUP_MUSIC_TIMING
       do
       end
 
-   valid_anchor: BOOLEAN is
+   valid_anchor: BOOLEAN
       do
          Result := music /= Void
       end
 
-   anchor: MIXUP_NOTE_HEAD is
+   anchor: MIXUP_NOTE_HEAD
       do
          Result := music.anchor
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): MIXUP_MUSIC is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): MIXUP_MUSIC
       local
          value: MIXUP_VALUE
       do
@@ -54,7 +54,7 @@ feature {ANY}
          end
       end
 
-   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR
       do
          debug
             log.trace.put_line(once "New events iterator for music identifier: " | identifier.as_name)
@@ -62,7 +62,7 @@ feature {ANY}
          Result := music.new_events_iterator(a_context)
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          identifier.out_in_tagged_out_memory
          if music /= Void then
@@ -72,19 +72,19 @@ feature {ANY}
       end
 
 feature {MIXUP_MUSIC, MIXUP_SPANNER}
-   add_voice_ids (ids: AVL_SET[INTEGER]) is
+   add_voice_ids (ids: AVL_SET[INTEGER])
       do
          music.add_voice_ids(ids)
          log.info.put_line("Identifier " + identifier.out + " is music " + music.out + " (voices " + ids.out + ")")
       end
 
-   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER)
       do
          music.set_timing(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}
-   make (a_source: like source; a_identifier: like identifier) is
+   make (a_source: like source; a_identifier: like identifier)
       require
          a_source /= Void
          a_identifier /= Void

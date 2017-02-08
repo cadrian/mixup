@@ -27,12 +27,12 @@ feature {ANY}
 
    byte_size: INTEGER is 3
 
-   valid_value (value: INTEGER): BOOLEAN is
+   valid_value (value: INTEGER): BOOLEAN
       do
          Result := value.in_range(0, 127)
       end
 
-   encode_to (message_code: INTEGER_32; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   encode_to (message_code: INTEGER_32; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM)
       do
          debug
             log.trace.put_line(name | once "=" | &value)
@@ -43,7 +43,7 @@ feature {ANY}
       end
 
 feature {}
-   make (cod: INTEGER_32; a_name: ABSTRACT_STRING) is
+   make (cod: INTEGER_32; a_name: ABSTRACT_STRING)
       require
          a_name /= Void
       do

@@ -31,22 +31,22 @@ create {MIXUP_LYRICS}
    duplicate
 
 feature {ANY}
-   timing: MIXUP_MUSIC_TIMING is
+   timing: MIXUP_MUSIC_TIMING
       do
          Result := note.timing
       end
 
-   count: INTEGER is
+   count: INTEGER
       do
          Result := capacity
       end
 
-   valid_anchor: BOOLEAN is
+   valid_anchor: BOOLEAN
       do
          Result := note.valid_anchor
       end
 
-   anchor: MIXUP_NOTE_HEAD is
+   anchor: MIXUP_NOTE_HEAD
       do
          Result := note.anchor
       end
@@ -54,7 +54,7 @@ feature {ANY}
    capacity: INTEGER
    note: MIXUP_NOTE
 
-   is_equal (other: like Current): BOOLEAN is
+   is_equal (other: like Current): BOOLEAN
       local
          i: INTEGER
       do
@@ -70,7 +70,7 @@ feature {ANY}
          end
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       local
          i: INTEGER
       do
@@ -96,7 +96,7 @@ feature {ANY}
          tagged_out_memory.append(once " >> }")
       end
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_NOTE_VISITOR
       do
@@ -106,27 +106,27 @@ feature {ANY}
 
    lower: INTEGER is 0
 
-   upper: INTEGER is
+   upper: INTEGER
       do
          Result := count - 1
       end
 
-   item (index: INTEGER): MIXUP_SYLLABLE is
+   item (index: INTEGER): MIXUP_SYLLABLE
       do
          Result := storage.item(index)
       end
 
-   first: MIXUP_SYLLABLE is
+   first: MIXUP_SYLLABLE
       do
          Result := storage.item(lower)
       end
 
-   last: MIXUP_SYLLABLE is
+   last: MIXUP_SYLLABLE
       do
          Result := storage.item(upper)
       end
 
-   new_iterator: ITERATOR[MIXUP_SYLLABLE] is
+   new_iterator: ITERATOR[MIXUP_SYLLABLE]
       do
          crash
       end
@@ -135,7 +135,7 @@ feature {ANY}
 
    can_have_lyrics: BOOLEAN is True
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       local
          note_: like note
       do
@@ -144,13 +144,13 @@ feature {ANY}
       end
 
 feature {MIXUP_MUSIC, MIXUP_SPANNER}
-   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER)
       do
          note.set_timing(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}
-   make (a_source: like source; a_note: MIXUP_NOTE; a_lyrics: TRAVERSABLE[MIXUP_SYLLABLE]) is
+   make (a_source: like source; a_note: MIXUP_NOTE; a_lyrics: TRAVERSABLE[MIXUP_SYLLABLE])
       require
          a_source /= Void
          not a_lyrics.is_empty
@@ -169,14 +169,14 @@ feature {}
          end
       end
 
-   duplicate (a_source: like source; a_note: MIXUP_NOTE; a_capacity: INTEGER; a_storage: like storage) is
+   duplicate (a_source: like source; a_note: MIXUP_NOTE; a_capacity: INTEGER; a_storage: like storage)
       do
          manifest_make(a_capacity, a_note, a_source)
          storage := a_storage
       end
 
 feature {} -- Manifest create (for tests):
-   manifest_make (a_capacity: INTEGER; a_note: MIXUP_NOTE; a_source: like source) is
+   manifest_make (a_capacity: INTEGER; a_note: MIXUP_NOTE; a_source: like source)
       require
          a_capacity > 0
          a_note /= Void
@@ -188,7 +188,7 @@ feature {} -- Manifest create (for tests):
          storage := storage.calloc(a_capacity)
       end
 
-   manifest_put (index: INTEGER; syllable: ABSTRACT_STRING) is
+   manifest_put (index: INTEGER; syllable: ABSTRACT_STRING)
       local
          syl: MIXUP_SYLLABLE
       do
@@ -198,7 +198,7 @@ feature {} -- Manifest create (for tests):
 
    manifest_semicolon_check: BOOLEAN is False
 
-   unknown_source: MIXUP_SOURCE is
+   unknown_source: MIXUP_SOURCE
       once
          create {MIXUP_SOURCE_UNKNOWN} Result
       end

@@ -24,7 +24,7 @@ feature {ANY}
    decoded: E_
 
 feature {}
-   make (a_image: like image; a_decoded: like decoded; a_blanks: like blanks; a_position: like position) is
+   make (a_image: like image; a_decoded: like decoded; a_blanks: like blanks; a_position: like position)
       require
          a_image /= Void
          a_decoded /= Void

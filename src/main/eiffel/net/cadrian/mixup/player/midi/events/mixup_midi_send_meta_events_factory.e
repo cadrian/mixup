@@ -21,7 +21,7 @@ create {MIXUP_MIDI_PLAYER}
    make
 
 feature {ANY}
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "{MIXUP_MIDI_SEND_EVENTS_FACTORY ")
          events.out_in_tagged_out_memory
@@ -29,12 +29,12 @@ feature {ANY}
       end
 
 feature {ANY}
-   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR
       do
          create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_MIDI_SEND_META_EVENTS}.make(a_context.event_data(source), events))
       end
 
-   add_event (a_event: MIXUP_MIDI_META_EVENT) is
+   add_event (a_event: MIXUP_MIDI_META_EVENT)
       require
          a_event /= Void
       do
@@ -42,7 +42,7 @@ feature {ANY}
       end
 
 feature {}
-   make (a_source: like source) is
+   make (a_source: like source)
       require
          a_source /= Void
       do
@@ -55,7 +55,7 @@ feature {}
    events: FAST_ARRAY[MIXUP_MIDI_META_EVENT]
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       do
          a_name.append(once "<send_meta_events>")
       end

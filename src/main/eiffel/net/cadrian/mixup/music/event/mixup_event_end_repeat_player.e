@@ -18,7 +18,7 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_END_REPEAT}
-   play_end_repeat (a_data: MIXUP_EVENT_DATA) is
+   play_end_repeat (a_data: MIXUP_EVENT_DATA)
       require
          a_data.instrument /= Void
       deferred

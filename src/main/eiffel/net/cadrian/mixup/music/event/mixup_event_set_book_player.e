@@ -18,7 +18,7 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_SET_BOOK}
-   play_set_book (a_name: ABSTRACT_STRING) is
+   play_set_book (a_name: ABSTRACT_STRING)
       require
          a_name /= Void
       deferred

@@ -29,23 +29,23 @@ create {ANY}
    make
 
 feature {ANY}
-   start is
+   start
       do
       end
 
    is_off: BOOLEAN is True
 
-   item: MIXUP_EVENT is
+   item: MIXUP_EVENT
       do
          crash
       end
 
-   next is
+   next
       do
       end
 
 feature {}
-   make is
+   make
       do
       end
 

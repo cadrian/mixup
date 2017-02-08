@@ -21,7 +21,7 @@ insert
    MIXUP_MIDI_STREAM_CONSTANTS
 
 feature {ANY}
-   start (tracks_count: INTEGER_16; division: INTEGER_16) is
+   start (tracks_count: INTEGER_16; division: INTEGER_16)
       require
          is_connected
       do
@@ -32,7 +32,7 @@ feature {ANY}
          put_integer_16(division)
       end
 
-   next_track (length: INTEGER) is
+   next_track (length: INTEGER)
       require
          is_connected
       do
@@ -40,7 +40,7 @@ feature {ANY}
          put_integer_32(length)
       end
 
-   put_variable (variable: INTEGER_64) is
+   put_variable (variable: INTEGER_64)
          -- A variable length value uses the low order 7 bits of a byte to represent the value or part of the
          -- value. The high order bit is an "escape" or "continuation" bit. All but the last byte of a
          -- variable length value have the high order bit set. The last byte has the high order bit
@@ -52,7 +52,7 @@ feature {ANY}
          put_variable_byte_and_continue(variable, False)
       end
 
-   put_byte (byte: INTEGER_32) is
+   put_byte (byte: INTEGER_32)
       require
          is_connected
          byte.in_range(0, 0x000000ff)
@@ -61,7 +61,7 @@ feature {ANY}
       end
 
 feature {}
-   put_variable_byte_and_continue (variable: INTEGER_64; continue: BOOLEAN) is
+   put_variable_byte_and_continue (variable: INTEGER_64; continue: BOOLEAN)
       require
          variable >= 0
          is_connected
@@ -79,7 +79,7 @@ feature {}
       end
 
 feature {}
-   frozen put_integer_32 (int: INTEGER_32) is
+   frozen put_integer_32 (int: INTEGER_32)
       require
          is_connected
       do
@@ -89,7 +89,7 @@ feature {}
          put_integer_8( int         & 0x000000ff)
       end
 
-   frozen put_integer_16 (short: INTEGER_32) is
+   frozen put_integer_16 (short: INTEGER_32)
       require
          is_connected
          short.in_range(0, 0x0000ffff)
@@ -98,7 +98,7 @@ feature {}
          put_integer_8( short         & 0x000000ff)
       end
 
-   put_integer_8 (byte: INTEGER_32) is
+   put_integer_8 (byte: INTEGER_32)
       require
          is_connected
          byte.in_range(0, 0x000000ff)

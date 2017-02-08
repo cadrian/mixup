@@ -18,7 +18,7 @@ inherit
    MIXUP_SOURCE
 
 feature {ANY}
-   file: FIXED_STRING is
+   file: FIXED_STRING
       once
          Result := "unknown".intern
       end
@@ -26,7 +26,7 @@ feature {ANY}
    line: INTEGER is 0
    column: INTEGER is 0
 
-   display (a_output: OUTPUT_STREAM) is
+   display (a_output: OUTPUT_STREAM)
       do
       end
 

@@ -25,7 +25,7 @@ feature {ANY}
    name: FIXED_STRING
    voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.extend('[')
          tagged_out_memory.append(generating_type)
@@ -39,7 +39,7 @@ feature {ANY}
       end
 
 feature {MIXUP_PLAYER}
-   fire (player: MIXUP_PLAYER) is
+   fire (player: MIXUP_PLAYER)
       local
          p: MIXUP_EVENT_SET_INSTRUMENT_PLAYER
       do
@@ -48,7 +48,7 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_source: like source; a_time: like time; a_name: ABSTRACT_STRING; a_voice_staff_ids: like voice_staff_ids) is
+   make (a_source: like source; a_time: like time; a_name: ABSTRACT_STRING; a_voice_staff_ids: like voice_staff_ids)
       require
          a_source /= Void
          a_name /= Void

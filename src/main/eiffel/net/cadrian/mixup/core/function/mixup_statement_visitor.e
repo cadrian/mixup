@@ -18,49 +18,49 @@ inherit
    VISITOR
 
 feature {MIXUP_ASSIGNMENT}
-   visit_assignment (a_assignment: MIXUP_ASSIGNMENT) is
+   visit_assignment (a_assignment: MIXUP_ASSIGNMENT)
       require
          a_assignment /= Void
       deferred
       end
 
 feature {MIXUP_EXPRESSION_AS_STATEMENT}
-   visit_expression_as_statement (a_expression_as_statement: MIXUP_EXPRESSION_AS_STATEMENT) is
+   visit_expression_as_statement (a_expression_as_statement: MIXUP_EXPRESSION_AS_STATEMENT)
       require
          a_expression_as_statement /= Void
       deferred
       end
 
 feature {MIXUP_IF_THEN_ELSE}
-   visit_if_then_else (a_if_then_else: MIXUP_IF_THEN_ELSE) is
+   visit_if_then_else (a_if_then_else: MIXUP_IF_THEN_ELSE)
       require
          a_if_then_else /= Void
       deferred
       end
 
 feature {MIXUP_INSPECT}
-   visit_inspect (a_inspect: MIXUP_INSPECT) is
+   visit_inspect (a_inspect: MIXUP_INSPECT)
       require
          a_inspect /= Void
       deferred
       end
 
 feature {MIXUP_LOOP}
-   visit_loop (a_loop: MIXUP_LOOP) is
+   visit_loop (a_loop: MIXUP_LOOP)
       require
          a_loop /= Void
       deferred
       end
 
 feature {MIXUP_RESULT_ASSIGNMENT}
-   visit_result_assignment (a_result_assignment: MIXUP_RESULT_ASSIGNMENT) is
+   visit_result_assignment (a_result_assignment: MIXUP_RESULT_ASSIGNMENT)
       require
          a_result_assignment /= Void
       deferred
       end
 
 feature {MIXUP_YIELD}
-   visit_yield (a_yield: MIXUP_YIELD) is
+   visit_yield (a_yield: MIXUP_YIELD)
       require
          a_yield /= Void
       deferred

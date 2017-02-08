@@ -18,7 +18,7 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_SET_INSTRUMENT}
-   play_set_instrument (a_name: ABSTRACT_STRING; a_voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
+   play_set_instrument (a_name: ABSTRACT_STRING; a_voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER])
       require
          a_name /= Void
       deferred

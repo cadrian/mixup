@@ -25,7 +25,7 @@ feature {ANY}
    resolver: MIXUP_RESOLVER
    timing: MIXUP_MUSIC_TIMING
 
-   set_commit_context (a_commit_context: MIXUP_COMMIT_CONTEXT): MIXUP_COMMIT_CONTEXT is
+   set_commit_context (a_commit_context: MIXUP_COMMIT_CONTEXT): MIXUP_COMMIT_CONTEXT
       require
          timing.is_set
       do
@@ -34,7 +34,7 @@ feature {ANY}
          Result.set_bar_number(timing.first_bar_number)
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       deferred
       ensure
          Result /= Void
@@ -43,7 +43,7 @@ feature {ANY}
          Result.timing.first_bar_number = a_commit_context.bar_number
       end
 
-   hook (hook_name: ABSTRACT_STRING): MIXUP_VALUE is
+   hook (hook_name: ABSTRACT_STRING): MIXUP_VALUE
       local
          full_hook_name: STRING
       do
@@ -54,7 +54,7 @@ feature {ANY}
          Result := lookup(full_hook_name.intern, False)
       end
 
-   lookup (identifier: FIXED_STRING; search_parent: BOOLEAN): MIXUP_VALUE is
+   lookup (identifier: FIXED_STRING; search_parent: BOOLEAN): MIXUP_VALUE
       require
          identifier /= Void
       do
@@ -70,7 +70,7 @@ feature {ANY}
          end
       end
 
-   setup (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN) is
+   setup (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN)
       require
          identifier /= Void
          a_value /= Void
@@ -85,18 +85,18 @@ feature {ANY}
          end
       end
 
-   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
+   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE)
       require
          a_name /= Void
          a_value /= Void
       deferred
       end
 
-   get_local (a_name: FIXED_STRING): MIXUP_VALUE is
+   get_local (a_name: FIXED_STRING): MIXUP_VALUE
       deferred
       end
 
-   run_hook (a_source: MIXUP_SOURCE; a_commit_context: MIXUP_COMMIT_CONTEXT; hook_name: STRING) is
+   run_hook (a_source: MIXUP_SOURCE; a_commit_context: MIXUP_COMMIT_CONTEXT; hook_name: STRING)
       local
          h, res: MIXUP_VALUE
       do
@@ -115,7 +115,7 @@ feature {ANY}
       end
 
 feature {MIXUP_CONTEXT}
-   lookup_value (identifier: FIXED_STRING; search_parent: BOOLEAN; a_tag: like lookup_tag): MIXUP_VALUE is
+   lookup_value (identifier: FIXED_STRING; search_parent: BOOLEAN; a_tag: like lookup_tag): MIXUP_VALUE
       require
          a_tag > lookup_tag
          identifier /= Void
@@ -151,7 +151,7 @@ feature {MIXUP_CONTEXT}
          end
       end
 
-   setup_value (identifier: FIXED_STRING; assign_if_new: BOOLEAN; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN; a_tag: like lookup_tag): BOOLEAN is
+   setup_value (identifier: FIXED_STRING; assign_if_new: BOOLEAN; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN; a_tag: like lookup_tag): BOOLEAN
       require
          a_tag > lookup_tag
          identifier /= Void
@@ -204,7 +204,7 @@ feature {MIXUP_CONTEXT}
          end
       end
 
-   add_child (a_child: MIXUP_CONTEXT) is
+   add_child (a_child: MIXUP_CONTEXT)
       require
          a_child /= Void
          a_child /= Current
@@ -212,14 +212,14 @@ feature {MIXUP_CONTEXT}
       deferred
       end
 
-   add_import (a_import: MIXUP_IMPORT) is
+   add_import (a_import: MIXUP_IMPORT)
       require
          a_import /= Void
       do
          imports.add_last(a_import)
       end
 
-   set_timing (a_timing: like timing) is
+   set_timing (a_timing: like timing)
       require
          a_timing.is_set
       do
@@ -233,7 +233,7 @@ feature {MIXUP_CONTEXT}
    lookup_tag: INTEGER
 
 feature {}
-   set_value (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN) is
+   set_value (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN)
       do
          if log.is_trace then
             log.trace.put_string(once "Setting ")
@@ -260,7 +260,7 @@ feature {}
    parent: MIXUP_CONTEXT
    imports: FAST_ARRAY[MIXUP_IMPORT]
 
-   commit_values (a_commit_context: MIXUP_COMMIT_CONTEXT): like values is
+   commit_values (a_commit_context: MIXUP_COMMIT_CONTEXT): like values
       local
          values_: HASHED_DICTIONARY[MIXUP_VALUE_IN_CONTEXT, FIXED_STRING]
       do
@@ -269,29 +269,29 @@ feature {}
          Result := values_
       end
 
-   commit_imports (a_commit_context: MIXUP_COMMIT_CONTEXT): like imports is
+   commit_imports (a_commit_context: MIXUP_COMMIT_CONTEXT): like imports
       do
          create Result.with_capacity(imports.count)
-         imports.do_all(agent (a_imports: like imports; commit_context_: MIXUP_COMMIT_CONTEXT; a_import: MIXUP_IMPORT) is
+         imports.do_all(agent (a_imports: like imports; commit_context_: MIXUP_COMMIT_CONTEXT; a_import: MIXUP_IMPORT)
                         do
                            a_imports.add_last(a_import.commit(commit_context_))
                         end(Result, a_commit_context, ?))
       end
 
-   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is
+   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE
       require
          identifier /= Void
       deferred
       end
 
-   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN is
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN
       require
          identifier /= Void
          a_value /= Void
       deferred
       end
 
-   lookup_in_imports (identifier: FIXED_STRING): MIXUP_VALUE is
+   lookup_in_imports (identifier: FIXED_STRING): MIXUP_VALUE
       require
          identifier /= Void
       local
@@ -310,7 +310,7 @@ feature {}
          end
       end
 
-   setup_in_imports (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN is
+   setup_in_imports (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN
       require
          identifier /= Void
          a_value /= Void
@@ -329,13 +329,13 @@ feature {}
          end
       end
 
-   lookup_tag_counter: COUNTER is
+   lookup_tag_counter: COUNTER
       once
          create Result
       end
 
 feature {}
-   make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent) is
+   make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent)
       do
          source := a_source
          name := a_name.intern

@@ -27,11 +27,11 @@ feature {ANY}
    id: INTEGER
    timing: MIXUP_MUSIC_TIMING
 
-   duration: INTEGER_64 is
+   duration: INTEGER_64
       deferred
       end
 
-   anchor: MIXUP_NOTE_HEAD is
+   anchor: MIXUP_NOTE_HEAD
       local
          i: INTEGER; found: BOOLEAN
       do
@@ -54,14 +54,14 @@ feature {ANY}
    reference: MIXUP_NOTE_HEAD
    allow_lyrics: BOOLEAN is True
 
-   add_bar (a_source: MIXUP_SOURCE; style: FIXED_STRING) is
+   add_bar (a_source: MIXUP_SOURCE; style: FIXED_STRING)
       require
          a_source /= Void
       do
          add_music(create {MIXUP_BAR}.make(a_source, style))
       end
 
-   add_music (a_music: MIXUP_MUSIC) is
+   add_music (a_music: MIXUP_MUSIC)
       require
          a_music /= Void
       do
@@ -76,7 +76,7 @@ feature {ANY}
          music.last = a_music
       end
 
-   add_chord (a_source: MIXUP_SOURCE; note_heads: COLLECTION[TUPLE[MIXUP_SOURCE, FIXED_STRING]]; note_length: INTEGER_64; tie: BOOLEAN) is
+   add_chord (a_source: MIXUP_SOURCE; note_heads: COLLECTION[TUPLE[MIXUP_SOURCE, FIXED_STRING]]; note_length: INTEGER_64; tie: BOOLEAN)
       require
          a_source /= Void
       local
@@ -107,7 +107,7 @@ feature {ANY}
          end
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       local
          music_: FAST_ARRAY[MIXUP_MUSIC]
          music_zip: AGGREGATOR[MIXUP_MUSIC, MIXUP_MUSIC_TIMING]
@@ -115,7 +115,7 @@ feature {ANY}
       do
          create music_.make(music.count)
          timing_ := music_zip.map_index(music,
-                                        agent (music0: MIXUP_MUSIC; a_music: FAST_ARRAY[MIXUP_MUSIC]; accu: MIXUP_MUSIC_TIMING; commit_context_: MIXUP_COMMIT_CONTEXT; index: INTEGER): MIXUP_MUSIC_TIMING is
+                                        agent (music0: MIXUP_MUSIC; a_music: FAST_ARRAY[MIXUP_MUSIC]; accu: MIXUP_MUSIC_TIMING; commit_context_: MIXUP_COMMIT_CONTEXT; index: INTEGER): MIXUP_MUSIC_TIMING
                                         local
                                            music0_: MIXUP_MUSIC
                                         do
@@ -132,24 +132,24 @@ feature {ANY}
       end
 
 feature {MIXUP_MUSIC, MIXUP_SPANNER}
-   add_voice_ids (ids: AVL_SET[INTEGER]) is
+   add_voice_ids (ids: AVL_SET[INTEGER])
       do
          if not ids.fast_has(id) then
             ids.add(id)
-            music.do_all(agent (a_music: MIXUP_MUSIC; a_ids: AVL_SET[INTEGER]) is
+            music.do_all(agent (a_music: MIXUP_MUSIC; a_ids: AVL_SET[INTEGER])
                             do
                                a_music.add_voice_ids(a_ids)
                             end(?, ids))
          end
       end
 
-   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER)
       do
          timing := timing.set(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}
-   make (a_source: like source; a_reference: like reference) is
+   make (a_source: like source; a_reference: like reference)
       require
          a_source /= Void
          not a_reference.is_rest
@@ -164,7 +164,7 @@ feature {}
          reference = a_reference
       end
 
-   do_duplicate (a_music: like music; a_timing: like timing): like Current is
+   do_duplicate (a_music: like music; a_timing: like timing): like Current
       require
          a_music /= Void
          a_timing.is_set
@@ -182,7 +182,7 @@ feature {}
 
    music: COLLECTION[MIXUP_MUSIC]
 
-   id_provider: COUNTER is
+   id_provider: COUNTER
       once
          create Result
       end

@@ -26,7 +26,7 @@ create {ANY}
 feature {ANY}
    is_callable: BOOLEAN is False
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_VALUE_VISITOR
       do
@@ -34,19 +34,19 @@ feature {ANY}
          v.visit_value_factory(Current)
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          as_name_in(tagged_out_memory)
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       do
          a_name.append(once "<value factory>")
       end
 
 feature {}
-   make (a_source: like source; a_factory: like factory) is
+   make (a_source: like source; a_factory: like factory)
       require
          a_source /= Void
       do
@@ -59,12 +59,12 @@ feature {}
 
    factory: FUNCTION[TUPLE[MIXUP_SOURCE, MIXUP_COMMIT_CONTEXT], MIXUP_VALUE]
 
-   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       do
          Result := factory.item([source, a_commit_context])
       end
 
-   no_args: FAST_ARRAY[MIXUP_VALUE] is
+   no_args: FAST_ARRAY[MIXUP_VALUE]
       once
          create Result.make(0)
       end

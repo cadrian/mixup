@@ -28,7 +28,7 @@ feature {ANY}
    is_const: BOOLEAN
    is_public: BOOLEAN
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.extend('[')
          value.out_in_tagged_out_memory
@@ -42,7 +42,7 @@ feature {ANY}
       end
 
 feature {}
-   make (a_value: like value; a_const: like is_const; a_public: like is_public) is
+   make (a_value: like value; a_const: like is_const; a_public: like is_public)
       require
          a_value /= Void
       do

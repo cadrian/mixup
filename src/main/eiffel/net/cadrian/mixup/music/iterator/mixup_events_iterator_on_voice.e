@@ -24,7 +24,7 @@ create {MIXUP_VOICE, MIXUP_GROUPED_MUSIC}
    make
 
 feature {ANY}
-   start is
+   start
       do
          music_iterator := music.new_iterator
          iter_context := context
@@ -32,18 +32,18 @@ feature {ANY}
          set_events_iterator
       end
 
-   is_off: BOOLEAN is
+   is_off: BOOLEAN
       do
          Result := music_iterator.is_off and then events_iterator.is_off
       end
 
 feature {}
-   fetch_item: MIXUP_EVENT is
+   fetch_item: MIXUP_EVENT
       do
          Result := events_iterator.item
       end
 
-   go_next is
+   go_next
       do
          events_iterator.next
          if events_iterator.is_off then
@@ -57,7 +57,7 @@ feature {MIXUP_VOICE}
    events_iterator: MIXUP_EVENTS_ITERATOR
    music_duration: INTEGER_64
 
-   set_events_iterator is
+   set_events_iterator
       do
          if not music_iterator.is_off then
             from
@@ -80,7 +80,7 @@ feature {MIXUP_VOICE}
       end
 
 feature {}
-   make (a_context: like context; a_music: like music) is
+   make (a_context: like context; a_music: like music)
       require
          a_music /= Void
       do

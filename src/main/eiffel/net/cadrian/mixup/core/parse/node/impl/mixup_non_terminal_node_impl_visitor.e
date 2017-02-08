@@ -18,7 +18,7 @@ inherit
    VISITOR
 
 feature {MIXUP_NON_TERMINAL_NODE_IMPL}
-   visit_mixup_non_terminal_node_impl (node: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   visit_mixup_non_terminal_node_impl (node: MIXUP_NON_TERMINAL_NODE_IMPL)
       require
          node /= Void
       deferred

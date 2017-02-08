@@ -22,7 +22,7 @@ create {ANY}
    make
 
 feature {ANY}
-   call (a_commit_context: MIXUP_COMMIT_CONTEXT) is
+   call (a_commit_context: MIXUP_COMMIT_CONTEXT)
       do
          check
             commit_context = a_commit_context
@@ -31,61 +31,61 @@ feature {ANY}
       end
 
 feature {MIXUP_BOOLEAN}
-   visit_boolean (a_boolean: MIXUP_BOOLEAN) is
+   visit_boolean (a_boolean: MIXUP_BOOLEAN)
       do
          fatal("cannot iterate on a boolean")
       end
 
 feature {MIXUP_INTEGER}
-   visit_integer (a_integer: MIXUP_INTEGER) is
+   visit_integer (a_integer: MIXUP_INTEGER)
       do
          fatal("cannot iterate on an integer")
       end
 
 feature {MIXUP_REAL}
-   visit_real (a_real: MIXUP_REAL) is
+   visit_real (a_real: MIXUP_REAL)
       do
          fatal("cannot iterate on a real")
       end
 
 feature {MIXUP_STRING}
-   visit_string (a_string: MIXUP_STRING) is
+   visit_string (a_string: MIXUP_STRING)
       do
          fatal("cannot iterate on a string")
       end
 
 feature {MIXUP_MUSIC_VALUE}
-   visit_music (a_music: MIXUP_MUSIC_VALUE) is
+   visit_music (a_music: MIXUP_MUSIC_VALUE)
       do
          fatal("cannot iterate on music")
       end
 
 feature {MIXUP_MUSIC_STORE}
-   visit_music_store (a_music: MIXUP_MUSIC_STORE) is
+   visit_music_store (a_music: MIXUP_MUSIC_STORE)
       do
          fatal("cannot iterate on music store")
       end
 
 feature {MIXUP_TUPLE}
-   visit_tuple (a_tuple: MIXUP_TUPLE) is
+   visit_tuple (a_tuple: MIXUP_TUPLE)
       do
          visit_iterable(a_tuple)
       end
 
 feature {MIXUP_LIST}
-   visit_list (a_list: MIXUP_LIST) is
+   visit_list (a_list: MIXUP_LIST)
       do
          visit_iterable(a_list)
       end
 
 feature {MIXUP_SEQ}
-   visit_seq (a_seq: MIXUP_SEQ) is
+   visit_seq (a_seq: MIXUP_SEQ)
       do
          visit_iterable(a_seq)
       end
 
 feature {}
-   visit_iterable (a_iterable: MIXUP_ITERABLE) is
+   visit_iterable (a_iterable: MIXUP_ITERABLE)
       local
          item: MIXUP_VALUE
       do
@@ -107,13 +107,13 @@ feature {}
       end
 
 feature {MIXUP_DICTIONARY}
-   visit_dictionary (a_dictionary: MIXUP_DICTIONARY) is
+   visit_dictionary (a_dictionary: MIXUP_DICTIONARY)
       do
          fatal("cannot iterate on a dictionary")
       end
 
 feature {MIXUP_YIELD_ITERATOR}
-   visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR) is
+   visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR)
       do
          if more and then a_yield_iterator.has_next then
             a_yield_iterator.next(commit_context)
@@ -127,7 +127,7 @@ feature {MIXUP_YIELD_ITERATOR}
       end
 
 feature {}
-   make (a_source: like source; a_commit_context: like commit_context; a_loop: like loop_; a_value: like value) is
+   make (a_source: like source; a_commit_context: like commit_context; a_loop: like loop_; a_value: like value)
       require
          a_source /= Void
          a_commit_context.context /= Void

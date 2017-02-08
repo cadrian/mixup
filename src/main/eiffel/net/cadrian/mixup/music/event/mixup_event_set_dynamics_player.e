@@ -18,7 +18,7 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_SET_DYNAMICS}
-   play_set_dynamics (a_data: MIXUP_EVENT_DATA; a_dynamics: ABSTRACT_STRING; a_position: ABSTRACT_STRING; is_standard: BOOLEAN) is
+   play_set_dynamics (a_data: MIXUP_EVENT_DATA; a_dynamics: ABSTRACT_STRING; a_position: ABSTRACT_STRING; is_standard: BOOLEAN)
       require
          a_data.instrument /= Void
          a_dynamics /= Void

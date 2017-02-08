@@ -29,7 +29,7 @@ create {ANY}
 feature {ANY}
    is_callable: BOOLEAN is False
 
-   add_identifier_part (a_source: like source; name: ABSTRACT_STRING) is
+   add_identifier_part (a_source: like source; name: ABSTRACT_STRING)
       require
          name /= Void
       do
@@ -40,7 +40,7 @@ feature {ANY}
          end
       end
 
-   set_args (args: COLLECTION[MIXUP_EXPRESSION]) is
+   set_args (args: COLLECTION[MIXUP_EXPRESSION])
       require
          args /= Void
       do
@@ -51,7 +51,7 @@ feature {ANY}
          end
       end
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_VALUE_VISITOR
       do
@@ -59,7 +59,7 @@ feature {ANY}
          v.visit_identifier(Current)
       end
 
-   assign (a_commit_context: MIXUP_COMMIT_CONTEXT; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN) is
+   assign (a_commit_context: MIXUP_COMMIT_CONTEXT; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN)
       local
          context: like lookup
       do
@@ -70,7 +70,7 @@ feature {ANY}
          context.second.setup(context.third.intern, a_value, is_const, is_public, is_local)
       end
 
-   as_name: STRING is
+   as_name: STRING
       do
          Result := ""
          as_name_in(Result)
@@ -78,19 +78,19 @@ feature {ANY}
          Result /= Void
       end
 
-   is_simple: BOOLEAN is
+   is_simple: BOOLEAN
       do
          Result := parts.count = 1 and then parts.first.args = Void
       end
 
-   simple_name: FIXED_STRING is
+   simple_name: FIXED_STRING
       require
          is_simple
       do
          Result := parts.first.name
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       local
          i: INTEGER
       do
@@ -108,7 +108,7 @@ feature {ANY}
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       local
          i: INTEGER
       do
@@ -126,7 +126,7 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       end
 
 feature {}
-   make (a_source: like source) is
+   make (a_source: like source)
       require
          a_source /= Void
       do
@@ -143,7 +143,7 @@ feature {}
    debug_name: STRING
    no_value: MIXUP_NO_VALUE
 
-   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       local
          value: MIXUP_VALUE
       do
@@ -166,7 +166,7 @@ feature {}
          end
       end
 
-   lookup (a_commit_context: MIXUP_COMMIT_CONTEXT): TUPLE[MIXUP_VALUE, MIXUP_CONTEXT, STRING] is
+   lookup (a_commit_context: MIXUP_COMMIT_CONTEXT): TUPLE[MIXUP_VALUE, MIXUP_CONTEXT, STRING]
       local
          context: MIXUP_CONTEXT
          i: INTEGER; name_buffer: STRING

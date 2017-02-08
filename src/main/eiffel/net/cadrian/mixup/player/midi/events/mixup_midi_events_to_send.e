@@ -21,16 +21,16 @@ create {ANY}
    make
 
 feature {ANY}
-   generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION)
       do
-         events.do_all(agent (a_time: INTEGER_64; a_event: FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]) is
+         events.do_all(agent (a_time: INTEGER_64; a_event: FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT])
                        do
                           track.add_event(a_time, a_event.item([track_id.to_integer_8]))
                        end(time * section.precision, ?))
       end
 
 feature {}
-   make (a_time: like time; a_events: like events; a_track: like track; a_track_id: like track_id) is
+   make (a_time: like time; a_events: like events; a_track: like track; a_track_id: like track_id)
       require
          a_events /= Void
          a_track /= Void

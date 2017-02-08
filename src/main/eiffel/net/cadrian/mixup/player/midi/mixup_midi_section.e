@@ -25,13 +25,13 @@ create {ANY}
    make
 
 feature {ANY}
-   generate (a_output: MIXUP_MIDI_OUTPUT_STREAM) is
+   generate (a_output: MIXUP_MIDI_OUTPUT_STREAM)
       do
          file.end_all_tracks
          file.encode_to(a_output)
       end
 
-   filename_in (a_filename: STRING) is
+   filename_in (a_filename: STRING)
       require
          a_filename /= Void
       do
@@ -44,7 +44,7 @@ feature {ANY}
 
    precision: INTEGER_8
 
-   set_precision (a_precision: like precision) is
+   set_precision (a_precision: like precision)
       require
          a_precision > 0
          (duration_4 * precision).fit_integer_16
@@ -55,7 +55,7 @@ feature {ANY}
          precision = a_precision
       end
 
-   send_meta_events (a_time: INTEGER_64; a_events: HOARD[MIXUP_MIDI_META_EVENT]) is
+   send_meta_events (a_time: INTEGER_64; a_events: HOARD[MIXUP_MIDI_META_EVENT])
       require
          a_events /= Void
       do
@@ -63,13 +63,13 @@ feature {ANY}
       end
 
 feature {ANY}
-   new_instrument (context: MIXUP_CONTEXT; a_name: FIXED_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]; track_id: INTEGER): MIXUP_MIDI_INSTRUMENT is
+   new_instrument (context: MIXUP_CONTEXT; a_name: FIXED_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]; track_id: INTEGER): MIXUP_MIDI_INSTRUMENT
       do
          create Result.make(context, a_name, voice_staff_ids, file, track_id)
       end
 
 feature {}
-   make (section, a_name: ABSTRACT_STRING; a_parent: like parent) is
+   make (section, a_name: ABSTRACT_STRING; a_parent: like parent)
       do
          name := a_name.intern
          parent := a_parent

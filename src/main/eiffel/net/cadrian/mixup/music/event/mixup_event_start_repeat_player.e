@@ -18,7 +18,7 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_START_REPEAT}
-   play_start_repeat (a_data: MIXUP_EVENT_DATA; a_volte: INTEGER_64) is
+   play_start_repeat (a_data: MIXUP_EVENT_DATA; a_volte: INTEGER_64)
       require
          a_data.instrument /= Void
       deferred

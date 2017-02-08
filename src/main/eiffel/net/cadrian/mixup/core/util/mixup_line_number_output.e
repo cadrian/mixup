@@ -24,7 +24,7 @@ create {ANY}
    bind
 
 feature {ANY}
-   can_put_character (c: CHARACTER): BOOLEAN is
+   can_put_character (c: CHARACTER): BOOLEAN
       do
          Result := is_connected
             and then (c = '%N'
@@ -35,7 +35,7 @@ feature {ANY}
    blanks: STRING
 
 feature {FILTER_OUTPUT_STREAM}
-   filtered_put_character (c: CHARACTER) is
+   filtered_put_character (c: CHARACTER)
       do
          if current_line.in_range(line - delta + 1, line) then
             stream.filtered_put_character(c)
@@ -54,13 +54,13 @@ feature {FILTER_OUTPUT_STREAM}
          end
       end
 
-   filtered_flush is
+   filtered_flush
       do
          stream.filtered_flush
       end
 
 feature {}
-   bind (a_stream: like stream; a_line: like line; a_delta: like delta) is
+   bind (a_stream: like stream; a_line: like line; a_delta: like delta)
       require
          a_stream.is_connected
          a_line > 0

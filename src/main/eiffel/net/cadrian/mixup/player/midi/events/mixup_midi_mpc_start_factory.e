@@ -24,7 +24,7 @@ create {MIXUP_MIDI_PLAYER}
    make
 
 feature {ANY}
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "{MIXUP_MIDI_MPC_START_FACTORY ")
          value.out_in_tagged_out_memory
@@ -35,7 +35,7 @@ feature {ANY}
    value: INTEGER_8
    mpc_end: MIXUP_MIDI_MPC_END_FACTORY
 
-   set_mpc_end (a_mpc_end: like mpc_end) is
+   set_mpc_end (a_mpc_end: like mpc_end)
       require
          mpc_end = Void
          a_mpc_end /= Void
@@ -45,7 +45,7 @@ feature {ANY}
          mpc_end = a_mpc_end
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       do
          Result := Precursor(a_commit_context)
          Result.clear_mpc_end
@@ -58,7 +58,7 @@ feature {ANY}
       end
 
 feature {MIXUP_MIDI_MPC_START_FACTORY}
-   clear_mpc_end is
+   clear_mpc_end
       do
          mpc_end := Void
       ensure
@@ -68,7 +68,7 @@ feature {MIXUP_MIDI_MPC_START_FACTORY}
 feature {MIXUP_MIDI_MPC_END_FACTORY}
    last_commit: like Current
 
-   clear_last_commit is
+   clear_last_commit
       require
          last_commit /= Void
       do
@@ -78,7 +78,7 @@ feature {MIXUP_MIDI_MPC_END_FACTORY}
       end
 
 feature {ANY}
-   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR
       do
          create last_mpc_start.make(a_context.event_data(source))
          create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(last_mpc_start)
@@ -87,7 +87,7 @@ feature {ANY}
    last_mpc_start: MIXUP_MIDI_MPC_START
 
 feature {}
-   make (a_source: like source; a_knob: like knob; a_value: like value) is
+   make (a_source: like source; a_knob: like knob; a_value: like value)
       require
          a_source /= Void
          a_knob /= Void
@@ -102,7 +102,7 @@ feature {}
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       do
          a_name.append(once "<mpc start>")
       end

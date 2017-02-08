@@ -28,7 +28,7 @@ create {ANY}
    make
 
 feature {ANY}
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_VALUE_VISITOR
       do
@@ -36,13 +36,13 @@ feature {ANY}
          v.visit_integer(Current)
       end
 
-   infix "<" (other: like Current): BOOLEAN is
+   infix "<" (other: like Current): BOOLEAN
       do
          Result := value < other.value
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       do
          value.append_in(a_name)
       end

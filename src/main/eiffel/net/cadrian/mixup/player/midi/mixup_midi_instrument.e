@@ -34,19 +34,19 @@ create {ANY}
    make
 
 feature {MIXUP_MIDI_PLAYER}
-   send_events (a_time: INTEGER_64; a_staff_id, a_voice_id: INTEGER; a_events: HOARD[FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]]) is
+   send_events (a_time: INTEGER_64; a_staff_id, a_voice_id: INTEGER; a_events: HOARD[FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]])
       require
          a_events /= Void
       do
          staffs.reference_at(a_staff_id).send_events(a_time, a_voice_id, a_events)
       end
 
-   transpose (a_time: INTEGER_64; a_half_tones: INTEGER_8) is
+   transpose (a_time: INTEGER_64; a_half_tones: INTEGER_8)
       do
          track.add_event(a_time, create {MIXUP_MIDI_TRANSPOSE_EVENT}.make(a_half_tones))
       end
 
-   mpc (a_knob: MIXUP_MIDI_CONTROLLER_KNOB; a_start_time: INTEGER_64; a_start_value: INTEGER_8; a_end_time: INTEGER_64; a_end_value: INTEGER_8) is
+   mpc (a_knob: MIXUP_MIDI_CONTROLLER_KNOB; a_start_time: INTEGER_64; a_start_value: INTEGER_8; a_end_time: INTEGER_64; a_end_value: INTEGER_8)
       require
          a_start_value >= 0
          a_end_value >= 0
@@ -55,7 +55,7 @@ feature {MIXUP_MIDI_PLAYER}
       end
 
 feature {}
-   make (a_context: like context; a_name: like name; a_voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]; file: MIXUP_MIDI_FILE; a_track_id: like track_id) is
+   make (a_context: like context; a_name: like name; a_voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]; file: MIXUP_MIDI_FILE; a_track_id: like track_id)
       require
          file /= Void
          a_track_id.in_range(0, 15)
@@ -68,7 +68,7 @@ feature {}
          track.add_event(0, track_name_event(a_name))
       end
 
-   new_staff (voice_ids: TRAVERSABLE[INTEGER]; id: INTEGER): MIXUP_MIDI_STAFF is
+   new_staff (voice_ids: TRAVERSABLE[INTEGER]; id: INTEGER): MIXUP_MIDI_STAFF
       do
          create Result.make(id, voice_ids, track, track_id)
       end

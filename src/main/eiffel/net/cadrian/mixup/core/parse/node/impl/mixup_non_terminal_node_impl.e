@@ -23,7 +23,7 @@ create {MIXUP_NODE_FACTORY}
 feature {ANY}
    name: FIXED_STRING
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_NON_TERMINAL_NODE_IMPL_VISITOR
       do
@@ -31,55 +31,55 @@ feature {ANY}
          v.visit_mixup_non_terminal_node_impl(Current)
       end
 
-   name_at (index: INTEGER): FIXED_STRING is
+   name_at (index: INTEGER): FIXED_STRING
       do
          Result := names.item(index - lower + names.lower)
       end
 
-   node_at (index: INTEGER): MIXUP_NODE is
+   node_at (index: INTEGER): MIXUP_NODE
       do
          Result := nodes.item(index)
       end
 
-   valid_index (index: INTEGER): BOOLEAN is
+   valid_index (index: INTEGER): BOOLEAN
       do
          Result := nodes.valid_index(index)
       end
 
-   lower: INTEGER is
+   lower: INTEGER
       do
          Result := nodes.lower
       end
 
-   upper: INTEGER is
+   upper: INTEGER
       do
          Result := nodes.upper
       end
 
-   count: INTEGER is
+   count: INTEGER
       do
          Result := nodes.count
       end
 
-   is_empty: BOOLEAN is
+   is_empty: BOOLEAN
       do
          Result := nodes.is_empty
       end
 
-   accept_all (visitor: VISITOR) is
+   accept_all (visitor: VISITOR)
       do
          nodes.do_all(agent {VISITABLE}.accept(visitor))
       end
 
 feature {MIXUP_GRAMMAR}
-   set (index: INTEGER; node: MIXUP_NODE) is
+   set (index: INTEGER; node: MIXUP_NODE)
       do
          nodes.put(node, index)
          node.set_parent(Current)
       end
 
 feature {MIXUP_NODE_HANDLER}
-   display (output: OUTPUT_STREAM; indent: INTEGER; p: STRING) is
+   display (output: OUTPUT_STREAM; indent: INTEGER; p: STRING)
       local
          i: INTEGER
       do
@@ -97,7 +97,7 @@ feature {MIXUP_NODE_HANDLER}
          end
       end
 
-   generate (o: OUTPUT_STREAM) is
+   generate (o: OUTPUT_STREAM)
       local
          i: INTEGER
       do
@@ -113,7 +113,7 @@ feature {MIXUP_NODE_HANDLER}
       end
 
 feature {}
-   make (a_name: like name; a_names: like names) is
+   make (a_name: like name; a_names: like names)
       do
          name := a_name
          names := a_names

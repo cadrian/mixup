@@ -32,12 +32,12 @@ feature {ANY}
    code: INTEGER_32
    data: FIXED_STRING
 
-   byte_size: INTEGER is
+   byte_size: INTEGER
       do
          Result := 2 + byte_size_variable(data.count) + data.count
       end
 
-   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
+   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT)
       local
          i, byte: INTEGER
       do
@@ -63,7 +63,7 @@ feature {ANY}
       end
 
 feature {}
-   make (a_code: like code; a_data: ABSTRACT_STRING; a_name: ABSTRACT_STRING) is
+   make (a_code: like code; a_data: ABSTRACT_STRING; a_name: ABSTRACT_STRING)
       require
          valid_code(code)
          a_data /= Void

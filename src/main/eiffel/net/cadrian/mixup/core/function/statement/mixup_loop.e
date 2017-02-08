@@ -28,7 +28,7 @@ feature {ANY}
    expression: MIXUP_EXPRESSION
    statements: TRAVERSABLE[MIXUP_STATEMENT]
 
-   call (a_commit_context: MIXUP_COMMIT_CONTEXT) is
+   call (a_commit_context: MIXUP_COMMIT_CONTEXT)
       local
          value: MIXUP_VALUE
          context: MIXUP_USER_FUNCTION_CONTEXT
@@ -42,7 +42,7 @@ feature {ANY}
          end
       end
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_STATEMENT_VISITOR
       do
@@ -50,14 +50,14 @@ feature {ANY}
          v.visit_loop(Current)
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "loop: ")
          source.out_in_tagged_out_memory
       end
 
 feature {}
-   make (a_source: like source; a_identifier: like identifier; a_expression: like expression; a_statements: like statements) is
+   make (a_source: like source; a_identifier: like identifier; a_expression: like expression; a_statements: like statements)
       require
          a_source /= Void
          a_identifier /= Void

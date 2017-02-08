@@ -29,7 +29,7 @@ create {MIXUP_TUPLE}
 feature {ANY}
    is_callable: BOOLEAN is False
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_VALUE_VISITOR
       do
@@ -37,52 +37,52 @@ feature {ANY}
          v.visit_tuple(Current)
       end
 
-   count: INTEGER is
+   count: INTEGER
       do
          Result := expressions.count
       end
 
-   is_empty: BOOLEAN is
+   is_empty: BOOLEAN
       do
          Result := expressions.is_empty
       end
 
    lower: INTEGER is 0
 
-   upper: INTEGER is
+   upper: INTEGER
       do
          Result := expressions.count - 1
       end
 
-   item (index: INTEGER): MIXUP_VALUE is
+   item (index: INTEGER): MIXUP_VALUE
       do
          if values /= Void then
             Result := values.item(index)
          end
       end
 
-   first: MIXUP_VALUE is
+   first: MIXUP_VALUE
       do
          if values /= Void then
             Result := values.first
          end
       end
 
-   last: MIXUP_VALUE is
+   last: MIXUP_VALUE
       do
          if values /= Void then
             Result := values.last
          end
       end
 
-   new_iterator: ITERATOR[MIXUP_VALUE] is
+   new_iterator: ITERATOR[MIXUP_VALUE]
       do
          if values /= Void then
             Result := values.new_iterator
          end
       end
 
-   append_to (a_values: COLLECTION[MIXUP_VALUE]) is
+   append_to (a_values: COLLECTION[MIXUP_VALUE])
       do
          if values /= Void then
             a_values.append_traversable(values)
@@ -90,7 +90,7 @@ feature {ANY}
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (buffer: STRING) is
+   as_name_in (buffer: STRING)
       local
          i: INTEGER
       do
@@ -110,7 +110,7 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       end
 
 feature {}
-   make (a_source: like source; a_expressions: like expressions) is
+   make (a_source: like source; a_expressions: like expressions)
       require
          a_source /= Void
          a_expressions /= Void
@@ -122,7 +122,7 @@ feature {}
          expressions = a_expressions
       end
 
-   duplicate (a_source: like source; a_values: like values) is
+   duplicate (a_source: like source; a_values: like values)
       require
          a_source /= Void
          a_values /= Void
@@ -138,7 +138,7 @@ feature {}
    expressions: TRAVERSABLE[MIXUP_EXPRESSION]
    values: FAST_ARRAY[MIXUP_VALUE]
 
-   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       local
          i: INTEGER; a_values: like values
       do

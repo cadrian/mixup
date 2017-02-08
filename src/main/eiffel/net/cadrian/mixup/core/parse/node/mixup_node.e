@@ -35,27 +35,27 @@ feature {ANY}
    forgotten: FAST_ARRAY[MIXUP_NODE]
          -- used when this node is in a MIXUP_LIST_NODE and nodes are between this node and the next one
 
-   name: FIXED_STRING is
+   name: FIXED_STRING
          -- the name of the node in the grammar
       deferred
       ensure
          Result /= Void
       end
 
-   source_line: INTEGER is
+   source_line: INTEGER
       deferred
       end
 
-   source_column: INTEGER is
+   source_column: INTEGER
       deferred
       end
 
-   source_index: INTEGER is
+   source_index: INTEGER
       deferred
       end
 
 feature {MIXUP_GRAMMAR}
-   set_forgotten (a_forgotten: like forgotten) is
+   set_forgotten (a_forgotten: like forgotten)
       do
          forgotten := a_forgotten
       ensure
@@ -63,19 +63,19 @@ feature {MIXUP_GRAMMAR}
       end
 
 feature {MIXUP_NODE_HANDLER} -- Basic operations
-   display (output: OUTPUT_STREAM; indent: INTEGER; p: STRING) is
+   display (output: OUTPUT_STREAM; indent: INTEGER; p: STRING)
          -- Display the node in a tree fashion in the provided `output' stream
       deferred
       end
 
-   generate (o: OUTPUT_STREAM) is
+   generate (o: OUTPUT_STREAM)
          -- Generate the node exactly as it was written, including blanks and `forgotten' nodes, onto the
          -- provided `output' stream
       deferred
       end
 
 feature {}
-   generate_forgotten (o: OUTPUT_STREAM) is
+   generate_forgotten (o: OUTPUT_STREAM)
       local
          i: INTEGER
       do
@@ -92,7 +92,7 @@ feature {}
       end
 
 feature {MIXUP_NON_TERMINAL_NODE, MIXUP_LIST_NODE}
-   set_parent (a_parent: like parent) is
+   set_parent (a_parent: like parent)
       require
          a_parent /= Void
          parent = Void
@@ -103,7 +103,7 @@ feature {MIXUP_NON_TERMINAL_NODE, MIXUP_LIST_NODE}
       end
 
 feature {}
-   do_indent (output: OUTPUT_STREAM; indent: INTEGER; p: STRING) is
+   do_indent (output: OUTPUT_STREAM; indent: INTEGER; p: STRING)
       local
          i: INTEGER
       do

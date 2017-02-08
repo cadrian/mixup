@@ -22,7 +22,7 @@ inherit
    COMPARABLE
 
 feature {ANY}
-   infix "<" (other: MIXUP_EVENTS_ITERATOR): BOOLEAN is
+   infix "<" (other: MIXUP_EVENTS_ITERATOR): BOOLEAN
       do
          if is_off then
             Result := not other.is_off

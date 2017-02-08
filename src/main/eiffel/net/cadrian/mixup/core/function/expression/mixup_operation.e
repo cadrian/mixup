@@ -18,7 +18,7 @@ insert
    MIXUP_ERRORS
 
 feature {}
-   as_integer (value: MIXUP_VALUE): INTEGER_64 is
+   as_integer (value: MIXUP_VALUE): INTEGER_64
       local
          int: MIXUP_INTEGER
       do
@@ -30,7 +30,7 @@ feature {}
          end
       end
 
-   as_real (value: MIXUP_VALUE): REAL is
+   as_real (value: MIXUP_VALUE): REAL
       local
          real: MIXUP_REAL
       do
@@ -42,7 +42,7 @@ feature {}
          end
       end
 
-   as_string (value: MIXUP_VALUE): MIXUP_STRING is
+   as_string (value: MIXUP_VALUE): MIXUP_STRING
       do
          if not (Result ?:= value) then
             fatal("bad type")

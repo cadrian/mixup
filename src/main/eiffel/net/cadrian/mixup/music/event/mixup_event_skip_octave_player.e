@@ -18,7 +18,7 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_SKIP_OCTAVE}
-   play_skip_octave (a_data: MIXUP_EVENT_DATA; a_skip: INTEGER_8) is
+   play_skip_octave (a_data: MIXUP_EVENT_DATA; a_skip: INTEGER_8)
       require
          a_data.instrument /= Void
       deferred

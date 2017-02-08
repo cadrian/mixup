@@ -24,7 +24,7 @@ create {ANY}
    make_full, make_body
 
 feature {ANY}
-   set_header (a_header: ABSTRACT_STRING) is
+   set_header (a_header: ABSTRACT_STRING)
       require
          a_header /= Void
       do
@@ -36,14 +36,14 @@ feature {ANY}
          end
       end
 
-   set_body (a_body: ABSTRACT_STRING) is
+   set_body (a_body: ABSTRACT_STRING)
       require
          a_body /= Void
       do
          body.append(a_body)
       end
 
-   set_footer (a_footer: ABSTRACT_STRING) is
+   set_footer (a_footer: ABSTRACT_STRING)
       require
          a_footer /= Void
       do
@@ -55,7 +55,7 @@ feature {ANY}
          end
       end
 
-   generate (a_output: MIXUP_LILYPOND_OUTPUT) is
+   generate (a_output: MIXUP_LILYPOND_OUTPUT)
       local
          stream: OUTPUT_STREAM
       do
@@ -88,7 +88,7 @@ feature {ANY}
          end
       end
 
-   filename_in (a_filename: STRING) is
+   filename_in (a_filename: STRING)
       require
          a_filename /= Void
       do
@@ -104,7 +104,7 @@ feature {}
    body: STRING
    footer: STRING
 
-   make (a_type, a_name: ABSTRACT_STRING; a_parent: like parent) is
+   make (a_type, a_name: ABSTRACT_STRING; a_parent: like parent)
       do
          type := a_type.intern
          name := a_name.intern
@@ -115,7 +115,7 @@ feature {}
          parent = a_parent
       end
 
-   make_body (a_type, a_name: ABSTRACT_STRING; a_parent: like parent) is
+   make_body (a_type, a_name: ABSTRACT_STRING; a_parent: like parent)
       require
          a_type /= Void
          a_name /= Void
@@ -128,7 +128,7 @@ feature {}
          footer = Void
       end
 
-   make_full (a_type, a_name: ABSTRACT_STRING) is
+   make_full (a_type, a_name: ABSTRACT_STRING)
       require
          a_type /= Void
          a_name /= Void

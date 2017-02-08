@@ -18,20 +18,20 @@ insert
    LOGGING
 
 feature {ANY}
-   byte_size: INTEGER is
+   byte_size: INTEGER
       deferred
       ensure
          Result >= 0
       end
 
-   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
+   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT)
       require
          stream.is_connected
          context /= Void
       deferred
       end
 
-   byte_size_variable (variable: INTEGER_64): INTEGER is
+   byte_size_variable (variable: INTEGER_64): INTEGER
       do
          inspect
             variable

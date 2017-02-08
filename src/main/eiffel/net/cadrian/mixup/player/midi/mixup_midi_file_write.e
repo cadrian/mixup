@@ -21,7 +21,7 @@ create {ANY}
    make, connect_to
 
 feature {ANY}
-   connect_to (a_stream: like stream) is
+   connect_to (a_stream: like stream)
       require
          a_stream.is_connected
          not is_connected
@@ -32,23 +32,23 @@ feature {ANY}
          is_connected
       end
 
-   is_connected: BOOLEAN is
+   is_connected: BOOLEAN
       do
          Result := stream /= Void and then stream.is_connected
       end
 
-   disconnect is
+   disconnect
       do
          stream.disconnect
          stream := Void
       end
 
 feature {}
-   make is
+   make
       do
       end
 
-   put_integer_8 (byte: INTEGER_32) is
+   put_integer_8 (byte: INTEGER_32)
       do
          stream.put_byte(byte)
       end

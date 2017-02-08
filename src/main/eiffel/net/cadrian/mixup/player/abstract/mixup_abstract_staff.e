@@ -23,7 +23,7 @@ feature {ANY}
    id: INTEGER
 
 feature {MIXUP_ABSTRACT_INSTRUMENT}
-   start_voices (a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]) is
+   start_voices (a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER])
       local
          map: AVL_DICTIONARY[VOI_, INTEGER]
          voices_: like root_voices
@@ -48,7 +48,7 @@ feature {MIXUP_ABSTRACT_INSTRUMENT}
          paths.push(map)
       end
 
-   end_voices (a_voice_id: INTEGER) is
+   end_voices (a_voice_id: INTEGER)
       local
          voices_: like root_voices
       do
@@ -63,68 +63,68 @@ feature {MIXUP_ABSTRACT_INSTRUMENT}
          end
       end
 
-   set_dynamics (a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
+   set_dynamics (a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN)
       do
          voice(a_voice_id).set_dynamics(dynamics, position, is_standard)
       end
 
-   set_note (a_voice_id: INTEGER; time: INTEGER_64; note: MIXUP_NOTE) is
+   set_note (a_voice_id: INTEGER; time: INTEGER_64; note: MIXUP_NOTE)
       do
          voice(a_voice_id).set_note(time, note)
       end
 
-   next_bar (a_voice_id: INTEGER; style: ABSTRACT_STRING) is
+   next_bar (a_voice_id: INTEGER; style: ABSTRACT_STRING)
       do
          voice(a_voice_id).next_bar(style)
       end
 
-   skip_octave (a_voice_id: INTEGER; time: INTEGER_64; skip: INTEGER_8) is
+   skip_octave (a_voice_id: INTEGER; time: INTEGER_64; skip: INTEGER_8)
       do
          voice(a_voice_id).skip_octave(time, skip)
       end
 
-   start_beam (a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_beam (a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       do
          voice(a_voice_id).start_beam(xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_beam (a_voice_id: INTEGER) is
+   end_beam (a_voice_id: INTEGER)
       do
          voice(a_voice_id).end_beam
       end
 
-   start_slur (a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_slur (a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       do
          voice(a_voice_id).start_slur(xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_slur (a_voice_id: INTEGER) is
+   end_slur (a_voice_id: INTEGER)
       do
          voice(a_voice_id).end_slur
       end
 
-   start_phrasing_slur (a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_phrasing_slur (a_voice_id: INTEGER; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       do
          voice(a_voice_id).start_phrasing_slur(xuplet_numerator, xuplet_denominator, text)
       end
 
-   end_phrasing_slur (a_voice_id: INTEGER) is
+   end_phrasing_slur (a_voice_id: INTEGER)
       do
          voice(a_voice_id).end_phrasing_slur
       end
 
-   start_repeat (a_voice_id: INTEGER; volte: INTEGER_64) is
+   start_repeat (a_voice_id: INTEGER; volte: INTEGER_64)
       do
          voice(a_voice_id).start_repeat(volte)
       end
 
-   end_repeat (a_voice_id: INTEGER) is
+   end_repeat (a_voice_id: INTEGER)
       do
          voice(a_voice_id).end_repeat
       end
 
 feature {MIXUP_ABSTRACT_INSTRUMENT}
-   generate (context: MIXUP_CONTEXT; section: SEC_; generate_names: BOOLEAN) is
+   generate (context: MIXUP_CONTEXT; section: SEC_; generate_names: BOOLEAN)
          -- TODO: generate_names is lilypond-specific, find another way
       require
          section /= Void
@@ -142,7 +142,7 @@ feature {MIXUP_ABSTRACT_INSTRUMENT}
       end
 
 feature {}
-   gather_lyrics (a_lyrics: TRAVERSABLE[MIXUP_SYLLABLE]; a_time: INTEGER_64) is
+   gather_lyrics (a_lyrics: TRAVERSABLE[MIXUP_SYLLABLE]; a_time: INTEGER_64)
       local
          zip: ZIP[AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64], MIXUP_SYLLABLE]
       do
@@ -151,7 +151,7 @@ feature {}
          zip.do_all(agent {AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]}.put({MIXUP_SYLLABLE}, a_time))
       end
 
-   ensure_lyrics_count (a_count: INTEGER) is
+   ensure_lyrics_count (a_count: INTEGER)
       do
          from
          until
@@ -163,7 +163,7 @@ feature {}
          lyrics.count >= a_count
       end
 
-   generate_lyrics (lyr: AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]; index: INTEGER; context: MIXUP_CONTEXT; section: SEC_) is
+   generate_lyrics (lyr: AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]; index: INTEGER; context: MIXUP_CONTEXT; section: SEC_)
       require
          lyr /= Void
          index > 0
@@ -172,7 +172,7 @@ feature {}
       end
 
 feature {}
-   make (a_id: like id; a_voice_ids: TRAVERSABLE[INTEGER]) is
+   make (a_id: like id; a_voice_ids: TRAVERSABLE[INTEGER])
       require
          a_id > 0
       do
@@ -192,14 +192,14 @@ feature {}
    voices: STACK[VOS_]
    paths: STACK[AVL_DICTIONARY[VOI_, INTEGER]]
 
-   voice (a_voice_id: INTEGER): VOI_ is
+   voice (a_voice_id: INTEGER): VOI_
       require
          not paths.is_empty
       do
          Result := paths.top.reference_at(a_voice_id)
       end
 
-   new_voices (a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]): like root_voices is
+   new_voices (a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]): like root_voices
       require
          voice_ids /= Void
       deferred

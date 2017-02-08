@@ -18,74 +18,74 @@ inherit
    VISITOR
 
 feature {MIXUP_SCORE}
-   start_score (a_score: MIXUP_SCORE) is
+   start_score (a_score: MIXUP_SCORE)
       require
          a_score /= Void
       do
       end
 
-   end_score (a_score: MIXUP_SCORE) is
+   end_score (a_score: MIXUP_SCORE)
       require
          a_score /= Void
       do
       end
 
 feature {MIXUP_BOOK}
-   start_book (a_book: MIXUP_BOOK) is
+   start_book (a_book: MIXUP_BOOK)
       require
          a_book /= Void
       do
       end
 
-   end_book (a_book: MIXUP_BOOK) is
+   end_book (a_book: MIXUP_BOOK)
       require
          a_book /= Void
       do
       end
 
 feature {MIXUP_PARTITUR}
-   start_partitur (a_partitur: MIXUP_PARTITUR) is
+   start_partitur (a_partitur: MIXUP_PARTITUR)
       require
          a_partitur /= Void
       do
       end
 
-   end_partitur (a_partitur: MIXUP_PARTITUR) is
+   end_partitur (a_partitur: MIXUP_PARTITUR)
       require
          a_partitur /= Void
       do
       end
 
 feature {MIXUP_INSTRUMENT}
-   visit_instrument (a_instrument: MIXUP_INSTRUMENT) is
+   visit_instrument (a_instrument: MIXUP_INSTRUMENT)
       require
          a_instrument /= Void
       do
       end
 
 feature {MIXUP_USER_FUNCTION_CONTEXT}
-   visit_user_function_context (a_user_function: MIXUP_USER_FUNCTION_CONTEXT) is
+   visit_user_function_context (a_user_function: MIXUP_USER_FUNCTION_CONTEXT)
       require
          a_user_function /= Void
       do
       end
 
 feature {MIXUP_MODULE}
-   visit_module (a_module: MIXUP_MODULE) is
+   visit_module (a_module: MIXUP_MODULE)
       require
          a_module /= Void
       do
       end
 
 feature {MIXUP_IMPORT}
-   visit_named_import (a_named_import: MIXUP_NAMED_IMPORT) is
+   visit_named_import (a_named_import: MIXUP_NAMED_IMPORT)
       require
          a_named_import /= Void
       do
       end
 
 feature {MIXUP_FROM_IMPORT}
-   visit_from_import (a_from_import: MIXUP_FROM_IMPORT) is
+   visit_from_import (a_from_import: MIXUP_FROM_IMPORT)
       require
          a_from_import /= Void
       do

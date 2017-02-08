@@ -32,7 +32,7 @@ feature {ANY}
    needs_instrument: BOOLEAN is True
 
 feature {MIXUP_PLAYER}
-   fire (player: MIXUP_PLAYER) is
+   fire (player: MIXUP_PLAYER)
       local
          p: MIXUP_EVENT_NEXT_BAR_PLAYER
       do
@@ -41,7 +41,7 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_data: like data; a_style: ABSTRACT_STRING) is
+   make (a_data: like data; a_style: ABSTRACT_STRING)
       do
          make_(a_data)
          if a_style /= Void then
@@ -52,7 +52,7 @@ feature {}
          a_style = Void implies style = Void
       end
 
-   out_in_extra_data is
+   out_in_extra_data
       do
          tagged_out_memory.append(once ", style=")
          if style = Void then

@@ -21,13 +21,13 @@ insert
    MIXUP_MIDI_EVENT_TYPES
 
 feature {ANY}
-   byte_size: INTEGER is
+   byte_size: INTEGER
       deferred
       ensure then
          Result > 0
       end
 
-   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
+   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT)
       local
          code: INTEGER_32
       do
@@ -36,13 +36,13 @@ feature {ANY}
          put_args(stream, context)
       end
 
-   event_type: INTEGER_32 is
+   event_type: INTEGER_32
       deferred
       end
 
    channel: INTEGER_32
 
-   set_channel (a_channel: like channel) is
+   set_channel (a_channel: like channel)
       require
          a_channel.in_range(0, 15)
       do
@@ -52,7 +52,7 @@ feature {ANY}
       end
 
 feature {}
-   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
+   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT)
       require
          stream.is_connected
          context /= Void

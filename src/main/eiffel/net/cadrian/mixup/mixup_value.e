@@ -18,7 +18,7 @@ inherit
    MIXUP_EXPRESSION
 
 feature {ANY}
-   frozen eval (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   frozen eval (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       do
          Result := eval_(a_commit_context, do_call)
          if Result /= Current and then Result /= Void then
@@ -27,18 +27,18 @@ feature {ANY}
       end
 
    is_context: BOOLEAN is False
-   as_context: MIXUP_CONTEXT is
+   as_context: MIXUP_CONTEXT
       require
          is_context
       do
          crash
       end
 
-   is_callable: BOOLEAN is
+   is_callable: BOOLEAN
       deferred
       end
 
-   call (a_source: MIXUP_SOURCE; a_commit_context: MIXUP_COMMIT_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   call (a_source: MIXUP_SOURCE; a_commit_context: MIXUP_COMMIT_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE
       require
          is_callable
          a_args /= Void
@@ -48,7 +48,7 @@ feature {ANY}
          crash
       end
 
-   append_to (values: COLLECTION[MIXUP_VALUE]) is
+   append_to (values: COLLECTION[MIXUP_VALUE])
       require
          values /= Void
       do
@@ -56,7 +56,7 @@ feature {ANY}
       end
 
 feature {}
-   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       deferred
       end
 

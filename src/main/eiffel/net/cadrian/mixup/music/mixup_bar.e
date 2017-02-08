@@ -31,18 +31,18 @@ feature {ANY}
 
    anchor: MIXUP_NOTE_HEAD is do end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       do
          create Result.make(source, style)
          Result.set_timing(0, a_commit_context.bar_number, 1)
       end
 
-   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR
       do
          create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_NEXT_BAR}.make(a_context.event_data(source), style))
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          if style = Void then
             tagged_out_memory.extend('|')
@@ -52,17 +52,17 @@ feature {ANY}
       end
 
 feature {MIXUP_MUSIC, MIXUP_SPANNER}
-   frozen add_voice_ids (ids: AVL_SET[INTEGER]) is
+   frozen add_voice_ids (ids: AVL_SET[INTEGER])
       do
       end
 
-   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER)
       do
          timing := timing.set(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}
-   make (a_source: like source; a_style: like style) is
+   make (a_source: like source; a_style: like style)
       require
          a_source /= Void
       do

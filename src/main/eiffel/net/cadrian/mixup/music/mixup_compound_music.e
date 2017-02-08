@@ -20,19 +20,19 @@ inherit
 feature {ANY}
    valid_anchor: BOOLEAN is True
 
-   add_music (a_music: MIXUP_MUSIC) is
+   add_music (a_music: MIXUP_MUSIC)
       deferred
       end
 
-   add_chord (a_source: like source; note_heads: COLLECTION[TUPLE[MIXUP_SOURCE, FIXED_STRING]]; note_length: INTEGER_64; tie: BOOLEAN) is
+   add_chord (a_source: like source; note_heads: COLLECTION[TUPLE[MIXUP_SOURCE, FIXED_STRING]]; note_length: INTEGER_64; tie: BOOLEAN)
       deferred
       end
 
-   reference: MIXUP_NOTE_HEAD is
+   reference: MIXUP_NOTE_HEAD
       deferred
       end
 
-   add_bar (a_source: like source; style: FIXED_STRING) is
+   add_bar (a_source: like source; style: FIXED_STRING)
       deferred
       end
 

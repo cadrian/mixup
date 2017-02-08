@@ -23,7 +23,7 @@ create {ANY}
 feature {ANY}
    is_callable: BOOLEAN is False
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_VALUE_VISITOR
       do
@@ -32,13 +32,13 @@ feature {ANY}
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       do
          a_name.append(once "Result")
       end
 
 feature {}
-   make (a_source: like source) is
+   make (a_source: like source)
       require
          a_source /= Void
       do
@@ -47,7 +47,7 @@ feature {}
          source = a_source
       end
 
-   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       local
          user_function: MIXUP_USER_FUNCTION_CONTEXT
       do

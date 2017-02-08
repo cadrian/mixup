@@ -33,12 +33,12 @@ create {ANY}
    make, connect_to
 
 feature {ANY}
-   name: FIXED_STRING is
+   name: FIXED_STRING
       once
          Result := "midi".intern
       end
 
-   native (a_def_source: MIXUP_SOURCE; a_context: MIXUP_NATIVE_CONTEXT; fn_name: STRING): MIXUP_VALUE is
+   native (a_def_source: MIXUP_SOURCE; a_context: MIXUP_NATIVE_CONTEXT; fn_name: STRING): MIXUP_VALUE
       do
          inspect
             fn_name
@@ -57,7 +57,7 @@ feature {ANY}
          end
       end
 
-   play_send_events (a_data: MIXUP_EVENT_DATA; a_events: HOARD[FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]]) is
+   play_send_events (a_data: MIXUP_EVENT_DATA; a_events: HOARD[FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]])
          -- MIDI-specific
       require
          a_events /= Void
@@ -66,7 +66,7 @@ feature {ANY}
          instruments.reference_at(a_data.instrument.name).send_events(a_data.start_time, a_data.staff_id, a_data.voice_id, a_events)
       end
 
-   play_send_meta_events (a_data: MIXUP_EVENT_DATA; a_events: HOARD[MIXUP_MIDI_META_EVENT]) is
+   play_send_meta_events (a_data: MIXUP_EVENT_DATA; a_events: HOARD[MIXUP_MIDI_META_EVENT])
          -- MIDI-specific
       require
          a_events /= Void
@@ -75,14 +75,14 @@ feature {ANY}
          current_section.send_meta_events(a_data.start_time, a_events)
       end
 
-   play_transpose (a_data: MIXUP_EVENT_DATA; a_half_tones: INTEGER_8) is
+   play_transpose (a_data: MIXUP_EVENT_DATA; a_half_tones: INTEGER_8)
          -- MIDI-specific
       do
          log.info.put_line("MIDI: send transpose")
          instruments.reference_at(a_data.instrument.name).transpose(a_data.start_time, a_half_tones)
       end
 
-   play_mpc (a_data: MIXUP_EVENT_DATA; a_knob: MIXUP_MIDI_CONTROLLER_KNOB; a_start_time: INTEGER_64; a_start_value, a_end_value: INTEGER_8) is
+   play_mpc (a_data: MIXUP_EVENT_DATA; a_knob: MIXUP_MIDI_CONTROLLER_KNOB; a_start_time: INTEGER_64; a_start_value, a_end_value: INTEGER_8)
          -- MIDI-specific
       do
          log.info.put_line("MIDI: send MPC")
@@ -90,7 +90,7 @@ feature {ANY}
       end
 
 feature {} -- native functions
-   set_midi_instrument (a_context: MIXUP_NATIVE_CONTEXT): MIXUP_MIDI_SEND_EVENTS_FACTORY is
+   set_midi_instrument (a_context: MIXUP_NATIVE_CONTEXT): MIXUP_MIDI_SEND_EVENTS_FACTORY
       local
          bank, patch: MIXUP_INTEGER
       do
@@ -115,7 +115,7 @@ feature {} -- native functions
          end
       end
 
-   set_midi_tempo (a_context: MIXUP_NATIVE_CONTEXT): MIXUP_MIDI_SEND_META_EVENTS_FACTORY is
+   set_midi_tempo (a_context: MIXUP_NATIVE_CONTEXT): MIXUP_MIDI_SEND_META_EVENTS_FACTORY
       local
          bpm: MIXUP_INTEGER
       do
@@ -134,7 +134,7 @@ feature {} -- native functions
          end
       end
 
-   set_transpose (a_context: MIXUP_NATIVE_CONTEXT): MIXUP_MIDI_TRANSPOSE_FACTORY is
+   set_transpose (a_context: MIXUP_NATIVE_CONTEXT): MIXUP_MIDI_TRANSPOSE_FACTORY
       local
          half_tones: MIXUP_INTEGER
       do
@@ -152,7 +152,7 @@ feature {} -- native functions
          end
       end
 
-   set_midi_mpc_start (a_context: MIXUP_NATIVE_CONTEXT): MIXUP_MIDI_MPC_START_FACTORY is
+   set_midi_mpc_start (a_context: MIXUP_NATIVE_CONTEXT): MIXUP_MIDI_MPC_START_FACTORY
       local
          id, knob: MIXUP_STRING; value: MIXUP_INTEGER
          controller_knob: MIXUP_MIDI_CONTROLLER_KNOB
@@ -185,7 +185,7 @@ feature {} -- native functions
          end
       end
 
-   set_midi_mpc_end (a_context: MIXUP_NATIVE_CONTEXT): MIXUP_MIDI_MPC_END_FACTORY is
+   set_midi_mpc_end (a_context: MIXUP_NATIVE_CONTEXT): MIXUP_MIDI_MPC_END_FACTORY
       local
          id: MIXUP_STRING; value: MIXUP_INTEGER
          mpc_start: MIXUP_MIDI_MPC_START_FACTORY
@@ -219,7 +219,7 @@ feature {} -- native functions
       end
 
 feature {} -- section files management
-   build_filename (a_name: ABSTRACT_STRING): STRING is
+   build_filename (a_name: ABSTRACT_STRING): STRING
       do
          Result := a_name.out
          if current_section /= Void then
@@ -229,23 +229,23 @@ feature {} -- section files management
       end
 
 feature {}
-   call_tool (filename: STRING) is
+   call_tool (filename: STRING)
       do
          -- nothing currently (may eventually call some midi synthesizer)
       end
 
 feature {}
-   new_instrument (a_name: FIXED_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]): MIXUP_MIDI_INSTRUMENT is
+   new_instrument (a_name: FIXED_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]): MIXUP_MIDI_INSTRUMENT
       do
          Result := current_section.new_instrument(context, a_name, voice_staff_ids, instruments.count)
       end
 
-   new_section (section, a_name: ABSTRACT_STRING): MIXUP_MIDI_SECTION is
+   new_section (section, a_name: ABSTRACT_STRING): MIXUP_MIDI_SECTION
       do
          create Result.make(section, a_name, current_section)
       end
 
-   new_output (a_filename: ABSTRACT_STRING): MIXUP_MIDI_FILE_WRITE is
+   new_output (a_filename: ABSTRACT_STRING): MIXUP_MIDI_FILE_WRITE
       local
          bfw: BINARY_FILE_WRITE
       do
@@ -256,7 +256,7 @@ feature {}
       end
 
 feature {}
-   connect_to (a_output: like opus_output) is
+   connect_to (a_output: like opus_output)
       require
          a_output.is_connected
       do
@@ -267,7 +267,7 @@ feature {}
          not managed_output
       end
 
-   make is
+   make
       do
          managed_output := True
          create instruments.make
@@ -276,7 +276,7 @@ feature {}
          managed_output
       end
 
-   mpc_map: HASHED_DICTIONARY[MIXUP_MIDI_MPC_START_FACTORY, FIXED_STRING] is
+   mpc_map: HASHED_DICTIONARY[MIXUP_MIDI_MPC_START_FACTORY, FIXED_STRING]
       once
          create Result.make
       end

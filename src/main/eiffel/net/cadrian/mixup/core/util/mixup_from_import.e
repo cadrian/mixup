@@ -24,7 +24,7 @@ create {MIXUP_FROM_IMPORT}
    duplicate
 
 feature {ANY}
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_CONTEXT_VISITOR
       do
@@ -32,7 +32,7 @@ feature {ANY}
          v.visit_from_import(Current)
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       local
          timing_: MIXUP_MUSIC_TIMING
       do
@@ -42,25 +42,25 @@ feature {ANY}
       end
 
 feature {}
-   valid_identifier (identifier: FIXED_STRING): BOOLEAN is
+   valid_identifier (identifier: FIXED_STRING): BOOLEAN
       do
          if identifiers.is_empty then
             Result := True
          else
-            Result := identifiers.exists(agent (a_id: MIXUP_IDENTIFIER; a_name: FIXED_STRING): BOOLEAN is
+            Result := identifiers.exists(agent (a_id: MIXUP_IDENTIFIER; a_name: FIXED_STRING): BOOLEAN
                do
                   Result := a_id.as_name.intern = a_name
                end (?, identifier))
          end
       end
 
-   child_identifier (identifier: FIXED_STRING): FIXED_STRING is
+   child_identifier (identifier: FIXED_STRING): FIXED_STRING
       do
          Result := identifier
       end
 
 feature {}
-   make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent; child_context: like child; a_identifiers: like identifiers) is
+   make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent; child_context: like child; a_identifiers: like identifiers)
       require
          child_context /= Void
          a_identifiers /= Void
@@ -74,7 +74,7 @@ feature {}
          identifiers = a_identifiers
       end
 
-   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_child: like child; a_values: like values; a_imports: like imports; a_identifiers: like identifiers) is
+   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_child: like child; a_values: like values; a_imports: like imports; a_identifiers: like identifiers)
       do
          source := a_source
          name := a_name

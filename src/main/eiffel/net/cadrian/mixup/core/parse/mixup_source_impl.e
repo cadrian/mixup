@@ -40,7 +40,7 @@ feature {ANY}
    line: INTEGER
    column: INTEGER
 
-   display (a_output: OUTPUT_STREAM) is
+   display (a_output: OUTPUT_STREAM)
       local
          output: MIXUP_LINE_NUMBER_OUTPUT
       do
@@ -60,7 +60,7 @@ feature {ANY}
       end
 
 feature {}
-   make (a_ast: like ast; a_file: like file; a_line: like line; a_column: like column) is
+   make (a_ast: like ast; a_file: like file; a_line: like line; a_column: like column)
       require
          a_ast /= Void
          a_file /= Void

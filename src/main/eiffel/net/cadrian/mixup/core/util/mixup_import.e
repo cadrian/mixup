@@ -21,7 +21,7 @@ inherit
       end
 
 feature {ANY}
-   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
+   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE)
       do
          check
             never_called: False
@@ -29,13 +29,13 @@ feature {ANY}
          crash
       end
 
-   get_local (a_name: FIXED_STRING): MIXUP_VALUE is
+   get_local (a_name: FIXED_STRING): MIXUP_VALUE
       do
          check Result = Void end
       end
 
 feature {MIXUP_CONTEXT}
-   add_child (a_child: MIXUP_CONTEXT) is
+   add_child (a_child: MIXUP_CONTEXT)
       do
          check
             never_called: False
@@ -44,24 +44,24 @@ feature {MIXUP_CONTEXT}
       end
 
 feature {}
-   valid_identifier (identifier: FIXED_STRING): BOOLEAN is
+   valid_identifier (identifier: FIXED_STRING): BOOLEAN
       require
          identifier /= Void
       deferred
       end
 
-   child_identifier (identifier: FIXED_STRING): FIXED_STRING is
+   child_identifier (identifier: FIXED_STRING): FIXED_STRING
       deferred
       end
 
-   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is
+   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE
       do
          if child.lookup_tag < lookup_tag and then valid_identifier(identifier) then
             Result := child.lookup_value(child_identifier(identifier), False, lookup_tag)
          end
       end
 
-   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN is
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN
       do
          if child.lookup_tag < lookup_tag and then valid_identifier(identifier) then
             Result := child.setup_value(child_identifier(identifier), False, a_value, is_const, is_public, is_local, lookup_tag)

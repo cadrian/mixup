@@ -21,21 +21,21 @@ insert
    MIXUP_ERRORS
 
 feature {ANY}
-   name: FIXED_STRING is
+   name: FIXED_STRING
       deferred
       ensure
          exists: Result /= Void
          constant: Result = name
       end
 
-   play (a_event: MIXUP_EVENT) is
+   play (a_event: MIXUP_EVENT)
       require
          a_event /= Void
       do
          a_event.fire(Current)
       end
 
-   native (a_def_source: MIXUP_SOURCE; a_context: MIXUP_NATIVE_CONTEXT; fn_name: STRING): MIXUP_VALUE is
+   native (a_def_source: MIXUP_SOURCE; a_context: MIXUP_NATIVE_CONTEXT; fn_name: STRING): MIXUP_VALUE
       require
          a_def_source /= Void
          fn_name /= Void
@@ -43,7 +43,7 @@ feature {ANY}
       deferred
       end
 
-   set_context (a_context: MIXUP_CONTEXT) is
+   set_context (a_context: MIXUP_CONTEXT)
       require
          a_context /= Void
       deferred

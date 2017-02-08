@@ -23,7 +23,7 @@ insert
       end
 
 feature {ANY}
-   item: like item_memory is
+   item: like item_memory
       do
          Result := item_memory
          if Result = Void then
@@ -35,7 +35,7 @@ feature {ANY}
          end
       end
 
-   next is
+   next
       do
          go_next
          item_memory := Void
@@ -44,7 +44,7 @@ feature {ANY}
 feature {}
    item_memory: MIXUP_EVENT
 
-   fetch_item: like item_memory is
+   fetch_item: like item_memory
       require
          item_memory = Void
          not is_off
@@ -53,7 +53,7 @@ feature {}
          Result /= Void
       end
 
-   go_next is
+   go_next
       require
          fetched: item_memory /= Void
       deferred

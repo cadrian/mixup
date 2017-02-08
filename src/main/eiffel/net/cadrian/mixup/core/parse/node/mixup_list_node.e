@@ -23,14 +23,14 @@ insert
    TRAVERSABLE[MIXUP_NODE]
 
 feature {ANY}
-   frozen new_iterator: ITERATOR[MIXUP_NODE] is
+   frozen new_iterator: ITERATOR[MIXUP_NODE]
       do
          check
             dont_use_this: False
          end
       end
 
-   source_line: INTEGER is
+   source_line: INTEGER
       local
          i: INTEGER
       do
@@ -44,7 +44,7 @@ feature {ANY}
          end
       end
 
-   source_column: INTEGER is
+   source_column: INTEGER
       local
          i: INTEGER
       do
@@ -58,7 +58,7 @@ feature {ANY}
          end
       end
 
-   source_index: INTEGER is
+   source_index: INTEGER
       local
          i: INTEGER
       do
@@ -73,7 +73,7 @@ feature {ANY}
       end
 
 feature {MIXUP_GRAMMAR}
-   add (a_child: like item) is
+   add (a_child: like item)
       deferred
       ensure
          count = old count + 1

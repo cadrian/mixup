@@ -24,7 +24,7 @@ create {MIXUP_INSTRUMENT}
    make
 
 feature {}
-   make (a_context: like context; a_staves: like staves) is
+   make (a_context: like context; a_staves: like staves)
       require
          a_staves /= Void
       do
@@ -35,17 +35,17 @@ feature {}
          staves = a_staves
       end
 
-   add_notes_iterator is
+   add_notes_iterator
       do
          staves.do_all(agent add_events_iterator)
       end
 
-   add_events_iterator (a_staff: MIXUP_STAFF) is
+   add_events_iterator (a_staff: MIXUP_STAFF)
       do
          notes.add_last(a_staff.new_events_iterator(context))
       end
 
-   count: INTEGER is
+   count: INTEGER
       do
          Result := staves.count
       end

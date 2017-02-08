@@ -24,7 +24,7 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_32 is
+   event_type: INTEGER_32
       once
          Result := event_controller
       end
@@ -32,12 +32,12 @@ feature {ANY}
    knob: MIXUP_MIDI_CONTROLLER_KNOB
    value: INTEGER
 
-   byte_size: INTEGER is
+   byte_size: INTEGER
       do
          Result := knob.byte_size
       end
 
-   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
+   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT)
       local
          code: INTEGER_32
       do
@@ -49,7 +49,7 @@ feature {ANY}
       end
 
 feature {}
-   make (a_channel: like channel; a_knob: like knob; a_value: like value) is
+   make (a_channel: like channel; a_knob: like knob; a_value: like value)
       require
          a_channel.in_range(0, 15)
          a_knob.valid_value(a_value)
@@ -63,7 +63,7 @@ feature {}
          value = a_value
       end
 
-   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
+   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT)
       do
          crash
       end

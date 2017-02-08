@@ -25,7 +25,7 @@ create {}
    make
 
 feature {}
-   make is
+   make
       do
          if argument_count /= 2 then
             log.error.put_line("Usage: #(1) <in.mid> <out.mid>" # command_name)
@@ -38,7 +38,7 @@ feature {}
          write_target_midi(argument(2))
       end
 
-   read_source_midi (file: STRING) is
+   read_source_midi (file: STRING)
       local
          mid_in: BINARY_FILE_READ
          mid_src: MIXUP_MIDI_FILE_READ
@@ -71,7 +71,7 @@ feature {}
          source_midi /= Void
       end
 
-   generate_target_midi is
+   generate_target_midi
       local
          sequencer: MIXUP_MIDI_FILE_SEQUENCER
       do
@@ -89,7 +89,7 @@ feature {}
          target_midi /= Void
       end
 
-   prepare_target_midi is
+   prepare_target_midi
       local
          i: INTEGER
       do
@@ -108,7 +108,7 @@ feature {}
          target_midi /= Void
       end
 
-   write_target_midi (file: STRING) is
+   write_target_midi (file: STRING)
       require
          target_midi /= Void
       local

@@ -22,7 +22,7 @@ feature {ANY}
    type: FIXED_STRING
    parent: like Current
 
-   generate (a_output: OUT_) is
+   generate (a_output: OUT_)
       require
          a_output.is_connected
       deferred

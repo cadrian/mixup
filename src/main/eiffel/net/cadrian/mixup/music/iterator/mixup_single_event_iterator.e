@@ -29,7 +29,7 @@ create {ANY}
    make
 
 feature {ANY}
-   start is
+   start
       do
          is_off := False
          debug
@@ -39,7 +39,7 @@ feature {ANY}
 
    is_off: BOOLEAN
 
-   item: MIXUP_EVENT is
+   item: MIXUP_EVENT
       do
          Result := item_
          debug
@@ -50,13 +50,13 @@ feature {ANY}
          end
       end
 
-   next is
+   next
       do
          is_off := True
       end
 
 feature {}
-   make (a_item: like item) is
+   make (a_item: like item)
       require
          a_item /= Void
       do

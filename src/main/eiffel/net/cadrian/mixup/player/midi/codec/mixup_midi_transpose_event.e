@@ -23,7 +23,7 @@ create {ANY}
 feature {ANY}
    byte_size: INTEGER is 0
 
-   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
+   encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT)
       do
          debug
             log.trace.put_line(once "transpose=" | &half_tones)
@@ -34,7 +34,7 @@ feature {ANY}
    half_tones: INTEGER_32
 
 feature {}
-   make (a_half_tones: like half_tones) is
+   make (a_half_tones: like half_tones)
       do
          half_tones := a_half_tones
       ensure

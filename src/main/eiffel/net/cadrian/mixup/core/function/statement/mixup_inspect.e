@@ -24,7 +24,7 @@ create {ANY}
    make
 
 feature {ANY}
-   call (a_commit_context: MIXUP_COMMIT_CONTEXT) is
+   call (a_commit_context: MIXUP_COMMIT_CONTEXT)
       local
          i: INTEGER; done: BOOLEAN; execution_context: MIXUP_INSPECT_EXECUTION
          context: MIXUP_USER_FUNCTION_CONTEXT
@@ -44,7 +44,7 @@ feature {ANY}
          end
       end
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_STATEMENT_VISITOR
       do
@@ -54,14 +54,14 @@ feature {ANY}
 
    expression: MIXUP_EXPRESSION
 
-   branches: TRAVERSABLE[MIXUP_INSPECT_BRANCH] is
+   branches: TRAVERSABLE[MIXUP_INSPECT_BRANCH]
       do
          Result := branch_list
       end
 
    otherwise: MIXUP_ELSE
 
-   add_branch (a_branch: MIXUP_INSPECT_BRANCH) is
+   add_branch (a_branch: MIXUP_INSPECT_BRANCH)
       require
          a_branch /= Void
       do
@@ -71,21 +71,21 @@ feature {ANY}
          branches.last = a_branch
       end
 
-   set_otherwise (a_otherwise: like otherwise) is
+   set_otherwise (a_otherwise: like otherwise)
       do
          otherwise := a_otherwise
       ensure
          otherwise = a_otherwise
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "inspect: ")
          source.out_in_tagged_out_memory
       end
 
 feature {}
-   make (a_source: like source; a_expression: like expression) is
+   make (a_source: like source; a_expression: like expression)
       require
          a_source /= Void
          a_expression /= Void

@@ -21,22 +21,22 @@ create {ANY}
    make
 
 feature {ANY}
-   timing: MIXUP_MUSIC_TIMING is
+   timing: MIXUP_MUSIC_TIMING
       do
          Result := music.timing
       end
 
-   valid_anchor: BOOLEAN is
+   valid_anchor: BOOLEAN
       do
          Result := music.valid_anchor
       end
 
-   anchor: MIXUP_NOTE_HEAD is
+   anchor: MIXUP_NOTE_HEAD
       do
          Result := music.anchor
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       local
          music_: like music
       do
@@ -44,7 +44,7 @@ feature {ANY}
          create Result.make(source, tag, music_, start_event_factory, end_event_factory, event_modifier)
       end
 
-   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR
       do
          debug
             log.trace.put_line(once "Iterating over decorated music: " | tag)
@@ -53,19 +53,19 @@ feature {ANY}
       end
 
 feature {MIXUP_MUSIC, MIXUP_SPANNER}
-   add_voice_ids (ids: AVL_SET[INTEGER]) is
+   add_voice_ids (ids: AVL_SET[INTEGER])
       do
          music.add_voice_ids(ids)
       end
 
-   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER)
       do
          music.set_timing(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}
    make (a_source: like source; a_tag: like tag; a_music: like music;
-         a_start_event_factory: like start_event_factory; a_end_event_factory: like end_event_factory; a_event_modifier: like event_modifier) is
+         a_start_event_factory: like start_event_factory; a_end_event_factory: like end_event_factory; a_event_modifier: like event_modifier)
       require
          a_source /= Void
          a_tag /= Void

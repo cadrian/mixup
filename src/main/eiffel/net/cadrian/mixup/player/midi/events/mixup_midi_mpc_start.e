@@ -27,7 +27,7 @@ feature {ANY}
    needs_instrument: BOOLEAN is True
 
 feature {MIXUP_PLAYER}
-   fire (player: MIXUP_PLAYER) is
+   fire (player: MIXUP_PLAYER)
       do
          start_time := time
       end

@@ -33,7 +33,7 @@ create {MIXUP_DICTIONARY}
 feature {ANY}
    is_callable: BOOLEAN is False
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_VALUE_VISITOR
       do
@@ -41,74 +41,74 @@ feature {ANY}
          v.visit_dictionary(Current)
       end
 
-   count: INTEGER is
+   count: INTEGER
       do
          Result := evaled.count
       end
 
-   has (k: MIXUP_VALUE): BOOLEAN is
+   has (k: MIXUP_VALUE): BOOLEAN
       do
          Result := evaled.has(k)
       end
 
-   at (k: MIXUP_VALUE): MIXUP_VALUE is
+   at (k: MIXUP_VALUE): MIXUP_VALUE
       do
          Result := evaled.at(k)
       end
 
-   reference_at (k: MIXUP_VALUE): MIXUP_VALUE is
+   reference_at (k: MIXUP_VALUE): MIXUP_VALUE
       do
          Result := evaled.reference_at(k)
       end
 
-   fast_has (k: MIXUP_VALUE): BOOLEAN is
+   fast_has (k: MIXUP_VALUE): BOOLEAN
       do
          Result := evaled.fast_has(k)
       end
 
-   fast_at (k: MIXUP_VALUE): MIXUP_VALUE is
+   fast_at (k: MIXUP_VALUE): MIXUP_VALUE
       do
          Result := evaled.fast_at(k)
       end
 
-   fast_reference_at (k: MIXUP_VALUE): MIXUP_VALUE is
+   fast_reference_at (k: MIXUP_VALUE): MIXUP_VALUE
       do
          Result := evaled.fast_reference_at(k)
       end
 
-   item (index: INTEGER): MIXUP_VALUE is
+   item (index: INTEGER): MIXUP_VALUE
       do
          Result := evaled.item(index)
       end
 
-   key (index: INTEGER): MIXUP_VALUE is
+   key (index: INTEGER): MIXUP_VALUE
       do
          Result := evaled.key(index)
       end
 
-   new_iterator_on_items: ITERATOR[MIXUP_VALUE] is
+   new_iterator_on_items: ITERATOR[MIXUP_VALUE]
       do
          Result := evaled.new_iterator_on_items
       end
 
-   new_iterator_on_keys: ITERATOR[MIXUP_VALUE] is
+   new_iterator_on_keys: ITERATOR[MIXUP_VALUE]
       do
          Result := evaled.new_iterator_on_keys
       end
 
-   internal_key (k: MIXUP_VALUE): MIXUP_VALUE is
+   internal_key (k: MIXUP_VALUE): MIXUP_VALUE
       do
          Result := evaled.internal_key(k)
       end
 
 feature {}
-   hashcoder: MIXUP_VALUE_HASHCODER is
+   hashcoder: MIXUP_VALUE_HASHCODER
       once
          create Result.make
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (buffer: STRING) is
+   as_name_in (buffer: STRING)
       local
          i: INTEGER
       do
@@ -130,7 +130,7 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       end
 
 feature {ANY}
-   add (a_value, a_key: MIXUP_EXPRESSION) is
+   add (a_value, a_key: MIXUP_EXPRESSION)
       require
          a_value /= Void
          a_key /= Void
@@ -145,7 +145,7 @@ feature {ANY}
       end
 
 feature {}
-   make (a_source: like source) is
+   make (a_source: like source)
       require
          a_source /= Void
       do
@@ -156,7 +156,7 @@ feature {}
          source = a_source
       end
 
-   duplicate (a_source: like source; a_evaled: like evaled) is
+   duplicate (a_source: like source; a_evaled: like evaled)
       require
          a_source /= Void
       local
@@ -181,7 +181,7 @@ feature {}
 
    evaled: EXT_HASHED_DICTIONARY[MIXUP_VALUE, MIXUP_VALUE]
 
-   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       local
          i: INTEGER; k, v: MIXUP_VALUE; a_evaled: like evaled
       do

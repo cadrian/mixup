@@ -24,7 +24,7 @@ feature {ANY}
    note: FIXED_STRING
    octave: INTEGER
 
-   set (a_source: like source; a_note: ABSTRACT_STRING; a_octave: INTEGER) is
+   set (a_source: like source; a_note: ABSTRACT_STRING; a_octave: INTEGER)
       require
          a_source /= Void
       do
@@ -33,7 +33,7 @@ feature {ANY}
          octave := a_octave
       end
 
-   is_rest: BOOLEAN is
+   is_rest: BOOLEAN
       do
          inspect
             note.first
@@ -43,13 +43,13 @@ feature {ANY}
          end
       end
 
-   octave_shift (other: MIXUP_NOTE_HEAD): INTEGER is
+   octave_shift (other: MIXUP_NOTE_HEAD): INTEGER
          -- octave shift from Current to `other'
       do
          Result := other.octave - octave - octave_deviation(other.note)
       end
 
-   relative (a_source: like source; desc: FIXED_STRING): MIXUP_NOTE_HEAD is
+   relative (a_source: like source; desc: FIXED_STRING): MIXUP_NOTE_HEAD
       require
          not is_rest
          a_source /= Void
@@ -91,12 +91,12 @@ feature {ANY}
          end
       end
 
-   is_equal (other: like Current): BOOLEAN is
+   is_equal (other: like Current): BOOLEAN
       do
          Result := note = other.note and then octave = other.octave
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(note)
          inspect
@@ -111,7 +111,7 @@ feature {}
    up_scale:   STRING is "abcdefgabcdefg"
    down_scale: STRING is "gfedcbagfedcba"
 
-   steps_to (char: CHARACTER; scale: STRING; delta: INTEGER): INTEGER is
+   steps_to (char: CHARACTER; scale: STRING; delta: INTEGER): INTEGER
       local
          i, j: INTEGER
       do
@@ -123,7 +123,7 @@ feature {}
          Result := j - i
       end
 
-   octave_deviation (other_note: ABSTRACT_STRING): INTEGER is
+   octave_deviation (other_note: ABSTRACT_STRING): INTEGER
       require
          other_note /= Void
       local

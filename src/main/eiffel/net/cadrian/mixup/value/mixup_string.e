@@ -32,7 +32,7 @@ create {ANY}
 feature {ANY}
    image: FIXED_STRING
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_VALUE_VISITOR
       do
@@ -40,19 +40,19 @@ feature {ANY}
          v.visit_string(Current)
       end
 
-   infix "<" (other: like Current): BOOLEAN is
+   infix "<" (other: like Current): BOOLEAN
       do
          Result := value < other.value
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       do
          a_name.append(image)
       end
 
 feature {}
-   make (a_source: like source; a_value, a_image: ABSTRACT_STRING) is
+   make (a_source: like source; a_value, a_image: ABSTRACT_STRING)
       require
          a_source /= Void
          a_value /= Void

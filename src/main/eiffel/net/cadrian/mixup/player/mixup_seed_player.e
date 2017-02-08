@@ -21,16 +21,16 @@ create {ANY}
    make
 
 feature {ANY}
-   name: FIXED_STRING is
+   name: FIXED_STRING
       once
          Result := "seed".intern
       end
 
-   set_context (a_context: MIXUP_CONTEXT) is
+   set_context (a_context: MIXUP_CONTEXT)
       do
       end
 
-   native (a_def_source: MIXUP_SOURCE; a_context: MIXUP_NATIVE_CONTEXT; fn_name: STRING): MIXUP_VALUE is
+   native (a_def_source: MIXUP_SOURCE; a_context: MIXUP_NATIVE_CONTEXT; fn_name: STRING): MIXUP_VALUE
       do
          inspect
             fn_name
@@ -43,18 +43,18 @@ feature {ANY}
       end
 
 feature {}
-   native_playback_midi is
+   native_playback_midi
       once
          mixer.add_player(create {MIXUP_MIDI_PLAYER}.make)
       end
 
-   native_playback_lilypond is
+   native_playback_lilypond
       once
          mixer.add_player(create {MIXUP_LILYPOND_PLAYER}.make)
       end
 
 feature {}
-   make (a_mixer: like mixer) is
+   make (a_mixer: like mixer)
       require
          a_mixer /= Void
       do

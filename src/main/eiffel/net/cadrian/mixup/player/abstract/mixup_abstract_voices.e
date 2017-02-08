@@ -21,34 +21,34 @@ inherit
    MIXUP_ABSTRACT_ITEM[OUT_, SEC_]
 
 feature {ANY}
-   generate (context: MIXUP_CONTEXT; section: SEC_) is
+   generate (context: MIXUP_CONTEXT; section: SEC_)
       do
-         voices.do_all_items(agent (ctx: MIXUP_CONTEXT; sec: SEC_; a_voice: VOI_) is
+         voices.do_all_items(agent (ctx: MIXUP_CONTEXT; sec: SEC_; a_voice: VOI_)
                              do
                                 a_voice.generate(ctx, sec)
                              end(context, section, ?))
       end
 
 feature {MIXUP_ABSTRACT_STAFF}
-   map_in (map: DICTIONARY[VOI_, INTEGER]) is
+   map_in (map: DICTIONARY[VOI_, INTEGER])
       require
          map /= Void
       do
-         voices.do_all(agent (a_voice: VOI_; a_map: DICTIONARY[VOI_, INTEGER]) is
+         voices.do_all(agent (a_voice: VOI_; a_map: DICTIONARY[VOI_, INTEGER])
                           do
                              a_map.put(a_voice, a_voice.id)
                           end(?, map))
       end
 
 feature {}
-   make (a_ids: TRAVERSABLE[INTEGER]; a_lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]) is
+   make (a_ids: TRAVERSABLE[INTEGER]; a_lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]])
       require
          a_lyrics_gatherer /= Void
          not a_ids.is_empty
          all_different: (create {AVL_SET[INTEGER]}.from_collection(a_ids)).count = a_ids.count
       do
          create voices.make
-         a_ids.do_all(agent (a_id: INTEGER; lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]) is
+         a_ids.do_all(agent (a_id: INTEGER; lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]])
                          do
                             voices.add(new_voice(a_id, lyrics_gatherer), a_id)
                          end(?, a_lyrics_gatherer))
@@ -59,7 +59,7 @@ feature {}
 
    voices: AVL_DICTIONARY[VOI_, INTEGER]
 
-   new_voice (a_id: INTEGER; lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]): VOI_ is
+   new_voice (a_id: INTEGER; lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]): VOI_
       require
          lyrics_gatherer /= Void
       deferred

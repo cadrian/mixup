@@ -24,7 +24,7 @@ create {ANY}
    make
 
 feature {ANY}
-   call (a_commit_context: MIXUP_COMMIT_CONTEXT) is
+   call (a_commit_context: MIXUP_COMMIT_CONTEXT)
       local
          i: INTEGER; done: BOOLEAN; execution_context: MIXUP_IF_THEN_ELSE_EXECUTION
          branch: MIXUP_IF; context: MIXUP_USER_FUNCTION_CONTEXT
@@ -50,7 +50,7 @@ feature {ANY}
          end
       end
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_STATEMENT_VISITOR
       do
@@ -58,14 +58,14 @@ feature {ANY}
          v.visit_if_then_else(Current)
       end
 
-   conditions: TRAVERSABLE[MIXUP_IF] is
+   conditions: TRAVERSABLE[MIXUP_IF]
       do
          Result := condition_list
       end
 
    otherwise: MIXUP_ELSE
 
-   add_condition (a_condition: MIXUP_IF) is
+   add_condition (a_condition: MIXUP_IF)
       require
          a_condition /= Void
       do
@@ -75,21 +75,21 @@ feature {ANY}
          conditions.last = a_condition
       end
 
-   set_otherwise (a_otherwise: like otherwise) is
+   set_otherwise (a_otherwise: like otherwise)
       do
          otherwise := a_otherwise
       ensure
          otherwise = a_otherwise
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "if-then-else: ")
          source.out_in_tagged_out_memory
       end
 
 feature {}
-   make (a_source: like source) is
+   make (a_source: like source)
       require
          a_source /= Void
       do

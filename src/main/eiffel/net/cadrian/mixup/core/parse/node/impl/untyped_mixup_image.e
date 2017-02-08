@@ -21,7 +21,7 @@ create {MIXUP_GRAMMAR}
    make
 
 feature {}
-   make (a_image: like image; a_blanks: like blanks; a_position: like position) is
+   make (a_image: like image; a_blanks: like blanks; a_position: like position)
       require
          a_image /= Void
       do

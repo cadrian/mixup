@@ -32,7 +32,7 @@ feature {ANY}
    needs_instrument: BOOLEAN is True
 
 feature {MIXUP_PLAYER}
-   fire (player: MIXUP_PLAYER) is
+   fire (player: MIXUP_PLAYER)
       local
          p: MIXUP_EVENT_SKIP_OCTAVE_PLAYER
       do
@@ -41,7 +41,7 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_data: like data; a_skip: like skip) is
+   make (a_data: like data; a_skip: like skip)
       do
          make_(a_data)
          skip := a_skip
@@ -49,7 +49,7 @@ feature {}
          skip = a_skip
       end
 
-   out_in_extra_data is
+   out_in_extra_data
       do
          tagged_out_memory.append(once ", skip=")
          skip.append_in(tagged_out_memory)

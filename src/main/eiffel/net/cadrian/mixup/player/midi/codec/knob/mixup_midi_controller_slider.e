@@ -25,17 +25,17 @@ feature {ANY}
    msb_code: INTEGER_32
    lsb_code: INTEGER_32
 
-   is_coarse: BOOLEAN is
+   is_coarse: BOOLEAN
       do
          Result := lsb_code = 0
       end
 
-   is_fine: BOOLEAN is
+   is_fine: BOOLEAN
       do
          Result := not is_coarse
       end
 
-   byte_size: INTEGER is
+   byte_size: INTEGER
       do
          if is_coarse then
             Result := 3
@@ -44,7 +44,7 @@ feature {ANY}
          end
       end
 
-   encode_to (message_code: INTEGER_32; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   encode_to (message_code: INTEGER_32; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM)
       do
          debug
             log.trace.put_line(name | once "=" | &value)
@@ -64,7 +64,7 @@ feature {ANY}
          end
       end
 
-   valid_value (value: INTEGER): BOOLEAN is
+   valid_value (value: INTEGER): BOOLEAN
       do
          if is_coarse then
             Result := value.in_range(0, 0x0000007f)
@@ -74,7 +74,7 @@ feature {ANY}
       end
 
 feature {}
-   make (msb, lsb: INTEGER_32; a_name: ABSTRACT_STRING) is
+   make (msb, lsb: INTEGER_32; a_name: ABSTRACT_STRING)
       require
          lsb /= 0 implies lsb > msb
          a_name /= Void

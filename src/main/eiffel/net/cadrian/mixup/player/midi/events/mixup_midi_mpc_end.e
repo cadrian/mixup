@@ -34,7 +34,7 @@ feature {ANY}
    needs_instrument: BOOLEAN is True
 
 feature {MIXUP_PLAYER}
-   fire (player: MIXUP_PLAYER) is
+   fire (player: MIXUP_PLAYER)
       local
          p: MIXUP_MIDI_PLAYER
       do
@@ -43,7 +43,7 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_data: like data; a_start: like start; a_knob: like knob; a_start_value: like start_value; a_end_value: like end_value) is
+   make (a_data: like data; a_start: like start; a_knob: like knob; a_start_value: like start_value; a_end_value: like end_value)
       require
          a_start /= Void
          a_knob /= Void
@@ -62,7 +62,7 @@ feature {}
          end_value = a_end_value
       end
 
-   out_in_extra_data is
+   out_in_extra_data
       do
          -- TODO
       end

@@ -26,7 +26,7 @@ create {ANY}
 feature {ANY}
    expression: MIXUP_EXPRESSION
 
-   call (a_commit_context: MIXUP_COMMIT_CONTEXT) is
+   call (a_commit_context: MIXUP_COMMIT_CONTEXT)
       local
          value: MIXUP_VALUE
          context: MIXUP_USER_FUNCTION_CONTEXT
@@ -40,7 +40,7 @@ feature {ANY}
          end
       end
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_STATEMENT_VISITOR
       do
@@ -48,14 +48,14 @@ feature {ANY}
          v.visit_yield(Current)
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "yield: ")
          source.out_in_tagged_out_memory
       end
 
 feature {}
-   make (a_source: like source; a_expression: like expression) is
+   make (a_source: like source; a_expression: like expression)
       require
          a_source /= Void
          a_expression /= Void

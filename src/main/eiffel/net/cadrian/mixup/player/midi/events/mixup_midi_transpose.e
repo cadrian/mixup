@@ -30,7 +30,7 @@ feature {ANY}
    needs_instrument: BOOLEAN is True
 
 feature {MIXUP_PLAYER}
-   fire (player: MIXUP_PLAYER) is
+   fire (player: MIXUP_PLAYER)
       local
          p: MIXUP_MIDI_PLAYER
       do
@@ -39,7 +39,7 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_data: like data; a_half_tones: like half_tones) is
+   make (a_data: like data; a_half_tones: like half_tones)
       do
          make_(a_data)
          half_tones := a_half_tones
@@ -47,7 +47,7 @@ feature {}
          half_tones = a_half_tones
       end
 
-   out_in_extra_data is
+   out_in_extra_data
       do
          tagged_out_memory.append(once ", half_tones=")
          half_tones.out_in_tagged_out_memory

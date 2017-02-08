@@ -24,7 +24,7 @@ create {ANY}
    make
 
 feature {ANY}
-   add (left, right: MIXUP_VALUE): MIXUP_STRING is
+   add (left, right: MIXUP_VALUE): MIXUP_STRING
       local
          s, i: STRING
       do
@@ -36,7 +36,7 @@ feature {ANY}
       end
 
 feature {}
-   make (a_source: like source) is
+   make (a_source: like source)
       require
          a_source /= Void
       do

@@ -24,13 +24,13 @@ create {ANY}
    make, default_create
 
 feature {ANY}
-   velocity (a_time: INTEGER_64): INTEGER_8 is
+   velocity (a_time: INTEGER_64): INTEGER_8
       do
          Result := nuance
          log.info.put_line("nuance: velocity at " + a_time.out + " = " + Result.out)
       end
 
-   generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION; track: MIXUP_MIDI_TRACK; track_id: INTEGER) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION; track: MIXUP_MIDI_TRACK; track_id: INTEGER)
       local
          events: MIXUP_MIDI_EVENTS
          knobs: MIXUP_MIDI_CONTROLLER_KNOBS
@@ -39,19 +39,19 @@ feature {ANY}
       end
 
 feature {MIXUP_MIDI_DYNAMICS}
-   accept (a_dyn: MIXUP_MIDI_DYNAMICS) is
+   accept (a_dyn: MIXUP_MIDI_DYNAMICS)
       do
          a_dyn.from_nuance(Current)
       end
 
-   from_nuance (a_nuance: MIXUP_MIDI_DYNAMICS_NUANCE) is
+   from_nuance (a_nuance: MIXUP_MIDI_DYNAMICS_NUANCE)
       do
          if nuance = -1 then
             nuance := a_nuance.nuance
          end
       end
 
-   from_hairpin (a_hairpin: MIXUP_MIDI_DYNAMICS_HAIRPIN) is
+   from_hairpin (a_hairpin: MIXUP_MIDI_DYNAMICS_HAIRPIN)
       do
          if hairpin = Void then
             hairpin := a_hairpin
@@ -66,7 +66,7 @@ feature {MIXUP_MIDI_DYNAMICS}
    nuance: INTEGER_8
 
 feature {}
-   make (from_dynamics: MIXUP_MIDI_DYNAMICS; dyn: ABSTRACT_STRING) is
+   make (from_dynamics: MIXUP_MIDI_DYNAMICS; dyn: ABSTRACT_STRING)
       require
          from_dynamics /= Void
          dyn /= Void
@@ -75,12 +75,12 @@ feature {}
          from_dynamics.accept(Current)
       end
 
-   default_create is
+   default_create
       do
          nuance := 64
       end
 
-   dynamics: HASHED_DICTIONARY[INTEGER_8, FIXED_STRING] is
+   dynamics: HASHED_DICTIONARY[INTEGER_8, FIXED_STRING]
       once
          Result := {HASHED_DICTIONARY[INTEGER_8, FIXED_STRING]
          <<

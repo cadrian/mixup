@@ -18,7 +18,7 @@ inherit
    MIXUP_EXPRESSION
 
 feature {ANY}
-   eval (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       local
          left_val, right_val: MIXUP_VALUE
       do
@@ -34,7 +34,7 @@ feature {ANY}
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       do
          left.as_name_in(a_name)
          a_name.extend(' ')
@@ -44,7 +44,7 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       end
 
 feature {}
-   make (a_source: like source; a_left: like left; a_right: like right) is
+   make (a_source: like source; a_left: like left; a_right: like right)
       require
          a_source /= Void
          a_left /= Void
@@ -59,14 +59,14 @@ feature {}
          right = a_right
       end
 
-   compute (left_val, right_val: MIXUP_VALUE): MIXUP_VALUE is
+   compute (left_val, right_val: MIXUP_VALUE): MIXUP_VALUE
       require
          left_val /= Void
          right_val /= Void
       deferred
       end
 
-   operator: STRING is
+   operator: STRING
       deferred
       ensure
          Result /= Void

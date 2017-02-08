@@ -27,24 +27,24 @@ create {MIXUP_INSTRUMENT}
    duplicate
 
 feature {ANY}
-   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
+   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE)
       do
          crash
       end
 
-   get_local (a_name: FIXED_STRING): MIXUP_VALUE is
+   get_local (a_name: FIXED_STRING): MIXUP_VALUE
       do
          check Result = Void end
       end
 
-   set_staves (a_staves: like staves) is
+   set_staves (a_staves: like staves)
       require
          a_staves /= Void
          staves = Void
       do
          staves := a_staves
          debug
-            a_staves.do_all(agent (staff: MIXUP_STAFF) is
+            a_staves.do_all(agent (staff: MIXUP_STAFF)
                                do
                                   log.trace.put_line(once "Instrument " | name | once ": " | &staff)
                                end)
@@ -53,13 +53,13 @@ feature {ANY}
          staves = a_staves
       end
 
-   next_strophe is
+   next_strophe
       do
          create current_strophe.make(0)
          strophes.add_last(current_strophe)
       end
 
-   add_syllable (a_source: MIXUP_SOURCE; a_syllable: ABSTRACT_STRING; in_word: BOOLEAN) is
+   add_syllable (a_source: MIXUP_SOURCE; a_syllable: ABSTRACT_STRING; in_word: BOOLEAN)
       require
          a_syllable /= Void
       local
@@ -73,12 +73,12 @@ feature {ANY}
          current_strophe.last.in_word = in_word
       end
 
-   add_extern_syllables (a_syllables: MIXUP_IDENTIFIER) is
+   add_extern_syllables (a_syllables: MIXUP_IDENTIFIER)
       do
          -- TODO
       end
 
-   new_events_iterator: MIXUP_EVENTS_ITERATOR is
+   new_events_iterator: MIXUP_EVENTS_ITERATOR
       local
          context: MIXUP_EVENTS_ITERATOR_CONTEXT
       do
@@ -89,7 +89,7 @@ feature {ANY}
          end
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       local
          staves_: FAST_ARRAY[MIXUP_STAFF]
          staves_zip: ZIP[MIXUP_STAFF, INTEGER]
@@ -97,7 +97,7 @@ feature {ANY}
          a_commit_context.set_instrument(Current)
          create staves_.make(staves.count)
          create staves_zip.make(staves, staves_.lower |..| staves_.upper)
-         staves_zip.do_all(agent (staff: MIXUP_STAFF; index: INTEGER; a_staves: FAST_ARRAY[MIXUP_STAFF]; commit_context_: MIXUP_COMMIT_CONTEXT) is
+         staves_zip.do_all(agent (staff: MIXUP_STAFF; index: INTEGER; a_staves: FAST_ARRAY[MIXUP_STAFF]; commit_context_: MIXUP_COMMIT_CONTEXT)
                            local
                               staff_: MIXUP_STAFF
                            do
@@ -109,7 +109,7 @@ feature {ANY}
          Result.set_timing(staves_.first.timing)
       end
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_CONTEXT_VISITOR
       do
@@ -117,19 +117,19 @@ feature {ANY}
          v.visit_instrument(Current)
       end
 
-   voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER] is
+   voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]
       local
          ids: AVL_DICTIONARY[TRAVERSABLE[INTEGER], INTEGER]
       do
          create ids.make
          Result := ids
-         staves.do_all(agent (a_staff: MIXUP_STAFF; a_ids: AVL_DICTIONARY[TRAVERSABLE[INTEGER], INTEGER]) is
+         staves.do_all(agent (a_staff: MIXUP_STAFF; a_ids: AVL_DICTIONARY[TRAVERSABLE[INTEGER], INTEGER])
                           do
                              a_ids.add(a_staff.voice_ids, a_staff.id)
                           end (?, ids))
       end
 
-   relative_staff_id (a_staff_id: INTEGER): INTEGER is
+   relative_staff_id (a_staff_id: INTEGER): INTEGER
       local
          i: INTEGER; found: BOOLEAN
       do
@@ -148,18 +148,18 @@ feature {ANY}
          end
       end
 
-   valid_relative_staff_id (rel_staff_id: INTEGER): BOOLEAN is
+   valid_relative_staff_id (rel_staff_id: INTEGER): BOOLEAN
       do
          Result := staves.valid_index(rel_staff_id - 1 + staves.lower)
       end
 
-   absolute_staff_id (rel_staff_id: INTEGER): INTEGER is
+   absolute_staff_id (rel_staff_id: INTEGER): INTEGER
       do
          Result := staves.item(rel_staff_id - 1 + staves.lower).id
       end
 
 feature {MIXUP_CONTEXT}
-   add_child (a_child: MIXUP_CONTEXT) is
+   add_child (a_child: MIXUP_CONTEXT)
       do
          check
             {MIXUP_USER_FUNCTION_CONTEXT} ?:= a_child
@@ -168,16 +168,16 @@ feature {MIXUP_CONTEXT}
       end
 
 feature {}
-   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is
+   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE
       do
       end
 
-   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN is
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN
       do
       end
 
 feature {}
-   make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent) is
+   make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent)
       do
          create strophes.make(0)
          context_make(a_source, a_name, a_parent)
@@ -187,7 +187,7 @@ feature {}
          end
       end
 
-   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports; a_staves: like staves; a_strophes: like strophes) is
+   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports; a_staves: like staves; a_strophes: like strophes)
       do
          source := a_source
          name := a_name

@@ -24,13 +24,13 @@ feature {ANY}
    is_callable: BOOLEAN is True
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   frozen as_name_in (a_name: STRING) is
+   frozen as_name_in (a_name: STRING)
       do
          a_name.append(once "<function>")
       end
 
 feature {}
-   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       do
          Result := Current
       end

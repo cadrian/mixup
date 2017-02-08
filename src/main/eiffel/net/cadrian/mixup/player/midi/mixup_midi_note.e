@@ -27,13 +27,13 @@ create {ANY}
 feature {ANY}
    duration: INTEGER_64
 
-   generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION)
       do
          precision := section.precision
          note.accept(Current)
       end
 
-   fix_slur (a_slur_numerator: like slur_numerator; a_slur_denominator: like slur_denominator) is
+   fix_slur (a_slur_numerator: like slur_numerator; a_slur_denominator: like slur_denominator)
       require
          a_slur_numerator > 0
          a_slur_denominator > 0
@@ -46,10 +46,10 @@ feature {ANY}
       end
 
 feature {MIXUP_CHORD}
-   visit_chord (a_chord: MIXUP_CHORD) is
+   visit_chord (a_chord: MIXUP_CHORD)
       do
          duration := a_chord.duration
-         a_chord.do_all(agent (head: MIXUP_NOTE_HEAD; tie: BOOLEAN; channel: INTEGER_8) is
+         a_chord.do_all(agent (head: MIXUP_NOTE_HEAD; tie: BOOLEAN; channel: INTEGER_8)
                         do
                            if not head.is_rest then
                               track.turn_on(channel, precision * time, pitch(head), precision * duration * slur_numerator // slur_denominator, dynamics.velocity(time))
@@ -61,10 +61,10 @@ feature {MIXUP_CHORD}
       end
 
 feature {MIXUP_LYRICS}
-   visit_lyrics (a_lyrics: MIXUP_LYRICS) is
+   visit_lyrics (a_lyrics: MIXUP_LYRICS)
       do
          a_lyrics.note.accept(Current)
-         a_lyrics.do_all(agent (syl: MIXUP_SYLLABLE) is
+         a_lyrics.do_all(agent (syl: MIXUP_SYLLABLE)
                          local
                             events: MIXUP_MIDI_META_EVENTS
                          do
@@ -80,7 +80,7 @@ feature {MIXUP_LYRICS}
 feature {}
    make (a_time: like time; a_note: like note; a_track: like track; a_track_id: like track_id;
          a_slur_numerator: like slur_numerator; a_slur_denominator: like slur_denominator;
-         a_dynamics: like dynamics) is
+         a_dynamics: like dynamics)
       require
          a_note /= Void
          a_track /= Void
@@ -117,7 +117,7 @@ feature {}
 
    dynamics: MIXUP_MIDI_DYNAMICS
 
-   pitch (head: MIXUP_NOTE_HEAD): INTEGER_8 is
+   pitch (head: MIXUP_NOTE_HEAD): INTEGER_8
       require
          not head.is_rest
       do

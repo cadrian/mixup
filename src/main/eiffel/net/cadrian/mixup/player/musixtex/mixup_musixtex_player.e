@@ -21,16 +21,16 @@ create {ANY}
    make, connect_to
 
 feature {ANY}
-   name: FIXED_STRING is
+   name: FIXED_STRING
       once
          Result := "musixtex".intern
       end
 
-   set_context (a_context: MIXUP_CONTEXT) is
+   set_context (a_context: MIXUP_CONTEXT)
       do
       end
 
-   native (a_def_source: MIXUP_SOURCE; a_context: MIXUP_NATIVE_CONTEXT; fn_name: STRING): MIXUP_VALUE is
+   native (a_def_source: MIXUP_SOURCE; a_context: MIXUP_NATIVE_CONTEXT; fn_name: STRING): MIXUP_VALUE
       do
          inspect
             fn_name
@@ -42,58 +42,58 @@ feature {ANY}
       end
 
 feature {ANY}
-   set_score (a_name: ABSTRACT_STRING) is
+   set_score (a_name: ABSTRACT_STRING)
       do
          push_section(a_name)
       end
 
-   end_score is
+   end_score
       do
          pop_section
       end
 
-   set_book (a_name: ABSTRACT_STRING) is
+   set_book (a_name: ABSTRACT_STRING)
       do
          push_section(a_name)
       end
 
-   end_book is
+   end_book
       do
          pop_section
       end
 
-   set_partitur (a_name: ABSTRACT_STRING) is
+   set_partitur (a_name: ABSTRACT_STRING)
       do
          push_section(a_name)
       end
 
-   end_partitur is
+   end_partitur
       do
          pop_section
       end
 
-   set_instrument (a_name: ABSTRACT_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]) is
+   set_instrument (a_name: ABSTRACT_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER])
       do
          instruments.put(create {MIXUP_MUSIXTEX_INSTRUMENT}.make(instruments.count + 1, a_name.intern), a_name.intern)
       end
 
-   play_start_voices (a_data: MIXUP_EVENT_DATA; voice_ids: TRAVERSABLE[INTEGER]) is
+   play_start_voices (a_data: MIXUP_EVENT_DATA; voice_ids: TRAVERSABLE[INTEGER])
       do
       end
 
-   play_end_voices (a_data: MIXUP_EVENT_DATA) is
+   play_end_voices (a_data: MIXUP_EVENT_DATA)
       do
       end
 
-   set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING) is
+   set_dynamics (a_data: MIXUP_EVENT_DATA; dynamics, position: ABSTRACT_STRING)
       do
       end
 
-   set_note (a_data: MIXUP_EVENT_DATA; note: MIXUP_NOTE) is
+   set_note (a_data: MIXUP_EVENT_DATA; note: MIXUP_NOTE)
       do
       end
 
-   next_bar (instrument, style: ABSTRACT_STRING) is
+   next_bar (instrument, style: ABSTRACT_STRING)
       do
          if not playing then
             start_playing
@@ -101,40 +101,40 @@ feature {ANY}
          bar_number := bar_number + 1
       end
 
-   start_beam (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_beam (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       do
       end
 
-   end_beam (a_data: MIXUP_EVENT_DATA) is
+   end_beam (a_data: MIXUP_EVENT_DATA)
       do
       end
 
-   start_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       do
       end
 
-   end_slur (a_data: MIXUP_EVENT_DATA) is
+   end_slur (a_data: MIXUP_EVENT_DATA)
       do
       end
 
-   start_phrasing_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_phrasing_slur (a_data: MIXUP_EVENT_DATA; xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       do
       end
 
-   end_phrasing_slur (a_data: MIXUP_EVENT_DATA) is
+   end_phrasing_slur (a_data: MIXUP_EVENT_DATA)
       do
       end
 
-   start_repeat (a_data: MIXUP_EVENT_DATA; volte: INTEGER_64) is
+   start_repeat (a_data: MIXUP_EVENT_DATA; volte: INTEGER_64)
       do
       end
 
-   end_repeat (a_data: MIXUP_EVENT_DATA) is
+   end_repeat (a_data: MIXUP_EVENT_DATA)
       do
       end
 
 feature {}
-   put_header is
+   put_header
       do
          output.put_string(once "[
                                  \input musixtex
@@ -144,7 +144,7 @@ feature {}
                                  ]")
       end
 
-   put_footer is
+   put_footer
       do
          output.put_string(once "[
                                  \endmuflex
@@ -153,7 +153,7 @@ feature {}
                                  ]")
       end
 
-   push_section (a_name: ABSTRACT_STRING) is
+   push_section (a_name: ABSTRACT_STRING)
       require
          a_name /= Void
       do
@@ -169,7 +169,7 @@ feature {}
          section_stack.push(a_name.intern)
       end
 
-   pop_section is
+   pop_section
       do
          if playing then
             stop_playing
@@ -184,7 +184,7 @@ feature {}
          end
       end
 
-   start_playing is
+   start_playing
       require
          not playing
       do
@@ -203,7 +203,7 @@ feature {}
          playing
       end
 
-   stop_playing is
+   stop_playing
       require
          playing
       do
@@ -219,7 +219,7 @@ feature {}
    playing: BOOLEAN
 
 feature {}
-   connect_to (a_output: like output) is
+   connect_to (a_output: like output)
       require
          a_output.is_connected
       do
@@ -231,7 +231,7 @@ feature {}
          not local_output
       end
 
-   make is
+   make
       do
          local_output := True
          create section_stack.make

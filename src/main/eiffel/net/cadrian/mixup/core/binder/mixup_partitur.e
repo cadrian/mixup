@@ -24,17 +24,17 @@ create {MIXUP_PARTITUR}
    duplicate
 
 feature {}
-   accept_start (visitor: MIXUP_CONTEXT_VISITOR) is
+   accept_start (visitor: MIXUP_CONTEXT_VISITOR)
       do
          visitor.start_partitur(Current)
       end
 
-   accept_end (visitor: MIXUP_CONTEXT_VISITOR) is
+   accept_end (visitor: MIXUP_CONTEXT_VISITOR)
       do
          visitor.end_partitur(Current)
       end
 
-   do_duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports; a_children: like children): like Current is
+   do_duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports; a_children: like children): like Current
       do
          create Result.duplicate(a_source, a_name, a_parent, a_values, a_imports, a_children)
       end

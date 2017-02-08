@@ -27,7 +27,7 @@ create {MIXUP_USER_FUNCTION_CONTEXT}
    duplicate
 
 feature {ANY}
-   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
+   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE)
       do
          if args.fast_has(a_name) then
             error("cannot assign a parameter")
@@ -39,7 +39,7 @@ feature {ANY}
          end
       end
 
-   get_local (a_name: FIXED_STRING): MIXUP_VALUE is
+   get_local (a_name: FIXED_STRING): MIXUP_VALUE
       do
          Result := args.reference_at(a_name)
          if Result = Void then
@@ -47,7 +47,7 @@ feature {ANY}
          end
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       local
          timing_: MIXUP_MUSIC_TIMING
       do
@@ -56,7 +56,7 @@ feature {ANY}
          Result.set_timing(timing_.set(0, a_commit_context.bar_number, 0))
       end
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_CONTEXT_VISITOR
       do
@@ -65,7 +65,7 @@ feature {ANY}
       end
 
 feature {ANY}
-   add_statement (a_statement: MIXUP_STATEMENT) is
+   add_statement (a_statement: MIXUP_STATEMENT)
       require
          a_statement /= Void
       do
@@ -75,7 +75,7 @@ feature {ANY}
          end
       end
 
-   add_statements (a_statements: TRAVERSABLE[MIXUP_STATEMENT]) is
+   add_statements (a_statements: TRAVERSABLE[MIXUP_STATEMENT])
       require
          a_statements /= Void
       local
@@ -91,7 +91,7 @@ feature {ANY}
          end
       end
 
-   execute (a_commit_context: MIXUP_COMMIT_CONTEXT) is
+   execute (a_commit_context: MIXUP_COMMIT_CONTEXT)
       local
          statement: MIXUP_STATEMENT
       do
@@ -110,7 +110,7 @@ feature {ANY}
          yielded or else statements.is_empty
       end
 
-   yield (a_source: MIXUP_SOURCE; a_value: like value) is
+   yield (a_source: MIXUP_SOURCE; a_value: like value)
       require
          not yielded
          a_source /= Void
@@ -123,14 +123,14 @@ feature {ANY}
          yielded
       end
 
-   yielded: BOOLEAN is
+   yielded: BOOLEAN
       do
          Result := yield_source /= Void
       end
 
    yield_source: MIXUP_SOURCE
 
-   set_result (a_value: like value) is
+   set_result (a_value: like value)
       require
          not yielded
       do
@@ -143,7 +143,7 @@ feature {ANY}
    args: MAP[MIXUP_VALUE, FIXED_STRING]
 
 feature {MIXUP_CONTEXT}
-   add_child (a_child: MIXUP_CONTEXT) is
+   add_child (a_child: MIXUP_CONTEXT)
       do
          check
             {MIXUP_USER_FUNCTION_CONTEXT} ?:= a_child
@@ -152,11 +152,11 @@ feature {MIXUP_CONTEXT}
       end
 
 feature {}
-   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is
+   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE
       do
       end
 
-   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN is
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN
       do
       end
 
@@ -164,7 +164,7 @@ feature {}
    statements: RING_ARRAY[MIXUP_STATEMENT]
    locals: DICTIONARY[MIXUP_VALUE, FIXED_STRING]
 
-   make (a_source: like source; a_parent: like parent; a_args: like args) is
+   make (a_source: like source; a_parent: like parent; a_args: like args)
       require
          a_source /= Void
          a_args /= Void
@@ -178,7 +178,7 @@ feature {}
          args = a_args
       end
 
-   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports; a_args: like args) is
+   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports; a_args: like args)
       do
          source := a_source
          parent := a_parent

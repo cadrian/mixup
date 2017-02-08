@@ -28,37 +28,37 @@ create {ANY}
    make
 
 feature {ANY}
-   add (left, right: MIXUP_VALUE): MIXUP_REAL is
+   add (left, right: MIXUP_VALUE): MIXUP_REAL
       do
          create Result.make(source, as_real(left) + as_real(right))
       end
 
 feature {ANY}
-   divide (left, right: MIXUP_VALUE): MIXUP_REAL is
+   divide (left, right: MIXUP_VALUE): MIXUP_REAL
       do
          create Result.make(source, as_real(left) / as_real(right))
       end
 
 feature {ANY}
-   multiply (left, right: MIXUP_VALUE): MIXUP_REAL is
+   multiply (left, right: MIXUP_VALUE): MIXUP_REAL
       do
          create Result.make(source, as_real(left) * as_real(right))
       end
 
 feature {ANY}
-   subtract (left, right: MIXUP_VALUE): MIXUP_REAL is
+   subtract (left, right: MIXUP_VALUE): MIXUP_REAL
       do
          create Result.make(source, as_real(left) - as_real(right))
       end
 
 feature {ANY}
-   power (left, right: MIXUP_VALUE): MIXUP_REAL is
+   power (left, right: MIXUP_VALUE): MIXUP_REAL
       do
          create Result.make(source, as_real(left) ^ as_integer(right).to_integer_32)
       end
 
 feature {}
-   make (a_source: like source) is
+   make (a_source: like source)
       require
          a_source /= Void
       do

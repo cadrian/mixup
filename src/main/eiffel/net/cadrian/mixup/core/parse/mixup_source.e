@@ -20,25 +20,25 @@ insert
       end
 
 feature {ANY}
-   file: FIXED_STRING is
+   file: FIXED_STRING
       deferred
       end
 
-   line: INTEGER is
+   line: INTEGER
       deferred
       end
 
-   column: INTEGER is
+   column: INTEGER
       deferred
       end
 
-   display (a_output: OUTPUT_STREAM) is
+   display (a_output: OUTPUT_STREAM)
       require
          a_output.is_connected
       deferred
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          file.out_in_tagged_out_memory
          tagged_out_memory.extend('@')

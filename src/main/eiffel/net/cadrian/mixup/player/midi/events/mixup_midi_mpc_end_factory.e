@@ -24,7 +24,7 @@ create {MIXUP_MIDI_PLAYER}
    make
 
 feature {ANY}
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "{MIXUP_MIDI_MPC_END_FACTORY ")
          value.out_in_tagged_out_memory
@@ -34,20 +34,20 @@ feature {ANY}
    value: INTEGER_8
    mpc_start: MIXUP_MIDI_MPC_START_FACTORY
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       do
          Result := Precursor(a_commit_context)
          Result.set_mpc_start(mpc_start.last_commit)
       end
 
 feature {ANY}
-   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR
       do
          create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_MIDI_MPC_END}.make(a_context.event_data(source), mpc_start.last_mpc_start, mpc_start.knob, mpc_start.value, value))
       end
 
 feature {MIXUP_MIDI_MPC_END_FACTORY}
-   set_mpc_start (a_mpc_start: like mpc_start) is
+   set_mpc_start (a_mpc_start: like mpc_start)
       require
          a_mpc_start /= Void
          a_mpc_start.mpc_end = Void
@@ -60,7 +60,7 @@ feature {MIXUP_MIDI_MPC_END_FACTORY}
       end
 
 feature {}
-   make (a_source: like source; a_mpc_start: like mpc_start; a_value: like value) is
+   make (a_source: like source; a_mpc_start: like mpc_start; a_value: like value)
       require
          a_source /= Void
          a_mpc_start /= Void
@@ -77,7 +77,7 @@ feature {}
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       do
          a_name.append(once "<mpc end>")
       end

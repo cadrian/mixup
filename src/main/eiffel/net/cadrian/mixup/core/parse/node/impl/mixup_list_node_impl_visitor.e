@@ -18,7 +18,7 @@ inherit
    VISITOR
 
 feature {MIXUP_LIST_NODE_IMPL}
-   visit_mixup_list_node_impl (node: MIXUP_LIST_NODE_IMPL) is
+   visit_mixup_list_node_impl (node: MIXUP_LIST_NODE_IMPL)
       require
          node /= Void
       deferred

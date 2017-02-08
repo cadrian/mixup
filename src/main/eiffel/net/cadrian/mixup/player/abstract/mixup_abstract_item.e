@@ -16,7 +16,7 @@ deferred class MIXUP_ABSTRACT_ITEM[OUT_ -> MIXUP_ABSTRACT_OUTPUT,
                                    SEC_ -> MIXUP_ABSTRACT_SECTION[OUT_]]
 
 feature {ANY}
-   generate (context: MIXUP_CONTEXT; section: SEC_) is
+   generate (context: MIXUP_CONTEXT; section: SEC_)
       require
          section /= Void
       deferred

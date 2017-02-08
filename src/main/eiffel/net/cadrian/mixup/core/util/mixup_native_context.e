@@ -19,22 +19,22 @@ feature {ANY}
    args: TRAVERSABLE[MIXUP_VALUE]
    commit_context: MIXUP_COMMIT_CONTEXT
 
-   context: MIXUP_CONTEXT is
+   context: MIXUP_CONTEXT
       do
          Result := commit_context.context
       end
 
-   player: MIXUP_PLAYER is
+   player: MIXUP_PLAYER
       do
          Result := commit_context.player
       end
 
-   bar_number: INTEGER is
+   bar_number: INTEGER
       do
          Result := commit_context.bar_number
       end
 
-   prepare (a_call_source: like call_source; a_commit_context: like commit_context; a_args: like args) is
+   prepare (a_call_source: like call_source; a_commit_context: like commit_context; a_args: like args)
       require
          not is_ready
          a_call_source /= Void
@@ -52,7 +52,7 @@ feature {ANY}
          is_ready
       end
 
-   is_ready: BOOLEAN is
+   is_ready: BOOLEAN
       do
          Result := call_source /= Void and then context /= Void and then player /= Void and then args /= Void
       end

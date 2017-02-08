@@ -15,11 +15,11 @@
 deferred class MIXUP_ABSTRACT_OUTPUT
 
 feature {ANY}
-   is_connected: BOOLEAN is
+   is_connected: BOOLEAN
       deferred
       end
 
-   disconnect is
+   disconnect
       require
          is_connected
       deferred

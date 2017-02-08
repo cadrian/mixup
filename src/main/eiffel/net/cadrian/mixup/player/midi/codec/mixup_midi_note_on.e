@@ -21,7 +21,7 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_32 is
+   event_type: INTEGER_32
       once
          Result := event_note_on
       end
@@ -32,7 +32,7 @@ feature {ANY}
    velocity: INTEGER_32
 
 feature {}
-   make (a_channel: like channel; a_pitch: like pitch; a_velocity: like velocity) is
+   make (a_channel: like channel; a_pitch: like pitch; a_velocity: like velocity)
       require
          a_channel.in_range(0, 15)
          a_pitch >= 0
@@ -47,7 +47,7 @@ feature {}
          velocity = a_velocity
       end
 
-   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
+   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT)
       do
          debug
             log.trace.put_line(once "channel " | &channel | once ": key=" | &pitch | once " on")

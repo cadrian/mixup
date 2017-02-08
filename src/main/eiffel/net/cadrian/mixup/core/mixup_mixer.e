@@ -24,12 +24,12 @@ create {ANY}
    make
 
 feature {ANY}
-   play is
+   play
       do
          contexts.do_all(agent play_context)
       end
 
-   add_piece (a_piece: MIXUP_NODE; a_file: ABSTRACT_STRING) is
+   add_piece (a_piece: MIXUP_NODE; a_file: ABSTRACT_STRING)
       require
          a_piece /= Void
          a_file /= Void
@@ -39,7 +39,7 @@ feature {ANY}
          ignored := do_add_piece(a_piece, a_file.intern)
       end
 
-   add_player (a_player: MIXUP_PLAYER) is
+   add_player (a_player: MIXUP_PLAYER)
       require
          a_player /= Void
       do
@@ -47,7 +47,7 @@ feature {ANY}
       end
 
 feature {}
-   do_add_piece (a_piece: MIXUP_NODE; a_file: FIXED_STRING): MIXUP_CONTEXT is
+   do_add_piece (a_piece: MIXUP_NODE; a_file: FIXED_STRING): MIXUP_CONTEXT
       require
          a_piece /= Void
          a_file /= Void
@@ -61,7 +61,7 @@ feature {}
          end
       end
 
-   import_context (a_source: like source; a_name: FIXED_STRING): MIXUP_CONTEXT is
+   import_context (a_source: like source; a_name: FIXED_STRING): MIXUP_CONTEXT
       require
          a_source /= Void
          a_name /= Void
@@ -79,14 +79,14 @@ feature {}
          end
       end
 
-   play_context (a_context: MIXUP_CONTEXT) is
+   play_context (a_context: MIXUP_CONTEXT)
       require
          a_context /= Void
       do
          players.do_all(agent play_music_in_context(a_context, ?))
       end
 
-   play_music_in_context (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER) is
+   play_music_in_context (a_context: MIXUP_CONTEXT; a_player: MIXUP_PLAYER)
       require
          a_context /= Void
          a_player /= Void
@@ -107,7 +107,7 @@ feature {}
       end
 
 feature {}
-   native_with_lyrics (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+   native_with_lyrics (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE
       require
          context.is_ready
       local
@@ -127,7 +127,7 @@ feature {}
          end
       end
 
-   force_lyrics (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_EVENTS_ITERATOR_CONTEXT; event: MIXUP_EVENT): MIXUP_EVENT is
+   force_lyrics (a_def_source, a_call_source: MIXUP_SOURCE; context: MIXUP_EVENTS_ITERATOR_CONTEXT; event: MIXUP_EVENT): MIXUP_EVENT
       do
          Result := event
          if Result.allow_lyrics then
@@ -135,7 +135,7 @@ feature {}
          end
       end
 
-   native_bar (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+   native_bar (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE
       require
          context.is_ready
       local
@@ -153,7 +153,7 @@ feature {}
          end
       end
 
-   native_seq (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+   native_seq (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE
       require
          context.is_ready
       local
@@ -172,14 +172,14 @@ feature {}
          end
       end
 
-   native_new_music_store (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+   native_new_music_store (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE
       require
          context.is_ready
       do
          create {MIXUP_MUSIC_STORE} Result.make(context.call_source)
       end
 
-   native_store_music (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+   native_store_music (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE
       require
          context.is_ready
       local
@@ -205,20 +205,20 @@ feature {}
          end
       end
 
-   native_store_text (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+   native_store_text (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE
       require
          context.is_ready
       do
       end
 
-   native_current_player (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+   native_current_player (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE
       require
          context.is_ready
       do
          create {MIXUP_STRING} Result.make(context.call_source, context.player.name, context.player.name)
       end
 
-   native_map (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+   native_map (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE
       require
          context.is_ready
       local
@@ -241,7 +241,7 @@ feature {}
          end
       end
 
-   native_reduce (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+   native_reduce (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE
       require
          context.is_ready
       local
@@ -262,14 +262,14 @@ feature {}
          end
       end
 
-   native_in_player (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT; name: STRING): MIXUP_VALUE is
+   native_in_player (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT; name: STRING): MIXUP_VALUE
       require
          context.is_ready
       do
          Result := context.player.native(a_def_source, context, name)
       end
 
-   native_staff_id (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+   native_staff_id (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE
       require
          context.is_ready
       local
@@ -282,7 +282,7 @@ feature {}
          else
             int ::= context.args.first
             create {MIXUP_VALUE_FACTORY} Result.make(context.call_source,
-                                                     agent (a_int: INTEGER; a_src: MIXUP_SOURCE; a_cc: MIXUP_COMMIT_CONTEXT): MIXUP_STRING is
+                                                     agent (a_int: INTEGER; a_src: MIXUP_SOURCE; a_cc: MIXUP_COMMIT_CONTEXT): MIXUP_STRING
                                                         local
                                                            str: STRING
                                                         do
@@ -295,18 +295,18 @@ feature {}
          end
       end
 
-   native_staff_index (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+   native_staff_index (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE
       require
          context.is_ready
       do
          create {MIXUP_VALUE_FACTORY} Result.make(context.call_source,
-                                                  agent (a_src: MIXUP_SOURCE; a_cc: MIXUP_COMMIT_CONTEXT): MIXUP_INTEGER is
+                                                  agent (a_src: MIXUP_SOURCE; a_cc: MIXUP_COMMIT_CONTEXT): MIXUP_INTEGER
                                                      do
                                                         create Result.make(a_src, a_cc.instrument.relative_staff_id(a_cc.staff.id))
                                                      end)
       end
 
-   native_skip_octave (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE is
+   native_skip_octave (a_def_source: MIXUP_SOURCE; context: MIXUP_NATIVE_CONTEXT): MIXUP_VALUE
       require
          context.is_ready
       local
@@ -325,7 +325,7 @@ feature {}
       end
 
 feature {ANY}
-   item (a_source: like source; name: STRING): FUNCTION[TUPLE[MIXUP_NATIVE_CONTEXT], MIXUP_VALUE] is
+   item (a_source: like source; name: STRING): FUNCTION[TUPLE[MIXUP_NATIVE_CONTEXT], MIXUP_VALUE]
       do
          log.trace.put_line(once "Preparing native function: " | name)
          inspect
@@ -365,7 +365,7 @@ feature {}
    contexts: DICTIONARY[MIXUP_CONTEXT, FIXED_STRING]
    file_reader: FUNCTION[TUPLE[FIXED_STRING], TUPLE[MIXUP_NODE, FIXED_STRING]]
 
-   make (a_file_reader: like file_reader) is
+   make (a_file_reader: like file_reader)
       require
          a_file_reader /= Void
       do

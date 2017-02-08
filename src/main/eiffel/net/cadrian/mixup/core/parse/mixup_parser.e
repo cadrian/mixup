@@ -27,7 +27,7 @@ create {ANY}
    make
 
 feature {ANY}
-   parse (a_piece: like current_piece; a_file: like current_file; a_context_factory: like context_factory): MIXUP_CONTEXT is
+   parse (a_piece: like current_piece; a_file: like current_file; a_context_factory: like context_factory): MIXUP_CONTEXT
       require
          a_piece /= Void
          a_file /= Void
@@ -70,7 +70,7 @@ feature {ANY}
    context_factory: FUNCTION[TUPLE[MIXUP_SOURCE, FIXED_STRING], MIXUP_CONTEXT]
 
 feature {MIXUP_LIST_NODE_IMPL}
-   visit_mixup_list_node_impl (node: MIXUP_LIST_NODE_IMPL) is
+   visit_mixup_list_node_impl (node: MIXUP_LIST_NODE_IMPL)
       do
          inspect
             node.name
@@ -91,7 +91,7 @@ feature {MIXUP_LIST_NODE_IMPL}
       end
 
 feature {MIXUP_NON_TERMINAL_NODE_IMPL}
-   visit_mixup_non_terminal_node_impl (node: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   visit_mixup_non_terminal_node_impl (node: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          old_compound_music: like last_compound_music
          old_voices: like last_voices
@@ -246,7 +246,7 @@ feature {MIXUP_NON_TERMINAL_NODE_IMPL}
       end
 
 feature {MIXUP_TERMINAL_NODE_IMPL}
-   visit_mixup_terminal_node_impl (node: MIXUP_TERMINAL_NODE_IMPL) is
+   visit_mixup_terminal_node_impl (node: MIXUP_TERMINAL_NODE_IMPL)
       local
          string_image: TYPED_MIXUP_IMAGE[STRING]
          integer_image: TYPED_MIXUP_IMAGE[INTEGER_64]
@@ -312,7 +312,7 @@ feature {}
    current_instrument:      MIXUP_INSTRUMENT
    in_word:                 BOOLEAN
 
-   build_identifier_list (identifiers: MIXUP_LIST_NODE_IMPL) is
+   build_identifier_list (identifiers: MIXUP_LIST_NODE_IMPL)
       do
          check
             last_identifiers.is_empty
@@ -321,7 +321,7 @@ feature {}
          identifiers.accept_all(Current)
       end
 
-   build_identifier (dot_identifier: MIXUP_LIST_NODE_IMPL) is
+   build_identifier (dot_identifier: MIXUP_LIST_NODE_IMPL)
       local
          old_identifier: like current_identifier
          old_agent: like current_agent
@@ -340,14 +340,14 @@ feature {}
          current_agent := old_agent
       end
 
-   build_identifier_part (identifier_part: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_identifier_part (identifier_part: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          identifier_part.node_at(0).accept(Current)
          current_identifier.add_identifier_part(new_source(identifier_part), name)
          identifier_part.node_at(1).accept(Current)
       end
 
-   build_identifier_args (identifier_args: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_identifier_args (identifier_args: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          old_expressions: like last_expressions
       do
@@ -364,7 +364,7 @@ feature {}
          end
       end
 
-   build_value (value: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_value (value: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          last_expression := Void
          value.accept_all(Current)
@@ -373,7 +373,7 @@ feature {}
          end
       end
 
-   build_expression_list (expression_list: MIXUP_LIST_NODE_IMPL) is
+   build_expression_list (expression_list: MIXUP_LIST_NODE_IMPL)
       require
          last_expressions.is_empty
       local
@@ -391,7 +391,7 @@ feature {}
          end
       end
 
-   build_voices (a_voices: MIXUP_LIST_NODE_IMPL) is
+   build_voices (a_voices: MIXUP_LIST_NODE_IMPL)
       local
          i: INTEGER; old_compound_music: like last_compound_music
          voices: MIXUP_VOICES
@@ -421,7 +421,7 @@ feature {}
          end
       end
 
-   build_staff (staff: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_staff (staff: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          staff.node_at(0).accept(Current)
          staves.add_last(create {MIXUP_STAFF}.make(new_source(staff), last_voices))
@@ -429,12 +429,12 @@ feature {}
          last_compound_music := Void
       end
 
-   absolute_reference: MIXUP_NOTE_HEAD is
+   absolute_reference: MIXUP_NOTE_HEAD
       once
          Result.set(create {MIXUP_SOURCE_UNKNOWN}, "a", 4)
       end
 
-   read_xuplet_spec (spec: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   read_xuplet_spec (spec: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          int: MIXUP_INTEGER; str: MIXUP_STRING; string: STRING
       do
@@ -471,7 +471,7 @@ feature {} -- Functions
    current_if_then_else: MIXUP_IF_THEN_ELSE
    current_inspect:      MIXUP_INSPECT
 
-   build_signature (signature: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_signature (signature: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          create last_signature.make(0)
          if not signature.is_empty then
@@ -479,13 +479,13 @@ feature {} -- Functions
          end
       end
 
-   build_signature_arg (arg: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_signature_arg (arg: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          arg.node_at(0).accept(Current)
          last_signature.add_last(name)
       end
 
-   build_agent (a_agent: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_agent (a_agent: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          old_identifier: like current_identifier
          old_agent: like current_agent
@@ -506,12 +506,12 @@ feature {} -- Functions
          current_agent := old_agent
       end
 
-   build_open_argument (a_open_argument: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_open_argument (a_open_argument: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          create {MIXUP_OPEN_ARGUMENT} last_expression.make(new_source(a_open_argument))
       end
 
-   build_function_native (function_native: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_function_native (function_native: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          string: MIXUP_STRING; str: STRING
       do
@@ -523,7 +523,7 @@ feature {} -- Functions
          last_expression := last_function
       end
 
-   build_function_user (function_user: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_function_user (function_user: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          check
             last_statements = Void
@@ -535,7 +535,7 @@ feature {} -- Functions
          last_statements := Void
       end
 
-   build_if_then_else (a_if_then_else: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_if_then_else (a_if_then_else: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          old_if_then_else: like current_if_then_else
          old_inspect: like current_inspect
@@ -553,7 +553,7 @@ feature {} -- Functions
          current_inspect := old_inspect
       end
 
-   build_if (a_if: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_if (a_if: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          exp: like last_expression
          old_statements: like last_statements
@@ -568,7 +568,7 @@ feature {} -- Functions
          last_statements := old_statements
       end
 
-   build_else (a_else: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_else (a_else: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          old_statements: like last_statements
       do
@@ -585,7 +585,7 @@ feature {} -- Functions
          end
       end
 
-   build_inspect (a_inspect: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_inspect (a_inspect: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          old_if_then_else: like current_if_then_else
          old_inspect: like current_inspect
@@ -605,7 +605,7 @@ feature {} -- Functions
          current_if_then_else := old_if_then_else
       end
 
-   build_inspect_branch (a_inspect_branch: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_inspect_branch (a_inspect_branch: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          exp: like last_expression
          old_statements: like last_statements
@@ -619,7 +619,7 @@ feature {} -- Functions
          last_statements := old_statements
       end
 
-   build_loop (a_loop: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_loop (a_loop: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          loop_identifier: like name
          exp: like last_expression
@@ -637,7 +637,7 @@ feature {} -- Functions
          last_statements := old_statements
       end
 
-   build_expression_or_assignment (a_expression_or_assignment: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_expression_or_assignment (a_expression_or_assignment: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          exp: like last_expression
       do
@@ -663,13 +663,13 @@ feature {} -- Functions
          end
       end
 
-   build_yield (a_yield: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_yield (a_yield: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          a_yield.node_at(1).accept(Current)
          last_statements.add_last(create {MIXUP_YIELD}.make(new_source(a_yield), last_expression))
       end
 
-   build_definition (definition: MIXUP_NON_TERMINAL_NODE_IMPL; is_public: BOOLEAN) is
+   build_definition (definition: MIXUP_NON_TERMINAL_NODE_IMPL; is_public: BOOLEAN)
       local
          definition_name: FIXED_STRING
          def_value: MIXUP_VALUE
@@ -691,7 +691,7 @@ feature {} -- Functions
          current_context.setup(definition_name, def_value, is_const, is_public, False)
       end
 
-   build_import (import: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_import (import: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          ctx: MIXUP_CONTEXT
          ctx_name: FIXED_STRING
@@ -714,7 +714,7 @@ feature {} -- Functions
          end
       end
 
-   build_e1_exp (a_e1: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_e1_exp (a_e1: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          exp: like last_expression
          i: INTEGER
@@ -732,7 +732,7 @@ feature {} -- Functions
          end
       end
 
-   build_e2_exp (a_e2: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_e2_exp (a_e2: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          exp: like last_expression
          i: INTEGER
@@ -756,7 +756,7 @@ feature {} -- Functions
          end
       end
 
-   build_e3_exp (a_e3: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_e3_exp (a_e3: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          exp: like last_expression
          i: INTEGER
@@ -774,7 +774,7 @@ feature {} -- Functions
          end
       end
 
-   build_e4_exp (a_e4: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_e4_exp (a_e4: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          exp: like last_expression
          i: INTEGER
@@ -806,7 +806,7 @@ feature {} -- Functions
          end
       end
 
-   build_e5_exp (a_e5: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_e5_exp (a_e5: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          exp: like last_expression
          i: INTEGER
@@ -830,7 +830,7 @@ feature {} -- Functions
          end
       end
 
-   build_e6_exp (a_e6: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_e6_exp (a_e6: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          exp: like last_expression
          i: INTEGER
@@ -858,7 +858,7 @@ feature {} -- Functions
          end
       end
 
-   build_e7_exp (a_e7: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_e7_exp (a_e7: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          exp: like last_expression
          i: INTEGER
@@ -876,13 +876,13 @@ feature {} -- Functions
          end
       end
 
-   build_e7 (a_e7: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_e7 (a_e7: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          -- TODO: unary operators
          a_e7.accept_all(Current)
       end
 
-   build_tuple (a_tuple: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_tuple (a_tuple: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          old_expressions: like last_expressions
       do
@@ -893,7 +893,7 @@ feature {} -- Functions
          last_expressions := old_expressions
       end
 
-   build_list (a_list: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_list (a_list: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          old_expressions: like last_expressions
       do
@@ -904,7 +904,7 @@ feature {} -- Functions
          last_expressions := old_expressions
       end
 
-   build_dictionary (a_dictionary: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_dictionary (a_dictionary: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          old_dictionary: like last_dictionary
       do
@@ -915,7 +915,7 @@ feature {} -- Functions
          last_dictionary := old_dictionary
       end
 
-   build_expression_pair (a_expression_pair: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_expression_pair (a_expression_pair: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          key: like last_expression
       do
@@ -926,7 +926,7 @@ feature {} -- Functions
       end
 
 feature {}
-   build_context (context_node: MIXUP_NON_TERMINAL_NODE_IMPL; factory: FUNCTION[TUPLE[MIXUP_SOURCE, MIXUP_CONTEXT], MIXUP_CONTEXT]) is
+   build_context (context_node: MIXUP_NON_TERMINAL_NODE_IMPL; factory: FUNCTION[TUPLE[MIXUP_SOURCE, MIXUP_CONTEXT], MIXUP_CONTEXT])
       local
          old_context: like current_context
       do
@@ -940,32 +940,32 @@ feature {}
          current_context := old_context
       end
 
-   build_module (module: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_module (module: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          build_context(module, agent (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT): MIXUP_CONTEXT is do create {MIXUP_MODULE} Result.make(a_source, name, context) end)
       end
 
-   build_score (score: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_score (score: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          build_context(score, agent (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT): MIXUP_CONTEXT is do create {MIXUP_SCORE} Result.make(a_source, name, context) end)
       end
 
-   build_book (book: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_book (book: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          build_context(book, agent (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT): MIXUP_CONTEXT is do create {MIXUP_BOOK} Result.make(a_source, name, context) end)
       end
 
-   build_partitur (partitur: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_partitur (partitur: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          build_context(partitur, agent (a_source: MIXUP_SOURCE; context: MIXUP_CONTEXT): MIXUP_CONTEXT is do create {MIXUP_PARTITUR} Result.make(a_source, name, context) end)
       end
 
-   build_partitur_content (partitur_content: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_partitur_content (partitur_content: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          partitur_content.accept_all(Current)
       end
 
-   build_instrument (instrument: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_instrument (instrument: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          old_context: like current_context
       do
@@ -989,18 +989,18 @@ feature {}
          current_instrument := Void
       end
 
-   build_next_bar (next_bar: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_next_bar (next_bar: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          last_compound_music.add_bar(new_source(next_bar), Void)
       end
 
-   build_extern_music (music: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_extern_music (music: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          music.node_at(1).accept(Current)
          last_compound_music.add_music(create {MIXUP_MUSIC_IDENTIFIER}.make(new_source(music), last_identifier))
       end
 
-   build_group (group: MIXUP_NON_TERMINAL_NODE_IMPL; grouped_music: MIXUP_GROUPED_MUSIC) is
+   build_group (group: MIXUP_NON_TERMINAL_NODE_IMPL; grouped_music: MIXUP_GROUPED_MUSIC)
       local
          old_compound_music: like last_compound_music
          xnumerator, xdenominator: INTEGER_64; xtext: FIXED_STRING
@@ -1022,23 +1022,23 @@ feature {}
          last_compound_music := old_compound_music
       end
 
-   build_beam (beam: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_beam (beam: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          build_group(beam, create {MIXUP_GROUPED_MUSIC}.as_beam(new_source(beam), last_compound_music.reference))
       end
 
-   build_slur (slur: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_slur (slur: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          build_group(slur, create {MIXUP_GROUPED_MUSIC}.as_slur(new_source(slur), last_compound_music.reference))
       end
 
-   build_phrasing_slur (phrasing_slur: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_phrasing_slur (phrasing_slur: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          build_group(phrasing_slur, create {MIXUP_GROUPED_MUSIC}.as_phrasing_slur(new_source(phrasing_slur), last_compound_music.reference))
       end
 
    last_chord_tie: BOOLEAN
-   build_chord_or_tie (chord_or_tie: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_chord_or_tie (chord_or_tie: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          if chord_or_tie.count = 1 then
             last_chord_tie := False
@@ -1048,7 +1048,7 @@ feature {}
          chord_or_tie.node_at(0).accept(Current)
       end
 
-   build_chord (chord: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_chord (chord: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          create note_heads.make(0)
          if chord.count = 2 then
@@ -1061,7 +1061,7 @@ feature {}
          last_compound_music.add_chord(new_source(chord), note_heads, last_note_length, last_chord_tie)
       end
 
-   build_note_head (note_head: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_note_head (note_head: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          token: MIXUP_TERMINAL_NODE_IMPL
          i: INTEGER
@@ -1087,7 +1087,7 @@ feature {}
          note_heads.add_last([new_source(note_head), last_note_head.intern])
       end
 
-   build_note_length (note_length: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_note_length (note_length: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          number: MIXUP_INTEGER
       do
@@ -1118,7 +1118,7 @@ feature {} -- Dynamics
    last_position: FIXED_STRING
    last_dynamics: MIXUP_DYNAMICS
 
-   build_dynamics_position (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_dynamics_position (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL)
       local
          position: MIXUP_TERMINAL_NODE_IMPL
       do
@@ -1130,71 +1130,71 @@ feature {} -- Dynamics
          end
       end
 
-   build_dynamic_identifier (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_dynamic_identifier (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          dynamic.node_at(0).accept(Current)
          create last_dynamics.make(new_source(dynamic), name.intern, last_position, True)
          last_compound_music.add_music(last_dynamics)
       end
 
-   build_dynamic_string (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_dynamic_string (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          dynamic.node_at(0).accept(Current)
          create last_dynamics.make(new_source(dynamic), last_string.intern, last_position, False)
          last_compound_music.add_music(last_dynamics)
       end
 
-   build_dynamic_hairpin_crescendo (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_dynamic_hairpin_crescendo (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          create last_dynamics.make(new_source(dynamic), (once "<").intern, last_position, True)
          last_compound_music.add_music(last_dynamics)
       end
 
-   build_dynamic_hairpin_decrescendo (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_dynamic_hairpin_decrescendo (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          create last_dynamics.make(new_source(dynamic), (once ">").intern, last_position, True)
          last_compound_music.add_music(last_dynamics)
       end
 
-   build_dynamic_end (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_dynamic_end (dynamic: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          create last_dynamics.make(new_source(dynamic), (once "end").intern, last_position, True)
          last_compound_music.add_music(last_dynamics)
       end
 
 feature {}
-   play_notes (notes: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   play_notes (notes: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          notes.accept_all(Current)
       end
 
-   build_strophe (strophe: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_strophe (strophe: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          current_instrument.next_strophe
          strophe.node_at(1).accept(Current)
       end
 
-   build_word (word: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_word (word: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          in_word := False
          word.accept_all(Current)
       end
 
-   build_syllable (syllable: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_syllable (syllable: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          syllable.accept_all(Current)
          current_instrument.add_syllable(new_source(syllable), last_string, in_word)
          in_word := True
       end
 
-   build_extern_syllables (syllables: MIXUP_NON_TERMINAL_NODE_IMPL) is
+   build_extern_syllables (syllables: MIXUP_NON_TERMINAL_NODE_IMPL)
       do
          syllables.node_at(1).accept(Current)
          current_instrument.add_extern_syllables(last_identifier)
       end
 
 feature {}
-   make (a_seed_player: like seed_player; a_native_provider: like native_provider) is
+   make (a_seed_player: like seed_player; a_native_provider: like native_provider)
       require
          a_seed_player /= Void
          a_native_provider /= Void
@@ -1206,7 +1206,7 @@ feature {}
          native_provider = a_native_provider
       end
 
-   new_source (node: MIXUP_NODE): MIXUP_SOURCE_IMPL is
+   new_source (node: MIXUP_NODE): MIXUP_SOURCE_IMPL
       local
          line, column: INTEGER
       do

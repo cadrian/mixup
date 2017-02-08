@@ -25,7 +25,7 @@ feature {ANY}
 
    image: MIXUP_IMAGE
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_TERMINAL_NODE_IMPL_VISITOR
       do
@@ -34,7 +34,7 @@ feature {ANY}
       end
 
 feature {MIXUP_NODE_HANDLER}
-   display (output: OUTPUT_STREAM; indent: INTEGER; p: STRING) is
+   display (output: OUTPUT_STREAM; indent: INTEGER; p: STRING)
       do
          do_indent(output, indent, p)
          output.put_character('"')
@@ -43,7 +43,7 @@ feature {MIXUP_NODE_HANDLER}
          output.put_line(image.image)
       end
 
-   generate (o: OUTPUT_STREAM) is
+   generate (o: OUTPUT_STREAM)
       do
          o.put_string(image.blanks)
          o.put_string(image.image)
@@ -51,7 +51,7 @@ feature {MIXUP_NODE_HANDLER}
       end
 
 feature {}
-   make (a_name: like name; a_image: like image) is
+   make (a_name: like name; a_image: like image)
       do
          name := a_name
          image := a_image

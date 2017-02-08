@@ -36,13 +36,13 @@ create {MIXUP_MIXER_CONDUCTOR}
    make
 
 feature {MIXUP_INSTRUMENT}
-   visit_instrument (a_instrument: MIXUP_INSTRUMENT) is
+   visit_instrument (a_instrument: MIXUP_INSTRUMENT)
       do
          instruments.add_last(a_instrument)
       end
 
 feature {}
-   make (a_context: MIXUP_CONTEXT) is
+   make (a_context: MIXUP_CONTEXT)
       require
          a_context /= Void
       do
@@ -54,17 +54,17 @@ feature {}
          start
       end
 
-   add_notes_iterator is
+   add_notes_iterator
       do
          instruments.do_all(agent add_note_iterator)
       end
 
-   add_note_iterator (a_instrument: MIXUP_INSTRUMENT) is
+   add_note_iterator (a_instrument: MIXUP_INSTRUMENT)
       do
          notes.add_last(a_instrument.new_events_iterator)
       end
 
-   count: INTEGER is
+   count: INTEGER
       do
          Result := instruments.count
       end

@@ -21,14 +21,14 @@ create {MIXUP_MUSIXTEX_INSTRUMENT}
    make
 
 feature {ANY}
-   emit_rest (duration: INTEGER_64) is
+   emit_rest (duration: INTEGER_64)
       do
          close_duration
          output.put_character('\')
          output.put_string(rests.at(duration))
       end
 
-   emit_duration (duration: INTEGER_64; zero_spacing: BOOLEAN) is
+   emit_duration (duration: INTEGER_64; zero_spacing: BOOLEAN)
       local
          dur: like last_duration
       do
@@ -50,7 +50,7 @@ feature {ANY}
          end
       end
 
-   emit_octave (octave: INTEGER_64) is
+   emit_octave (octave: INTEGER_64)
       do
          if octave < last_octave then
             emit_quotes(octave, last_octave, '`')
@@ -60,7 +60,7 @@ feature {ANY}
          last_octave := octave
       end
 
-   emit_note (note: FIXED_STRING) is
+   emit_note (note: FIXED_STRING)
       do
          if note.has_suffix(once "es") then
             output.put_string(once "\fl ")
@@ -70,13 +70,13 @@ feature {ANY}
          output.put_character(note.first)
       end
 
-   close is
+   close
       do
          close_duration
       end
 
 feature {}
-   make (a_output: like output) is
+   make (a_output: like output)
       require
          a_output /= Void
       do
@@ -91,7 +91,7 @@ feature {}
    last_octave: INTEGER_64
    last_duration: FIXED_STRING
 
-   emit_quotes (o1, o2: INTEGER_64; quote: CHARACTER) is
+   emit_quotes (o1, o2: INTEGER_64; quote: CHARACTER)
       require
          o1 < o2
       local
@@ -107,7 +107,7 @@ feature {}
          end
       end
 
-   close_duration is
+   close_duration
       do
          if last_duration /= Void then
             output.put_character('}')
@@ -115,17 +115,17 @@ feature {}
          end
       end
 
-   white_note_head: FIXED_STRING is
+   white_note_head: FIXED_STRING
       once
          Result := "zh".intern
       end
 
-   black_note_head: FIXED_STRING is
+   black_note_head: FIXED_STRING
       once
          Result := "zq".intern
       end
 
-   durations: DICTIONARY[FIXED_STRING, INTEGER_64] is
+   durations: DICTIONARY[FIXED_STRING, INTEGER_64]
       once
          Result := {HASHED_DICTIONARY[FIXED_STRING, INTEGER_64]
          <<
@@ -153,7 +153,7 @@ feature {}
            >>};
       end
 
-   rests: DICTIONARY[FIXED_STRING, INTEGER_64] is
+   rests: DICTIONARY[FIXED_STRING, INTEGER_64]
       once
          Result := {HASHED_DICTIONARY[FIXED_STRING, INTEGER_64]
          <<

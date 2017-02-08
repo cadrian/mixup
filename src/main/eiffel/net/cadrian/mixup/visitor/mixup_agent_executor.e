@@ -24,17 +24,17 @@ create {ANY}
    map, reduce
 
 feature {ANY}
-   is_map: BOOLEAN is
+   is_map: BOOLEAN
       do
          Result := seed = Void
       end
 
-   is_reduce: BOOLEAN is
+   is_reduce: BOOLEAN
       do
          Result := seed /= Void
       end
 
-   call (a_commit_context: like commit_context): MIXUP_VALUE is
+   call (a_commit_context: like commit_context): MIXUP_VALUE
       require
          a_commit_context.context /= Void
          a_commit_context.player /= Void
@@ -54,7 +54,7 @@ feature {ANY}
       end
 
 feature {MIXUP_YIELD_ITERATOR}
-   visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR) is
+   visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR)
       do
          from
             call_mapper(args(a_yield_iterator.value))
@@ -67,55 +67,55 @@ feature {MIXUP_YIELD_ITERATOR}
       end
 
 feature {MIXUP_AGENT}
-   visit_agent (a_agent: MIXUP_AGENT) is
+   visit_agent (a_agent: MIXUP_AGENT)
       do
          call_mapper(args(a_agent))
       end
 
 feature {MIXUP_OPEN_ARGUMENT}
-   visit_open_argument (a_open_argument: MIXUP_OPEN_ARGUMENT) is
+   visit_open_argument (a_open_argument: MIXUP_OPEN_ARGUMENT)
       do
          fatal("bad type")
       end
 
 feature {MIXUP_BOOLEAN}
-   visit_boolean (a_boolean: MIXUP_BOOLEAN) is
+   visit_boolean (a_boolean: MIXUP_BOOLEAN)
       do
          call_mapper(args(a_boolean))
       end
 
 feature {MIXUP_IDENTIFIER}
-   visit_identifier (a_identifier: MIXUP_IDENTIFIER) is
+   visit_identifier (a_identifier: MIXUP_IDENTIFIER)
       do
          call_mapper(args(a_identifier))
       end
 
 feature {MIXUP_RESULT}
-   visit_result (a_result: MIXUP_RESULT) is
+   visit_result (a_result: MIXUP_RESULT)
       do
          call_mapper(args(a_result))
       end
 
 feature {MIXUP_INTEGER}
-   visit_integer (a_integer: MIXUP_INTEGER) is
+   visit_integer (a_integer: MIXUP_INTEGER)
       do
          call_mapper(args(a_integer))
       end
 
 feature {MIXUP_REAL}
-   visit_real (a_real: MIXUP_REAL) is
+   visit_real (a_real: MIXUP_REAL)
       do
          call_mapper(args(a_real))
       end
 
 feature {MIXUP_STRING}
-   visit_string (a_string: MIXUP_STRING) is
+   visit_string (a_string: MIXUP_STRING)
       do
          call_mapper(args(a_string))
       end
 
 feature {MIXUP_TUPLE}
-   visit_tuple (a_tuple: MIXUP_TUPLE) is
+   visit_tuple (a_tuple: MIXUP_TUPLE)
       local
          i: INTEGER
       do
@@ -130,7 +130,7 @@ feature {MIXUP_TUPLE}
       end
 
 feature {MIXUP_LIST}
-   visit_list (a_list: MIXUP_LIST) is
+   visit_list (a_list: MIXUP_LIST)
       local
          i: INTEGER
       do
@@ -145,7 +145,7 @@ feature {MIXUP_LIST}
       end
 
 feature {MIXUP_SEQ}
-   visit_seq (a_seq: MIXUP_SEQ) is
+   visit_seq (a_seq: MIXUP_SEQ)
       local
          i: INTEGER
       do
@@ -160,7 +160,7 @@ feature {MIXUP_SEQ}
       end
 
 feature {MIXUP_DICTIONARY}
-   visit_dictionary (a_dictionary: MIXUP_DICTIONARY) is
+   visit_dictionary (a_dictionary: MIXUP_DICTIONARY)
       local
          i: INTEGER
       do
@@ -175,37 +175,37 @@ feature {MIXUP_DICTIONARY}
       end
 
 feature {MIXUP_NATIVE_FUNCTION}
-   visit_native_function (a_function: MIXUP_NATIVE_FUNCTION) is
+   visit_native_function (a_function: MIXUP_NATIVE_FUNCTION)
       do
          call_mapper(args(a_function))
       end
 
 feature {MIXUP_USER_FUNCTION}
-   visit_user_function (a_function: MIXUP_USER_FUNCTION) is
+   visit_user_function (a_function: MIXUP_USER_FUNCTION)
       do
          call_mapper(args(a_function))
       end
 
 feature {MIXUP_AGENT_FUNCTION}
-   visit_agent_function (a_function: MIXUP_AGENT_FUNCTION) is
+   visit_agent_function (a_function: MIXUP_AGENT_FUNCTION)
       do
          call_mapper(args(a_function))
       end
 
 feature {MIXUP_MUSIC_VALUE}
-   visit_music (a_music: MIXUP_MUSIC_VALUE) is
+   visit_music (a_music: MIXUP_MUSIC_VALUE)
       do
          call_mapper(args(a_music))
       end
 
 feature {MIXUP_MUSIC_STORE}
-   visit_music_store (a_music: MIXUP_MUSIC_STORE) is
+   visit_music_store (a_music: MIXUP_MUSIC_STORE)
       do
          call_mapper(args(a_music))
       end
 
 feature {}
-   map (a_source: like source; a_sequence: like sequence; a_mapper: like mapper) is
+   map (a_source: like source; a_sequence: like sequence; a_mapper: like mapper)
       require
          a_source /= Void
          a_sequence /= Void
@@ -222,7 +222,7 @@ feature {}
          mapper = a_mapper
       end
 
-   reduce (a_source: like source; a_sequence: like sequence; a_mapper: like mapper; a_seed: like seed) is
+   reduce (a_source: like source; a_sequence: like sequence; a_mapper: like mapper; a_seed: like seed)
       require
          a_source /= Void
          a_sequence /= Void
@@ -242,7 +242,7 @@ feature {}
          seed = a_seed
       end
 
-   args (a_value: MIXUP_VALUE): TRAVERSABLE[MIXUP_VALUE] is
+   args (a_value: MIXUP_VALUE): TRAVERSABLE[MIXUP_VALUE]
       do
          if concentrator = Void then
             Result := {FAST_ARRAY[MIXUP_VALUE] << a_value >> }
@@ -251,7 +251,7 @@ feature {}
          end
       end
 
-   args2 (a_value1, a_value2: MIXUP_VALUE): TRAVERSABLE[MIXUP_VALUE] is
+   args2 (a_value1, a_value2: MIXUP_VALUE): TRAVERSABLE[MIXUP_VALUE]
       do
          if concentrator = Void then
             Result := {FAST_ARRAY[MIXUP_VALUE] << a_value1, a_value2 >> }
@@ -260,7 +260,7 @@ feature {}
          end
       end
 
-   call_mapper (a_args: TRAVERSABLE[MIXUP_VALUE]) is
+   call_mapper (a_args: TRAVERSABLE[MIXUP_VALUE])
       local
          value: MIXUP_VALUE
       do

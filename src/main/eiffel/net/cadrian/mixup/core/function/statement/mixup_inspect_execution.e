@@ -21,7 +21,7 @@ create {ANY}
    make
 
 feature {ANY}
-   match (a_inspect_branch: MIXUP_INSPECT_BRANCH): BOOLEAN is
+   match (a_inspect_branch: MIXUP_INSPECT_BRANCH): BOOLEAN
       do
          match_ := False
          value := a_inspect_branch.expression.eval(commit_context, True)
@@ -42,7 +42,7 @@ feature {}
    value: MIXUP_VALUE
 
 feature {MIXUP_BOOLEAN}
-   visit_boolean (a_boolean: MIXUP_BOOLEAN) is
+   visit_boolean (a_boolean: MIXUP_BOOLEAN)
       local
          value_boolean: MIXUP_BOOLEAN
       do
@@ -53,7 +53,7 @@ feature {MIXUP_BOOLEAN}
       end
 
 feature {MIXUP_INTEGER}
-   visit_integer (a_integer: MIXUP_INTEGER) is
+   visit_integer (a_integer: MIXUP_INTEGER)
       local
          value_integer: MIXUP_INTEGER
       do
@@ -64,7 +64,7 @@ feature {MIXUP_INTEGER}
       end
 
 feature {MIXUP_REAL}
-   visit_real (a_real: MIXUP_REAL) is
+   visit_real (a_real: MIXUP_REAL)
       local
          value_real: MIXUP_REAL
       do
@@ -75,7 +75,7 @@ feature {MIXUP_REAL}
       end
 
 feature {MIXUP_STRING}
-   visit_string (a_string: MIXUP_STRING) is
+   visit_string (a_string: MIXUP_STRING)
       local
          value_string: MIXUP_STRING
       do
@@ -86,7 +86,7 @@ feature {MIXUP_STRING}
       end
 
 feature {MIXUP_TUPLE}
-   visit_tuple (a_tuple: MIXUP_TUPLE) is
+   visit_tuple (a_tuple: MIXUP_TUPLE)
       local
          i: INTEGER
       do
@@ -101,7 +101,7 @@ feature {MIXUP_TUPLE}
       end
 
 feature {MIXUP_LIST}
-   visit_list (a_list: MIXUP_LIST) is
+   visit_list (a_list: MIXUP_LIST)
       local
          i: INTEGER
       do
@@ -116,7 +116,7 @@ feature {MIXUP_LIST}
       end
 
 feature {MIXUP_SEQ}
-   visit_seq (a_seq: MIXUP_SEQ) is
+   visit_seq (a_seq: MIXUP_SEQ)
       local
          i: INTEGER
       do
@@ -131,31 +131,31 @@ feature {MIXUP_SEQ}
       end
 
 feature {MIXUP_DICTIONARY}
-   visit_dictionary (a_dictionary: MIXUP_DICTIONARY) is
+   visit_dictionary (a_dictionary: MIXUP_DICTIONARY)
       do
          fatal("cannot match on a dictionary")
       end
 
 feature {MIXUP_MUSIC_VALUE}
-   visit_music (a_music: MIXUP_MUSIC_VALUE) is
+   visit_music (a_music: MIXUP_MUSIC_VALUE)
       do
          fatal("cannot match on music")
       end
 
 feature {MIXUP_MUSIC_STORE}
-   visit_music_store (a_music: MIXUP_MUSIC_STORE) is
+   visit_music_store (a_music: MIXUP_MUSIC_STORE)
       do
          fatal("cannot match on music store")
       end
 
 feature {MIXUP_YIELD_ITERATOR}
-   visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR) is
+   visit_yield_iterator (a_yield_iterator: MIXUP_YIELD_ITERATOR)
       do
          fatal("cannot match on iterator")
       end
 
 feature {}
-   make (a_source: like source; a_commit_context: like commit_context; a_expression: MIXUP_EXPRESSION) is
+   make (a_source: like source; a_commit_context: like commit_context; a_expression: MIXUP_EXPRESSION)
       require
          a_commit_context.context /= Void
          {MIXUP_USER_FUNCTION_CONTEXT} ?:= a_commit_context.context

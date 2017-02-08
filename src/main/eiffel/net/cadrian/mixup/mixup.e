@@ -30,7 +30,7 @@ feature {}
    mixer: MIXUP_MIXER
    grammar: MIXUP_GRAMMAR
 
-   make is
+   make
       do
          create grammar
          create mixer.make(agent parse_file)
@@ -41,7 +41,7 @@ feature {}
          log.info.put_line(once "Done.")
       end
 
-   when_configured is
+   when_configured
       local
          file: FILE
       do
@@ -67,18 +67,18 @@ feature {}
          mixer.play
       end
 
-   usage (output: OUTPUT_STREAM) is
+   usage (output: OUTPUT_STREAM)
       do
          args.usage(output)
       end
 
-   configure (a_when_configured: PROCEDURE[TUPLE]) is
+   configure (a_when_configured: PROCEDURE[TUPLE])
       do
          set_paths
          set_log(a_when_configured)
       end
 
-   parse (a_path: ABSTRACT_STRING; a_source: MINI_PARSER_BUFFER): MIXUP_NODE is
+   parse (a_path: ABSTRACT_STRING; a_source: MINI_PARSER_BUFFER): MIXUP_NODE
       require
          a_path /= Void
          a_source /= Void
@@ -115,7 +115,7 @@ feature {}
 
    open_directory: DIRECTORY
 
-   read_file (a_file: FILE): MINI_PARSER_BUFFER is
+   read_file (a_file: FILE): MINI_PARSER_BUFFER
       require
          a_file /= Void
       local
@@ -153,7 +153,7 @@ feature {}
          exists_or_dead: Result /= Void
       end
 
-   find_file (a_name: FIXED_STRING; a_suffix: STRING): FILE is
+   find_file (a_name: FIXED_STRING; a_suffix: STRING): FILE
       require
          a_name /= Void
       local
@@ -176,7 +176,7 @@ feature {}
          exists_or_dead: Result /= Void
       end
 
-   find_file_in_dir (a_name: FIXED_STRING; a_directory: DIRECTORY; found_file: FILE): FILE is
+   find_file_in_dir (a_name: FIXED_STRING; a_directory: DIRECTORY; found_file: FILE): FILE
       require
          a_name /= Void
          a_directory /= Void
@@ -208,7 +208,7 @@ feature {}
          end
       end
 
-   parse_file (a_name: FIXED_STRING): TUPLE[MIXUP_NODE, FIXED_STRING] is
+   parse_file (a_name: FIXED_STRING): TUPLE[MIXUP_NODE, FIXED_STRING]
       require
          a_name /= Void
       local
@@ -224,28 +224,28 @@ feature {}
       end
 
 feature {} -- Low-level files cuisine
-   current_directory: DIRECTORY is
+   current_directory: DIRECTORY
       once
          create Result.scan_current_working_directory
       ensure
          Result.exists
       end
 
-   user_directory: DIRECTORY is
+   user_directory: DIRECTORY
       once
          if home /= Void then
             create Result.scan(home)
          end
       end
 
-   system_directory: DIRECTORY is
+   system_directory: DIRECTORY
       once
          if system /= Void then
             create Result.scan(system)
          end
       end
 
-   home: FIXED_STRING is
+   home: FIXED_STRING
       local
          sys: SYSTEM
          userdir: STRING
@@ -260,7 +260,7 @@ feature {} -- Low-level files cuisine
          end
       end
 
-   system: FIXED_STRING is
+   system: FIXED_STRING
       local
          mixup_dir: STRING
          sys: SYSTEM
@@ -296,7 +296,7 @@ feature {} -- Low-level files cuisine
          end
       end
 
-   if_exists (path: STRING): FIXED_STRING is
+   if_exists (path: STRING): FIXED_STRING
       local
          ft: FILE_TOOLS
       do
@@ -308,12 +308,12 @@ feature {} -- Low-level files cuisine
          end
       end
 
-   internal_notation: UNIX_DIRECTORY_NOTATION is
+   internal_notation: UNIX_DIRECTORY_NOTATION
       once
          create Result
       end
 
-   system_notation: DIRECTORY_NOTATION is
+   system_notation: DIRECTORY_NOTATION
       local
          bd: BASIC_DIRECTORY
       once
@@ -330,7 +330,7 @@ feature {} -- Low-level files cuisine
       end
 
 feature {} -- Logs
-   set_log (a_when_configured: PROCEDURE[TUPLE]) is
+   set_log (a_when_configured: PROCEDURE[TUPLE])
       local
          logrc: FILE
          conf: LOG_CONFIGURATION
@@ -344,20 +344,20 @@ feature {} -- Logs
          end
       end
 
-   on_log_error (msg: STRING) is
+   on_log_error (msg: STRING)
       do
          log.error.put_line(msg)
          die_with_code(1)
       end
 
-   disconnect_log_and_call (logrc: FILE; a_when_configured: PROCEDURE[TUPLE]) is
+   disconnect_log_and_call (logrc: FILE; a_when_configured: PROCEDURE[TUPLE])
       do
          logrc.as_regular.read.disconnect
          a_when_configured.call([])
       end
 
 feature {} -- Load paths
-   set_paths is
+   set_paths
       do
          if user_directory /= Void then
             set_path(user_directory)
@@ -367,7 +367,7 @@ feature {} -- Load paths
          end
       end
 
-   set_path (a_directory: DIRECTORY) is
+   set_path (a_directory: DIRECTORY)
       require
          a_directory.exists
       do
@@ -377,7 +377,7 @@ feature {} -- Load paths
          set_paths_from(a_directory, once "lilypond_include_paths", agent add_lilypond_include_directory)
       end
 
-   add_load_path (a_directory: DIRECTORY) is
+   add_load_path (a_directory: DIRECTORY)
       require
          a_directory.exists
       do
@@ -386,7 +386,7 @@ feature {} -- Load paths
 
    load_paths: DICTIONARY[DIRECTORY, FIXED_STRING]
 
-   add_lilypond_include_directory (a_directory: DIRECTORY) is
+   add_lilypond_include_directory (a_directory: DIRECTORY)
       require
          a_directory.exists
       do
@@ -394,7 +394,7 @@ feature {} -- Load paths
       end
 
 feature {}
-   set_paths_from (a_directory: DIRECTORY; a_file_name: STRING; a_path_setter: PROCEDURE[TUPLE[DIRECTORY]]) is
+   set_paths_from (a_directory: DIRECTORY; a_file_name: STRING; a_path_setter: PROCEDURE[TUPLE[DIRECTORY]])
       local
          input: INPUT_STREAM
          path: FIXED_STRING
@@ -424,22 +424,22 @@ feature {}
 feature {} -- arguments
    arg_factory: COMMAND_LINE_ARGUMENT_FACTORY
 
-   mix_file: COMMAND_LINE_TYPED_ARGUMENT[FIXED_STRING] is
+   mix_file: COMMAND_LINE_TYPED_ARGUMENT[FIXED_STRING]
       once
          Result := arg_factory.positional_string("mixfile", "The MiXuP file to read")
       end
 
-   lilypond_exe: COMMAND_LINE_TYPED_ARGUMENT[REGULAR_FILE] is
+   lilypond_exe: COMMAND_LINE_TYPED_ARGUMENT[REGULAR_FILE]
       once
          Result := arg_factory.option_file("y", "lilypond_exe", "lilypond_exe", "The lilypond executable path")
       end
 
-   lilypond_include: COMMAND_LINE_TYPED_ARGUMENT[DIRECTORY] is
+   lilypond_include: COMMAND_LINE_TYPED_ARGUMENT[DIRECTORY]
       once
          Result := arg_factory.option_directory("I", "lilypond_include", "lilypond_include", "The lilypond include directory")
       end
 
-   args: COMMAND_LINE_ARGUMENTS is
+   args: COMMAND_LINE_ARGUMENTS
       once
          create Result.make(lilypond_exe and lilypond_include and mix_file)
       end

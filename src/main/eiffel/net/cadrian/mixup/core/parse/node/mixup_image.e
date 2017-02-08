@@ -21,7 +21,7 @@ inherit
       end
 
 feature {ANY}
-   is_equal (other: like Current): BOOLEAN is
+   is_equal (other: like Current): BOOLEAN
          -- Redefined because SmartEiffel's default is_equal generates bad code in some strange situations
       do
          Result := position = other.position
@@ -35,22 +35,22 @@ feature {ANY}
    blanks: STRING
          -- the leading blanks and comments (before the `image' itself)
 
-   line: INTEGER is
+   line: INTEGER
       do
          Result := position.line
       end
 
-   column: INTEGER is
+   column: INTEGER
       do
          Result := position.column
       end
 
-   index: INTEGER is
+   index: INTEGER
       do
          Result := position.index
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(image)
       end

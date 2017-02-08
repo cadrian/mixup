@@ -26,14 +26,14 @@ insert
    LOGGING
 
 feature {ANY}
-   has_error: BOOLEAN is
+   has_error: BOOLEAN
       do
          Result := error /= Void
       end
 
    error: ABSTRACT_STRING
 
-   decode is
+   decode
       require
          decoded = Void
       local
@@ -116,12 +116,12 @@ feature {ANY}
 
    decoded: MIXUP_MIDI_FILE
 
-   end_of_input: BOOLEAN is
+   end_of_input: BOOLEAN
       deferred
       end
 
 feature {}
-   read_track (file: MIXUP_MIDI_FILE; tracknum: INTEGER_32) is
+   read_track (file: MIXUP_MIDI_FILE; tracknum: INTEGER_32)
       require
          file /= Void
          tracknum > 0
@@ -186,7 +186,7 @@ feature {}
          (not has_error) implies file.track_count = tracknum
       end
 
-   read_event (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_CODEC is
+   read_event (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_CODEC
       local
          code: INTEGER_32
       do
@@ -199,7 +199,7 @@ feature {}
          (not has_error) implies Result /= Void
       end
 
-   decode_event (code: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_CODEC is
+   decode_event (code: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_CODEC
       require
          code.in_range(0, 0x000000ff)
       local
@@ -269,7 +269,7 @@ feature {}
          (not has_error) implies Result /= Void
       end
 
-   read_event_channel_pressure (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_CHANNEL_PRESSURE is
+   read_event_channel_pressure (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_CHANNEL_PRESSURE
       local
          pressure: INTEGER_32
       do
@@ -284,7 +284,7 @@ feature {}
          (not has_error) implies Result /= Void
       end
 
-   read_event_controller (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_CONTROLLER is
+   read_event_controller (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_CONTROLLER
       require
          channel.in_range(0, 15)
       local
@@ -406,7 +406,7 @@ feature {}
          (not has_error) implies Result /= Void
       end
 
-   read_fine (channel: INTEGER_32; count: REFERENCE[INTEGER_64]; knob: MIXUP_MIDI_CONTROLLER_SLIDER): MIXUP_MIDI_CONTROLLER_KNOB is
+   read_fine (channel: INTEGER_32; count: REFERENCE[INTEGER_64]; knob: MIXUP_MIDI_CONTROLLER_SLIDER): MIXUP_MIDI_CONTROLLER_KNOB
       require
          not has_error
       local
@@ -449,7 +449,7 @@ feature {}
          end
       end
 
-   read_event_key_pressure (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_KEY_PRESSURE is
+   read_event_key_pressure (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_KEY_PRESSURE
       local
          key, pressure: INTEGER_32
       do
@@ -470,7 +470,7 @@ feature {}
          (not has_error) implies Result /= Void
       end
 
-   read_event_note_off (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_NOTE_OFF is
+   read_event_note_off (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_NOTE_OFF
       local
          pitch, pressure: INTEGER_32
       do
@@ -491,7 +491,7 @@ feature {}
          (not has_error) implies Result /= Void
       end
 
-   read_event_note_on (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_NOTE_ON is
+   read_event_note_on (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_NOTE_ON
       local
          pitch, pressure: INTEGER_32
       do
@@ -512,7 +512,7 @@ feature {}
          (not has_error) implies Result /= Void
       end
 
-   read_event_pitch_bend (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_PITCH_BEND is
+   read_event_pitch_bend (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_PITCH_BEND
       local
          pitch, lsb, msb: INTEGER_32
       do
@@ -534,7 +534,7 @@ feature {}
          (not has_error) implies Result /= Void
       end
 
-   read_event_program_change (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_PROGRAM_CHANGE is
+   read_event_program_change (channel: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_PROGRAM_CHANGE
       local
          patch: INTEGER_32
       do
@@ -549,7 +549,7 @@ feature {}
          (not has_error) implies Result /= Void
       end
 
-   read_meta_event_sequence_number (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+   read_meta_event_sequence_number (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT
       local
          length: INTEGER_64; seqnum: INTEGER_32
       do
@@ -566,7 +566,7 @@ feature {}
          end
       end
 
-   meta_text (count: REFERENCE[INTEGER_64]): STRING is
+   meta_text (count: REFERENCE[INTEGER_64]): STRING
       local
          length, i: INTEGER_64; byte: INTEGER_32
       do
@@ -593,7 +593,7 @@ feature {}
          (not has_error) implies Result /= Void
       end
 
-   read_meta_event_text (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+   read_meta_event_text (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT
       local
          text: STRING
       do
@@ -604,7 +604,7 @@ feature {}
          end
       end
 
-   read_meta_event_copyright (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+   read_meta_event_copyright (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT
       local
          text: STRING
       do
@@ -615,7 +615,7 @@ feature {}
          end
       end
 
-   read_meta_event_track_name (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+   read_meta_event_track_name (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT
       local
          text: STRING
       do
@@ -626,7 +626,7 @@ feature {}
          end
       end
 
-   read_meta_event_instrument_name (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+   read_meta_event_instrument_name (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT
       local
          text: STRING
       do
@@ -637,7 +637,7 @@ feature {}
          end
       end
 
-   read_meta_event_lyrics (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+   read_meta_event_lyrics (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT
       local
          text: STRING
       do
@@ -648,7 +648,7 @@ feature {}
          end
       end
 
-   read_meta_event_marker_text (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+   read_meta_event_marker_text (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT
       local
          text: STRING
       do
@@ -659,7 +659,7 @@ feature {}
          end
       end
 
-   read_meta_event_cue_point (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+   read_meta_event_cue_point (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT
       local
          text: STRING
       do
@@ -670,12 +670,12 @@ feature {}
          end
       end
 
-   read_meta_event_channel_prefix (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+   read_meta_event_channel_prefix (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT
       do
          error := "channel prefix: not implemented"
       end
 
-   read_meta_event_end_of_track (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+   read_meta_event_end_of_track (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT
       local
          length: INTEGER_64
       do
@@ -688,7 +688,7 @@ feature {}
          end
       end
 
-   read_meta_event_tempo_setting (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+   read_meta_event_tempo_setting (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT
       local
          length: INTEGER_64; up, low: INTEGER_32
       do
@@ -709,7 +709,7 @@ feature {}
          end
       end
 
-   read_meta_event_time_signature (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+   read_meta_event_time_signature (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT
       local
          length: INTEGER_64; n, d, m, t: INTEGER_32
       do
@@ -743,7 +743,7 @@ feature {}
          end
       end
 
-   read_meta_event_key_signature (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+   read_meta_event_key_signature (count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT
       local
          length: INTEGER_64; keysig, mode: INTEGER_32
       do
@@ -771,7 +771,7 @@ feature {}
          end
       end
 
-   read_unknown_meta_event (event_type: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT is
+   read_unknown_meta_event (event_type: INTEGER_32; count: REFERENCE[INTEGER_64]): MIXUP_MIDI_META_EVENT
       local
          length, i: INTEGER_64; byte: INTEGER_32; data: FAST_ARRAY[INTEGER_32]
       do
@@ -799,7 +799,7 @@ feature {}
 
 
 feature {}
-   frozen read_variable (count: REFERENCE[INTEGER_64]): INTEGER_64 is
+   frozen read_variable (count: REFERENCE[INTEGER_64]): INTEGER_64
       local
          byte: INTEGER_32; done: BOOLEAN
       do
@@ -818,7 +818,7 @@ feature {}
          end
       end
 
-   frozen read_integer_32 (count: REFERENCE[INTEGER_64]): INTEGER_32 is
+   frozen read_integer_32 (count: REFERENCE[INTEGER_64]): INTEGER_32
       require
          not has_error
          is_connected
@@ -843,7 +843,7 @@ feature {}
          end
       end
 
-   frozen read_integer_16 (count: REFERENCE[INTEGER_64]): INTEGER_32 is
+   frozen read_integer_16 (count: REFERENCE[INTEGER_64]): INTEGER_32
       require
          is_connected
       local
@@ -861,7 +861,7 @@ feature {}
          Result.in_range(0, 0x0000ffff)
       end
 
-   read_integer_8 (count: REFERENCE[INTEGER_64]): INTEGER_32 is
+   read_integer_8 (count: REFERENCE[INTEGER_64]): INTEGER_32
       require
          is_connected
       do
@@ -873,7 +873,7 @@ feature {}
          Result.in_range(0, 0x000000ff)
       end
 
-   do_read_integer_8: INTEGER_32 is
+   do_read_integer_8: INTEGER_32
       require
          is_connected
       deferred
@@ -881,12 +881,12 @@ feature {}
          Result.in_range(0, 0x000000ff)
       end
 
-   hex (int: INTEGER_64): LAZY_STRING is
+   hex (int: INTEGER_64): LAZY_STRING
       do
          create Result.make(agent hex2str(int))
       end
 
-   hex2str (int: INTEGER_64): ABSTRACT_STRING is
+   hex2str (int: INTEGER_64): ABSTRACT_STRING
       local
          s: STRING
       do

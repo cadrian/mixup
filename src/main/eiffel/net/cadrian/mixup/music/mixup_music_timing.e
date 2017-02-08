@@ -26,7 +26,7 @@ feature {ANY}
    bars_count: INTEGER
    is_set: BOOLEAN
 
-   set (a_duration: like duration; a_first_bar_number: like first_bar_number; a_bars_count: like bars_count): like Current is
+   set (a_duration: like duration; a_first_bar_number: like first_bar_number; a_bars_count: like bars_count): like Current
       require
          dont_set_twice: not is_set
       do
@@ -42,7 +42,7 @@ feature {ANY}
          is_set
       end
 
-   infix "+" (other: like Current): like Current is
+   infix "+" (other: like Current): like Current
       require
          is_set
          other.is_set
@@ -51,12 +51,12 @@ feature {ANY}
          Result := Result.set(duration + other.duration, first_bar_number, bars_count + other.bars_count)
       end
 
-   immutable: BOOLEAN is
+   immutable: BOOLEAN
       do
          Result := is_set
       end
 
-   infix "<" (other: like Current): BOOLEAN is
+   infix "<" (other: like Current): BOOLEAN
       do
          if is_set /= other.is_set then
             Result := other.is_set
@@ -71,7 +71,7 @@ feature {ANY}
          end
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "[duration=")
          duration.out_in_tagged_out_memory

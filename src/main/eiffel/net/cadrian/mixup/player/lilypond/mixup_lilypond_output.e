@@ -23,7 +23,7 @@ create {ANY}
 feature {ANY}
    stream: OUTPUT_STREAM
 
-   connect_to (a_stream: like stream) is
+   connect_to (a_stream: like stream)
       require
          not is_connected
          a_stream.is_connected
@@ -33,19 +33,19 @@ feature {ANY}
          is_connected
       end
 
-   is_connected: BOOLEAN is
+   is_connected: BOOLEAN
       do
          Result := stream /= Void and then stream.is_connected
       end
 
-   disconnect is
+   disconnect
       do
          stream.disconnect
          stream := Void
       end
 
 feature {}
-   make is
+   make
       do
       end
 

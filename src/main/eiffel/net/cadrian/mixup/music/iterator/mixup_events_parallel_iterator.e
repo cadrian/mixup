@@ -21,27 +21,27 @@ inherit
    MIXUP_EVENTS_CACHED_ITERATOR
 
 feature {ANY}
-   start is
+   start
       do
          create {RING_ARRAY[MIXUP_EVENTS_ITERATOR]} notes.with_capacity(0, count)
          add_notes_iterator
          remove_off
       end
 
-   is_off: BOOLEAN is
+   is_off: BOOLEAN
       do
          Result := notes.is_empty
       end
 
 feature {}
-   fetch_item: MIXUP_EVENT is
+   fetch_item: MIXUP_EVENT
       do
          Result := notes.first.item
          debug
             log.trace.put_line(once "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             log.trace.put_line(once " * " | generating_type | once " * ")
             log.trace.put_new_line
-            notes.do_all(agent (i: MIXUP_EVENTS_ITERATOR) is
+            notes.do_all(agent (i: MIXUP_EVENTS_ITERATOR)
                          do
                             if not i.is_off then
                                log.trace.put_line(once "    " | &i.item)
@@ -51,7 +51,7 @@ feature {}
          end
       end
 
-   go_next is
+   go_next
       do
          notes.first.next
          remove_off
@@ -61,7 +61,7 @@ feature {}
    notes:  COLLECTION[MIXUP_EVENTS_ITERATOR]
    sorter: COLLECTION_SORTER[MIXUP_EVENTS_ITERATOR]
 
-   remove_off is
+   remove_off
       do
          from
             sorter.sort(notes)
@@ -72,7 +72,7 @@ feature {}
          end
       end
 
-   add_notes_iterator is
+   add_notes_iterator
       require
          notes.is_empty
       deferred
@@ -80,7 +80,7 @@ feature {}
          not notes.is_empty
       end
 
-   count: INTEGER is
+   count: INTEGER
       deferred
       ensure
          Result > 0

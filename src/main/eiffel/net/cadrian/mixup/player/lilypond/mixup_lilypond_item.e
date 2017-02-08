@@ -18,13 +18,13 @@ inherit
    MIXUP_ABSTRACT_ITEM[MIXUP_LILYPOND_OUTPUT, MIXUP_LILYPOND_SECTION]
 
 feature {ANY}
-   valid_reference: BOOLEAN is
+   valid_reference: BOOLEAN
       deferred
       ensure
          Result implies not reference.is_rest
       end
 
-   reference: MIXUP_NOTE_HEAD is
+   reference: MIXUP_NOTE_HEAD
       require
          valid_reference
       deferred
@@ -32,18 +32,18 @@ feature {ANY}
          not Result.is_rest
       end
 
-   can_append: BOOLEAN is
+   can_append: BOOLEAN
       deferred
       end
 
-   append_first (a_string: ABSTRACT_STRING) is
+   append_first (a_string: ABSTRACT_STRING)
       require
          can_append
          a_string /= Void
       deferred
       end
 
-   append_last (a_string: ABSTRACT_STRING) is
+   append_last (a_string: ABSTRACT_STRING)
       require
          can_append
          a_string /= Void

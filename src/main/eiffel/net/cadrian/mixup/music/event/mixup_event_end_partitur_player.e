@@ -18,7 +18,7 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_END_PARTITUR}
-   play_end_partitur is
+   play_end_partitur
       deferred
       end
 

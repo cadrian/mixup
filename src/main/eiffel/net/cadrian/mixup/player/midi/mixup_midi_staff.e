@@ -31,13 +31,13 @@ create {ANY}
    make
 
 feature {MIXUP_ABSTRACT_INSTRUMENT}
-   generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION; generate_names: BOOLEAN) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION; generate_names: BOOLEAN)
       do
          Precursor(context, section, generate_names)
          all_dynamics.do_all(agent {MIXUP_MIDI_DYNAMICS}.generate(context, section, track, track_id))
       end
 
-   set_dynamics (a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
+   set_dynamics (a_voice_id: INTEGER; dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN)
       local
          v: like voice; dyn: like last_dynamics
       do
@@ -50,7 +50,7 @@ feature {MIXUP_ABSTRACT_INSTRUMENT}
       end
 
 feature {MIXUP_MIDI_INSTRUMENT}
-   send_events (a_time: INTEGER_64; a_voice_id: INTEGER; a_events: HOARD[FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]]) is
+   send_events (a_time: INTEGER_64; a_voice_id: INTEGER; a_events: HOARD[FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]])
       require
          a_events /= Void
       do
@@ -58,16 +58,16 @@ feature {MIXUP_MIDI_INSTRUMENT}
       end
 
 feature {}
-   generate_lyrics (lyr: AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]; index: INTEGER; context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION) is
+   generate_lyrics (lyr: AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]; index: INTEGER; context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION)
       do
       end
 
-   new_voices (a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]): like root_voices is
+   new_voices (a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]): like root_voices
       do
          create Result.make(voice_ids, lyrics_gatherer, track, track_id, last_dynamics)
       end
 
-   make (a_id: like id; a_voice_ids: TRAVERSABLE[INTEGER]; a_track: like track; a_track_id: like track_id) is
+   make (a_id: like id; a_voice_ids: TRAVERSABLE[INTEGER]; a_track: like track; a_track_id: like track_id)
       require
          a_track /= Void
          a_track_id.in_range(0, 15)
@@ -82,7 +82,7 @@ feature {}
    track: MIXUP_MIDI_TRACK
    track_id: INTEGER
 
-   last_dynamics: MIXUP_MIDI_DYNAMICS is
+   last_dynamics: MIXUP_MIDI_DYNAMICS
       do
          Result := all_dynamics.last
       end

@@ -24,20 +24,20 @@ create {MIXUP_INSTRUMENT}
    make
 
 feature {ANY}
-   start is
+   start
       do
          index := 0
          voices_iterator.start
          item_memory := Void
       end
 
-   is_off: BOOLEAN is
+   is_off: BOOLEAN
       do
          Result := voices_iterator.is_off
       end
 
 feature {}
-   empty_syllable: MIXUP_SYLLABLE is
+   empty_syllable: MIXUP_SYLLABLE
       local
          unknown_source: MIXUP_SOURCE_UNKNOWN
       once
@@ -45,7 +45,7 @@ feature {}
          Result.set(unknown_source, "".intern, False)
       end
 
-   fetch_item: MIXUP_EVENT is
+   fetch_item: MIXUP_EVENT
       local
          lyrics: FAST_ARRAY[MIXUP_SYLLABLE]
          strophe: COLLECTION[MIXUP_SYLLABLE]
@@ -72,7 +72,7 @@ feature {}
          end
       end
 
-   go_next is
+   go_next
       do
          voices_iterator.next
          if used then
@@ -84,7 +84,7 @@ feature {}
 feature {}
    used: BOOLEAN
 
-   make (a_voices_iterator: like voices_iterator; a_strophes: like strophes) is
+   make (a_voices_iterator: like voices_iterator; a_strophes: like strophes)
       require
          a_voices_iterator /= Void
          not a_strophes.is_empty

@@ -18,7 +18,7 @@ inherit
    MIXUP_OPERATION
 
 feature {ANY}
-   power (left, right: MIXUP_VALUE): MIXUP_VALUE is
+   power (left, right: MIXUP_VALUE): MIXUP_VALUE
       require
          left /= Void
          right /= Void

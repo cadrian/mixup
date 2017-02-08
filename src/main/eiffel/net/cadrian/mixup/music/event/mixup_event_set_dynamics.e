@@ -34,7 +34,7 @@ feature {ANY}
    needs_instrument: BOOLEAN is True
 
 feature {MIXUP_PLAYER}
-   fire (player: MIXUP_PLAYER) is
+   fire (player: MIXUP_PLAYER)
       local
          p: MIXUP_EVENT_SET_DYNAMICS_PLAYER
       do
@@ -43,7 +43,7 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_data: like data; a_dynamics: ABSTRACT_STRING; a_position: ABSTRACT_STRING; a_standard: like is_standard) is
+   make (a_data: like data; a_dynamics: ABSTRACT_STRING; a_position: ABSTRACT_STRING; a_standard: like is_standard)
       require
          a_dynamics /= Void
       do
@@ -60,7 +60,7 @@ feature {}
          is_standard = a_standard
       end
 
-   out_in_extra_data is
+   out_in_extra_data
       do
          tagged_out_memory.append(once ", dynamics=")
          dynamics.out_in_tagged_out_memory

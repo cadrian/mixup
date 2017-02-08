@@ -21,7 +21,7 @@ create {MIXUP_MIDI_PLAYER}
    make
 
 feature {ANY}
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "{MIXUP_MIDI_TRANSPOSE_FACTORY ")
          half_tones.out_in_tagged_out_memory
@@ -29,13 +29,13 @@ feature {ANY}
       end
 
 feature {ANY}
-   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR
       do
          create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_MIDI_TRANSPOSE}.make(a_context.event_data(source), half_tones))
       end
 
 feature {}
-   make (a_source: like source; a_half_tones: like half_tones) is
+   make (a_source: like source; a_half_tones: like half_tones)
       require
          a_source /= Void
       do
@@ -49,7 +49,7 @@ feature {}
    half_tones: INTEGER_8
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       do
          a_name.append(once "<transpose>")
       end

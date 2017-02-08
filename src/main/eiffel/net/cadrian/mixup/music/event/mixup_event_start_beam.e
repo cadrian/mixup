@@ -34,7 +34,7 @@ feature {ANY}
    needs_instrument: BOOLEAN is True
 
 feature {MIXUP_PLAYER}
-   fire (player: MIXUP_PLAYER) is
+   fire (player: MIXUP_PLAYER)
       local
          p: MIXUP_EVENT_START_BEAM_PLAYER
       do
@@ -43,7 +43,7 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_data: like data; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64; a_text: ABSTRACT_STRING) is
+   make (a_data: like data; a_xuplet_numerator: INTEGER_64; a_xuplet_denominator: INTEGER_64; a_text: ABSTRACT_STRING)
       require
          a_text /= Void
       do
@@ -57,7 +57,7 @@ feature {}
          text = a_text
       end
 
-   out_in_extra_data is
+   out_in_extra_data
       do
          tagged_out_memory.append(once ", div=")
          xuplet_numerator.append_in(tagged_out_memory)

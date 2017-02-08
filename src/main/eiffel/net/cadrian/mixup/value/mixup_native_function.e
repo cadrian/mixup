@@ -26,7 +26,7 @@ create {ANY}
 feature {ANY}
    name: FIXED_STRING
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_VALUE_VISITOR
       do
@@ -34,7 +34,7 @@ feature {ANY}
          v.visit_native_function(Current)
       end
 
-   call (a_source: MIXUP_SOURCE; a_commit_context: MIXUP_COMMIT_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   call (a_source: MIXUP_SOURCE; a_commit_context: MIXUP_COMMIT_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE
       local
          native_context: MIXUP_NATIVE_CONTEXT
       do
@@ -42,7 +42,7 @@ feature {ANY}
          Result := native_caller.item([native_context])
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "<native:")
          name.out_in_tagged_out_memory
@@ -50,7 +50,7 @@ feature {ANY}
       end
 
 feature {}
-   make (a_source: like source; a_name: ABSTRACT_STRING; a_context: like context; a_native_caller: like native_caller) is
+   make (a_source: like source; a_name: ABSTRACT_STRING; a_context: like context; a_native_caller: like native_caller)
       require
          a_source /= Void
          a_name /= Void

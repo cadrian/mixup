@@ -27,20 +27,20 @@ insert
       end
 
 feature {ANY}
-   eval (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       require
          a_commit_context.context /= Void
          a_commit_context.player /= Void
       deferred
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          as_name_in(tagged_out_memory)
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       require
          a_name /= Void
       deferred

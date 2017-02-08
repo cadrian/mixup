@@ -18,25 +18,25 @@ insert
    LOGGING
 
 feature {ANY}
-   velocity (a_time: INTEGER_64): INTEGER_8 is
+   velocity (a_time: INTEGER_64): INTEGER_8
       deferred
       ensure
          Result >= 0
       end
 
-   first_time: INTEGER_64 is
+   first_time: INTEGER_64
       do
          if first_note /= Void then
             Result := first_note.time
          end
       end
 
-   last_time: INTEGER_64 is
+   last_time: INTEGER_64
       do
          Result := last_note.time
       end
 
-   generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION; track: MIXUP_MIDI_TRACK; track_id: INTEGER) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION; track: MIXUP_MIDI_TRACK; track_id: INTEGER)
       require
          context /= Void
          section /= Void
@@ -46,24 +46,24 @@ feature {ANY}
       end
 
 feature {MIXUP_MIDI_DYNAMICS}
-   accept (a_dyn: MIXUP_MIDI_DYNAMICS) is
+   accept (a_dyn: MIXUP_MIDI_DYNAMICS)
       deferred
       end
 
-   from_nuance (a_nuance: MIXUP_MIDI_DYNAMICS_NUANCE) is
+   from_nuance (a_nuance: MIXUP_MIDI_DYNAMICS_NUANCE)
       require
          a_nuance /= Void
       deferred
       end
 
-   from_hairpin (a_hairpin: MIXUP_MIDI_DYNAMICS_HAIRPIN) is
+   from_hairpin (a_hairpin: MIXUP_MIDI_DYNAMICS_HAIRPIN)
       require
          a_hairpin /= Void
       deferred
       end
 
 feature {MIXUP_MIDI_NOTE}
-   add_note (a_note: like first_note) is
+   add_note (a_note: like first_note)
       require
          a_note /= Void
       do

@@ -33,12 +33,12 @@ create {MIXUP_CHORD}
 feature {ANY}
    timing: MIXUP_MUSIC_TIMING
 
-   duration: INTEGER_64 is
+   duration: INTEGER_64
       do
          Result := note_duration
       end
 
-   count: INTEGER is
+   count: INTEGER
       do
          Result := capacity
       end
@@ -47,22 +47,22 @@ feature {ANY}
 
    lower: INTEGER is 0
 
-   upper: INTEGER is
+   upper: INTEGER
       do
          Result := count - 1
       end
 
-   item (i: INTEGER): MIXUP_NOTE_HEAD is
+   item (i: INTEGER): MIXUP_NOTE_HEAD
       do
          Result := storage.item(i)
       end
 
-   first: like item is
+   first: like item
       do
          Result := storage.item(lower)
       end
 
-   last: like item is
+   last: like item
       do
          Result := storage.item(upper)
       end
@@ -70,7 +70,7 @@ feature {ANY}
    capacity: INTEGER
    tie: BOOLEAN
 
-   is_equal (other: like Current): BOOLEAN is
+   is_equal (other: like Current): BOOLEAN
       local
          i: INTEGER
       do
@@ -86,14 +86,14 @@ feature {ANY}
          end
       end
 
-   put (a_index: INTEGER; a_note_head: MIXUP_NOTE_HEAD) is
+   put (a_index: INTEGER; a_note_head: MIXUP_NOTE_HEAD)
       require
          a_index.in_range(0, capacity - 1)
       do
          manifest_put(a_index, a_note_head)
       end
 
-   valid_anchor: BOOLEAN is
+   valid_anchor: BOOLEAN
       local
          i: INTEGER
       do
@@ -106,7 +106,7 @@ feature {ANY}
          end
       end
 
-   anchor: MIXUP_NOTE_HEAD is
+   anchor: MIXUP_NOTE_HEAD
       local
          i: INTEGER
       do
@@ -121,7 +121,7 @@ feature {ANY}
          end
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       local
          i: INTEGER
       do
@@ -142,7 +142,7 @@ feature {ANY}
          tagged_out_memory.append(once " >> }")
       end
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_NOTE_VISITOR
       do
@@ -150,17 +150,17 @@ feature {ANY}
          v.visit_chord(Current)
       end
 
-   has, fast_has (element: like item): BOOLEAN is
+   has, fast_has (element: like item): BOOLEAN
       do
          Result := valid_index(first_index_of(element))
       end
 
-   first_index_of, fast_first_index_of (element: like item): INTEGER is
+   first_index_of, fast_first_index_of (element: like item): INTEGER
       do
          Result := index_of(element, lower)
       end
 
-   index_of, fast_index_of (element: like item; start_index: INTEGER): INTEGER is
+   index_of, fast_index_of (element: like item; start_index: INTEGER): INTEGER
       local
          i: INTEGER
       do
@@ -177,7 +177,7 @@ feature {ANY}
          end
       end
 
-   reverse_index_of, fast_reverse_index_of (element: like item; start_index: INTEGER): INTEGER is
+   reverse_index_of, fast_reverse_index_of (element: like item; start_index: INTEGER): INTEGER
       local
          i: INTEGER
       do
@@ -194,12 +194,12 @@ feature {ANY}
          end
       end
 
-   last_index_of, fast_last_index_of (element: like item): INTEGER is
+   last_index_of, fast_last_index_of (element: like item): INTEGER
       do
          Result := reverse_index_of(element, upper)
       end
 
-   can_have_lyrics: BOOLEAN is
+   can_have_lyrics: BOOLEAN
       local
          i: INTEGER
       do
@@ -213,20 +213,20 @@ feature {ANY}
          end
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       do
          create Result.duplicate(source, capacity, storage, note_duration, tie)
          Result.set_timing(note_duration, a_commit_context.bar_number, 0)
       end
 
 feature {MIXUP_MUSIC, MIXUP_SPANNER}
-   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER)
       do
          timing := timing.set(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}
-   make (a_source: like source; a_capacity: INTEGER; a_duration: INTEGER_64; a_tie: like tie) is
+   make (a_source: like source; a_capacity: INTEGER; a_duration: INTEGER_64; a_tie: like tie)
       require
          a_source /= Void
          a_duration > 0
@@ -238,7 +238,7 @@ feature {}
          tie = a_tie
       end
 
-   duplicate (a_source: like source; a_capacity: INTEGER; a_storage: like storage; a_duration: INTEGER_64; a_tie: like tie) is
+   duplicate (a_source: like source; a_capacity: INTEGER; a_storage: like storage; a_duration: INTEGER_64; a_tie: like tie)
       do
          source := a_source
          capacity := a_capacity
@@ -250,7 +250,7 @@ feature {}
    note_duration: INTEGER_64
 
 feature {} -- Manifest create:
-   manifest_make (a_capacity: INTEGER; a_duration: INTEGER_64; a_source: like source) is
+   manifest_make (a_capacity: INTEGER; a_duration: INTEGER_64; a_source: like source)
       require
          a_source /= Void
          a_capacity > 0
@@ -262,7 +262,7 @@ feature {} -- Manifest create:
          storage := storage.calloc(a_capacity)
       end
 
-   manifest_put (index: INTEGER; note: MIXUP_NOTE_HEAD) is
+   manifest_put (index: INTEGER; note: MIXUP_NOTE_HEAD)
       do
          storage.put(note, index)
       end

@@ -24,7 +24,7 @@ create {ANY}
    make
 
 feature {ANY}
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_VALUE_VISITOR
       do
@@ -32,7 +32,7 @@ feature {ANY}
          v.visit_user_function(Current)
       end
 
-   call (a_source: MIXUP_SOURCE; a_commit_context: MIXUP_COMMIT_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   call (a_source: MIXUP_SOURCE; a_commit_context: MIXUP_COMMIT_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE
       local
          fn_context: MIXUP_USER_FUNCTION_CONTEXT
       do
@@ -45,13 +45,13 @@ feature {ANY}
          end
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "<user function>")
       end
 
 feature {}
-   make (a_source: like source; a_definition_context: like definition_context; a_statements: like statements; a_signature: like signature) is
+   make (a_source: like source; a_definition_context: like definition_context; a_statements: like statements; a_signature: like signature)
       require
          a_source /= Void
          a_definition_context /= Void
@@ -73,7 +73,7 @@ feature {}
    statements: TRAVERSABLE[MIXUP_STATEMENT]
    signature: TRAVERSABLE[FIXED_STRING]
 
-   prepare (a_source: like source; a_commit_context: MIXUP_COMMIT_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_USER_FUNCTION_CONTEXT is
+   prepare (a_source: like source; a_commit_context: MIXUP_COMMIT_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_USER_FUNCTION_CONTEXT
       require
          a_commit_context.context /= Void
       local

@@ -32,35 +32,35 @@ feature {ANY}
    position: FIXED_STRING
    is_standard: BOOLEAN
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       do
          create Result.make(source, text, position, is_standard)
          Result.set_timing(0, a_commit_context.bar_number, 0)
       end
 
-   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR
       do
          create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_SET_DYNAMICS}.make(a_context.event_data(source), text, position, is_standard))
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "dyn:")
          text.out_in_tagged_out_memory
       end
 
 feature {MIXUP_MUSIC, MIXUP_SPANNER}
-   frozen add_voice_ids (ids: AVL_SET[INTEGER]) is
+   frozen add_voice_ids (ids: AVL_SET[INTEGER])
       do
       end
 
-   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER)
       do
          timing := timing.set(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}
-   make (a_source: like source; a_text, a_position: FIXED_STRING; a_standard: like is_standard) is
+   make (a_source: like source; a_text, a_position: FIXED_STRING; a_standard: like is_standard)
       require
          a_source /= Void
          a_text /= Void

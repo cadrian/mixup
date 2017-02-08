@@ -27,14 +27,14 @@ create {MIXUP_VOICES}
    duplicate
 
 feature {ANY}
-   timing: MIXUP_MUSIC_TIMING is
+   timing: MIXUP_MUSIC_TIMING
       do
          Result := voices.first.timing
       end
 
    staff_count: INTEGER
 
-   anchor: MIXUP_NOTE_HEAD is
+   anchor: MIXUP_NOTE_HEAD
       local
          i: INTEGER; found: BOOLEAN
       do
@@ -54,7 +54,7 @@ feature {ANY}
          end
       end
 
-   reference: MIXUP_NOTE_HEAD is
+   reference: MIXUP_NOTE_HEAD
       do
          if voices.is_empty then
             Result := reference_
@@ -63,22 +63,22 @@ feature {ANY}
          end
       end
 
-   add_music (a_music: MIXUP_MUSIC) is
+   add_music (a_music: MIXUP_MUSIC)
       do
          voices.last.add_music(a_music)
       end
 
-   add_chord (a_source: like source; note_heads: COLLECTION[TUPLE[MIXUP_SOURCE, FIXED_STRING]]; note_length: INTEGER_64; tie: BOOLEAN) is
+   add_chord (a_source: like source; note_heads: COLLECTION[TUPLE[MIXUP_SOURCE, FIXED_STRING]]; note_length: INTEGER_64; tie: BOOLEAN)
       do
          voices.last.add_chord(a_source, note_heads, note_length, tie)
       end
 
-   add_bar (a_source: like source; style: FIXED_STRING) is
+   add_bar (a_source: like source; style: FIXED_STRING)
       do
          voices.last.add_bar(a_source, style)
       end
 
-   next_voice (a_source: MIXUP_SOURCE) is
+   next_voice (a_source: MIXUP_SOURCE)
       require
          a_source /= Void
       local
@@ -90,7 +90,7 @@ feature {ANY}
          voices.count = old voices.count + 1
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       local
          timings: AVL_SET[MIXUP_MUSIC_TIMING]
          voices_: like voices
@@ -99,7 +99,7 @@ feature {ANY}
          create timings.make
          create voices_.make(voices.count)
          create voices_zip.make(voices, voices_.lower |..| voices_.upper)
-         voices_zip.do_all(agent (voice: MIXUP_VOICE; index: INTEGER; a_voices: like voices; commit_context_: MIXUP_COMMIT_CONTEXT; timings_set: SET[MIXUP_MUSIC_TIMING]) is
+         voices_zip.do_all(agent (voice: MIXUP_VOICE; index: INTEGER; a_voices: like voices; commit_context_: MIXUP_COMMIT_CONTEXT; timings_set: SET[MIXUP_MUSIC_TIMING])
                            local
                               voice_: MIXUP_VOICE
                            do
@@ -108,7 +108,7 @@ feature {ANY}
                               timings_set.add(voice_.timing)
                            end (?, ?, voices_, a_commit_context, timings))
          if timings.count > 1 then
-            voices_.do_all(agent (voice: MIXUP_VOICE) is
+            voices_.do_all(agent (voice: MIXUP_VOICE)
                            do
                               warning_at(voice.source, "timing: " + voice.timing.out + " " + voice.out)
                            end)
@@ -120,12 +120,12 @@ feature {ANY}
          create Result.duplicate(source, reference_, voices_)
       end
 
-   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR
       do
          create {MIXUP_EVENTS_ITERATOR_ON_VOICES} Result.make(source, a_context, voices)
       end
 
-   voice_ids: TRAVERSABLE[INTEGER] is
+   voice_ids: TRAVERSABLE[INTEGER]
       local
          ids: AVL_SET[INTEGER]
       do
@@ -134,29 +134,29 @@ feature {ANY}
          add_voice_ids(ids)
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "<<")
          voices.do_all(agent (v: MIXUP_VOICE) is do tagged_out_memory.extend(' '); v.out_in_tagged_out_memory end)
          tagged_out_memory.append(once " >>")
       end
 
-   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER)
       do
          voices.do_all(agent {MIXUP_VOICE}.set_timing(a_duration, a_first_bar_number, a_bars_count))
       end
 
 feature {MIXUP_MUSIC, MIXUP_SPANNER}
-   add_voice_ids (ids: AVL_SET[INTEGER]) is
+   add_voice_ids (ids: AVL_SET[INTEGER])
       do
-         voices.do_all(agent (a_voice: MIXUP_VOICE; a_ids: AVL_SET[INTEGER]) is
+         voices.do_all(agent (a_voice: MIXUP_VOICE; a_ids: AVL_SET[INTEGER])
                           do
                              a_voice.add_voice_ids(a_ids)
                           end(?, ids))
       end
 
 feature {}
-   make (a_source: like source; a_reference: like reference_) is
+   make (a_source: like source; a_reference: like reference_)
       require
          a_source /= Void
       do
@@ -168,7 +168,7 @@ feature {}
          reference_ = a_reference
       end
 
-   duplicate (a_source: like source; a_reference: like reference_; a_voices: like voices) is
+   duplicate (a_source: like source; a_reference: like reference_; a_voices: like voices)
       require
          not a_voices.is_empty
          a_voices.first.timing.is_set

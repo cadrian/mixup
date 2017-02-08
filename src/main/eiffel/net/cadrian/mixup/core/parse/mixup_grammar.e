@@ -45,7 +45,7 @@ feature {ANY}
    end_reached: BOOLEAN
    parse_error: PARSE_ERROR
 
-   parse (buffer: MINI_PARSER_BUFFER): BOOLEAN is
+   parse (buffer: MINI_PARSER_BUFFER): BOOLEAN
       require
          buffer /= Void
       local
@@ -64,7 +64,7 @@ feature {ANY}
       end
 
 feature {}
-   list_of (element_name: STRING; allow_empty: BOOLEAN; separator: STRING): PARSE_ATOM[DESCENDING_PARSE_CONTEXT] is
+   list_of (element_name: STRING; allow_empty: BOOLEAN; separator: STRING): PARSE_ATOM[DESCENDING_PARSE_CONTEXT]
       local
          list_name: STRING; accumulator_rule: TRAVERSABLE[STRING]; action: PROCEDURE[TUPLE[FIXED_STRING, TRAVERSABLE[FIXED_STRING]]]
       do
@@ -101,7 +101,7 @@ feature {}
          end
       end
 
-   the_table: PARSE_TABLE[DESCENDING_PARSE_CONTEXT] is
+   the_table: PARSE_TABLE[DESCENDING_PARSE_CONTEXT]
       local
          e1, e2, e3, e4, e5, e6: FIXED_STRING
       once
@@ -703,7 +703,7 @@ feature {}
    table_memory: PARSE_TABLE[DESCENDING_PARSE_CONTEXT]
 
 feature {ANY}
-   table: PARSE_TABLE[DESCENDING_PARSE_CONTEXT] is
+   table: PARSE_TABLE[DESCENDING_PARSE_CONTEXT]
       do
          Result := table_memory
          if Result = Void then
@@ -713,28 +713,28 @@ feature {ANY}
          end
       end
 
-   display (output: OUTPUT_STREAM) is
+   display (output: OUTPUT_STREAM)
       do
          if not stack.is_empty then
             stack.first.display(output, 0, Void)
          end
       end
 
-   generate (o: OUTPUT_STREAM) is
+   generate (o: OUTPUT_STREAM)
       do
          if not stack.is_empty then
             stack.first.generate(o)
          end
       end
 
-   root_node: MIXUP_NODE is
+   root_node: MIXUP_NODE
       do
          if not stack.is_empty then
             Result := stack.first
          end
       end
 
-   reset is
+   reset
       do
          stack.clear_count
          create position
@@ -745,7 +745,7 @@ feature {ANY}
       end
 
 feature {}
-   epsilon: FAST_ARRAY[STRING] is
+   epsilon: FAST_ARRAY[STRING]
       once
          create Result.with_capacity(0)
       end
@@ -754,7 +754,7 @@ feature {}
    comment_position: like position
    has_comment: BOOLEAN
 
-   skip_blank (buffer: MINI_PARSER_BUFFER; skip_semi_colons: BOOLEAN): BOOLEAN is
+   skip_blank (buffer: MINI_PARSER_BUFFER; skip_semi_colons: BOOLEAN): BOOLEAN
       local
          old_position: like position
       do
@@ -802,7 +802,7 @@ feature {}
          not Result implies buffer.current_index = old buffer.current_index
       end
 
-   skip_blanks (buffer: MINI_PARSER_BUFFER) is
+   skip_blanks (buffer: MINI_PARSER_BUFFER)
       do
          from
             has_comment := False
@@ -817,7 +817,7 @@ feature {}
          not buffer.marked
       end
 
-   parse_end (buffer: MINI_PARSER_BUFFER): UNTYPED_MIXUP_IMAGE is
+   parse_end (buffer: MINI_PARSER_BUFFER): UNTYPED_MIXUP_IMAGE
       local
          old_position: like position
       do
@@ -830,7 +830,7 @@ feature {}
          end
       end
 
-   parse_string (buffer: MINI_PARSER_BUFFER): TYPED_MIXUP_IMAGE[STRING] is
+   parse_string (buffer: MINI_PARSER_BUFFER): TYPED_MIXUP_IMAGE[STRING]
          -- the algorithm is a bit less strict than SmartMixup's
       local
          old_position, start_position: like position; i, t, state, code, scale: INTEGER; c: CHARACTER; image, parsed, end_tag: STRING; unicode: BOOLEAN
@@ -1175,7 +1175,7 @@ feature {}
             ) and then Result.image.last = '"'
       end
 
-   parse_number (buffer: MINI_PARSER_BUFFER): MIXUP_IMAGE is
+   parse_number (buffer: MINI_PARSER_BUFFER): MIXUP_IMAGE
       local
          old_position, start_position, cur_position: like position; state: INTEGER; c: CHARACTER; image: STRING
          valid, valid_before_dot, valid_before_exp: BOOLEAN
@@ -1354,7 +1354,7 @@ feature {}
          end
       end
 
-   is_hex (image: STRING): BOOLEAN is
+   is_hex (image: STRING): BOOLEAN
       local
          i: INTEGER
       do
@@ -1375,7 +1375,7 @@ feature {}
          end
       end
 
-   hex_to_integer_64 (image: STRING): INTEGER_64 is
+   hex_to_integer_64 (image: STRING): INTEGER_64
       require
          is_hex(image)
       local
@@ -1404,7 +1404,7 @@ feature {}
          end
       end
 
-   is_identifier_part (c: CHARACTER; string: STRING): BOOLEAN is
+   is_identifier_part (c: CHARACTER; string: STRING): BOOLEAN
       do
          inspect
             c
@@ -1419,12 +1419,12 @@ feature {}
          end
       end
 
-   identifier_filter: PREDICATE[TUPLE[CHARACTER, STRING]] is
+   identifier_filter: PREDICATE[TUPLE[CHARACTER, STRING]]
       once
          Result := agent is_identifier_part
       end
 
-   identifier_image (buffer: MINI_PARSER_BUFFER; filter: PREDICATE[TUPLE[CHARACTER, STRING]]): STRING is
+   identifier_image (buffer: MINI_PARSER_BUFFER; filter: PREDICATE[TUPLE[CHARACTER, STRING]]): STRING
       do
          if not buffer.end_reached and then filter.item([buffer.current_character, once ""]) then
             Result := once ""
@@ -1441,7 +1441,7 @@ feature {}
          end
       end
 
-   parse_identifier (buffer: MINI_PARSER_BUFFER): UNTYPED_MIXUP_IMAGE is
+   parse_identifier (buffer: MINI_PARSER_BUFFER): UNTYPED_MIXUP_IMAGE
       local
          old_position, start_position: like position; image: STRING
       do
@@ -1461,7 +1461,7 @@ feature {}
          end
       end
 
-   is_a_keyword (id: STRING): BOOLEAN is
+   is_a_keyword (id: STRING): BOOLEAN
       do
          inspect
             id
@@ -1516,7 +1516,7 @@ feature {}
          end
       end
 
-   keyword_image (buffer: MINI_PARSER_BUFFER; keyword, not_successors: STRING): STRING is
+   keyword_image (buffer: MINI_PARSER_BUFFER; keyword, not_successors: STRING): STRING
       local
          old_position, start_position: like position; i: INTEGER; c: CHARACTER
       do
@@ -1554,7 +1554,7 @@ feature {}
          end
       end
 
-   parse_keyword (buffer: MINI_PARSER_BUFFER; keyword: STRING): UNTYPED_MIXUP_IMAGE is
+   parse_keyword (buffer: MINI_PARSER_BUFFER; keyword: STRING): UNTYPED_MIXUP_IMAGE
       local
          old_position, start_position: like position; image: STRING
       do
@@ -1570,7 +1570,7 @@ feature {}
          end
       end
 
-   parse_symbol (buffer: MINI_PARSER_BUFFER; keyword, not_successors: STRING): UNTYPED_MIXUP_IMAGE is
+   parse_symbol (buffer: MINI_PARSER_BUFFER; keyword, not_successors: STRING): UNTYPED_MIXUP_IMAGE
       local
          old_position, start_position: like position; image: STRING
       do
@@ -1586,7 +1586,7 @@ feature {}
          end
       end
 
-   parse_boolean (buffer: MINI_PARSER_BUFFER): TYPED_MIXUP_IMAGE[BOOLEAN] is
+   parse_boolean (buffer: MINI_PARSER_BUFFER): TYPED_MIXUP_IMAGE[BOOLEAN]
       local
          old_position, start_position: like position; image: STRING
          value: BOOLEAN
@@ -1613,7 +1613,7 @@ feature {}
          end
       end
 
-   parse_syllable (buffer: MINI_PARSER_BUFFER): UNTYPED_MIXUP_IMAGE is
+   parse_syllable (buffer: MINI_PARSER_BUFFER): UNTYPED_MIXUP_IMAGE
       local
          old_position, start_position: like position; image: STRING
       do
@@ -1641,7 +1641,7 @@ feature {}
          end
       end
 
-   is_note_head_part (c: CHARACTER; string: STRING): BOOLEAN is
+   is_note_head_part (c: CHARACTER; string: STRING): BOOLEAN
       do
          inspect
             string.count
@@ -1679,12 +1679,12 @@ feature {}
          end
       end
 
-   note_head_filter: PREDICATE[TUPLE[CHARACTER, STRING]] is
+   note_head_filter: PREDICATE[TUPLE[CHARACTER, STRING]]
       once
          Result := agent is_note_head_part
       end
 
-   parse_note_head (buffer: MINI_PARSER_BUFFER): UNTYPED_MIXUP_IMAGE is
+   parse_note_head (buffer: MINI_PARSER_BUFFER): UNTYPED_MIXUP_IMAGE
       local
          old_position, start_position: like position; image: STRING
       do
@@ -1709,7 +1709,7 @@ feature {}
    stack: FAST_ARRAY[MIXUP_NODE]
    left_assoc_stack: FAST_ARRAY[MIXUP_LEFT_ASSOCIATIVE_EXPRESSION]
 
-   show_stack is
+   show_stack
       local
          i: INTEGER
       do
@@ -1725,7 +1725,7 @@ feature {}
          log.trace.put_line(once "-------->8-- <end stack>")
       end
 
-   stack_matches (node_content: TRAVERSABLE[FIXED_STRING]): BOOLEAN is
+   stack_matches (node_content: TRAVERSABLE[FIXED_STRING]): BOOLEAN
       local
          i: INTEGER
       do
@@ -1745,7 +1745,7 @@ feature {}
          used_only_in_assertions: Result
       end
 
-   build_non_terminal (node_name: FIXED_STRING; node_content: TRAVERSABLE[FIXED_STRING]) is
+   build_non_terminal (node_name: FIXED_STRING; node_content: TRAVERSABLE[FIXED_STRING])
       require
          stack_matches(node_content)
       local
@@ -1778,7 +1778,7 @@ feature {}
          stack.last.name.is_equal(node_name)
       end
 
-   build_terminal (node_name: FIXED_STRING; node_image: PARSER_IMAGE) is
+   build_terminal (node_name: FIXED_STRING; node_image: PARSER_IMAGE)
       local
          mixup_image: MIXUP_IMAGE
       do
@@ -1795,7 +1795,7 @@ feature {}
          stack.last.name.is_equal(node_name)
       end
 
-   build_empty_list (list_name: ABSTRACT_STRING) is
+   build_empty_list (list_name: ABSTRACT_STRING)
       local
          list: MIXUP_LIST_NODE
       do
@@ -1812,7 +1812,7 @@ feature {}
          stack.last.name = list_name.intern
       end
 
-   build_new_list (atom_name, list_name: ABSTRACT_STRING) is
+   build_new_list (atom_name, list_name: ABSTRACT_STRING)
       require
          not stack.is_empty
          stack.last.name.is_equal(atom_name)
@@ -1836,7 +1836,7 @@ feature {}
          stack.last.name = list_name.intern
       end
 
-   build_continue_list (atom_name: ABSTRACT_STRING; forget: INTEGER; list_name: ABSTRACT_STRING) is
+   build_continue_list (atom_name: ABSTRACT_STRING; forget: INTEGER; list_name: ABSTRACT_STRING)
       require
          stack.count >= forget + 2
          stack.item(stack.upper).name.is_equal(list_name)
@@ -1884,7 +1884,7 @@ feature {}
       end
 
 feature {} -- expressions
-   build_expression_remainder (operator_names: FAST_ARRAY[ABSTRACT_STRING]; expression_name: FIXED_STRING) is
+   build_expression_remainder (operator_names: FAST_ARRAY[ABSTRACT_STRING]; expression_name: FIXED_STRING)
       local
          tail: MIXUP_LEFT_ASSOCIATIVE_EXPRESSION
          exp: MIXUP_NODE; operator_nodes: COLLECTION[MIXUP_NODE]
@@ -1917,7 +1917,7 @@ feature {} -- expressions
          end
       end
 
-   ensure_expression (expression: MIXUP_NODE; expression_name: FIXED_STRING): MIXUP_NON_TERMINAL_NODE is
+   ensure_expression (expression: MIXUP_NODE; expression_name: FIXED_STRING): MIXUP_NON_TERMINAL_NODE
       local
          expname: STRING
       do
@@ -1938,7 +1938,7 @@ feature {} -- expressions
          end
       end
 
-   build_expression (expression_name: FIXED_STRING) is
+   build_expression (expression_name: FIXED_STRING)
       local
          tail: MIXUP_LEFT_ASSOCIATIVE_EXPRESSION
          left, right: MIXUP_NODE; nt: MIXUP_NON_TERMINAL_NODE
@@ -2005,7 +2005,7 @@ feature {} -- expressions
          end
       end
 
-   build_expression_epsilon (expression_name: FIXED_STRING) is
+   build_expression_epsilon (expression_name: FIXED_STRING)
       do
          debug ("parse/mixup/build")
             log.trace.put_line(once "Building epsilon expression " | expression_name)
@@ -2018,7 +2018,7 @@ feature {} -- expressions
          end
       end
 
-   build_expression_e6 is
+   build_expression_e6
       do
          debug ("parse/mixup/build")
             log.trace.put_line(once "Building epsilon expression e6")
@@ -2031,7 +2031,7 @@ feature {} -- expressions
          end
       end
 
-   build_unary_expression (expression_name, node_name: FIXED_STRING) is
+   build_unary_expression (expression_name, node_name: FIXED_STRING)
       local
          exp, nt: MIXUP_NON_TERMINAL_NODE
       do
@@ -2057,12 +2057,12 @@ feature {} -- expressions
       end
 
 feature {} -- buffer moves
-   next_character (buffer: MINI_PARSER_BUFFER) is
+   next_character (buffer: MINI_PARSER_BUFFER)
       do
          position.next(buffer)
       end
 
-   restore (buffer: MINI_PARSER_BUFFER; a_position: like position) is
+   restore (buffer: MINI_PARSER_BUFFER; a_position: like position)
       do
          position := a_position
          buffer.set_current_index(position.index)
@@ -2071,7 +2071,7 @@ feature {} -- buffer moves
    position: MIXUP_POSITION
 
 feature {}
-   with_factory (a_factory: like factory) is
+   with_factory (a_factory: like factory)
       do
          factory := a_factory
          create stack.make(0)
@@ -2082,20 +2082,20 @@ feature {}
          left_assoc_stack.is_empty
       end
 
-   default_create is
+   default_create
       do
          with_factory(create {MIXUP_DEFAULT_NODE_FACTORY}.make)
       end
 
    factory: MIXUP_NODE_FACTORY
 
-   left_assoc_names: FAST_ARRAY[FIXED_STRING] is
+   left_assoc_names: FAST_ARRAY[FIXED_STRING]
       once
          create Result.with_capacity(4)
       end
 
 feature {ANY}
-   memo_save (buffer: MINI_PARSER_BUFFER): INTEGER is
+   memo_save (buffer: MINI_PARSER_BUFFER): INTEGER
       do
          check
             integrity: position.index = buffer.current_index
@@ -2110,12 +2110,12 @@ feature {ANY}
          end
       end
 
-   memo_restore (a_memo: like memo_save; buffer: MINI_PARSER_BUFFER) is
+   memo_restore (a_memo: like memo_save; buffer: MINI_PARSER_BUFFER)
       do
          restore(buffer, memory.at(a_memo))
       end
 
-   memo_is_valid (a_memo: like memo_save; buffer: MINI_PARSER_BUFFER): BOOLEAN is
+   memo_is_valid (a_memo: like memo_save; buffer: MINI_PARSER_BUFFER): BOOLEAN
       do
          Result := memory.fast_has(a_memo)
       end

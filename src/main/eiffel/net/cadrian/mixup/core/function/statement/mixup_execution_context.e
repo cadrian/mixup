@@ -21,7 +21,7 @@ insert
    MIXUP_ERRORS
 
 feature {MIXUP_IDENTIFIER}
-   visit_identifier (a_identifier: MIXUP_IDENTIFIER) is
+   visit_identifier (a_identifier: MIXUP_IDENTIFIER)
       local
          value: MIXUP_VALUE
       do
@@ -34,7 +34,7 @@ feature {MIXUP_IDENTIFIER}
       end
 
 feature {MIXUP_AGENT}
-   visit_agent (a_agent: MIXUP_AGENT) is
+   visit_agent (a_agent: MIXUP_AGENT)
       local
          fun: MIXUP_AGENT_FUNCTION
          args: FAST_ARRAY[MIXUP_VALUE]
@@ -58,37 +58,37 @@ feature {MIXUP_AGENT}
       end
 
 feature {MIXUP_OPEN_ARGUMENT}
-   visit_open_argument (a_open_argument: MIXUP_OPEN_ARGUMENT) is
+   visit_open_argument (a_open_argument: MIXUP_OPEN_ARGUMENT)
       do
          error("unexpected open argument")
       end
 
 feature {MIXUP_RESULT}
-   visit_result (a_result: MIXUP_RESULT) is
+   visit_result (a_result: MIXUP_RESULT)
       do
          sedb_breakpoint -- TODO
       end
 
 feature {MIXUP_NATIVE_FUNCTION}
-   visit_native_function (a_function: MIXUP_NATIVE_FUNCTION) is
+   visit_native_function (a_function: MIXUP_NATIVE_FUNCTION)
       do
          call_function(a_function)
       end
 
 feature {MIXUP_USER_FUNCTION}
-   visit_user_function (a_function: MIXUP_USER_FUNCTION) is
+   visit_user_function (a_function: MIXUP_USER_FUNCTION)
       do
          call_function(a_function)
       end
 
 feature {MIXUP_AGENT_FUNCTION}
-   visit_agent_function (a_function: MIXUP_AGENT_FUNCTION) is
+   visit_agent_function (a_function: MIXUP_AGENT_FUNCTION)
       do
          call_function(a_function)
       end
 
 feature {}
-   call_function (a_function: MIXUP_FUNCTION) is
+   call_function (a_function: MIXUP_FUNCTION)
       local
          value: MIXUP_VALUE
       do
@@ -102,7 +102,7 @@ feature {}
 
    commit_context: MIXUP_COMMIT_CONTEXT
 
-   context: MIXUP_USER_FUNCTION_CONTEXT is
+   context: MIXUP_USER_FUNCTION_CONTEXT
       do
          Result ::= commit_context.context
       end

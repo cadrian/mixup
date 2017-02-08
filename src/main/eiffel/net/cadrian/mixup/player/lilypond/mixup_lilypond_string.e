@@ -23,27 +23,27 @@ create {ANY}
 feature {ANY}
    valid_reference: BOOLEAN is False
 
-   reference: MIXUP_NOTE_HEAD is
+   reference: MIXUP_NOTE_HEAD
       do
          crash
       end
 
    can_append: BOOLEAN is False
 
-   append_first, append_last (a_string: ABSTRACT_STRING) is
+   append_first, append_last (a_string: ABSTRACT_STRING)
       do
          crash
       end
 
    string: FIXED_STRING
 
-   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION)
       do
          section.set_body(string)
       end
 
 feature {}
-   make (a_string: ABSTRACT_STRING) is
+   make (a_string: ABSTRACT_STRING)
       require
          a_string /= Void
       do

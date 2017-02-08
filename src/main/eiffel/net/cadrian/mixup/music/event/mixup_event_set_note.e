@@ -28,19 +28,19 @@ create {ANY}
 feature {ANY}
    note: MIXUP_NOTE
 
-   allow_lyrics: BOOLEAN is
+   allow_lyrics: BOOLEAN
       do
          Result := note.can_have_lyrics
       end
 
    has_lyrics: BOOLEAN
 
-   set_has_lyrics (enable: BOOLEAN) is
+   set_has_lyrics (enable: BOOLEAN)
       do
          has_lyrics := enable
       end
 
-   set_lyrics (a_lyrics: like lyrics) is
+   set_lyrics (a_lyrics: like lyrics)
       do
          lyrics := a_lyrics
       end
@@ -50,7 +50,7 @@ feature {ANY}
    needs_instrument: BOOLEAN is True
 
 feature {MIXUP_PLAYER}
-   fire (player: MIXUP_PLAYER) is
+   fire (player: MIXUP_PLAYER)
       local
          p: MIXUP_EVENT_SET_NOTE_PLAYER
          n: like note
@@ -64,7 +64,7 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_data:like data; a_note: MIXUP_NOTE) is
+   make (a_data:like data; a_note: MIXUP_NOTE)
       require
          a_note /= Void
       do
@@ -77,7 +77,7 @@ feature {}
          note = a_note
       end
 
-   out_in_extra_data is
+   out_in_extra_data
       do
          tagged_out_memory.append(once ", note=")
          note.out_in_tagged_out_memory

@@ -33,7 +33,7 @@ create {MIXUP_MUSIC_STORE}
 feature {ANY}
    is_callable: BOOLEAN is False
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_VALUE_VISITOR
       do
@@ -41,19 +41,19 @@ feature {ANY}
          v.visit_music_store(Current)
       end
 
-   has_voice: BOOLEAN is
+   has_voice: BOOLEAN
       do
          Result := not voices.is_empty
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       do
          a_name.append(once "<music store>")
       end
 
 feature {}
-   make (a_source: like source) is
+   make (a_source: like source)
       require
          a_source /= Void
       do
@@ -62,12 +62,12 @@ feature {}
          source = a_source
       end
 
-   ref0: MIXUP_NOTE_HEAD is
+   ref0: MIXUP_NOTE_HEAD
       once
          Result.set(create {MIXUP_SOURCE_UNKNOWN}, "a", 3)
       end
 
-   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       do
          Result := Current
       end

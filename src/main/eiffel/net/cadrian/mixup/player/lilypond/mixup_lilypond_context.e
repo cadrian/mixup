@@ -18,11 +18,11 @@ insert
    MIXUP_ERRORS
 
 feature {}
-   context_name: FIXED_STRING is
+   context_name: FIXED_STRING
       deferred
       end
 
-   generate_context (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION; instrument: MIXUP_LILYPOND_INSTRUMENT) is
+   generate_context (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION; instrument: MIXUP_LILYPOND_INSTRUMENT)
       require
          context_name /= Void
          instrument /= Void
@@ -31,7 +31,7 @@ feature {}
          generate_context_string(context, section, template_instrument_abbrev, once "shortInstrumentName", instrument.name.first.out + ".")
       end
 
-   get_string (context: MIXUP_CONTEXT; context_data_name: FIXED_STRING; default_value: ABSTRACT_STRING): FIXED_STRING is
+   get_string (context: MIXUP_CONTEXT; context_data_name: FIXED_STRING; default_value: ABSTRACT_STRING): FIXED_STRING
       local
          val: MIXUP_VALUE; str: MIXUP_STRING
       do
@@ -52,7 +52,7 @@ feature {}
          end
       end
 
-   generate_context_string (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION; context_data_name: FIXED_STRING; lilypond_variable_name, default_value: ABSTRACT_STRING) is
+   generate_context_string (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION; context_data_name: FIXED_STRING; lilypond_variable_name, default_value: ABSTRACT_STRING)
       require
          context_name /= Void
          section /= Void
@@ -71,12 +71,12 @@ feature {}
          end
       end
 
-   template_instrument_name: FIXED_STRING is
+   template_instrument_name: FIXED_STRING
       once
          Result := "template.instrument_name".intern
       end
 
-   template_instrument_abbrev: FIXED_STRING is
+   template_instrument_abbrev: FIXED_STRING
       once
          Result := "template.instrument_abbrev".intern
       end

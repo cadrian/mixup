@@ -23,7 +23,7 @@ create {ANY}
 feature {ANY}
    is_callable: BOOLEAN is False
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_VALUE_VISITOR
       do
@@ -34,38 +34,38 @@ feature {ANY}
    lower: INTEGER
    upper: INTEGER
 
-   item (index: INTEGER): MIXUP_VALUE is
+   item (index: INTEGER): MIXUP_VALUE
       do
          create {MIXUP_INTEGER} Result.make(source, index)
       end
 
-   first: MIXUP_VALUE is
+   first: MIXUP_VALUE
       do
          Result := item(lower)
       end
 
-   last: MIXUP_VALUE is
+   last: MIXUP_VALUE
       do
          Result := item(upper)
       end
 
-   count: INTEGER is
+   count: INTEGER
       do
          Result := upper - lower + 1
       end
 
-   is_empty: BOOLEAN is
+   is_empty: BOOLEAN
       do
          Result := count = 0
       end
 
-   new_iterator: ITERATOR[MIXUP_VALUE] is
+   new_iterator: ITERATOR[MIXUP_VALUE]
       do
          crash
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (buffer: STRING) is
+   as_name_in (buffer: STRING)
       do
          buffer.append(once "seq(")
          lower.append_in(buffer)
@@ -75,7 +75,7 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       end
 
 feature {}
-   make (a_source: like source; low, up: MIXUP_INTEGER) is
+   make (a_source: like source; low, up: MIXUP_INTEGER)
       require
          a_source /= Void
       do
@@ -92,7 +92,7 @@ feature {}
          source = a_source
       end
 
-   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       do
          Result := Current
       end

@@ -27,17 +27,17 @@ create {MIXUP_MODULE}
    duplicate
 
 feature {ANY}
-   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
+   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE)
       do
          crash
       end
 
-   get_local (a_name: FIXED_STRING): MIXUP_VALUE is
+   get_local (a_name: FIXED_STRING): MIXUP_VALUE
       do
          check Result = Void end
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       local
          timing_: like timing
       do
@@ -45,7 +45,7 @@ feature {ANY}
          Result.set_timing(timing_.set(0, a_commit_context.bar_number, 0))
       end
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_CONTEXT_VISITOR
       do
@@ -54,16 +54,16 @@ feature {ANY}
       end
 
 feature {}
-   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is
+   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE
       do
       end
 
-   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN is
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN
       do
       end
 
 feature {MIXUP_CONTEXT}
-   add_child (a_child: MIXUP_CONTEXT) is
+   add_child (a_child: MIXUP_CONTEXT)
       do
          check
             {MIXUP_USER_FUNCTION_CONTEXT} ?:= a_child
@@ -72,7 +72,7 @@ feature {MIXUP_CONTEXT}
       end
 
 feature {}
-   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports) is
+   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports)
       do
          source := a_source
          name := a_name

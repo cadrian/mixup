@@ -31,7 +31,7 @@ feature {ANY}
    voice: MIXUP_VOICE
 
 feature {ANY}
-   reset is
+   reset
       do
          bar_number := 0
          context := Void
@@ -42,20 +42,20 @@ feature {ANY}
       end
 
 feature {}
-   default_create is
+   default_create
       do
          reset
       end
 
 feature {ANY}
-   set_bar_number (a_bar_number: like bar_number) is
+   set_bar_number (a_bar_number: like bar_number)
       do
          bar_number := a_bar_number
       ensure
          bar_number = a_bar_number
       end
 
-   set_player (a_player: like player) is
+   set_player (a_player: like player)
       require
          a_player /= Void
       do
@@ -65,7 +65,7 @@ feature {ANY}
       end
 
 feature {MIXUP_CONTEXT}
-   set_context (a_context: like context) is
+   set_context (a_context: like context)
       require
          a_context /= Void
       do
@@ -75,7 +75,7 @@ feature {MIXUP_CONTEXT}
       end
 
 feature {MIXUP_INSTRUMENT}
-   set_instrument (a_instrument: like instrument) is
+   set_instrument (a_instrument: like instrument)
       require
          a_instrument /= Void
       do
@@ -87,7 +87,7 @@ feature {MIXUP_INSTRUMENT}
       end
 
 feature {MIXUP_STAFF}
-   set_staff (a_staff: like staff) is
+   set_staff (a_staff: like staff)
       require
          a_staff /= Void
       do
@@ -97,7 +97,7 @@ feature {MIXUP_STAFF}
       end
 
 feature {MIXUP_VOICE}
-   set_voice (a_voice: like voice) is
+   set_voice (a_voice: like voice)
       require
          a_voice /= Void
       do

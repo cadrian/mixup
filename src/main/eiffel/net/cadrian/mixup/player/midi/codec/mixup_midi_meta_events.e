@@ -19,13 +19,13 @@ insert
    MIXUP_MIDI_EVENT_TYPES
 
 feature {ANY}
-   end_of_track_event: MIXUP_MIDI_META_EVENT is
+   end_of_track_event: MIXUP_MIDI_META_EVENT
          -- must always be added, and added last, to each track
       once
          create Result.make(meta_event_end_of_track, "", "end_of_track_event")
       end
 
-   sequence_number_event (sequence_number: INTEGER_32): MIXUP_MIDI_META_EVENT is
+   sequence_number_event (sequence_number: INTEGER_32): MIXUP_MIDI_META_EVENT
       require
          sequence_number.in_range(0, 0x0000ffff)
       local
@@ -39,56 +39,56 @@ feature {ANY}
          create Result.make(meta_event_sequence_number, bytes, "sequence_number_event")
       end
 
-   text_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
+   text_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT
       require
          a_text /= Void
       do
          create Result.make(meta_event_text, a_text, "text_event: '" + a_text + "'")
       end
 
-   copyright_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
+   copyright_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT
       require
          a_text /= Void
       do
          create Result.make(meta_event_copyright, a_text, "copyright_event: '" + a_text + "'")
       end
 
-   track_name_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
+   track_name_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT
       require
          a_text /= Void
       do
          create Result.make(meta_event_track_name, a_text, "track_name_event: '" + a_text + "'")
       end
 
-   instrument_name_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
+   instrument_name_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT
       require
          a_text /= Void
       do
          create Result.make(meta_event_instrument_name, a_text, "instrument_name_event: '" + a_text + "'")
       end
 
-   lyrics_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
+   lyrics_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT
       require
          a_text /= Void
       do
          create Result.make(meta_event_lyrics, a_text, "lyrics_event: '" + a_text + "'")
       end
 
-   marker_text_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
+   marker_text_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT
       require
          a_text /= Void
       do
          create Result.make(meta_event_marker_text, a_text, "marker_text_event: '" + a_text + "'")
       end
 
-   cue_point_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT is
+   cue_point_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT
       require
          a_text /= Void
       do
          create Result.make(meta_event_cue_point, a_text, "copyright_event: '" + a_text + "'")
       end
 
-   tempo_setting_event_bpm (bpm: INTEGER): MIXUP_MIDI_META_EVENT is
+   tempo_setting_event_bpm (bpm: INTEGER): MIXUP_MIDI_META_EVENT
       require
          bpm.in_range(1, 0x00003fff)
       local
@@ -102,7 +102,7 @@ feature {ANY}
          create Result.make(meta_event_tempo_setting, setting, "tempo_setting_event: " + bpm.out + " BPM")
       end
 
-   tempo_setting_event_mpq (mpq: INTEGER): MIXUP_MIDI_META_EVENT is
+   tempo_setting_event_mpq (mpq: INTEGER): MIXUP_MIDI_META_EVENT
       require
          mpq.in_range(1, 0x00ffffff)
       local
@@ -115,7 +115,7 @@ feature {ANY}
          create Result.make(meta_event_tempo_setting, setting, "tempo_setting_event: " + mpq.out + " us/q")
       end
 
-   key_signature_event (keysig, mode: INTEGER): MIXUP_MIDI_META_EVENT is
+   key_signature_event (keysig, mode: INTEGER): MIXUP_MIDI_META_EVENT
       require
          keysig.in_range(-7, 7) -- number of alterations: <0 flats, >0 sharps
          mode.in_range(0, 1)    -- major, minor
@@ -201,7 +201,7 @@ feature {ANY}
          create Result.make(meta_event_key_signature, setting, "key_signature_event: " + desc)
       end
 
-   time_signature_event (numerator, denominator, metronome_ticks, thirtyseconds_per_quarter: INTEGER): MIXUP_MIDI_META_EVENT is
+   time_signature_event (numerator, denominator, metronome_ticks, thirtyseconds_per_quarter: INTEGER): MIXUP_MIDI_META_EVENT
       require
          numerator > 0
          valid_denominator(denominator)
@@ -252,7 +252,7 @@ feature {ANY}
          create Result.make(meta_event_time_signature, setting, "time_signature_event: " + desc)
       end
 
-   valid_denominator (denominator: INTEGER): BOOLEAN is
+   valid_denominator (denominator: INTEGER): BOOLEAN
       do
          inspect
             denominator
@@ -263,7 +263,7 @@ feature {ANY}
          end
       end
 
-   unknown_meta_event (code: INTEGER; data: COLLECTION[INTEGER]): MIXUP_MIDI_META_EVENT is
+   unknown_meta_event (code: INTEGER; data: COLLECTION[INTEGER]): MIXUP_MIDI_META_EVENT
       require
          code.in_range(0, 255)
          data.for_all(agent (int: INTEGER): BOOLEAN then int.in_range(0, 255) end (?))
@@ -271,7 +271,7 @@ feature {ANY}
          setting: STRING
       do
          create setting.with_capacity(data.count)
-         data.for_each(agent (int: INTEGER) is
+         data.for_each(agent (int: INTEGER)
                        do
                           setting.extend(force_character(int))
                        end (?))
@@ -279,12 +279,12 @@ feature {ANY}
       end
 
 feature {}
-   force_character (int: INTEGER_32): CHARACTER is
+   force_character (int: INTEGER_32): CHARACTER
       do
          Result := (int & 0x000000ff).to_character
       end
 
-   bpm_to_mpq (bpm: INTEGER): INTEGER is
+   bpm_to_mpq (bpm: INTEGER): INTEGER
          -- Bytes Per Minute => Microseconds Per Quarter
       do
          Result := 60000000 // bpm;
@@ -292,13 +292,13 @@ feature {}
       end
 
 feature {ANY}
-   valid_code (a_code: INTEGER_32): BOOLEAN is
+   valid_code (a_code: INTEGER_32): BOOLEAN
       do
          Result := valid_codes.has(a_code)
       end
 
 feature {}
-   valid_codes: AVL_SET[INTEGER_32] is
+   valid_codes: AVL_SET[INTEGER_32]
       once
          create Result.make
          Result.add(meta_event_sequence_number )

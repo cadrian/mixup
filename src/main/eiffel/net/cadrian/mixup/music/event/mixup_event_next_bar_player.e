@@ -18,7 +18,7 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_NEXT_BAR}
-   play_next_bar (a_data: MIXUP_EVENT_DATA; a_style: ABSTRACT_STRING) is
+   play_next_bar (a_data: MIXUP_EVENT_DATA; a_style: ABSTRACT_STRING)
       require
          a_data.instrument /= Void
       deferred

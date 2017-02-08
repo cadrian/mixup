@@ -27,14 +27,14 @@ feature {ANY}
    name: FIXED_STRING
    args: TRAVERSABLE[MIXUP_EXPRESSION]
 
-   set_args (a_args: like args) is
+   set_args (a_args: like args)
       do
          args := a_args
       ensure
          args = a_args
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       local
          i: INTEGER
       do
@@ -57,7 +57,7 @@ feature {ANY}
       end
 
 feature {MIXUP_IDENTIFIER}
-   eval_args (a_commit_context: MIXUP_COMMIT_CONTEXT): TRAVERSABLE[MIXUP_VALUE] is
+   eval_args (a_commit_context: MIXUP_COMMIT_CONTEXT): TRAVERSABLE[MIXUP_VALUE]
       local
          actual_args: FAST_ARRAY[MIXUP_VALUE]
          arg: MIXUP_VALUE
@@ -85,7 +85,7 @@ feature {MIXUP_IDENTIFIER}
          Result := actual_args
       end
 
-   append_args_in (buffer: STRING) is
+   append_args_in (buffer: STRING)
       require
          buffer /= Void
          args /= Void
@@ -107,7 +107,7 @@ feature {MIXUP_IDENTIFIER}
          buffer.extend(')')
       end
 
-   append_eval_args_in (buffer: STRING; a_commit_context: MIXUP_COMMIT_CONTEXT) is
+   append_eval_args_in (buffer: STRING; a_commit_context: MIXUP_COMMIT_CONTEXT)
       require
          buffer /= Void
          args /= Void
@@ -130,7 +130,7 @@ feature {MIXUP_IDENTIFIER}
       end
 
 feature {MIXUP_IDENTIFIER_PART, MIXUP_IDENTIFIER}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       require
          a_name /= Void
       do
@@ -141,7 +141,7 @@ feature {MIXUP_IDENTIFIER_PART, MIXUP_IDENTIFIER}
       end
 
 feature {}
-   make (a_source: like source; a_name: ABSTRACT_STRING) is
+   make (a_source: like source; a_name: ABSTRACT_STRING)
       require
          a_source /= Void
          a_name /= Void

@@ -27,7 +27,7 @@ feature {ANY}
    identifier: MIXUP_IDENTIFIER
    expression: MIXUP_EXPRESSION
 
-   call (a_commit_context: MIXUP_COMMIT_CONTEXT) is
+   call (a_commit_context: MIXUP_COMMIT_CONTEXT)
       local
          value: MIXUP_VALUE
       do
@@ -39,7 +39,7 @@ feature {ANY}
          end
       end
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_STATEMENT_VISITOR
       do
@@ -47,14 +47,14 @@ feature {ANY}
          v.visit_assignment(Current)
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "assign: ")
          source.out_in_tagged_out_memory
       end
 
 feature {}
-   make (a_source: like source; a_identifier: like identifier; a_expression: like expression) is
+   make (a_source: like source; a_identifier: like identifier; a_expression: like expression)
       require
          a_source /= Void
          a_identifier /= Void

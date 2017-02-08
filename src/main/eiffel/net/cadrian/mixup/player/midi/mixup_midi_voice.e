@@ -30,12 +30,12 @@ feature {ANY}
    dynamics: MIXUP_MIDI_DYNAMICS
 
 feature {MIXUP_ABSTRACT_STAFF}
-   add_item (a_item: MIXUP_MIDI_ITEM) is
+   add_item (a_item: MIXUP_MIDI_ITEM)
       do
          items.add_last(a_item)
       end
 
-   set_dynamics (a_dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
+   set_dynamics (a_dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN)
       do
          inspect
             a_dynamics.intern
@@ -48,7 +48,7 @@ feature {MIXUP_ABSTRACT_STAFF}
          end
       end
 
-   set_note (a_time: INTEGER_64; a_note: MIXUP_NOTE) is
+   set_note (a_time: INTEGER_64; a_note: MIXUP_NOTE)
       local
          note: MIXUP_MIDI_NOTE
       do
@@ -57,55 +57,55 @@ feature {MIXUP_ABSTRACT_STAFF}
          last_note := note
       end
 
-   next_bar (style: ABSTRACT_STRING) is
+   next_bar (style: ABSTRACT_STRING)
       do
       end
 
-   skip_octave (a_time: INTEGER_64; skip: INTEGER_8) is
+   skip_octave (a_time: INTEGER_64; skip: INTEGER_8)
       do
          track.add_event(a_time, create {MIXUP_MIDI_TRANSPOSE_EVENT}.make(12 * skip))
       end
 
-   start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       do
          fix_slur(11, 12)
       end
 
-   end_beam is
+   end_beam
       do
          fix_slur(7, 8)
       end
 
-   start_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       do
          fix_slur(1, 1)
       end
 
-   end_slur is
+   end_slur
       do
          fix_slur(7, 8)
       end
 
-   start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       do
          fix_slur(1, 1)
       end
 
-   end_phrasing_slur is
+   end_phrasing_slur
       do
          fix_slur(7, 8)
       end
 
-   start_repeat (volte: INTEGER_64) is
+   start_repeat (volte: INTEGER_64)
       do
       end
 
-   end_repeat is
+   end_repeat
       do
       end
 
 feature {MIXUP_MIDI_STAFF}
-   send_events (a_time: INTEGER_64; a_events: HOARD[FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]]) is
+   send_events (a_time: INTEGER_64; a_events: HOARD[FUNCTION[TUPLE[INTEGER_8], MIXUP_MIDI_EVENT]])
       require
          a_events /= Void
       do
@@ -113,7 +113,7 @@ feature {MIXUP_MIDI_STAFF}
       end
 
 feature {} -- TODO: remove the lyrics_gatherer which is lilypond-specific
-   make (a_id: like id; a_lyrics_gatherer: like lyrics_gatherer; a_track: like track; a_track_id: like track_id; a_dynamics: like dynamics) is
+   make (a_id: like id; a_lyrics_gatherer: like lyrics_gatherer; a_track: like track; a_track_id: like track_id; a_dynamics: like dynamics)
       require
          a_track /= Void
          a_track_id.in_range(0, 15)
@@ -137,7 +137,7 @@ feature {} -- TODO: remove the lyrics_gatherer which is lilypond-specific
 
    slur_numerator, slur_denominator: INTEGER
 
-   fix_slur (a_slur_numerator, a_slur_denominator: INTEGER) is
+   fix_slur (a_slur_numerator, a_slur_denominator: INTEGER)
       require
          a_slur_numerator > 0
          a_slur_denominator > 0

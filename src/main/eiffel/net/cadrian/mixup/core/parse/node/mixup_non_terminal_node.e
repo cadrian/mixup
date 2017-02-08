@@ -18,49 +18,49 @@ inherit
    MIXUP_NODE
 
 feature {ANY}
-   name_at (index: INTEGER): FIXED_STRING is
+   name_at (index: INTEGER): FIXED_STRING
       require
          valid_index(index)
       deferred
       end
 
-   node_at (index: INTEGER): MIXUP_NODE is
+   node_at (index: INTEGER): MIXUP_NODE
       require
          valid_index(index)
       deferred
       end
 
-   valid_index (index: INTEGER): BOOLEAN is
+   valid_index (index: INTEGER): BOOLEAN
       deferred
       ensure
          definition: Result = (index >= lower and then index <= upper)
       end
 
-   lower: INTEGER is
+   lower: INTEGER
       deferred
       ensure
          Result >= 0
       end
 
-   upper: INTEGER is
+   upper: INTEGER
       deferred
       ensure
          Result >= upper - 1
       end
 
-   count: INTEGER is
+   count: INTEGER
       deferred
       ensure
          definition: Result = upper - lower + 1
       end
 
-   is_empty: BOOLEAN is
+   is_empty: BOOLEAN
       deferred
       ensure
          definition: Result = (count = 0)
       end
 
-   source_line: INTEGER is
+   source_line: INTEGER
       local
          i: INTEGER
       do
@@ -74,7 +74,7 @@ feature {ANY}
          end
       end
 
-   source_column: INTEGER is
+   source_column: INTEGER
       local
          i: INTEGER
       do
@@ -88,7 +88,7 @@ feature {ANY}
          end
       end
 
-   source_index: INTEGER is
+   source_index: INTEGER
       local
          i: INTEGER
       do
@@ -103,7 +103,7 @@ feature {ANY}
       end
 
 feature {MIXUP_GRAMMAR}
-   set (index: INTEGER; node: MIXUP_NODE) is
+   set (index: INTEGER; node: MIXUP_NODE)
       require
          valid_index(index)
       deferred

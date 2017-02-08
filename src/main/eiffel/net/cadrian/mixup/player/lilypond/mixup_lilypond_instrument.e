@@ -32,7 +32,7 @@ create {ANY}
    make
 
 feature {MIXUP_LILYPOND_PLAYER}
-   string_event (a_staff_id, a_voice_id: INTEGER; a_string: FIXED_STRING) is
+   string_event (a_staff_id, a_voice_id: INTEGER; a_string: FIXED_STRING)
       require
          a_string /= Void
       do
@@ -40,7 +40,7 @@ feature {MIXUP_LILYPOND_PLAYER}
       end
 
 feature {MIXUP_ABSTRACT_PLAYER}
-   generate (section: MIXUP_LILYPOND_SECTION) is
+   generate (section: MIXUP_LILYPOND_SECTION)
       local
          staff_type: STRING
       do
@@ -68,17 +68,17 @@ feature {MIXUP_ABSTRACT_PLAYER}
 feature {}
    context_name: FIXED_STRING
 
-   absolute_reference: MIXUP_NOTE_HEAD is
+   absolute_reference: MIXUP_NOTE_HEAD
       once
          Result.set(create {MIXUP_SOURCE_UNKNOWN}, "a", 4)
       end
 
-   template_instrument_staff: FIXED_STRING is
+   template_instrument_staff: FIXED_STRING
       once
          Result := "template.instrument_staff".intern
       end
 
-   new_staff (voice_ids: TRAVERSABLE[INTEGER]; id: INTEGER): MIXUP_LILYPOND_STAFF is
+   new_staff (voice_ids: TRAVERSABLE[INTEGER]; id: INTEGER): MIXUP_LILYPOND_STAFF
       do
          create Result.make(Current, id, voice_ids, absolute_reference)
       end

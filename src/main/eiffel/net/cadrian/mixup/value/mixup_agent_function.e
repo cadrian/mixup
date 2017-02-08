@@ -24,7 +24,7 @@ create {ANY}
    make
 
 feature {ANY}
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_VALUE_VISITOR
       do
@@ -32,7 +32,7 @@ feature {ANY}
          v.visit_agent_function(Current)
       end
 
-   call (a_source: MIXUP_SOURCE; a_commit_context: MIXUP_COMMIT_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE is
+   call (a_source: MIXUP_SOURCE; a_commit_context: MIXUP_COMMIT_CONTEXT; a_args: TRAVERSABLE[MIXUP_VALUE]): MIXUP_VALUE
       local
          merger: MIXUP_ARGUMENTS_MERGER
       do
@@ -40,13 +40,13 @@ feature {ANY}
          Result := value.call(a_source, a_commit_context, merger.merge(a_args))
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "<agent function>")
       end
 
 feature {}
-   make (a_source: like source; a_value: like value; a_args: like args) is
+   make (a_source: like source; a_value: like value; a_args: like args)
       require
          a_source /= Void
          a_value /= Void

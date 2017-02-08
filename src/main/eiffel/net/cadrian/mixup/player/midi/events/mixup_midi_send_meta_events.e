@@ -30,7 +30,7 @@ feature {ANY}
    needs_instrument: BOOLEAN is False
 
 feature {MIXUP_PLAYER}
-   fire (player: MIXUP_PLAYER) is
+   fire (player: MIXUP_PLAYER)
       local
          p: MIXUP_MIDI_PLAYER
       do
@@ -39,7 +39,7 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_data: like data; a_events: like events) is
+   make (a_data: like data; a_events: like events)
       require
          a_events /= Void
       do
@@ -49,7 +49,7 @@ feature {}
          events = a_events
       end
 
-   out_in_extra_data is
+   out_in_extra_data
       do
          tagged_out_memory.append(once ", events=")
          events.out_in_tagged_out_memory

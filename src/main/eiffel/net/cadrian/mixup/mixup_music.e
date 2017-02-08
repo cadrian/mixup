@@ -18,20 +18,20 @@ insert
    MIXUP_ERRORS
 
 feature {ANY}
-   timing: MIXUP_MUSIC_TIMING is
+   timing: MIXUP_MUSIC_TIMING
       deferred
       end
 
-   duration: INTEGER_64 is
+   duration: INTEGER_64
       do
          Result := timing.duration
       end
 
-   valid_anchor: BOOLEAN is
+   valid_anchor: BOOLEAN
       deferred
       end
 
-   anchor: MIXUP_NOTE_HEAD is
+   anchor: MIXUP_NOTE_HEAD
       require
          valid_anchor
       deferred
@@ -39,7 +39,7 @@ feature {ANY}
          not Result.is_rest
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       deferred
       ensure
          Result /= Void
@@ -47,18 +47,18 @@ feature {ANY}
          Result.timing.is_set
       end
 
-   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR
       deferred
       end
 
 feature {MIXUP_MUSIC, MIXUP_SPANNER}
-   add_voice_ids (a_ids: AVL_SET[INTEGER]) is
+   add_voice_ids (a_ids: AVL_SET[INTEGER])
       require
          a_ids /= Void
       deferred
       end
 
-   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER)
       deferred
       ensure
          timing.is_set

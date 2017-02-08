@@ -28,12 +28,12 @@ feature {ANY}
    timing: MIXUP_MUSIC_TIMING
    is_callable: BOOLEAN is False
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       do
          (create {MIXUP_MUSIC_VALUE}.make(source, Current)).accept(visitor)
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       do
          Result := twin
          Result.set_timing(0, a_commit_context.bar_number, 0)
@@ -42,23 +42,23 @@ feature {ANY}
 feature {ANY}
    valid_anchor: BOOLEAN is False
 
-   anchor: MIXUP_NOTE_HEAD is
+   anchor: MIXUP_NOTE_HEAD
       do
          crash
       end
 
 feature {MIXUP_MUSIC, MIXUP_SPANNER}
-   add_voice_ids (a_ids: AVL_SET[INTEGER]) is
+   add_voice_ids (a_ids: AVL_SET[INTEGER])
       do
       end
 
-   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER)
       do
          timing := timing.set(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}
-   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       do
          Result := Current
       end

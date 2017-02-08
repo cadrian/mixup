@@ -18,7 +18,7 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_SET_NOTE}
-   play_set_note (a_data: MIXUP_EVENT_DATA; a_note: MIXUP_NOTE) is
+   play_set_note (a_data: MIXUP_EVENT_DATA; a_note: MIXUP_NOTE)
       require
          a_data.instrument /= Void
          a_note /= Void

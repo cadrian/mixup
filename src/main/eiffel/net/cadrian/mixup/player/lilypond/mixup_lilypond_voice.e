@@ -30,19 +30,19 @@ create {ANY}
    make
 
 feature {ANY}
-   valid_reference: BOOLEAN is
+   valid_reference: BOOLEAN
       do
          Result := not reference.is_rest
       end
 
    reference: MIXUP_NOTE_HEAD
 
-   can_append: BOOLEAN is
+   can_append: BOOLEAN
       do
          Result := items.exists(agent {MIXUP_LILYPOND_ITEM}.can_append)
       end
 
-   append_first (a_string: ABSTRACT_STRING) is
+   append_first (a_string: ABSTRACT_STRING)
       local
          i: INTEGER; found: BOOLEAN
       do
@@ -59,7 +59,7 @@ feature {ANY}
          end
       end
 
-   append_last (a_string: ABSTRACT_STRING) is
+   append_last (a_string: ABSTRACT_STRING)
       local
          i: INTEGER; found: BOOLEAN
       do
@@ -77,7 +77,7 @@ feature {ANY}
       end
 
 feature {MIXUP_ABSTRACT_STAFF}
-   add_item (a_item: MIXUP_LILYPOND_ITEM) is
+   add_item (a_item: MIXUP_LILYPOND_ITEM)
       do
          if a_item.can_append then
             if dynamics /= Void then
@@ -102,7 +102,7 @@ feature {MIXUP_ABSTRACT_STAFF}
          end
       end
 
-   set_dynamics (a_dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
+   set_dynamics (a_dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN)
       do
          if (position /= Void and then (dynamics_position /= position.intern)) or else (position = Void and then dynamics_position /= Void) then
             if dynamics_is_open then
@@ -155,7 +155,7 @@ feature {MIXUP_ABSTRACT_STAFF}
          end
       end
 
-   set_note (a_time: INTEGER_64; a_note: MIXUP_NOTE) is
+   set_note (a_time: INTEGER_64; a_note: MIXUP_NOTE)
       local
          note: MIXUP_LILYPOND_NOTE
       do
@@ -163,7 +163,7 @@ feature {MIXUP_ABSTRACT_STAFF}
          add_item(note)
       end
 
-   next_bar (style: ABSTRACT_STRING) is
+   next_bar (style: ABSTRACT_STRING)
       local
          str: STRING
       do
@@ -175,25 +175,25 @@ feature {MIXUP_ABSTRACT_STAFF}
          add_item(create {MIXUP_LILYPOND_STRING}.make(str))
       end
 
-   skip_octave (time: INTEGER_64; skip: INTEGER_8) is
+   skip_octave (time: INTEGER_64; skip: INTEGER_8)
       do
          reference.set(reference.source, reference.note, reference.octave - skip.to_integer_32)
       end
 
-   start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       do
       end
 
-   end_beam is
+   end_beam
       do
       end
 
-   start_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       do
          slur := once "("
       end
 
-   end_slur is
+   end_slur
       do
          if slur = Void then
             append_last(once ")")
@@ -202,12 +202,12 @@ feature {MIXUP_ABSTRACT_STAFF}
          end
       end
 
-   start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       do
          slur := once "\("
       end
 
-   end_phrasing_slur is
+   end_phrasing_slur
       do
          if slur = Void then
             append_last(once "\)")
@@ -216,16 +216,16 @@ feature {MIXUP_ABSTRACT_STAFF}
          end
       end
 
-   start_repeat (volte: INTEGER_64) is
+   start_repeat (volte: INTEGER_64)
       do
       end
 
-   end_repeat is
+   end_repeat
       do
       end
 
 feature {MIXUP_LILYPOND_STAFF}
-   string_event (a_string: FIXED_STRING) is
+   string_event (a_string: FIXED_STRING)
       require
          a_string /= Void
       do
@@ -233,7 +233,7 @@ feature {MIXUP_LILYPOND_STAFF}
       end
 
 feature {ANY}
-   generate_relative (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
+   generate_relative (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION)
       local
          ref: MIXUP_NOTE_HEAD; found: BOOLEAN; i, octave: INTEGER
       do
@@ -272,14 +272,14 @@ feature {ANY}
          end
       end
 
-   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION)
       do
          items.do_all(agent {MIXUP_LILYPOND_ITEM}.generate(context, section))
          section.set_body(once "%N")
       end
 
 feature {}
-   make (a_id: like id; a_reference: like reference; a_lyrics_gatherer: like lyrics_gatherer) is
+   make (a_id: like id; a_reference: like reference; a_lyrics_gatherer: like lyrics_gatherer)
       do
          make_abstract(a_id, a_lyrics_gatherer)
          if not a_reference.is_rest then
@@ -294,7 +294,7 @@ feature {}
    dynamics_is_hidden: BOOLEAN
    dynamics_position: FIXED_STRING
 
-   dyn_markup (a_dynamics: ABSTRACT_STRING; is_standard: BOOLEAN): ABSTRACT_STRING is
+   dyn_markup (a_dynamics: ABSTRACT_STRING; is_standard: BOOLEAN): ABSTRACT_STRING
       do
          if is_standard then
             Result := "\dynamic " + a_dynamics
@@ -303,7 +303,7 @@ feature {}
          end
       end
 
-   dyn_position (position: ABSTRACT_STRING) is
+   dyn_position (position: ABSTRACT_STRING)
       require
          dynamics /= Void
       do
@@ -329,7 +329,7 @@ feature {}
          end
       end
 
-   open_dynamics (position: ABSTRACT_STRING) is
+   open_dynamics (position: ABSTRACT_STRING)
       require
          dynamics /= Void
       do
@@ -342,7 +342,7 @@ feature {}
          dynamics_is_open
       end
 
-   close_dynamics is
+   close_dynamics
       require
          dynamics_is_open
       do

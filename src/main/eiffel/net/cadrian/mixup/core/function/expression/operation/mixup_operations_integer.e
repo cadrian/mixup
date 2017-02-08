@@ -30,43 +30,43 @@ create {ANY}
    make
 
 feature {ANY}
-   add (left, right: MIXUP_VALUE): MIXUP_INTEGER is
+   add (left, right: MIXUP_VALUE): MIXUP_INTEGER
       do
          create Result.make(source, as_integer(left) + as_integer(right))
       end
 
-   divide (left, right: MIXUP_VALUE): MIXUP_REAL is
+   divide (left, right: MIXUP_VALUE): MIXUP_REAL
       do
          create Result.make(source, as_integer(left) / as_integer(right))
       end
 
-   integer_divide (left, right: MIXUP_VALUE): MIXUP_INTEGER is
+   integer_divide (left, right: MIXUP_VALUE): MIXUP_INTEGER
       do
          create Result.make(source, as_integer(left) // as_integer(right))
       end
 
-   integer_modulo (left, right: MIXUP_VALUE): MIXUP_INTEGER is
+   integer_modulo (left, right: MIXUP_VALUE): MIXUP_INTEGER
       do
          create Result.make(source, as_integer(left) \\ as_integer(right))
       end
 
-   multiply (left, right: MIXUP_VALUE): MIXUP_INTEGER is
+   multiply (left, right: MIXUP_VALUE): MIXUP_INTEGER
       do
          create Result.make(source, as_integer(left) * as_integer(right))
       end
 
-   subtract (left, right: MIXUP_VALUE): MIXUP_INTEGER is
+   subtract (left, right: MIXUP_VALUE): MIXUP_INTEGER
       do
          create Result.make(source, as_integer(left) - as_integer(right))
       end
 
-   power (left, right: MIXUP_VALUE): MIXUP_INTEGER is
+   power (left, right: MIXUP_VALUE): MIXUP_INTEGER
       do
          create Result.make(source, as_integer(left) ^ as_integer(right))
       end
 
 feature {}
-   make (a_source: like source) is
+   make (a_source: like source)
       require
          a_source /= Void
       do

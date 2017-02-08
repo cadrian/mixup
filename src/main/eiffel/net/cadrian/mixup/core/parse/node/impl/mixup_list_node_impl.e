@@ -26,7 +26,7 @@ create {MIXUP_NODE_FACTORY}
 feature {ANY}
    name: FIXED_STRING
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_LIST_NODE_IMPL_VISITOR
       do
@@ -34,55 +34,55 @@ feature {ANY}
          v.visit_mixup_list_node_impl(Current)
       end
 
-   item (i: INTEGER): MIXUP_NODE is
+   item (i: INTEGER): MIXUP_NODE
       do
          Result := children.item(i)
       end
 
-   lower: INTEGER is
+   lower: INTEGER
       do
          Result := children.lower
       end
 
-   upper: INTEGER is
+   upper: INTEGER
       do
          Result := children.upper
       end
 
-   count: INTEGER is
+   count: INTEGER
       do
          Result := children.count
       end
 
-   first: MIXUP_NODE is
+   first: MIXUP_NODE
       do
          Result := children.first
       end
 
-   last: MIXUP_NODE is
+   last: MIXUP_NODE
       do
          Result := children.last
       end
 
-   is_empty: BOOLEAN is
+   is_empty: BOOLEAN
       do
          Result := children.is_empty
       end
 
-   accept_all (visitor: VISITOR) is
+   accept_all (visitor: VISITOR)
       do
          children.do_all(agent {VISITABLE}.accept(visitor))
       end
 
 feature {MIXUP_GRAMMAR}
-   add (a_child: like item) is
+   add (a_child: like item)
       do
          children.add_first(a_child)
          a_child.set_parent(Current)
       end
 
 feature {MIXUP_NODE_HANDLER}
-   display (output: OUTPUT_STREAM; indent: INTEGER; p: STRING) is
+   display (output: OUTPUT_STREAM; indent: INTEGER; p: STRING)
       local
          i: INTEGER; n: STRING
       do
@@ -110,7 +110,7 @@ feature {MIXUP_NODE_HANDLER}
          end
       end
 
-   generate (o: OUTPUT_STREAM) is
+   generate (o: OUTPUT_STREAM)
       local
          i: INTEGER
       do
@@ -126,7 +126,7 @@ feature {MIXUP_NODE_HANDLER}
       end
 
 feature {}
-   make (a_name: like name) is
+   make (a_name: like name)
       do
          name := a_name
          create children.with_capacity(0, 0)

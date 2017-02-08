@@ -28,26 +28,26 @@ insert
       end
 
 feature {ANY}
-   infix "<" (other: MIXUP_EVENT): BOOLEAN is
+   infix "<" (other: MIXUP_EVENT): BOOLEAN
       do
          Result := time < other.time
       end
 
-   time: INTEGER_64 is
+   time: INTEGER_64
       deferred
       end
 
-   allow_lyrics: BOOLEAN is
+   allow_lyrics: BOOLEAN
       deferred
       end
 
-   has_lyrics: BOOLEAN is
+   has_lyrics: BOOLEAN
       deferred
       ensure
          not allow_lyrics implies not Result
       end
 
-   set_has_lyrics (enable: BOOLEAN) is
+   set_has_lyrics (enable: BOOLEAN)
       require
          allow_lyrics
          lyrics = Void
@@ -56,7 +56,7 @@ feature {ANY}
          has_lyrics = enable
       end
 
-   set_lyrics (a_lyrics: like lyrics) is
+   set_lyrics (a_lyrics: like lyrics)
       require
          has_lyrics
          a_lyrics /= Void
@@ -66,14 +66,14 @@ feature {ANY}
          lyrics = a_lyrics
       end
 
-   lyrics: TRAVERSABLE[MIXUP_SYLLABLE] is
+   lyrics: TRAVERSABLE[MIXUP_SYLLABLE]
       require
          allow_lyrics
       deferred
       end
 
 feature {MIXUP_PLAYER}
-   fire (player: MIXUP_PLAYER) is
+   fire (player: MIXUP_PLAYER)
       require
          player /= Void
       deferred

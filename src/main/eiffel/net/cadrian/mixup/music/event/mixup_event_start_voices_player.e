@@ -18,7 +18,7 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_START_VOICES}
-   play_start_voices (a_data: MIXUP_EVENT_DATA; a_voice_ids: TRAVERSABLE[INTEGER]) is
+   play_start_voices (a_data: MIXUP_EVENT_DATA; a_voice_ids: TRAVERSABLE[INTEGER])
       require
          a_data.instrument /= Void
          a_voice_ids /= Void

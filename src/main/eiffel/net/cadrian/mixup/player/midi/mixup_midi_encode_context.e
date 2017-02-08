@@ -15,11 +15,11 @@
 deferred class MIXUP_MIDI_ENCODE_CONTEXT
 
 feature {ANY}
-   transpose_half_tones: INTEGER_8 is
+   transpose_half_tones: INTEGER_8
       deferred
       end
 
-   set_transpose_half_tones (a_transpose_half_tones: like transpose_half_tones) is
+   set_transpose_half_tones (a_transpose_half_tones: like transpose_half_tones)
       deferred
       ensure
          transpose_half_tones = a_transpose_half_tones

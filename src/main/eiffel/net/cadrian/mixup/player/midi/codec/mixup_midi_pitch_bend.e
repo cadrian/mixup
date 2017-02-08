@@ -21,7 +21,7 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_32 is
+   event_type: INTEGER_32
       once
          Result := event_pitch_bend
       end
@@ -31,7 +31,7 @@ feature {ANY}
    pitch: INTEGER
 
 feature {}
-   make (a_channel: like channel; a_pitch: like pitch) is
+   make (a_channel: like channel; a_pitch: like pitch)
       require
          a_channel.in_range(0, 15)
          a_pitch.in_range(0, 0x00003fff)
@@ -43,7 +43,7 @@ feature {}
          pitch = a_pitch
       end
 
-   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
+   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT)
       do
          debug
             log.trace.put_line(once "channel " | &channel | once ": pitch bend " | &pitch)

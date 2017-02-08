@@ -27,24 +27,24 @@ create {MIXUP_STAFF}
    duplicate
 
 feature {ANY}
-   timing: MIXUP_MUSIC_TIMING is
+   timing: MIXUP_MUSIC_TIMING
       do
          Result := voices.timing
       end
 
    id: INTEGER
 
-   valid_anchor: BOOLEAN is
+   valid_anchor: BOOLEAN
       do
          Result := voices.valid_anchor
       end
 
-   anchor: MIXUP_NOTE_HEAD is
+   anchor: MIXUP_NOTE_HEAD
       do
          Result := voices.anchor
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       local
          voices_: like voices
       do
@@ -53,18 +53,18 @@ feature {ANY}
          create Result.duplicate(source, id, voices_)
       end
 
-   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR
       do
          a_context.set_staff_id(id)
          Result := voices.new_events_iterator(a_context)
       end
 
-   voice_ids: TRAVERSABLE[INTEGER] is
+   voice_ids: TRAVERSABLE[INTEGER]
       do
          Result := voices.voice_ids
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "[staff#")
          id.append_in(tagged_out_memory)
@@ -74,18 +74,18 @@ feature {ANY}
       end
 
 feature {MIXUP_MUSIC, MIXUP_SPANNER}
-   add_voice_ids (ids: AVL_SET[INTEGER]) is
+   add_voice_ids (ids: AVL_SET[INTEGER])
       do
          check False end
       end
 
-   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER)
       do
          voices.set_timing(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}
-   make (a_source: like source; a_voices: like voices) is
+   make (a_source: like source; a_voices: like voices)
       require
          a_source /= Void
          a_voices /= Void
@@ -102,7 +102,7 @@ feature {}
          voices = a_voices
       end
 
-   duplicate (a_source: like source; a_id: like id; a_voices: like voices) is
+   duplicate (a_source: like source; a_id: like id; a_voices: like voices)
       do
          source := a_source
          id := a_id
@@ -111,7 +111,7 @@ feature {}
 
    voices: MIXUP_VOICES
 
-   id_provider: COUNTER is
+   id_provider: COUNTER
       once
          create Result
       end

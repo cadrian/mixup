@@ -29,7 +29,7 @@ feature {ANY}
    staff_id: INTEGER
    voice_id: INTEGER
 
-   set (a_source: like source; a_start_time: like start_time; a_instrument: like instrument; a_staff_id: like staff_id; a_voice_id: like voice_id) is
+   set (a_source: like source; a_start_time: like start_time; a_instrument: like instrument; a_staff_id: like staff_id; a_voice_id: like voice_id)
       require
          a_source /= Void
          not is_set
@@ -48,12 +48,12 @@ feature {ANY}
          is_set
       end
 
-   is_set: BOOLEAN is
+   is_set: BOOLEAN
       do
          Result := source /= Void
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          if is_set then
             tagged_out_memory.append(once "source=")

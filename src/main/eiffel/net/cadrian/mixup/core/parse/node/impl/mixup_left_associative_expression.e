@@ -20,7 +20,7 @@ feature {MIXUP_GRAMMAR}
    operator_nodes: COLLECTION[MIXUP_NODE]
 
    set (a_expression_name: like expression_name; a_operator_names: like operator_names;
-        a_right_node: like right_node; a_operator_nodes: like operator_nodes) is
+        a_right_node: like right_node; a_operator_nodes: like operator_nodes)
       require
          a_operator_names.for_all(agent (o: ABSTRACT_STRING): BOOLEAN is do Result := o /= Void end)
       do
@@ -35,7 +35,7 @@ feature {MIXUP_GRAMMAR}
          operator_nodes = a_operator_nodes
       end
 
-   append_operators_in (operators: COLLECTION[FIXED_STRING]) is
+   append_operators_in (operators: COLLECTION[FIXED_STRING])
       require
          operators /= Void
       local
@@ -51,7 +51,7 @@ feature {MIXUP_GRAMMAR}
          end
       end
 
-   operator_names_out: ABSTRACT_STRING is
+   operator_names_out: ABSTRACT_STRING
       do
          Result := &operator_names
       end

@@ -31,7 +31,7 @@ feature {ANY}
 
    is_callable: BOOLEAN is False
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          if value = Void then
             tagged_out_memory.append(once "Void")
@@ -40,13 +40,13 @@ feature {ANY}
          end
       end
 
-   is_equal (other: like Current): BOOLEAN is
+   is_equal (other: like Current): BOOLEAN
       do
          Result := safe_equal(value, other.value)
       end
 
 feature {}
-   make (a_source: like source; a_value: like value) is
+   make (a_source: like source; a_value: like value)
       require
          a_source /= Void
       do
@@ -57,7 +57,7 @@ feature {}
          value = a_value
       end
 
-   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       do
          Result := Current
       end

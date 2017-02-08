@@ -15,13 +15,13 @@
 deferred class MIXUP_NODE_FACTORY
 
 feature {MIXUP_GRAMMAR}
-   list (name: FIXED_STRING): MIXUP_LIST_NODE is
+   list (name: FIXED_STRING): MIXUP_LIST_NODE
       deferred
       ensure
          Result.name = name
       end
 
-   non_terminal (name: FIXED_STRING; names: TRAVERSABLE[FIXED_STRING]): MIXUP_NON_TERMINAL_NODE is
+   non_terminal (name: FIXED_STRING; names: TRAVERSABLE[FIXED_STRING]): MIXUP_NON_TERMINAL_NODE
       require
          not name.is_empty
          names /= Void
@@ -30,7 +30,7 @@ feature {MIXUP_GRAMMAR}
          Result.name = name
       end
 
-   terminal (name: FIXED_STRING; image: MIXUP_IMAGE): MIXUP_TERMINAL_NODE is
+   terminal (name: FIXED_STRING; image: MIXUP_IMAGE): MIXUP_TERMINAL_NODE
       require
          not name.is_empty
          image /= Void

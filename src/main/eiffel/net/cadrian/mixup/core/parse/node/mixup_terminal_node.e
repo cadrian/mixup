@@ -18,21 +18,21 @@ inherit
    MIXUP_NODE
 
 feature {ANY}
-   image: MIXUP_IMAGE is
+   image: MIXUP_IMAGE
       deferred
       end
 
-   source_line: INTEGER is
+   source_line: INTEGER
       do
          Result := image.line
       end
 
-   source_column: INTEGER is
+   source_column: INTEGER
       do
          Result := image.column
       end
 
-   source_index: INTEGER is
+   source_index: INTEGER
       do
          Result := image.index
       end

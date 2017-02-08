@@ -26,7 +26,7 @@ feature {ANY}
 
    is_callable: BOOLEAN is False
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_VALUE_VISITOR
       do
@@ -34,7 +34,7 @@ feature {ANY}
          v.visit_agent(Current)
       end
 
-   set_args (a_args: like args) is
+   set_args (a_args: like args)
       do
          args := a_args
       ensure
@@ -42,7 +42,7 @@ feature {ANY}
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       do
          a_name.extend('%'')
          expression.as_name_in(a_name)
@@ -54,7 +54,7 @@ feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
       end
 
 feature {}
-   make (a_source: like source; a_expression: like expression) is
+   make (a_source: like source; a_expression: like expression)
       require
          a_source /= Void
          a_expression /= Void
@@ -66,7 +66,7 @@ feature {}
          expression = a_expression
       end
 
-   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       do
          Result := Current
       end

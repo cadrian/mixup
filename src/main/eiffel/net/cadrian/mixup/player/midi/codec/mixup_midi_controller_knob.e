@@ -18,22 +18,22 @@ insert
    LOGGING
 
 feature {ANY}
-   byte_size: INTEGER is
+   byte_size: INTEGER
       deferred
       end
 
-   valid_value (value: INTEGER): BOOLEAN is
+   valid_value (value: INTEGER): BOOLEAN
       deferred
       end
 
-   encode_to (message_code: INTEGER_32; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   encode_to (message_code: INTEGER_32; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM)
       require
          valid_value(value)
          stream.is_connected
       deferred
       end
 
-   name: FIXED_STRING is
+   name: FIXED_STRING
       deferred
       ensure
          Result /= Void

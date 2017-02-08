@@ -29,29 +29,29 @@ create {MIXUP_VOICE}
 feature {ANY}
    valid_anchor: BOOLEAN is True
 
-   duration: INTEGER_64 is
+   duration: INTEGER_64
       do
          Result := timing.duration
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       do
          a_commit_context.set_voice(Current)
          Result := Precursor(a_commit_context)
       end
 
-   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR
       do
          a_context.set_voice_id(id)
          create {MIXUP_EVENTS_ITERATOR_ON_VOICE} Result.make(a_context, music)
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.extend('<')
          tagged_out_memory.extend('#')
          id.append_in(tagged_out_memory)
-         music.do_all(agent (mus: MIXUP_MUSIC) is
+         music.do_all(agent (mus: MIXUP_MUSIC)
                          do
                             tagged_out_memory.extend(' ')
                             mus.out_in_tagged_out_memory
@@ -60,7 +60,7 @@ feature {ANY}
       end
 
 feature {}
-   duplicate (a_source: like source; a_reference: like reference; a_id: like id; a_music: like music) is
+   duplicate (a_source: like source; a_reference: like reference; a_id: like id; a_music: like music)
       do
          source := a_source
          reference := a_reference
@@ -68,7 +68,7 @@ feature {}
          music := a_music
       end
 
-   do_duplicate (a_music: like music; a_timing: like timing): like Current is
+   do_duplicate (a_music: like music; a_timing: like timing): like Current
       do
          create Result.duplicate(source, reference, id, a_music)
          Result.set_timing(a_timing.duration, a_timing.first_bar_number, a_timing.bars_count)

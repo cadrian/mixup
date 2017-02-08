@@ -18,7 +18,7 @@ inherit
    MIXUP_BINARY_EXPRESSION
 
 feature {}
-   operations: MIXUP_OPERATIONS is
+   operations: MIXUP_OPERATIONS
       once
          create Result.make
       end

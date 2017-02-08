@@ -23,12 +23,12 @@ create {ANY}
 feature {ANY}
    is_callable: BOOLEAN is False
 
-   value: MIXUP_VALUE is
+   value: MIXUP_VALUE
       do
          Result := context.value
       end
 
-   next (a_commit_context: MIXUP_COMMIT_CONTEXT) is
+   next (a_commit_context: MIXUP_COMMIT_CONTEXT)
       require
          has_next
          a_commit_context.context /= Void
@@ -40,12 +40,12 @@ feature {ANY}
          end
       end
 
-   has_next: BOOLEAN is
+   has_next: BOOLEAN
       do
          Result := context.yielded
       end
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_VALUE_VISITOR
       do
@@ -54,13 +54,13 @@ feature {ANY}
       end
 
 feature {MIXUP_EXPRESSION, MIXUP_IDENTIFIER_PART}
-   as_name_in (a_name: STRING) is
+   as_name_in (a_name: STRING)
       do
          a_name.append("<yield>")
       end
 
 feature {}
-   make (a_context: like context) is
+   make (a_context: like context)
       require
          a_context.yielded
       do
@@ -73,7 +73,7 @@ feature {}
 
    context: MIXUP_USER_FUNCTION_CONTEXT
 
-   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE is
+   eval_ (a_commit_context: MIXUP_COMMIT_CONTEXT; do_call: BOOLEAN): MIXUP_VALUE
       do
          Result := Current
       end

@@ -24,20 +24,20 @@ create {ANY}
    make
 
 feature {ANY}
-   start is
+   start
       do
          start_event_factory := start_event_factory_
          end_event_factory := end_event_factory_
          events_iterator.start
       end
 
-   is_off: BOOLEAN is
+   is_off: BOOLEAN
       do
          Result := start_event_factory = Void and then events_iterator.is_off and then end_event_factory = Void
       end
 
 feature {}
-   fetch_item: MIXUP_EVENT is
+   fetch_item: MIXUP_EVENT
       do
          if start_event_factory /= Void then
             Result := start_event_factory.item([context])
@@ -51,7 +51,7 @@ feature {}
          end
       end
 
-   go_next is
+   go_next
       do
          if start_event_factory /= Void then
             start_event_factory := Void
@@ -68,7 +68,7 @@ feature {MIXUP_VOICE}
    end_event_factory: like end_event_factory_
 
 feature {}
-   make (a_context: like context; a_start_event_factory: like start_event_factory; a_end_event_factory: like end_event_factory; a_event_modifier: like event_modifier; a_events_iterator: like events_iterator) is
+   make (a_context: like context; a_start_event_factory: like start_event_factory; a_end_event_factory: like end_event_factory; a_event_modifier: like event_modifier; a_events_iterator: like events_iterator)
       require
          a_events_iterator /= Void
       do

@@ -22,17 +22,17 @@ insert
    LOGGING
 
 feature {ANY}
-   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR
       do
          create {MIXUP_SINGLE_EVENT_ITERATOR} Result.make(create {MIXUP_EVENT_SET_NOTE}.make(a_context.event_data(source), Current))
       end
 
-   can_have_lyrics: BOOLEAN is
+   can_have_lyrics: BOOLEAN
       deferred
       end
 
 feature {MIXUP_MUSIC, MIXUP_SPANNER}
-   frozen add_voice_ids (ids: AVL_SET[INTEGER]) is
+   frozen add_voice_ids (ids: AVL_SET[INTEGER])
       do
       end
 

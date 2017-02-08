@@ -21,7 +21,7 @@ create {ANY}
    make
 
 feature {ANY}
-   event_type: INTEGER_32 is
+   event_type: INTEGER_32
       once
          Result := event_program_change
       end
@@ -31,7 +31,7 @@ feature {ANY}
    patch: INTEGER_32
 
 feature {}
-   make (a_channel: like channel; a_patch: like patch) is
+   make (a_channel: like channel; a_patch: like patch)
       require
          a_channel.in_range(0, 15)
          a_patch >= 0
@@ -43,7 +43,7 @@ feature {}
          patch = a_patch
       end
 
-   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT) is
+   put_args (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT)
       do
          debug
             log.trace.put_line(once "channel " | &channel | once ": patch=" | &patch)

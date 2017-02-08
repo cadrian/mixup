@@ -18,14 +18,14 @@ inherit
    VISITOR
 
 feature {MIXUP_CHORD}
-   visit_chord (a_chord: MIXUP_CHORD) is
+   visit_chord (a_chord: MIXUP_CHORD)
       require
          a_chord /= Void
       deferred
       end
 
 feature {MIXUP_LYRICS}
-   visit_lyrics (a_lyrics: MIXUP_LYRICS) is
+   visit_lyrics (a_lyrics: MIXUP_LYRICS)
       require
          a_lyrics /= Void
       deferred

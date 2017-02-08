@@ -20,12 +20,12 @@ inherit
 feature {ANY}
    data: MIXUP_EVENT_DATA
 
-   time: INTEGER_64 is
+   time: INTEGER_64
       do
          Result := data.start_time
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.extend('[')
          tagged_out_memory.append(generating_type)
@@ -35,12 +35,12 @@ feature {ANY}
          tagged_out_memory.extend(']')
       end
 
-   needs_instrument: BOOLEAN is
+   needs_instrument: BOOLEAN
       deferred
       end
 
 feature {}
-   make (a_data: like data) is
+   make (a_data: like data)
       require
          a_data.source /= Void
          needs_instrument implies a_data.instrument /= Void
@@ -51,7 +51,7 @@ feature {}
          data = a_data
       end
 
-   out_in_extra_data is
+   out_in_extra_data
       do
       end
 

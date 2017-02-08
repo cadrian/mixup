@@ -27,20 +27,20 @@ create {MIXUP_VOICES}
    make
 
 feature {ANY}
-   start is
+   start
       do
          is_start_event_called := False
          is_end_event_called := False
          Precursor
       end
 
-   is_off: BOOLEAN is
+   is_off: BOOLEAN
       do
          Result := is_end_event_called
       end
 
 feature {}
-   fetch_item: MIXUP_EVENT is
+   fetch_item: MIXUP_EVENT
       do
          if not is_start_event_called then
             create {MIXUP_EVENT_START_VOICES} Result.make(context.event_data(source), voice_ids)
@@ -51,7 +51,7 @@ feature {}
          end
       end
 
-   go_next is
+   go_next
       do
          if not is_start_event_called then
             is_start_event_called := True
@@ -62,17 +62,17 @@ feature {}
          end
       end
 
-   voice_ids: FAST_ARRAY[INTEGER] is
+   voice_ids: FAST_ARRAY[INTEGER]
       do
          create Result.with_capacity(voices.count)
-         voices.do_all(agent (voice: MIXUP_VOICE; ids: FAST_ARRAY[INTEGER]) is
+         voices.do_all(agent (voice: MIXUP_VOICE; ids: FAST_ARRAY[INTEGER])
                           do
                              ids.add_last(voice.id)
                           end(?, Result))
       end
 
 feature {}
-   make (a_source: like source; a_context: like context; a_voices: like voices) is
+   make (a_source: like source; a_context: like context; a_voices: like voices)
       require
          a_source /= Void
          a_voices /= Void
@@ -86,17 +86,17 @@ feature {}
          voices = a_voices
       end
 
-   add_notes_iterator is
+   add_notes_iterator
       do
          voices.do_all(agent add_events_iterator)
       end
 
-   add_events_iterator (a_voice: MIXUP_VOICE) is
+   add_events_iterator (a_voice: MIXUP_VOICE)
       do
          notes.add_last(a_voice.new_events_iterator(context))
       end
 
-   count: INTEGER is
+   count: INTEGER
       do
          Result := voices.count
       end

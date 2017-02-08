@@ -32,7 +32,7 @@ feature {ANY}
    needs_instrument: BOOLEAN is True
 
 feature {MIXUP_PLAYER}
-   fire (player: MIXUP_PLAYER) is
+   fire (player: MIXUP_PLAYER)
       local
          p: MIXUP_EVENT_START_VOICES_PLAYER
       do
@@ -41,7 +41,7 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_data: like data; a_voices: like voices) is
+   make (a_data: like data; a_voices: like voices)
       require
          a_voices /= Void
       do
@@ -51,7 +51,7 @@ feature {}
          voices = a_voices
       end
 
-   out_in_extra_data is
+   out_in_extra_data
       do
          tagged_out_memory.append(once ", voices=")
          voices.out_in_tagged_out_memory

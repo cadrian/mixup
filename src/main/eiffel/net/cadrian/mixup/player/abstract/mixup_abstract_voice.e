@@ -21,7 +21,7 @@ feature {ANY}
    id: INTEGER
 
 feature {MIXUP_ABSTRACT_STAFF}
-   add_item (a_item: ITM_) is
+   add_item (a_item: ITM_)
       require
          a_item /= Void
       deferred
@@ -30,56 +30,56 @@ feature {MIXUP_ABSTRACT_STAFF}
          items.last = a_item
       end
 
-   set_dynamics (a_dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN) is
+   set_dynamics (a_dynamics, position: ABSTRACT_STRING; is_standard: BOOLEAN)
       deferred
       end
 
-   set_note (a_time: INTEGER_64; a_note: MIXUP_NOTE) is
+   set_note (a_time: INTEGER_64; a_note: MIXUP_NOTE)
       deferred
       end
 
-   next_bar (style: ABSTRACT_STRING) is
+   next_bar (style: ABSTRACT_STRING)
       deferred
       end
 
-   skip_octave (time: INTEGER_64; skip: INTEGER_8) is
+   skip_octave (time: INTEGER_64; skip: INTEGER_8)
       deferred
       end
 
-   start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_beam (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       deferred
       end
 
-   end_beam is
+   end_beam
       deferred
       end
 
-   start_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       deferred
       end
 
-   end_slur is
+   end_slur
       deferred
       end
 
-   start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING) is
+   start_phrasing_slur (xuplet_numerator, xuplet_denominator: INTEGER_64; text: ABSTRACT_STRING)
       deferred
       end
 
-   end_phrasing_slur is
+   end_phrasing_slur
       deferred
       end
 
-   start_repeat (volte: INTEGER_64) is
+   start_repeat (volte: INTEGER_64)
       deferred
       end
 
-   end_repeat is
+   end_repeat
       deferred
       end
 
 feature {MIXUP_ABSTRACT_VOICES}
-   generate (context: MIXUP_CONTEXT; section: SEC_) is
+   generate (context: MIXUP_CONTEXT; section: SEC_)
       require
          section /= Void
       do
@@ -88,7 +88,7 @@ feature {MIXUP_ABSTRACT_VOICES}
       end
 
 feature {}
-   make (a_id: like id; a_lyrics_gatherer: like lyrics_gatherer) is
+   make (a_id: like id; a_lyrics_gatherer: like lyrics_gatherer)
       require
          a_id > 0
          a_lyrics_gatherer /= Void

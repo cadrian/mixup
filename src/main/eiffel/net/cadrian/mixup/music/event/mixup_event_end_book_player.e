@@ -18,7 +18,7 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_END_BOOK}
-   play_end_book is
+   play_end_book
       deferred
       end
 

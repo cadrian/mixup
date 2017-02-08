@@ -21,7 +21,7 @@ create {ANY}
    make
 
 feature {ANY}
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_EXPRESSION_VISITOR
       do
@@ -30,7 +30,7 @@ feature {ANY}
       end
 
 feature {}
-   compute (left_val, right_val: MIXUP_VALUE): MIXUP_VALUE is
+   compute (left_val, right_val: MIXUP_VALUE): MIXUP_VALUE
       local
          op: MIXUP_ADDITION
       do

@@ -21,7 +21,7 @@ create {ANY}
    make
 
 feature {ANY}
-   velocity (a_time: INTEGER_64): INTEGER_8 is
+   velocity (a_time: INTEGER_64): INTEGER_8
       do
          -- TODO: logarithmic progression instead of linear?
          if stop = Void then
@@ -35,14 +35,14 @@ feature {ANY}
          end
       end
 
-   set_stop (a_stop: like stop) is
+   set_stop (a_stop: like stop)
       require
          a_stop /= Void
       do
          stop := a_stop
       end
 
-   generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION; track: MIXUP_MIDI_TRACK; track_id: INTEGER) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_MIDI_SECTION; track: MIXUP_MIDI_TRACK; track_id: INTEGER)
       local
          knobs: MIXUP_MIDI_CONTROLLER_KNOBS
       do
@@ -52,17 +52,17 @@ feature {ANY}
       end
 
 feature {MIXUP_MIDI_DYNAMICS}
-   accept (a_dyn: MIXUP_MIDI_DYNAMICS) is
+   accept (a_dyn: MIXUP_MIDI_DYNAMICS)
       do
          a_dyn.from_hairpin(Current)
       end
 
-   from_nuance (a_nuance: MIXUP_MIDI_DYNAMICS_NUANCE) is
+   from_nuance (a_nuance: MIXUP_MIDI_DYNAMICS_NUANCE)
       do
          start := a_nuance
       end
 
-   from_hairpin (a_hairpin: MIXUP_MIDI_DYNAMICS_HAIRPIN) is
+   from_hairpin (a_hairpin: MIXUP_MIDI_DYNAMICS_HAIRPIN)
       do
          start := a_hairpin.stop
       end
@@ -71,7 +71,7 @@ feature {MIXUP_MIDI_DYNAMICS}
    stop: MIXUP_MIDI_DYNAMICS_NUANCE
 
 feature {}
-   make (a_start: MIXUP_MIDI_DYNAMICS) is
+   make (a_start: MIXUP_MIDI_DYNAMICS)
       require
          a_start /= Void
       do

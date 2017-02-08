@@ -18,7 +18,7 @@ inherit
    MIXUP_OPERATION
 
 feature {ANY}
-   divide (left, right: MIXUP_VALUE): MIXUP_VALUE is
+   divide (left, right: MIXUP_VALUE): MIXUP_VALUE
       require
          left /= Void
          right /= Void

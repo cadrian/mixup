@@ -30,12 +30,12 @@ create {ANY}
    make
 
 feature {ANY}
-   valid_reference: BOOLEAN is
+   valid_reference: BOOLEAN
       do
          Result := voices.exists(agent (voice: MIXUP_LILYPOND_VOICE; id: INTEGER): BOOLEAN is do Result := voice.valid_reference end)
       end
 
-   reference: MIXUP_NOTE_HEAD is
+   reference: MIXUP_NOTE_HEAD
       local
          i: INTEGER; found: BOOLEAN
       do
@@ -53,12 +53,12 @@ feature {ANY}
          end
       end
 
-   can_append: BOOLEAN is
+   can_append: BOOLEAN
       do
          Result := voices.exists(agent (voice: MIXUP_LILYPOND_VOICE; id: INTEGER): BOOLEAN is do Result := voice.can_append end)
       end
 
-   append_first (a_string: ABSTRACT_STRING) is
+   append_first (a_string: ABSTRACT_STRING)
       local
          i: INTEGER; found: BOOLEAN
       do
@@ -75,7 +75,7 @@ feature {ANY}
          end
       end
 
-   append_last (a_string: ABSTRACT_STRING) is
+   append_last (a_string: ABSTRACT_STRING)
       local
          i: INTEGER; found: BOOLEAN
       do
@@ -92,7 +92,7 @@ feature {ANY}
          end
       end
 
-   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION)
       local
          is_first: AGGREGATOR[MIXUP_LILYPOND_VOICE, BOOLEAN]
          dummy: BOOLEAN
@@ -102,7 +102,7 @@ feature {ANY}
          else
             section.set_body(once "<<%N")
             dummy := is_first.map(voices,
-                         agent (voice: MIXUP_LILYPOND_VOICE; first: BOOLEAN; a_context: MIXUP_CONTEXT; a_section: MIXUP_LILYPOND_SECTION): BOOLEAN is
+                         agent (voice: MIXUP_LILYPOND_VOICE; first: BOOLEAN; a_context: MIXUP_CONTEXT; a_section: MIXUP_LILYPOND_SECTION): BOOLEAN
                             do
                                if not first then
                                   a_section.set_body(once "\\%N")
@@ -121,7 +121,7 @@ feature {ANY}
       end
 
 feature {}
-   make (a_ids: TRAVERSABLE[INTEGER]; a_reference: like first_reference; a_lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]) is
+   make (a_ids: TRAVERSABLE[INTEGER]; a_reference: like first_reference; a_lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]])
       do
          first_reference := a_reference
          make_abstract(a_ids, a_lyrics_gatherer)
@@ -129,7 +129,7 @@ feature {}
 
    first_reference: MIXUP_NOTE_HEAD
 
-   new_voice (a_id: INTEGER; lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]): MIXUP_LILYPOND_VOICE is
+   new_voice (a_id: INTEGER; lyrics_gatherer: PROCEDURE[TUPLE[TRAVERSABLE[MIXUP_SYLLABLE], INTEGER_64]]): MIXUP_LILYPOND_VOICE
       do
          create Result.make(a_id, first_reference, lyrics_gatherer)
       end

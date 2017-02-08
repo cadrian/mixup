@@ -28,34 +28,34 @@ feature {ANY}
    valid_anchor: BOOLEAN is False
    anchor: MIXUP_NOTE_HEAD is do end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       do
          create Result.make(source)
          Result.set_timing(0, a_commit_context.bar_number, 0)
       end
 
-   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR is
+   new_events_iterator (a_context: MIXUP_EVENTS_ITERATOR_CONTEXT): MIXUP_EVENTS_ITERATOR
       do
          create {MIXUP_ZERO_EVENTS_ITERATOR} Result.make
       end
 
-   out_in_tagged_out_memory is
+   out_in_tagged_out_memory
       do
          tagged_out_memory.append(once "zero")
       end
 
 feature {MIXUP_MUSIC, MIXUP_SPANNER}
-   frozen add_voice_ids (ids: AVL_SET[INTEGER]) is
+   frozen add_voice_ids (ids: AVL_SET[INTEGER])
       do
       end
 
-   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER) is
+   set_timing (a_duration: INTEGER_64; a_first_bar_number: INTEGER; a_bars_count: INTEGER)
       do
          timing := timing.set(a_duration, a_first_bar_number, a_bars_count)
       end
 
 feature {}
-   make (a_source: like source) is
+   make (a_source: like source)
       require
          a_source /= Void
       do

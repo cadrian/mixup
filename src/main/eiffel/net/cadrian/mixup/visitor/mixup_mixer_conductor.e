@@ -30,7 +30,7 @@ create {ANY}
    make
 
 feature {ANY}
-   play is
+   play
       do
          check
             level = 0
@@ -39,7 +39,7 @@ feature {ANY}
       end
 
 feature {MIXUP_SCORE}
-   start_score (a_score: MIXUP_SCORE) is
+   start_score (a_score: MIXUP_SCORE)
       do
          level := level + 1
          a_score.run_hook(a_score.source, commit_context, once "at_start")
@@ -47,7 +47,7 @@ feature {MIXUP_SCORE}
          a_score.run_hook(a_score.source, commit_context, once "at_score_start")
       end
 
-   end_score (a_score: MIXUP_SCORE) is
+   end_score (a_score: MIXUP_SCORE)
       do
          (create {MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
          a_score.run_hook(a_score.source, commit_context, once "at_score_end")
@@ -57,7 +57,7 @@ feature {MIXUP_SCORE}
       end
 
 feature {MIXUP_BOOK}
-   start_book (a_book: MIXUP_BOOK) is
+   start_book (a_book: MIXUP_BOOK)
       do
          level := level + 1
          a_book.run_hook(a_book.source, commit_context, once "at_start")
@@ -65,7 +65,7 @@ feature {MIXUP_BOOK}
          a_book.run_hook(a_book.source, commit_context, once "at_book_start")
       end
 
-   end_book (a_book: MIXUP_BOOK) is
+   end_book (a_book: MIXUP_BOOK)
       do
          (create {MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
          a_book.run_hook(a_book.source, commit_context, once "at_book_end")
@@ -75,7 +75,7 @@ feature {MIXUP_BOOK}
       end
 
 feature {MIXUP_PARTITUR}
-   start_partitur (a_partitur: MIXUP_PARTITUR) is
+   start_partitur (a_partitur: MIXUP_PARTITUR)
       do
          level := level + 1
          a_partitur.run_hook(a_partitur.source, commit_context, once "at_start")
@@ -83,7 +83,7 @@ feature {MIXUP_PARTITUR}
          a_partitur.run_hook(a_partitur.source, commit_context, once "at_partitur_start")
       end
 
-   end_partitur (a_partitur: MIXUP_PARTITUR) is
+   end_partitur (a_partitur: MIXUP_PARTITUR)
       do
          (create {MIXUP_EVENTS_ITERATOR_ON_INSTRUMENTS}.make(current_context)).do_all(agent current_player.play)
          a_partitur.run_hook(a_partitur.source, commit_context, once "at_partitur_end")
@@ -93,7 +93,7 @@ feature {MIXUP_PARTITUR}
       end
 
 feature {MIXUP_INSTRUMENT}
-   visit_instrument (a_instrument: MIXUP_INSTRUMENT) is
+   visit_instrument (a_instrument: MIXUP_INSTRUMENT)
       do
          if not top_level then
             current_player.set_context(a_instrument)
@@ -104,7 +104,7 @@ feature {MIXUP_INSTRUMENT}
       end
 
 feature {}
-   make (a_commit_context: like commit_context) is
+   make (a_commit_context: like commit_context)
       require
          a_commit_context.context /= Void
          a_commit_context.player /= Void
@@ -116,17 +116,17 @@ feature {}
 
    commit_context: MIXUP_COMMIT_CONTEXT
 
-   current_context: MIXUP_CONTEXT is
+   current_context: MIXUP_CONTEXT
       do
          Result := commit_context.context
       end
 
-   current_player: MIXUP_PLAYER is
+   current_player: MIXUP_PLAYER
       do
          Result := commit_context.player
       end
 
-   top_level: BOOLEAN is
+   top_level: BOOLEAN
       do
          Result := level = 0
       end

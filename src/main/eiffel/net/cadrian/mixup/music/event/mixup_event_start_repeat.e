@@ -32,7 +32,7 @@ feature {ANY}
    needs_instrument: BOOLEAN is True
 
 feature {MIXUP_PLAYER}
-   fire (player: MIXUP_PLAYER) is
+   fire (player: MIXUP_PLAYER)
       local
          p: MIXUP_EVENT_START_REPEAT_PLAYER
       do
@@ -41,7 +41,7 @@ feature {MIXUP_PLAYER}
       end
 
 feature {}
-   make (a_data: like data; a_volte: INTEGER_64) is
+   make (a_data: like data; a_volte: INTEGER_64)
       do
          make_(a_data)
          volte := a_volte
@@ -49,7 +49,7 @@ feature {}
          volte = a_volte
       end
 
-   out_in_extra_data is
+   out_in_extra_data
       do
          tagged_out_memory.append(once ", volte=")
          volte.append_in(tagged_out_memory)

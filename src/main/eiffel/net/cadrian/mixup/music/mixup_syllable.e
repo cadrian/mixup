@@ -25,7 +25,7 @@ feature {ANY}
    syllable: FIXED_STRING
    in_word: BOOLEAN
 
-   set (a_source: like source; a_syllable: like syllable; a_in_word: like in_word) is
+   set (a_source: like source; a_syllable: like syllable; a_in_word: like in_word)
       require
          not_set: syllable = Void
          settable: a_syllable /= Void
@@ -40,7 +40,7 @@ feature {ANY}
          is_sourced: source = a_source
       end
 
-   is_equal (other: like Current): BOOLEAN is
+   is_equal (other: like Current): BOOLEAN
       do
          Result := syllable = other.syllable and then in_word = other.in_word
       end

@@ -18,7 +18,7 @@ inherit
    MIXUP_PLAYER
 
 feature {MIXUP_EVENT_END_SCORE}
-   play_end_score is
+   play_end_score
       deferred
       end
 

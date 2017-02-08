@@ -24,7 +24,7 @@ create {MIXUP_GRAMMAR}
    default_create
 
 feature {MIXUP_GRAMMAR}
-   next (buffer: MINI_PARSER_BUFFER) is
+   next (buffer: MINI_PARSER_BUFFER)
       do
          buffer.next
          index := buffer.current_index
@@ -49,13 +49,13 @@ feature {MIXUP_GRAMMAR, MIXUP_IMAGE, MIXUP_POSITION}
    index: INTEGER
 
 feature {ANY}
-   is_equal (other: like Current): BOOLEAN is
+   is_equal (other: like Current): BOOLEAN
       do
          Result := index = other.index
       end
 
 feature {}
-   default_create is
+   default_create
       do
          index := 1
          line := 1

@@ -25,7 +25,7 @@ feature {ANY}
    statements: TRAVERSABLE[MIXUP_STATEMENT]
 
 feature {}
-   make (a_source: like source; a_expression: like expression; a_statements: like statements) is
+   make (a_source: like source; a_expression: like expression; a_statements: like statements)
       require
          a_source /= Void
          a_expression /= Void

@@ -25,7 +25,7 @@ create {ANY}
    make
 
 feature {ANY}
-   valid_reference: BOOLEAN is
+   valid_reference: BOOLEAN
       do
          Result := not reference.is_rest
       end
@@ -33,7 +33,7 @@ feature {ANY}
    reference: MIXUP_NOTE_HEAD
 
 feature {MIXUP_CHORD}
-   visit_chord (a_chord: MIXUP_CHORD) is
+   visit_chord (a_chord: MIXUP_CHORD)
       local
          i: INTEGER
       do
@@ -65,7 +65,7 @@ feature {MIXUP_CHORD}
       end
 
 feature {}
-   append_note_head (note: MIXUP_NOTE_HEAD) is
+   append_note_head (note: MIXUP_NOTE_HEAD)
       local
          octave_shift: INTEGER
       do
@@ -93,7 +93,7 @@ feature {}
          end
       end
 
-   append_duration (duration: INTEGER_64) is
+   append_duration (duration: INTEGER_64)
       do
          inspect duration
          when duration_64   then buffer.append("64"  )
@@ -121,14 +121,14 @@ feature {}
       end
 
 feature {MIXUP_LYRICS}
-   visit_lyrics (a_lyrics: MIXUP_LYRICS) is
+   visit_lyrics (a_lyrics: MIXUP_LYRICS)
       do
          a_lyrics.note.accept(Current)
          lyrics_gatherer.call([a_lyrics, start_time])
       end
 
 feature {ANY}
-   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION)
       do
          section.set_body(once " ")
          section.set_body(buffer)
@@ -136,13 +136,13 @@ feature {ANY}
 
    can_append: BOOLEAN is True
 
-   append_first, append_last (a_string: ABSTRACT_STRING) is
+   append_first, append_last (a_string: ABSTRACT_STRING)
       do
          buffer.append(a_string)
       end
 
 feature {}
-   make (a_start_time: like start_time; a_note: MIXUP_NOTE; a_reference: like reference; a_lyrics_gatherer: like lyrics_gatherer) is
+   make (a_start_time: like start_time; a_note: MIXUP_NOTE; a_reference: like reference; a_lyrics_gatherer: like lyrics_gatherer)
       require
          a_note /= Void
          a_lyrics_gatherer /= Void

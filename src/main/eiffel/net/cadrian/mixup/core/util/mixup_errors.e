@@ -20,7 +20,7 @@ insert
 feature {ANY}
    source: MIXUP_SOURCE
 
-   info (message: ABSTRACT_STRING) is
+   info (message: ABSTRACT_STRING)
       require
          message /= Void
          source /= Void
@@ -28,7 +28,7 @@ feature {ANY}
          info_at(source, message)
       end
 
-   warning (message: ABSTRACT_STRING) is
+   warning (message: ABSTRACT_STRING)
       require
          message /= Void
          source /= Void
@@ -36,7 +36,7 @@ feature {ANY}
          warning_at(source, message)
       end
 
-   error (message: ABSTRACT_STRING) is
+   error (message: ABSTRACT_STRING)
       require
          message /= Void
          source /= Void
@@ -44,7 +44,7 @@ feature {ANY}
          error_at(source, message)
       end
 
-   fatal (message: ABSTRACT_STRING) is
+   fatal (message: ABSTRACT_STRING)
       require
          message /= Void
          source /= Void
@@ -53,7 +53,7 @@ feature {ANY}
       end
 
 feature {ANY}
-   info_at (a_source: like source; message: ABSTRACT_STRING) is
+   info_at (a_source: like source; message: ABSTRACT_STRING)
       require
          message /= Void
          a_source /= Void
@@ -62,7 +62,7 @@ feature {ANY}
          a_source.display(log.info)
       end
 
-   warning_at (a_source: like source; message: ABSTRACT_STRING) is
+   warning_at (a_source: like source; message: ABSTRACT_STRING)
       require
          message /= Void
          a_source /= Void
@@ -73,7 +73,7 @@ feature {ANY}
          sedb_breakpoint
       end
 
-   error_at (a_source: like source; message: ABSTRACT_STRING) is
+   error_at (a_source: like source; message: ABSTRACT_STRING)
       require
          message /= Void
          a_source /= Void
@@ -84,7 +84,7 @@ feature {ANY}
          sedb_breakpoint
       end
 
-   fatal_at (a_source: like source; message: ABSTRACT_STRING) is
+   fatal_at (a_source: like source; message: ABSTRACT_STRING)
       require
          message /= Void
          a_source /= Void
@@ -97,7 +97,7 @@ feature {ANY}
       end
 
 feature {}
-   display_counter (count: INTEGER; tag: STRING) is
+   display_counter (count: INTEGER; tag: STRING)
       do
          if count > 0 then
             log.error.put_string(error_header(Void) + count.out)
@@ -109,17 +109,17 @@ feature {}
          end
       end
 
-   warning_count: COUNTER is
+   warning_count: COUNTER
       once
          create Result
       end
 
-   error_count: COUNTER is
+   error_count: COUNTER
       once
          create Result
       end
 
-   error_header (a_source: like source): STRING is
+   error_header (a_source: like source): STRING
       do
          Result := ""
          if a_source /= Void then

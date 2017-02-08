@@ -21,17 +21,17 @@ inherit
       end
 
 feature {ANY}
-   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE) is
+   set_local (a_name: FIXED_STRING; a_value: MIXUP_VALUE)
       do
          crash
       end
 
-   get_local (a_name: FIXED_STRING): MIXUP_VALUE is
+   get_local (a_name: FIXED_STRING): MIXUP_VALUE
       do
          check Result = Void end
       end
 
-   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current is
+   commit (a_commit_context: MIXUP_COMMIT_CONTEXT): like Current
       require
          a_commit_context.player /= Void
       local
@@ -42,7 +42,7 @@ feature {ANY}
          create children_.with_capacity(children.count)
          a_commit_context.set_context(Current)
          timing_ := children_zip.map(children,
-                                     agent (a_children: like children; commit_context_: MIXUP_COMMIT_CONTEXT; a_child: MIXUP_CONTEXT; a_key: FIXED_STRING; a_timing: MIXUP_MUSIC_TIMING): MIXUP_MUSIC_TIMING is
+                                     agent (a_children: like children; commit_context_: MIXUP_COMMIT_CONTEXT; a_child: MIXUP_CONTEXT; a_key: FIXED_STRING; a_timing: MIXUP_MUSIC_TIMING): MIXUP_MUSIC_TIMING
                                      local
                                         child_: MIXUP_CONTEXT
                                      do
@@ -56,7 +56,7 @@ feature {ANY}
          Result.set_timing(timing_)
       end
 
-   accept (visitor: VISITOR) is
+   accept (visitor: VISITOR)
       local
          v: MIXUP_CONTEXT_VISITOR
       do
@@ -67,13 +67,13 @@ feature {ANY}
       end
 
 feature {MIXUP_CONTEXT}
-   add_child (a_child: MIXUP_CONTEXT) is
+   add_child (a_child: MIXUP_CONTEXT)
       do
          children.add(a_child, a_child.name)
       end
 
 feature {}
-   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE is
+   lookup_in_children (identifier: FIXED_STRING): MIXUP_VALUE
       local
          id_prefix: FIXED_STRING; i: INTEGER
          child: MIXUP_CONTEXT
@@ -88,7 +88,7 @@ feature {}
          end
       end
 
-   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN is
+   setup_in_children (identifier: FIXED_STRING; a_value: MIXUP_VALUE; is_const: BOOLEAN; is_public: BOOLEAN; is_local: BOOLEAN): BOOLEAN
       local
          id_prefix: FIXED_STRING; i: INTEGER
          child: MIXUP_CONTEXT
@@ -104,18 +104,18 @@ feature {}
       end
 
 feature {}
-   accept_start (visitor: MIXUP_CONTEXT_VISITOR) is
+   accept_start (visitor: MIXUP_CONTEXT_VISITOR)
       deferred
       end
 
-   accept_end (visitor: MIXUP_CONTEXT_VISITOR) is
+   accept_end (visitor: MIXUP_CONTEXT_VISITOR)
       deferred
       end
 
 feature {}
    children: LINKED_HASHED_DICTIONARY[MIXUP_CONTEXT, FIXED_STRING]
 
-   make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent) is
+   make (a_source: like source; a_name: ABSTRACT_STRING; a_parent: like parent)
       do
          create children.make
          context_make(a_source, a_name, a_parent)
@@ -125,7 +125,7 @@ feature {}
          end
       end
 
-   do_duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports; a_children: like children): like Current is
+   do_duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports; a_children: like children): like Current
       deferred
       ensure
          Result /= Void
@@ -136,7 +136,7 @@ feature {}
          --Result.children = a_children
       end
 
-   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports; a_children: like children) is
+   duplicate (a_source: like source; a_name: like name; a_parent: like parent; a_values: like values; a_imports: like imports; a_children: like children)
       do
          source := a_source
          name := a_name

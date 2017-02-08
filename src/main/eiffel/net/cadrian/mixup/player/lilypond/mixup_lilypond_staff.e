@@ -36,7 +36,7 @@ feature {ANY}
    instrument: MIXUP_LILYPOND_INSTRUMENT
 
 feature {MIXUP_LILYPOND_INSTRUMENT}
-   string_event (a_voice_id: INTEGER; a_string: FIXED_STRING) is
+   string_event (a_voice_id: INTEGER; a_string: FIXED_STRING)
       require
          a_string /= Void
       do
@@ -44,7 +44,7 @@ feature {MIXUP_LILYPOND_INSTRUMENT}
       end
 
 feature {MIXUP_ABSTRACT_INSTRUMENT}
-   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION; generate_names: BOOLEAN) is
+   generate (context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION; generate_names: BOOLEAN)
       local
          iter_lyrics: ZIP[AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64], INTEGER]
          relative: FIXED_STRING
@@ -85,12 +85,12 @@ feature {MIXUP_ABSTRACT_INSTRUMENT}
       end
 
 feature {}
-   lilypond_relative: FIXED_STRING is
+   lilypond_relative: FIXED_STRING
       once
          Result := "lilypond.relative".intern
       end
 
-   generate_lyrics (lyr: AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]; index: INTEGER; context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION) is
+   generate_lyrics (lyr: AVL_DICTIONARY[MIXUP_SYLLABLE, INTEGER_64]; index: INTEGER; context: MIXUP_CONTEXT; section: MIXUP_LILYPOND_SECTION)
       do
          if index \\ 2 = 0 then
             section.set_body(once "\new AltLyrics = %"")
@@ -106,7 +106,7 @@ feature {}
          section.set_body(id.out)
          section.set_body(once "voice%" {%N")
          section.set_body(once "\lyricmode {%N")
-         lyr.do_all_items(agent (a_syllable: MIXUP_SYLLABLE; a_section: MIXUP_LILYPOND_SECTION) is
+         lyr.do_all_items(agent (a_syllable: MIXUP_SYLLABLE; a_section: MIXUP_LILYPOND_SECTION)
                              do
                                 a_section.set_body(once " ")
                                 if a_syllable.in_word then
@@ -120,7 +120,7 @@ feature {}
       end
 
 feature {}
-   make (a_instrument: like instrument; a_id: like id; a_voice_ids: TRAVERSABLE[INTEGER]; a_reference: like reference) is
+   make (a_instrument: like instrument; a_id: like id; a_voice_ids: TRAVERSABLE[INTEGER]; a_reference: like reference)
       require
          a_instrument /= Void
          a_id > 0
@@ -133,14 +133,14 @@ feature {}
          instrument = a_instrument
       end
 
-   context_name: FIXED_STRING is
+   context_name: FIXED_STRING
       once
          Result := "Staff".intern
       end
 
    reference: MIXUP_NOTE_HEAD
 
-   new_voices (a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]): like root_voices is
+   new_voices (a_voice_id: INTEGER; voice_ids: TRAVERSABLE[INTEGER]): like root_voices
       local
          voice_: like voice
          ref: like reference

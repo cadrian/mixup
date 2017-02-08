@@ -30,12 +30,12 @@ create {ANY}
    make, connect_to
 
 feature {ANY}
-   name: FIXED_STRING is
+   name: FIXED_STRING
       once
          Result := "lilypond".intern
       end
 
-   native (a_def_source: MIXUP_SOURCE; a_context: MIXUP_NATIVE_CONTEXT; fn_name: STRING): MIXUP_VALUE is
+   native (a_def_source: MIXUP_SOURCE; a_context: MIXUP_NATIVE_CONTEXT; fn_name: STRING): MIXUP_VALUE
       local
          str: MIXUP_STRING
       do
@@ -69,7 +69,7 @@ feature {ANY}
       end
 
 feature {ANY}
-   play_string_event (a_data: MIXUP_EVENT_DATA; a_string: FIXED_STRING) is
+   play_string_event (a_data: MIXUP_EVENT_DATA; a_string: FIXED_STRING)
          -- Lilypond-specific
       require
          a_string /= Void
@@ -79,7 +79,7 @@ feature {ANY}
          instruments.reference_at(a_data.instrument.name).string_event(a_data.staff_id, a_data.voice_id, a_string)
       end
 
-   play_header_event (a_data: MIXUP_EVENT_DATA; a_string: FIXED_STRING) is
+   play_header_event (a_data: MIXUP_EVENT_DATA; a_string: FIXED_STRING)
          -- Lilypond-specific
       require
          a_string /= Void
@@ -90,7 +90,7 @@ feature {ANY}
       end
 
 feature {} -- section files management
-   build_filename (a_name: ABSTRACT_STRING): STRING is
+   build_filename (a_name: ABSTRACT_STRING): STRING
       do
          Result := a_name.out
          if current_section /= Void then
@@ -106,13 +106,13 @@ feature {} -- section files management
       end
 
 feature {} -- System call to lilypond
-   call_tool (filename: STRING) is
+   call_tool (filename: STRING)
       local
          command: STRING
          sys: SYSTEM; status: INTEGER
       do
          command := lilypond_exe_path.item.out
-         lilypond_include_directories.do_all(agent (dir: FIXED_STRING; cmd: STRING) is
+         lilypond_include_directories.do_all(agent (dir: FIXED_STRING; cmd: STRING)
                                                 do
                                                    cmd.append(once " -I ")
                                                    cmd.append(dir)
@@ -127,12 +127,12 @@ feature {} -- System call to lilypond
       end
 
 feature {}
-   new_instrument (a_name: FIXED_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]): MIXUP_LILYPOND_INSTRUMENT is
+   new_instrument (a_name: FIXED_STRING; voice_staff_ids: MAP[TRAVERSABLE[INTEGER], INTEGER]): MIXUP_LILYPOND_INSTRUMENT
       do
          create Result.make(context, a_name, voice_staff_ids)
       end
 
-   new_section (section, a_name: ABSTRACT_STRING): MIXUP_LILYPOND_SECTION is
+   new_section (section, a_name: ABSTRACT_STRING): MIXUP_LILYPOND_SECTION
       do
          if current_section = Void then
             create Result.make_full(section, a_name)
@@ -146,7 +146,7 @@ feature {}
          end
       end
 
-   new_output (a_filename: ABSTRACT_STRING): MIXUP_LILYPOND_OUTPUT is
+   new_output (a_filename: ABSTRACT_STRING): MIXUP_LILYPOND_OUTPUT
       local
          tfw: TEXT_FILE_WRITE
       do
@@ -157,7 +157,7 @@ feature {}
       end
 
 feature {}
-   connect_to (a_output: OUTPUT_STREAM) is
+   connect_to (a_output: OUTPUT_STREAM)
       require
          a_output.is_connected
       do
@@ -168,7 +168,7 @@ feature {}
          not managed_output
       end
 
-   make is
+   make
       do
          managed_output := True
          create instruments.make
