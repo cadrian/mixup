@@ -29,7 +29,7 @@ feature {ANY}
 
    valid_value (value: INTEGER): BOOLEAN is
       do
-         Result := value.in_range(63, 64)
+         Result := value.in_range(0, 127)
       end
 
    encode_to (message_code: INTEGER_32; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM) is

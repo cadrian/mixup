@@ -21,7 +21,7 @@ feature {ANY}
    division: INTEGER_16
          -- ticks per quarter
 
-   set_division (a_division: like division) is
+   set_division (a_division: like division)
       require
          a_division > 0
       do
@@ -30,7 +30,7 @@ feature {ANY}
          division = a_division
       end
 
-   add_track (a_track: MIXUP_MIDI_TRACK) is
+   add_track (a_track: MIXUP_MIDI_TRACK)
       require
          a_track /= Void
          can_add_track
@@ -41,7 +41,7 @@ feature {ANY}
          tracks.last = a_track
       end
 
-   encode_to (a_stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   encode_to (a_stream: MIXUP_MIDI_OUTPUT_STREAM)
       require
          a_stream.is_connected
       do
@@ -49,46 +49,54 @@ feature {ANY}
          tracks.for_each(agent {MIXUP_MIDI_TRACK}.encode_to(a_stream))
       end
 
-   can_add_track: BOOLEAN is
+   can_add_track: BOOLEAN
       do
          Result := tracks.count < 0x00007fff
       end
 
-   end_all_tracks is
+   max_time: INTEGER_64
+
+   end_all_tracks
       local
          times: AGGREGATOR[MIXUP_MIDI_TRACK, INTEGER_64]
-         max_time: INTEGER_64
       do
          max_time := times.map(tracks,
-                               agent (track: MIXUP_MIDI_TRACK; time: INTEGER_64): INTEGER_64 is
+                               agent (a_track: MIXUP_MIDI_TRACK; time: INTEGER_64): INTEGER_64
                                do
-                                  if track.max_time > time then
-                                     Result := track.max_time
+                                  if a_track.max_time > time then
+                                     Result := a_track.max_time
                                   else
                                      Result := time
                                   end
                                end (?, ?),
                                0
                                )
-         tracks.for_each(agent (track: MIXUP_MIDI_TRACK; time: INTEGER_64) is
+         tracks.for_each(agent (a_track: MIXUP_MIDI_TRACK)
                          local
                             meta: MIXUP_MIDI_META_EVENTS
                          do
-                            if track.can_add_event then
-                               track.add_event(time, meta.end_of_track_event)
+                            if a_track.can_add_event then
+                               a_track.add_event(max_time, meta.end_of_track_event)
                             end
-                         end(?, max_time))
+                         end (?))
       ensure
-         tracks.for_all(agent (track: MIXUP_MIDI_TRACK): BOOLEAN is do Result := not track.can_add_event end (?))
+         tracks.for_all(agent (a_track: MIXUP_MIDI_TRACK): BOOLEAN is then not a_track.can_add_event end (?))
       end
 
-   track_count: INTEGER is
+   track_count: INTEGER
       do
          Result := tracks.count
       end
 
+   track (index: INTEGER): MIXUP_MIDI_TRACK
+      require
+         index.in_range(1, track_count)
+      do
+         Result := tracks.item(index - 1)
+      end
+
 feature {}
-   make (a_division: like division) is
+   make (a_division: like division)
       require
          a_division > 0
       do

@@ -26,12 +26,12 @@ create {ANY}
    make
 
 feature {ANY}
-   can_add_event: BOOLEAN is
+   can_add_event: BOOLEAN
       do
          Result := events.is_empty or else events.last.last /= end_of_track_event
       end
 
-   add_event (a_time: INTEGER_64; a_event: MIXUP_MIDI_CODEC) is
+   add_event (a_time: INTEGER_64; a_event: MIXUP_MIDI_CODEC)
       require
          can_add_event
          a_event /= Void
@@ -51,12 +51,12 @@ feature {ANY}
          events.fast_reference_at(a_time).last = a_event
       end
 
-   can_encode: BOOLEAN is
+   can_encode: BOOLEAN
       do
          Result := not events.is_empty and then events.last.last = end_of_track_event
       end
 
-   byte_size: INTEGER is
+   byte_size: INTEGER
       require
          can_encode
       local
@@ -75,7 +75,7 @@ feature {ANY}
          end
       end
 
-   encode_to (a_stream: MIXUP_MIDI_OUTPUT_STREAM) is
+   encode_to (a_stream: MIXUP_MIDI_OUTPUT_STREAM)
       require
          can_encode
          a_stream.is_connected
@@ -99,20 +99,25 @@ feature {ANY}
          end
       end
 
-   max_time: INTEGER_64 is
+   max_time: INTEGER_64
       do
          if not events.is_empty then
             Result := events.key(events.upper)
          end
       end
 
+   new_iterator: MIXUP_MIDI_TRACK_ITERATOR
+      do
+         create Result.make(events)
+      end
+
 feature {ANY} -- playing notes
-   is_on (channel, pitch: INTEGER_8): BOOLEAN is
+   is_on (channel, pitch: INTEGER_8): BOOLEAN
       do
          Result := playing_notes(channel).fast_has(pitch)
       end
 
-   turn_on (channel: INTEGER_8; time: INTEGER_64; pitch: INTEGER_8; duration: INTEGER_64; velocity: INTEGER_8) is
+   turn_on (channel: INTEGER_8; time: INTEGER_64; pitch: INTEGER_8; duration: INTEGER_64; velocity: INTEGER_8)
       do
          if not is_on(channel, pitch) then
             add_event(time, note_event(channel, True, pitch, velocity))
@@ -122,7 +127,7 @@ feature {ANY} -- playing notes
          is_on(channel, pitch)
       end
 
-   turn_off (channel: INTEGER_8; time: INTEGER_64; pitch: INTEGER_8; velocity: INTEGER_8) is
+   turn_off (channel: INTEGER_8; time: INTEGER_64; pitch: INTEGER_8; velocity: INTEGER_8)
       local
          stop_time: INTEGER_64
       do
@@ -135,7 +140,7 @@ feature {ANY} -- playing notes
          not is_on(channel, pitch)
       end
 
-   linear_mpc (track_id: INTEGER; a_knob: MIXUP_MIDI_CONTROLLER_KNOB; a_start_time: INTEGER_64; a_start_value: INTEGER_8; a_end_time: INTEGER_64; a_end_value: INTEGER_8) is
+   linear_mpc (track_id: INTEGER; a_knob: MIXUP_MIDI_CONTROLLER_KNOB; a_start_time: INTEGER_64; a_start_value: INTEGER_8; a_end_time: INTEGER_64; a_end_value: INTEGER_8)
       require
          a_start_value >= 0
          a_end_value >= 0
@@ -175,7 +180,7 @@ feature {ANY} -- playing notes
       end
 
 feature {}
-   add_multi_point_controller (channel: INTEGER_8; start_time, end_time: INTEGER_64; count: INTEGER; knob: MIXUP_MIDI_CONTROLLER_KNOB; curve: FUNCTION[TUPLE[INTEGER], INTEGER]) is
+   add_multi_point_controller (channel: INTEGER_8; start_time, end_time: INTEGER_64; count: INTEGER; knob: MIXUP_MIDI_CONTROLLER_KNOB; curve: FUNCTION[TUPLE[INTEGER], INTEGER])
          -- Idea coming right from NoteWorthy Composer: the "MPC". That's the most user-friendly MIDI tool I ever used.
       require
          time_direction: end_time >= start_time
@@ -209,7 +214,7 @@ feature {}
          end
       end
 
-   linear_curve (value: INTEGER; count, start_value, end_value: INTEGER): INTEGER is
+   linear_curve (value: INTEGER; count, start_value, end_value: INTEGER): INTEGER
       require
          start_value.in_range(0, 127)
          end_value.in_range(0, 127)
@@ -224,13 +229,13 @@ feature {}
 feature {ANY} -- encode context
    transpose_half_tones: INTEGER_8
 
-   set_transpose_half_tones (a_transpose_half_tones: like transpose_half_tones) is
+   set_transpose_half_tones (a_transpose_half_tones: like transpose_half_tones)
       do
          transpose_half_tones := a_transpose_half_tones
       end
 
 feature {}
-   byte_size_events (events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]; delta_time: INTEGER): INTEGER is
+   byte_size_events (events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]; delta_time: INTEGER): INTEGER
       require
          not events_at_time.is_empty
       local
@@ -253,7 +258,7 @@ feature {}
          end
       end
 
-   encode_events (events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]; a_stream: MIXUP_MIDI_OUTPUT_STREAM; delta_time: INTEGER) is
+   encode_events (events_at_time: FAST_ARRAY[MIXUP_MIDI_CODEC]; a_stream: MIXUP_MIDI_OUTPUT_STREAM; delta_time: INTEGER)
       require
          not events_at_time.is_empty
       local
@@ -280,7 +285,7 @@ feature {}
       end
 
 feature {}
-   make is
+   make
       do
          create events.make
          id_counter.next
@@ -291,7 +296,7 @@ feature {}
    events: AVL_DICTIONARY[FAST_ARRAY[MIXUP_MIDI_CODEC], INTEGER_64]
    playing_notes_: AVL_DICTIONARY[HASHED_DICTIONARY[INTEGER_64, INTEGER_8], INTEGER_8]
 
-   playing_notes (channel: INTEGER_8): HASHED_DICTIONARY[INTEGER_64, INTEGER_8] is
+   playing_notes (channel: INTEGER_8): HASHED_DICTIONARY[INTEGER_64, INTEGER_8]
       require
          channel.in_range(0, 15)
       do
@@ -306,7 +311,7 @@ feature {}
 
    id: INTEGER
 
-   id_counter: COUNTER is
+   id_counter: COUNTER
       once
          create Result
       end
