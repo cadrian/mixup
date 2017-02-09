@@ -21,12 +21,23 @@ create {ANY}
    make
 
 feature {ANY}
+   accept (visitor: MIXUP_MIDI_CODEC_VISITOR)
+      do
+         visitor.visit_mixup_midi_channel_pressure(Current)
+      end
+
+   out_in_tagged_out_memory
+      do
+         tagged_out_memory.append("channel pressure: ")
+         pressure.append_in(tagged_out_memory)
+      end
+
    event_type: INTEGER_32
       once
          Result := event_channel_pressure
       end
-   byte_size: INTEGER is 2
 
+   byte_size: INTEGER is 2
    pressure: INTEGER_32
 
 feature {}

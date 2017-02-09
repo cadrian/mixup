@@ -20,11 +20,21 @@ inherit
 create {ANY}
    make
 
+feature {MIXUP_MIDI_CONTROLLER}
+   accept (visitor: MIXUP_MIDI_CODEC_VISITOR; codec: MIXUP_MIDI_CONTROLLER)
+      do
+         visitor.visit_mixup_midi_controller_switch(codec, Current)
+      end
+
 feature {ANY}
+   out_in_tagged_out_memory
+      do
+         tagged_out_memory.append("switch: ")
+         tagged_out_memory.append(name)
+      end
+
    name: FIXED_STRING
-
    code: INTEGER_32
-
    byte_size: INTEGER is 3
 
    valid_value (value: INTEGER): BOOLEAN

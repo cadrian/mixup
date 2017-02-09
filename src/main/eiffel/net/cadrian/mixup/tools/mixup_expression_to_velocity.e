@@ -73,16 +73,16 @@ feature {}
 
    generate_target_midi
       local
-         sequencer: MIXUP_MIDI_FILE_SEQUENCER
+         sequencer: MIXUP_EXPRESSION_TO_VELOCITY_SEQUENCER
       do
          prepare_target_midi
+         create sequencer.make(source_midi)
          from
-            create sequencer.make(source_midi)
-            sequencer.next
+            sequencer.start
          until
             sequencer.is_off
          loop
-            -- TODO
+            target_midi.track(sequencer.track_index).add_event(sequencer.time, sequencer.event)
             sequencer.next
          end
       ensure
@@ -94,7 +94,6 @@ feature {}
          i: INTEGER
       do
          create target_midi.make(source_midi.division)
-         create {FAST_ARRAY[INTEGER]} expression.make(16)
          from
             i := 1
          until
@@ -103,7 +102,6 @@ feature {}
             target_midi.add_track(create {MIXUP_MIDI_TRACK}.make)
             i := i + 1
          end
-         expression.set_all_with(127)
       ensure
          target_midi /= Void
       end
@@ -129,14 +127,7 @@ feature {}
    source_midi: MIXUP_MIDI_FILE
    target_midi: MIXUP_MIDI_FILE
 
-   expression: COLLECTION[INTEGER]
-         -- expression per channel
-
    time: INTEGER_64
    max_time: INTEGER_64
-
-invariant
-   expression /= Void implies expression.count = 16
-   expression.for_all(agent (exp: INTEGER): BOOLEAN then exp.in_range(0, 127) end (?))
 
 end -- class MIXUP_EXPRESSION_TO_VELOCITY

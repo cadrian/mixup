@@ -24,6 +24,20 @@ create {ANY}
    make
 
 feature {ANY}
+   accept (visitor: MIXUP_MIDI_CODEC_VISITOR)
+      do
+         knob.accept(visitor, Current)
+      end
+
+   out_in_tagged_out_memory
+      do
+         tagged_out_memory.append("controller: ")
+         value.append_in(tagged_out_memory)
+         tagged_out_memory.append(" (")
+         knob.out_in_tagged_out_memory
+         tagged_out_memory.append(")")
+      end
+
    event_type: INTEGER_32
       once
          Result := event_controller

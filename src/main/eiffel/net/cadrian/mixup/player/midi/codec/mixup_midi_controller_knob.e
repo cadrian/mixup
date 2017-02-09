@@ -16,6 +16,9 @@ deferred class MIXUP_MIDI_CONTROLLER_KNOB
 
 insert
    LOGGING
+      undefine
+         out_in_tagged_out_memory
+      end
 
 feature {ANY}
    byte_size: INTEGER
@@ -37,6 +40,14 @@ feature {ANY}
       deferred
       ensure
          Result /= Void
+      end
+
+feature {MIXUP_MIDI_CONTROLLER}
+   accept (visitor: MIXUP_MIDI_CODEC_VISITOR; codec: MIXUP_MIDI_CONTROLLER)
+      require
+         visitor /= Void
+         codec /= Void
+      deferred
       end
 
 end -- class MIXUP_MIDI_CONTROLLER_KNOB

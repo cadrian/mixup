@@ -21,7 +21,18 @@ create {ANY}
    make
 
 feature {ANY}
+   accept (visitor: MIXUP_MIDI_CODEC_VISITOR)
+      do
+         not_yet_implemented
+      end
+
    byte_size: INTEGER is 0
+
+   out_in_tagged_out_memory
+      do
+         tagged_out_memory.append("transpose: ")
+         half_tones.append_in(tagged_out_memory)
+      end
 
    encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT)
       do

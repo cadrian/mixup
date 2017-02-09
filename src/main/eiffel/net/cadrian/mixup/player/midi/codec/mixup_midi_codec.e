@@ -16,8 +16,17 @@ deferred class MIXUP_MIDI_CODEC
 
 insert
    LOGGING
+      undefine
+         out_in_tagged_out_memory
+      end
 
 feature {ANY}
+   accept (visitor: MIXUP_MIDI_CODEC_VISITOR)
+      require
+         visitor /= Void
+      deferred
+      end
+
    byte_size: INTEGER
       deferred
       ensure

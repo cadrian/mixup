@@ -13,6 +13,9 @@
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
 class MIXUP_MIDI_FILE_SEQUENCER
+   --
+   -- Sequences all the MIDI events in their time order
+   --
 
 create {ANY}
    make

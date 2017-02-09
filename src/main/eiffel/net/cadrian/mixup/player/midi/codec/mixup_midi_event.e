@@ -19,6 +19,9 @@ inherit
 
 insert
    MIXUP_MIDI_EVENT_TYPES
+      undefine
+         out_in_tagged_out_memory
+      end
 
 feature {ANY}
    byte_size: INTEGER

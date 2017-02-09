@@ -100,6 +100,7 @@ feature {ANY}
          setting.extend(force_character(mpq|>> 8))
          setting.extend(force_character(mpq     ))
          create Result.make(meta_event_tempo_setting, setting, "tempo_setting_event: " + bpm.out + " BPM")
+         log.info.put_line("bpm:#(1) BPM = mpq:#(2) us/q" # bpm.out # mpq.out)
       end
 
    tempo_setting_event_mpq (mpq: INTEGER): MIXUP_MIDI_META_EVENT
@@ -113,6 +114,7 @@ feature {ANY}
          setting.extend(force_character(mpq|>>> 8))
          setting.extend(force_character(mpq      ))
          create Result.make(meta_event_tempo_setting, setting, "tempo_setting_event: " + mpq.out + " us/q")
+         log.info.put_line("mpq:#(1) us/q" # mpq.out)
       end
 
    key_signature_event (keysig, mode: INTEGER): MIXUP_MIDI_META_EVENT

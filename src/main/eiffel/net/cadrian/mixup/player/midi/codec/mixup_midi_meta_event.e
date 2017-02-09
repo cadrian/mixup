@@ -22,12 +22,40 @@ insert
       export
          {ANY} valid_code;
          {} all
+      redefine
+         out_in_tagged_out_memory
       end
 
 create {ANY}
    make
 
 feature {ANY}
+   accept (visitor: MIXUP_MIDI_CODEC_VISITOR)
+      do
+         visitor.visit_mixup_midi_meta_event(Current)
+      end
+
+   out_in_tagged_out_memory
+      local
+         i: INTEGER
+      do
+         tagged_out_memory.append("meta event: ")
+         tagged_out_memory.append(name)
+         tagged_out_memory.append(" [")
+         from
+            i := data.lower
+         until
+            i > data.upper
+         loop
+            if i > data.lower then
+               tagged_out_memory.extend(' ')
+            end
+            tagged_out_memory.append(data.item(i).code.to_hexadecimal.substring(3, 4))
+            i := i + 1
+         end
+         tagged_out_memory.append("]")
+      end
+
    name: FIXED_STRING
    code: INTEGER_32
    data: FIXED_STRING
@@ -53,11 +81,7 @@ feature {ANY}
             i > data.upper
          loop
             byte := data.item(i).code
-            if byte > 127 then
-               stream.put_byte((byte | 0xff00).to_integer_8)
-            else
-               stream.put_byte(byte.to_integer_8)
-            end
+            stream.put_byte(byte)
             i := i + 1
          end
       end

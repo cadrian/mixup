@@ -21,13 +21,23 @@ create {ANY}
    make
 
 feature {ANY}
+   accept (visitor: MIXUP_MIDI_CODEC_VISITOR)
+      do
+         visitor.visit_mixup_midi_pitch_bend(Current)
+      end
+
+   out_in_tagged_out_memory
+      do
+         tagged_out_memory.append("pitch bend: ")
+         pitch.append_in(tagged_out_memory)
+      end
+
    event_type: INTEGER_32
       once
          Result := event_pitch_bend
       end
 
    byte_size: INTEGER is 3
-
    pitch: INTEGER
 
 feature {}
