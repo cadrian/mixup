@@ -14,6 +14,9 @@
 --
 class MIXUP_MIDI_FILE
 
+insert
+   LOGGING
+
 create {ANY}
    make
 
@@ -44,9 +47,23 @@ feature {ANY}
    encode_to (a_stream: MIXUP_MIDI_OUTPUT_STREAM)
       require
          a_stream.is_connected
+      local
+         tracks_counter: AGGREGATOR[MIXUP_MIDI_TRACK, INTEGER]; tracks_count: INTEGER
       do
-         a_stream.start(tracks.count.to_integer_16, division)
-         tracks.for_each(agent {MIXUP_MIDI_TRACK}.encode_to(a_stream))
+         log.info.put_line(">>>> Start file")
+         tracks_count := tracks_counter.map(tracks,
+                                            agent (t: MIXUP_MIDI_TRACK; i: INTEGER): INTEGER
+                                            then
+                                               if t.can_encode then i + 1 else i end
+                                            end (?, ?),
+                                            0)
+         a_stream.start(tracks_count.to_integer_16, division)
+         tracks.for_each(agent (t: MIXUP_MIDI_TRACK)
+                         do
+                            if t.can_encode then
+                               t.encode_to(a_stream)
+                            end
+                         end (?))
       end
 
    can_add_track: BOOLEAN
@@ -76,6 +93,7 @@ feature {ANY}
                             meta: MIXUP_MIDI_META_EVENTS
                          do
                             if a_track.can_add_event then
+                               log.info.put_line("Ending track")
                                a_track.add_event(max_time, meta.end_of_track_event)
                             end
                          end (?))

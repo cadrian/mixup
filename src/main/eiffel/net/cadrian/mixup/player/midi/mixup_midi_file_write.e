@@ -39,6 +39,7 @@ feature {ANY}
 
    disconnect
       do
+         stream.flush
          stream.disconnect
          stream := Void
       end

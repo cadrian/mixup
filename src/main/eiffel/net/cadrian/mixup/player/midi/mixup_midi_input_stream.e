@@ -173,16 +173,14 @@ feature {}
                      end
                   end
                end
-               if tracklen.item > length then
+               if has_error then
+                  error := "#(1) at track byte #(2)" # error # &(tracklen.item)
+               elseif tracklen.item > length then
                   error := "Invalid track #(1): length mismatch #(2) /= #(3)" # hex(tracknum) # &(tracklen.item) # &length
                else
                   file.add_track(track)
                end
             end
-         end
-
-         if has_error then
-            error := "#(1) at track byte #(2)" # error # &(tracklen.item)
          end
       ensure
          (not has_error) implies file.track_count = tracknum

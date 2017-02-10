@@ -33,9 +33,13 @@ feature {}
             log.error.put_line("The output midi file is <out.mid>")
             die_with_code(1)
          end
+         log.info.put_line("**** Reading source midi...")
          read_source_midi(argument(1))
+         log.info.put_line("**** Generating events...")
          generate_target_midi
+         log.info.put_line("**** Writing target midi...")
          write_target_midi(argument(2))
+         log.info.put_line("**** Done.")
       end
 
    read_source_midi (file: STRING)
@@ -85,6 +89,7 @@ feature {}
             target_midi.track(sequencer.track_index).add_event(sequencer.time, sequencer.event)
             sequencer.next
          end
+         target_midi.end_all_tracks
       ensure
          target_midi /= Void
       end

@@ -78,6 +78,8 @@ feature {}
                sequencer.next
             end
          end
+      ensure
+         (not is_off) implies event /= Void
       end
 
 feature {MIXUP_MIDI_KEY_PRESSURE}

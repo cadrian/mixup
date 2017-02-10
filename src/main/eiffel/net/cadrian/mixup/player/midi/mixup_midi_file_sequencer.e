@@ -39,11 +39,8 @@ feature {ANY}
             iter := iterators.item(i)
             if not iter.is_off then
                if iter.time = t then
-                  iter.next
-                  if not iter.is_off and then iter.time = t then
-                     found := True
-                     index := i
-                  end
+                  index := i
+                  found := True
                end
             end
             i := i + 1
@@ -52,12 +49,15 @@ feature {ANY}
             -- try to find the next event at the smallest next time
             from
                i := iterators.lower
-               t := input.max_time
+               t := input.max_time + 1
             until
                i > iterators.upper
             loop
                iter := iterators.item(i)
-               if not iter.is_off and then iter.time <= t then
+               if not iter.is_off and then iter.time < t then
+                  check
+                     iter.time > time
+                  end
                   t := iter.time
                   index := i
                   found := True
@@ -93,13 +93,13 @@ feature {ANY}
          is_off := False
          from
             i := iterators.lower
-            t := input.max_time
+            t := input.max_time + 1
          until
             i > iterators.upper
          loop
             iter := iterators.item(i)
             iter.start
-            if not iter.is_off and then iter.time <= t then
+            if not iter.is_off and then iter.time < t then
                t := iter.time
                index := i
                found := True
@@ -137,18 +137,24 @@ feature {}
 
    set_attributes (found: BOOLEAN; index: INTEGER; t: like time)
       require
-         found implies iterators.valid_index(index)
+         found implies not iterators.item(index).is_off
+      local
+         iter: MIXUP_MIDI_TRACK_ITERATOR
       do
          if found then
+            iter := iterators.item(index)
             track_index := index + 1 -- beware, not same lower bound
             check
-               t = iterators.item(index).time
+               t = iter.time
             end
             time := t
-            event := iterators.item(index).event
+            event := iter.event
+            iter.next
          else
             is_off := True
          end
+      ensure
+         not found implies is_off
       end
 
 invariant

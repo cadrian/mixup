@@ -53,7 +53,13 @@ feature {ANY}
 
    can_encode: BOOLEAN
       do
-         Result := not events.is_empty and then events.last.last = end_of_track_event
+         if events.is_empty then
+            log.info.put_line("cannot encode track #(1): is empty" # &id)
+         elseif events.last.last /= end_of_track_event then
+            log.info.put_line("cannot encode track #(1): missing end-of-track event" # &id)
+         else
+            Result := True
+         end
       end
 
    byte_size: INTEGER
@@ -83,6 +89,7 @@ feature {ANY}
          i: INTEGER
          current_time, time: INTEGER_64
       do
+         log.info.put_line(">>>> track #(1): length #(2)" # &id # &byte_size)
          a_stream.next_track(byte_size)
          from
             i := events.lower
@@ -276,9 +283,11 @@ feature {}
          loop
             event := events_at_time.item(i)
             if event.byte_size > 0 then
+               log.info.put_line(">>>> time: #(1)" # time.out)
                a_stream.put_variable(time)
                time := 0
             end
+            log.info.put_line(">>>> event: #(1)" # event.out)
             event.encode_to(a_stream, Current)
             i := i + 1
          end
