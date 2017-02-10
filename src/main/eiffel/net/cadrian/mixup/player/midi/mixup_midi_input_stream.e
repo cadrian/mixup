@@ -134,7 +134,7 @@ feature {}
          length, delta_time, time: INTEGER_64
          tracklen: REFERENCE[INTEGER_64]
       do
-         log.info.put_line("Reading track #(1)" # &tracknum)
+         log.trace.put_line("Reading track #(1)" # &tracknum)
 
          magic := read_integer_32(Void)
          if has_error then
@@ -147,7 +147,7 @@ feature {}
             elseif length <= 0 then
                error := "Invalid track #(1): bad length: #(2)" # hex(tracknum) # &length
             else
-               log.info.put_line("track #(1) length: #(2)" # hex(tracknum) # &length)
+               log.trace.put_line("track #(1) length: #(2)" # hex(tracknum) # &length)
                create track.make
                from
                   create tracklen
@@ -157,7 +157,7 @@ feature {}
                   has_error or else tracklen.item >= length
                loop
                   delta_time := read_variable(tracklen)
-                  log.info.put_line("dt=#(1)" # delta_time.out)
+                  log.trace.put_line("dt=#(1)" # delta_time.out)
                   if has_error then
                      error := "Invalid track #(1): #(2)" # hex(tracknum) # error
                   elseif delta_time < 0 then
@@ -168,7 +168,7 @@ feature {}
                         error := "Invalid track #(1): #(2)" # hex(tracknum) # error
                      else
                         time := time + delta_time
-                        log.info.put_line("t=#(1) event=#(2)" # time.out # event.out)
+                        log.trace.put_line("t=#(1) event=#(2)" # time.out # event.out)
                         track.add_event(time, event)
                      end
                   end
@@ -244,7 +244,7 @@ feature {}
          else
             event_type := code & 0x000000f0
             channel := code & 0x0000000f
-            log.info.put_line("Read event => event type: #(1) -- channel: #(2)" # hex(event_type) # hex(channel))
+            log.trace.put_line("Read event => event type: #(1) -- channel: #(2)" # hex(event_type) # hex(channel))
             inspect
                event_type
             when event_channel_pressure then

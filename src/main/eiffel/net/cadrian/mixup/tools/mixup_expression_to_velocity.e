@@ -33,13 +33,13 @@ feature {}
             log.error.put_line("The output midi file is <out.mid>")
             die_with_code(1)
          end
-         log.info.put_line("**** Reading source midi...")
+         log.trace.put_line("**** Reading source midi...")
          read_source_midi(argument(1))
-         log.info.put_line("**** Generating events...")
+         log.trace.put_line("**** Generating events...")
          generate_target_midi
-         log.info.put_line("**** Writing target midi...")
+         log.trace.put_line("**** Writing target midi...")
          write_target_midi(argument(2))
-         log.info.put_line("**** Done.")
+         log.trace.put_line("**** Done.")
       end
 
    read_source_midi (file: STRING)
@@ -70,7 +70,7 @@ feature {}
                            # (if source_midi.track_count= 1 then "track" else "tracks" end))
          mid_src.disconnect
          source_midi.end_all_tracks
-         log.info.put_line("max time: #(1)" # &(source_midi.max_time))
+         log.trace.put_line("max time: #(1)" # &(source_midi.max_time))
       ensure
          source_midi /= Void
       end

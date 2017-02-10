@@ -50,7 +50,7 @@ feature {ANY}
       local
          tracks_counter: AGGREGATOR[MIXUP_MIDI_TRACK, INTEGER]; tracks_count: INTEGER
       do
-         log.info.put_line(">>>> Start file")
+         log.trace.put_line(">>>> Start file")
          tracks_count := tracks_counter.map(tracks,
                                             agent (t: MIXUP_MIDI_TRACK; i: INTEGER): INTEGER
                                             then
@@ -93,7 +93,7 @@ feature {ANY}
                             meta: MIXUP_MIDI_META_EVENTS
                          do
                             if a_track.can_add_event then
-                               log.info.put_line("Ending track")
+                               log.trace.put_line("Ending track")
                                a_track.add_event(max_time, meta.end_of_track_event)
                             end
                          end (?))

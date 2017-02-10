@@ -19,7 +19,7 @@ inherit
 
 insert
    LOGGING
-   MIXUP_MIDI_META_EVENTS
+   MIXUP_MIDI_EVENT_TYPES
 
 create {MIXUP_EXPRESSION_TO_VELOCITY}
    make
@@ -108,7 +108,8 @@ feature {MIXUP_MIDI_CONTROLLER_SLIDER}
          if knob.msb_code = 11 then
             value := codec.value
             if knob.lsb_code = 43 then
-               value := value |>>> 7 -- no need for the "fine" part
+               -- no need for the "fine" part (the velocity scale is not fine anyway)
+               value := value |>>> 7
             else
                check
                   knob.lsb_code = 0
@@ -118,13 +119,11 @@ feature {MIXUP_MIDI_CONTROLLER_SLIDER}
                value.in_range(0, 127)
             end
             expression.put(value, codec.channel)
-            log.info.put_line("Track #(1) channel #(2) expression=#(3)" # track_index.out # codec.channel.out # value.out)
             check
                need_more_events: event = Void
             end
          else
             event := codec
-            log.info.put_line("Track #(1) channel #(2) controller=#(3)" # track_index.out # codec.channel.out # knob.name)
          end
       end
 
@@ -161,8 +160,26 @@ feature {MIXUP_MIDI_PROGRAM_CHANGE}
 feature {MIXUP_MIDI_META_EVENT}
    visit_mixup_midi_meta_event (codec: MIXUP_MIDI_META_EVENT)
       do
+         inspect
+            codec.code
+         when meta_event_text then
+            log.info.put_line("text: " + codec.data)
+         when meta_event_copyright then
+            log.info.put_line("copyright: " + codec.data)
+         when meta_event_track_name then
+            log.info.put_line("track: " + codec.data)
+         when meta_event_instrument_name then
+            log.info.put_line("instrument: " + codec.data)
+         when meta_event_lyrics then
+            log.info.put_line("lyrics: " + codec.data)
+         when meta_event_marker_text then
+            log.info.put_line("marker text: " + codec.data)
+         when meta_event_time_signature, meta_event_key_signature then
+            log.info.put_line(codec.name)
+         else
+            -- binary data, don't log
+         end
          event := codec
-         log.info.put_line("Track #(1) meta-event=#(2)" # track_index.out # codec.name)
       end
 
 feature {}
