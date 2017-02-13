@@ -33,11 +33,8 @@ feature {}
             log.error.put_line("The output midi file is <out.mid>")
             die_with_code(1)
          end
-         log.trace.put_line("**** Reading source midi...")
          read_source_midi(argument(1))
-         log.trace.put_line("**** Generating events...")
          generate_target_midi
-         log.trace.put_line("**** Writing target midi...")
          write_target_midi(argument(2))
          log.trace.put_line("**** Done.")
       end
@@ -47,6 +44,7 @@ feature {}
          mid_in: BINARY_FILE_READ
          mid_src: MIXUP_MIDI_FILE_READ
       do
+         log.trace.put_line("**** Reading source midi...")
          create mid_in.connect_to(file)
          if not mid_in.is_connected then
             log.error.put_line("File not found: #(1)" # file)
@@ -79,6 +77,7 @@ feature {}
       local
          sequencer: MIXUP_EXPRESSION_TO_VELOCITY_SEQUENCER
       do
+         log.trace.put_line("**** Generating events...")
          prepare_target_midi
          create sequencer.make(source_midi)
          from
@@ -118,6 +117,7 @@ feature {}
          mid_out: BINARY_FILE_WRITE
          mid_tgt: MIXUP_MIDI_FILE_WRITE
       do
+         log.trace.put_line("**** Writing target midi...")
          create mid_out.connect_to(file)
          if not mid_out.is_connected then
             log.error.put_line("Could not write file: #(2)" # file)
