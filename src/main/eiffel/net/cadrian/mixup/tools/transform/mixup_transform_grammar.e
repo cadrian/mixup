@@ -130,13 +130,7 @@ feature {}
 
         "Expression",    {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "BooleanOr", "ExpCont" >> }, Void
-                            >> };
-
-        "ExpCont",        {DESCENDING_NON_TERMINAL
-                            <<
-                              epsilon, Void;
-                              {FAST_ARRAY[STRING] << "KW (", "Expression*", "KW )" >> }, Void;
+                              {FAST_ARRAY[STRING] << "BooleanOr" >> }, Void
                             >> };
 
         "BooleanOr",     {DESCENDING_NON_TERMINAL
@@ -369,11 +363,6 @@ feature {}
          atom: MIXUP_TRANSFORM_NODE; list: MIXUP_TRANSFORM_NODE_LIST
       do
          log.trace.put_line("L1: #(1)" # list_name)
-         list ::= stack.last
-         check
-            list.name = list_name
-         end
-         stack.remove_last
          atom := stack.last
          check
             atom.name = atom_name.intern
