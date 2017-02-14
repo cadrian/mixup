@@ -46,22 +46,22 @@ feature {ANY}
       end
 
 feature {}
-   type_numeric_: MIXUP_TRANSFORM_NODE_TYPE
+   type_numeric_: MIXUP_TRANSFORM_NODE_TYPE_NUMERIC
       once
          create Result.make("numeric")
       end
 
-   type_string_: MIXUP_TRANSFORM_NODE_TYPE
+   type_string_: MIXUP_TRANSFORM_NODE_TYPE_STRING
       once
          create Result.make("string")
       end
 
-   type_argument_: MIXUP_TRANSFORM_NODE_TYPE
+   type_argument_: MIXUP_TRANSFORM_NODE_TYPE_STRING
       once
          create Result.make("argument")
       end
 
-   type_boolean_: MIXUP_TRANSFORM_NODE_TYPE
+   type_boolean_: MIXUP_TRANSFORM_NODE_TYPE_BOOLEAN
       once
          create Result.make("boolean")
       end
@@ -69,6 +69,7 @@ feature {}
    types: SET[MIXUP_TRANSFORM_NODE_TYPE]
       once
          Result := {HASHED_SET[MIXUP_TRANSFORM_NODE_TYPE] << type_numeric_, type_string_, type_argument_, type_boolean_ >> }
+         Result.do_all(agent {MIXUP_TRANSFORM_NODE_TYPE}.init)
       end
 
 end -- class MIXUP_TRANSFORM_NODE_TYPES

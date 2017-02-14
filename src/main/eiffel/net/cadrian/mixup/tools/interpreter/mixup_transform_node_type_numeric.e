@@ -12,44 +12,37 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-deferred class MIXUP_TRANSFORM_NODE_TYPE
+class MIXUP_TRANSFORM_NODE_TYPE_NUMERIC
 
 inherit
-   HASHABLE
+   MIXUP_TRANSFORM_NODE_TYPE_IMPL[INTEGER]
+
+insert
+   LOGGING
+      undefine
+         is_equal
+      end
+
+create {MIXUP_TRANSFORM_NODE_TYPES}
+   make
 
 feature {ANY}
-   name: FIXED_STRING
-
-   hash_code: INTEGER then name.hash_code
-      end
-
-   is_equal (other: like Current): BOOLEAN then other = Current
-      end
-
-   is_comparable: BOOLEAN
-      deferred
-      end
+   is_comparable: BOOLEAN True
 
    type_of (operator: STRING; right: MIXUP_TRANSFORM_NODE_TYPE): MIXUP_TRANSFORM_NODE_TYPE
-      deferred
+      do
+         inspect operator
+         when "+", "-", "*", "/", "^" then
+            if right = Current then
+               Result := Current
+            end
+         else
+         end
       end
 
 feature {MIXUP_TRANSFORM_NODE_TYPES}
    init
-      deferred
-      end
-
-feature {}
-   make (a_name: ABSTRACT_STRING)
-      require
-         a_name /= Void
       do
-         name := a_name.intern
-      ensure
-         name = a_name.intern
       end
 
-invariant
-   name /= Void
-
-end -- class MIXUP_TRANSFORM_NODE_TYPE
+end -- class MIXUP_TRANSFORM_NODE_TYPE_NUMERIC

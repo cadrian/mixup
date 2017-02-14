@@ -225,10 +225,9 @@ feature {}
             left_type := type
             a_node.node(2).accept(Current)
             right_type := type
-            if left_type = right_type then
-               type := type_boolean
-            else
-               set_error(a_node, "Incompatible types: cannot compare #(1) and #(2) values" # left_type.name # right_type.name)
+            type := left_type.type_of("or", right_type)
+            if type = Void then
+               set_error(a_node, "Incompatible types: cannot 'or' #(1) and #(2) values" # left_type.name # right_type.name)
             end
          end
       end
@@ -247,10 +246,9 @@ feature {}
             left_type := type
             a_node.node(2).accept(Current)
             right_type := type
-            if left_type = right_type then
-               type := type_boolean
-            else
-               set_error(a_node, "Incompatible types: cannot compare #(1) and #(2) values" # left_type.name # right_type.name)
+            type := left_type.type_of("and", right_type)
+            if type = Void then
+               set_error(a_node, "Incompatible types: cannot 'and' #(1) and #(2) values" # left_type.name # right_type.name)
             end
          end
       end
@@ -277,10 +275,9 @@ feature {}
                   comparator.image.image
                when "=", "/=" then
                   type := type_boolean
-               when "<", "<=", ">", ">=" then
-                  if left_type = type_numeric or else left_type = type_string then
-                     type := type_boolean
-                  else
+               else
+                  type := left_type.type_of(comparator.image.image, right_type)
+                  if type = Void then
                      set_error(a_node.node(1), "#(1) values are not comparable" # left_type.name)
                   end
                end
@@ -308,20 +305,9 @@ feature {}
                -- TODO: second pass
             elseif left_type = right_type then
                comparator ::= a_node.node(1)
-               inspect
-                  comparator.image.image
-               when "+" then
-                  if left_type = type_numeric or else left_type = type_string then
-                     type := left_type
-                  else
-                     set_error(a_node.node(1), "Cannot add #(1) values" # left_type.name)
-                  end
-               when "-" then
-                  if left_type = type_numeric then
-                     type := left_type
-                  else
-                     set_error(a_node.node(1), "Cannot subtract #(1) values" # left_type.name)
-                  end
+               type := left_type.type_of(comparator.image.image, right_type)
+               if type = Void then
+                  set_error(a_node, "Cannot add or subtract #(1) and #(2) values" # left_type.name # right_type.name)
                end
             else
                set_error(a_node, "Cannot add or subtract #(1) and #(2) values" # left_type.name # right_type.name)
@@ -347,24 +333,9 @@ feature {}
                -- TODO: second pass
             else
                comparator ::= a_node.node(1)
-               inspect
-                  comparator.image.image
-               when "*" then
-                  if left_type = type_numeric and then left_type = type_numeric then
-                     type := left_type
-                  elseif left_type = type_string and then right_type = type_numeric then
-                     type := left_type
-                  elseif left_type = right_type then
-                     set_error(a_node.node(1), "Cannot multiply #(1) values" # left_type.name)
-                  else
-                     set_error(a_node.node(1), "Cannot multiply #(1) and #(2) values" # left_type.name # right_type.name)
-                  end
-               when "/" then
-                  if left_type = type_numeric and then right_type = type_numeric then
-                     type := left_type
-                  else
-                     set_error(a_node.node(1), "Cannot divide #(1) values" # left_type.name)
-                  end
+               type := left_type.type_of(comparator.image.image, right_type)
+               if type = Void then
+                  set_error(a_node.node(1), "Cannot multiply or divide divide #(1) values" # left_type.name)
                end
             end
          end
@@ -386,12 +357,11 @@ feature {}
             right_type := type
             if left_type = Void or else right_type = Void then
                -- TODO: second pass
-            elseif left_type = type_numeric and then right_type = type_numeric then
-               type := left_type
-            elseif left_type = right_type then
-               set_error(a_node.node(1), "Cannot raise to power #(1) values" # left_type.name)
             else
-               set_error(a_node.node(1), "Cannot raise #(1) values to power #(2) values" # left_type.name # right_type.name)
+               type := left_type.type_of("^", right_type)
+               if type = Void then
+                  set_error(a_node.node(1), "Cannot raise #(1) values to power #(2) values" # left_type.name # right_type.name)
+               end
             end
          end
       end
