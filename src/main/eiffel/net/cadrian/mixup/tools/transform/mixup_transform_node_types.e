@@ -33,6 +33,11 @@ feature {ANY}
          valid_type(Result)
       end
 
+   type_boolean: MIXUP_TRANSFORM_NODE_TYPE then type_boolean_
+      ensure
+         valid_type(Result)
+      end
+
    valid_type (a_type: MIXUP_TRANSFORM_NODE_TYPE): BOOLEAN
       require
          a_type /= Void
@@ -56,9 +61,14 @@ feature {}
          create Result.make("argument")
       end
 
+   type_boolean_: MIXUP_TRANSFORM_NODE_TYPE
+      once
+         create Result.make("boolean")
+      end
+
    types: SET[MIXUP_TRANSFORM_NODE_TYPE]
       once
-         Result := {HASHED_SET[MIXUP_TRANSFORM_NODE_TYPE] << type_numeric_, type_string_, type_argument_ >> }
+         Result := {HASHED_SET[MIXUP_TRANSFORM_NODE_TYPE] << type_numeric_, type_string_, type_argument_, type_boolean_ >> }
       end
 
 end -- class MIXUP_TRANSFORM_NODE_TYPES

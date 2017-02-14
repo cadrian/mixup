@@ -1,0 +1,20 @@
+system "transform"
+
+root
+    MIXUP_TRANSFORM: make
+
+default
+    assertion(require)
+    assertion_flat_check(yes)
+    debug(no)
+    trace(yes)
+
+cluster
+    mixup: "./loadpath.se"
+
+    standard: "${path_liberty_core}loadpath.se"
+        default
+            assertion(no)
+        end
+
+end

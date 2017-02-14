@@ -34,7 +34,13 @@ feature {ANY}
          Result.is_valid
       end
 
-   start_position: INTEGER then if nodes.is_empty then 0 else nodes.first.start_position end
+   start_position: INTEGER
+      do
+         if nodes.is_empty then
+            Result := 0
+         else
+            Result := nodes.first.start_position
+         end
       end
 
    end_position: INTEGER then nodes.last.end_position

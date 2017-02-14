@@ -74,7 +74,7 @@ feature {}
    make (a_name: like name; a_capacity: INTEGER)
       require
          a_name /= Void
-         a_capacity > 0
+         a_capacity >= 0
       do
          name := a_name
          create nodes.with_capacity(a_capacity)
@@ -90,6 +90,6 @@ feature {}
 
 invariant
    nodes /= Void
-   nodes.capacity > 0
+   nodes.capacity >= 0
 
 end -- class MIXUP_TRANSFORM_NODE_NON_TERMINAL
