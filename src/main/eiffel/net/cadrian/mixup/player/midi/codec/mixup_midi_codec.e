@@ -17,7 +17,7 @@ deferred class MIXUP_MIDI_CODEC
 insert
    LOGGING
       undefine
-         out_in_tagged_out_memory
+         out_in_tagged_out_memory, is_equal
       end
 
 feature {ANY}

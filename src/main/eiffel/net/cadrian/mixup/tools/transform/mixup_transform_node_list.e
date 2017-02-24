@@ -48,6 +48,13 @@ feature {ANY}
 
    is_valid: BOOLEAN True
 
+   type: MIXUP_TRANSFORM_NODE_TYPE
+
+   set_type (a_type: like type)
+      do
+         type := a_type
+      end
+
 feature {MIXUP_TRANSFORM_GRAMMAR}
    add_first (a_node: MIXUP_TRANSFORM_NODE)
       require

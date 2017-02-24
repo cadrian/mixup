@@ -18,22 +18,37 @@ expanded class MIXUP_TRANSFORM_NODE_TYPES
    --
 
 feature {ANY}
-   type_numeric: MIXUP_TRANSFORM_NODE_TYPE then type_numeric_
+   type_numeric: MIXUP_TRANSFORM_NODE_TYPE_NUMERIC then type_numeric_
       ensure
          valid_type(Result)
       end
 
-   type_string: MIXUP_TRANSFORM_NODE_TYPE then type_string_
+   type_string: MIXUP_TRANSFORM_NODE_TYPE_STRING then type_string_
       ensure
          valid_type(Result)
       end
 
-   type_argument: MIXUP_TRANSFORM_NODE_TYPE then type_argument_
+   type_argument: MIXUP_TRANSFORM_NODE_TYPE_STRING then type_argument_
       ensure
          valid_type(Result)
       end
 
-   type_boolean: MIXUP_TRANSFORM_NODE_TYPE then type_boolean_
+   type_boolean: MIXUP_TRANSFORM_NODE_TYPE_BOOLEAN then type_boolean_
+      ensure
+         valid_type(Result)
+      end
+
+   type_event: MIXUP_TRANSFORM_NODE_TYPE_EVENT then type_event_
+      ensure
+         valid_type(Result)
+      end
+
+   type_associative (index, value: MIXUP_TRANSFORM_NODE_TYPE): MIXUP_TRANSFORM_NODE_TYPE_ASSOCIATIVE
+      require
+         index.is_comparable
+         value /= Void
+      then
+         type_associative_(index, value)
       ensure
          valid_type(Result)
       end
@@ -42,7 +57,7 @@ feature {ANY}
       require
          a_type /= Void
       do
-         Result := types.fast_has(a_type)
+         Result := types.has(a_type)
       end
 
 feature {}
@@ -66,9 +81,46 @@ feature {}
          create Result.make("boolean")
       end
 
+   type_event_: MIXUP_TRANSFORM_NODE_TYPE_EVENT
+      once
+         create Result.make("event")
+      end
+
+   type_associative_ (index, value: MIXUP_TRANSFORM_NODE_TYPE): MIXUP_TRANSFORM_NODE_TYPE_ASSOCIATIVE
+      require
+         index.is_comparable
+         value /= Void
+      local
+         type: MIXUP_TRANSFORM_NODE_TYPE; i: INTEGER
+      do
+         -- there aren't that many (sensible) combinations. For now
+         -- I'll just scan the set.
+         from
+            i := types.lower
+         until
+            Result /= Void or else i > types.upper
+         loop
+            type := types.item(i)
+            if Result ?:= type then
+               Result ::= type
+               if not Result.index_type.is_equal(index) or else not Result.value_type.is_equal(value) then
+                  Result := Void
+               end
+            end
+            i := i + 1
+         end
+         if Result = Void then
+            create Result.make("associative[" + index.name + "->" + value.name + "]", index, value)
+            types.add(Result)
+            Result.init
+         end
+      ensure
+         valid_type(Result)
+      end
+
    types: SET[MIXUP_TRANSFORM_NODE_TYPE]
       once
-         Result := {HASHED_SET[MIXUP_TRANSFORM_NODE_TYPE] << type_numeric_, type_string_, type_argument_, type_boolean_ >> }
+         Result := {HASHED_SET[MIXUP_TRANSFORM_NODE_TYPE] << type_numeric_, type_string_, type_argument_, type_boolean_, type_event_ >> }
          Result.do_all(agent {MIXUP_TRANSFORM_NODE_TYPE}.init)
       end
 

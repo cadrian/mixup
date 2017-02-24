@@ -29,17 +29,6 @@ create {MIXUP_TRANSFORM_NODE_TYPES}
 feature {ANY}
    is_comparable: BOOLEAN True
 
-   type_of (operator: STRING; right: MIXUP_TRANSFORM_NODE_TYPE): MIXUP_TRANSFORM_NODE_TYPE
-      do
-         inspect operator
-         when "+", "-", "*", "/", "^" then
-            if right = Current then
-               Result := Current
-            end
-         else
-         end
-      end
-
 feature {MIXUP_TRANSFORM_NODE_TYPES}
    init
       do

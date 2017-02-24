@@ -12,17 +12,16 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_TRANSFORM_NODE_TYPE_STRING
+class MIXUP_TRANSFORM_NODE_TYPE_ASSOCIATIVE
 
 inherit
-   MIXUP_TRANSFORM_NODE_TYPE_IMPL[STRING]
+   MIXUP_TRANSFORM_NODE_TYPE
+      rename
+         make as make_type
+      end
 
 insert
    LOGGING
-      undefine
-         is_equal
-      end
-   MIXUP_TRANSFORM_NODE_TYPES
       undefine
          is_equal
       end
@@ -31,11 +30,37 @@ create {MIXUP_TRANSFORM_NODE_TYPES}
    make
 
 feature {ANY}
-   is_comparable: BOOLEAN True
+   is_comparable: BOOLEAN False
+
+   index_type, value_type: MIXUP_TRANSFORM_NODE_TYPE
+
+   field_type (field_name: STRING): MIXUP_TRANSFORM_NODE_TYPE
+      do
+      end
 
 feature {MIXUP_TRANSFORM_NODE_TYPES}
    init
       do
       end
 
-end -- class MIXUP_TRANSFORM_NODE_TYPE_STRING
+feature {}
+   make (a_name: ABSTRACT_STRING; index, value: MIXUP_TRANSFORM_NODE_TYPE)
+      require
+         a_name /= Void
+         index.is_comparable
+         value /= Void
+      do
+         make_type(a_name)
+         index_type := index
+         value_type := value
+      ensure
+         name = a_name.intern
+         index_type = index
+         value_type = value
+      end
+
+invariant
+   index_type.is_comparable
+   value_type /= Void
+
+end -- class MIXUP_TRANSFORM_NODE_TYPE_ASSOCIATIVE

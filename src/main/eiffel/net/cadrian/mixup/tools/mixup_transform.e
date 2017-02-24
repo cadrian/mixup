@@ -28,7 +28,6 @@ feature {}
    make
       local
          root: MIXUP_TRANSFORM_NODE
-         inferer: MIXUP_TRANSFORM_INFERER
          interpreter: MIXUP_TRANSFORM_INTERPRETER
       do
          if argument_count = 0 then
@@ -39,21 +38,11 @@ feature {}
          end
          root := eval(read_mxt(argument(1)))
 
-         log.trace.put_line("**** INFER")
-         create inferer.make(root)
-         if inferer.error /= Void then
-            log.error.put_line(inferer.error)
-            die_with_code(1)
-         end
-
-         log.trace.put_line("**** INTERPRETE")
          create interpreter.make(root)
          if interpreter.error /= Void then
             log.error.put_line(interpreter.error)
             die_with_code(1)
          end
-
-         log.trace.put_line("**** DONE")
       end
 
    eval (parser_buffer: MINI_PARSER_BUFFER): MIXUP_TRANSFORM_NODE

@@ -12,30 +12,17 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_TRANSFORM_NODE_TYPE_STRING
+deferred class MIXUP_TRANSFORM_VALUE
 
 inherit
-   MIXUP_TRANSFORM_NODE_TYPE_IMPL[STRING]
-
-insert
-   LOGGING
-      undefine
-         is_equal
-      end
-   MIXUP_TRANSFORM_NODE_TYPES
-      undefine
-         is_equal
-      end
-
-create {MIXUP_TRANSFORM_NODE_TYPES}
-   make
+   HASHABLE
 
 feature {ANY}
-   is_comparable: BOOLEAN True
-
-feature {MIXUP_TRANSFORM_NODE_TYPES}
-   init
-      do
+   type: MIXUP_TRANSFORM_NODE_TYPE
+      deferred
       end
 
-end -- class MIXUP_TRANSFORM_NODE_TYPE_STRING
+invariant
+   type /= Void
+
+end -- class MIXUP_TRANSFORM_VALUE

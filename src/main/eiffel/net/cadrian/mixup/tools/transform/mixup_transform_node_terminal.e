@@ -35,6 +35,20 @@ feature {ANY}
 
    is_valid: BOOLEAN True
 
+   type: MIXUP_TRANSFORM_NODE_TYPE
+      do
+         if image.type /= Void then
+            Result := image.type
+         else
+            Result := type_
+         end
+      end
+
+   set_type (a_type: like type)
+      do
+         type_ := a_type
+      end
+
 feature {ANY}
    accept (visitor: VISITOR)
       local
@@ -57,7 +71,11 @@ feature {}
          image = a_image
       end
 
+   type_: like type
+
 invariant
    image /= Void
+   image.type /= Void implies type_ = Void
+   image.type /= Void implies type = image.type
 
 end -- class MIXUP_TRANSFORM_NODE_TERMINAL

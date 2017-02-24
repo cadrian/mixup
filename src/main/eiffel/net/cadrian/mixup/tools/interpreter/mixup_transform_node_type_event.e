@@ -12,10 +12,10 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_TRANSFORM_NODE_TYPE_STRING
+class MIXUP_TRANSFORM_NODE_TYPE_EVENT
 
 inherit
-   MIXUP_TRANSFORM_NODE_TYPE_IMPL[STRING]
+   MIXUP_TRANSFORM_NODE_TYPE_IMPL[MIXUP_MIDI_CODEC]
 
 insert
    LOGGING
@@ -31,11 +31,35 @@ create {MIXUP_TRANSFORM_NODE_TYPES}
    make
 
 feature {ANY}
-   is_comparable: BOOLEAN True
+   is_comparable: BOOLEAN False
+
+   -- field_type (field_name: STRING): MIXUP_TRANSFORM_NODE_TYPE
+   --    do
+   --       inspect field_name
+   --       when "velocity", "channel", "meta", "pitch", "time" then
+   --          Result := type_numeric
+   --       when "fine" then
+   --          Result := type_boolean
+   --       else
+   --       end
+   --    end
+
+   ref: REFERENCE[MIXUP_MIDI_CODEC]
+
+   set_event (a_event: MIXUP_MIDI_CODEC)
+      do
+         ref.set_item(a_event)
+      ensure
+         event = a_event
+      end
+
+   event: MIXUP_MIDI_CODEC then ref.item
+      end
 
 feature {MIXUP_TRANSFORM_NODE_TYPES}
    init
       do
+         create ref
       end
 
-end -- class MIXUP_TRANSFORM_NODE_TYPE_STRING
+end -- class MIXUP_TRANSFORM_NODE_TYPE_EVENT

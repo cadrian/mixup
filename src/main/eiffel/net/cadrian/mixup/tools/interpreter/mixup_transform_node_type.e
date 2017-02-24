@@ -24,14 +24,113 @@ feature {ANY}
       end
 
    is_equal (other: like Current): BOOLEAN then other = Current
+      ensure then
+         name = other.name implies Result
       end
 
    is_comparable: BOOLEAN
       deferred
       end
 
-   type_of (operator: STRING; right: MIXUP_TRANSFORM_NODE_TYPE): MIXUP_TRANSFORM_NODE_TYPE
+feature {ANY}
+   error: STRING
+      do
+         Result := error_ref.item
+      end
+
+feature {MIXUP_TRANSFORM_INTERPRETER}
+   eq (left, right: MIXUP_TRANSFORM_VALUE): BOOLEAN
+      require
+         error = Void
+         left.type = Current
+         right.type = Current
       deferred
+      end
+
+   gt (left, right: MIXUP_TRANSFORM_VALUE): BOOLEAN
+      require
+         error = Void
+         is_comparable
+         left.type = Current
+         right.type = Current
+      deferred
+      end
+
+   add (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
+      require
+         error = Void
+         left.type = Current
+         right.type = Current
+      deferred
+      ensure
+         Result /= Void implies Result.type = Current
+         Result = Void implies error /= Void
+      end
+
+   subtract (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
+      require
+         error = Void
+         left.type = Current
+         right.type = Current
+      deferred
+      ensure
+         Result /= Void implies Result.type = Current
+         Result = Void implies error /= Void
+      end
+
+   multiply (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
+      require
+         error = Void
+         left.type = Current
+         right.type = Current
+      deferred
+      ensure
+         Result /= Void implies Result.type = Current
+         Result = Void implies error /= Void
+      end
+
+   divide (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
+      require
+         error = Void
+         left.type = Current
+         right.type = Current
+      deferred
+      ensure
+         Result /= Void implies Result.type = Current
+         Result = Void implies error /= Void
+      end
+
+   power (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
+      require
+         error = Void
+         left.type = Current
+         right.type = Current
+      deferred
+      ensure
+         Result /= Void implies Result.type = Current
+         Result = Void implies error /= Void
+      end
+
+   has_field (field_name: STRING): BOOLEAN
+      deferred
+      end
+
+   field (field_name: STRING; target: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
+      require
+         error = Void
+         has_field(field_name)
+      deferred
+      ensure
+         Result = Void implies error /= Void
+      end
+
+   value_of (image: STRING): MIXUP_TRANSFORM_VALUE
+      require
+         error = Void
+         image /= Void
+      deferred
+      ensure
+         Result = Void implies error /= Void
       end
 
 feature {MIXUP_TRANSFORM_NODE_TYPES}
@@ -47,6 +146,20 @@ feature {}
          name := a_name.intern
       ensure
          name = a_name.intern
+      end
+
+   set_error (a_error: like error)
+      require
+         error = Void
+      do
+         error_ref.set_item(a_error)
+      ensure
+         error = a_error
+      end
+
+   error_ref: REFERENCE[STRING]
+      once
+         create Result
       end
 
 invariant

@@ -117,7 +117,7 @@ feature {ANY}
 
    key_signature_event (keysig, mode: INTEGER): MIXUP_MIDI_META_EVENT
       require
-         keysig.in_range(-7, 7) -- number of alterations: <0 flats, >0 sharps
+         --WRONG: keysig.in_range(-7, 7) -- number of alterations: <0 flats, >0 sharps
          mode.in_range(0, 1)    -- major, minor
       local
          setting, desc: STRING
@@ -161,6 +161,8 @@ feature {ANY}
                desc := once "F#"
             when 7 then
                desc := once "C#"
+            else
+               desc := "Unknown key signature " + keysig.out
             end
          when 1 then -- minor
             inspect
@@ -195,6 +197,8 @@ feature {ANY}
                desc := once "D#m"
             when 7 then
                desc := once "A#m"
+            else
+               desc := "Unknown key signature " + keysig.out
             end
          end
 

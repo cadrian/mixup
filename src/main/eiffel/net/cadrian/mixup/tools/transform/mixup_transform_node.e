@@ -37,6 +37,18 @@ feature {ANY}
       deferred
       end
 
+   type: MIXUP_TRANSFORM_NODE_TYPE
+      deferred
+      end
+
+   set_type (a_type: like type)
+      require
+         type = Void
+      deferred
+      ensure
+         type = a_type
+      end
+
 feature {MIXUP_TRANSFORM_NODE}
    set_parent (a_parent: like parent)
       do

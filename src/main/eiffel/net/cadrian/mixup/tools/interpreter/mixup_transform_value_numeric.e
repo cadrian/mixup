@@ -12,30 +12,29 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_TRANSFORM_NODE_TYPE_STRING
+class MIXUP_TRANSFORM_VALUE_NUMERIC
 
 inherit
-   MIXUP_TRANSFORM_NODE_TYPE_IMPL[STRING]
+   MIXUP_TRANSFORM_VALUE_IMPL[INTEGER]
 
 insert
-   LOGGING
-      undefine
-         is_equal
-      end
    MIXUP_TRANSFORM_NODE_TYPES
-      undefine
-         is_equal
-      end
 
-create {MIXUP_TRANSFORM_NODE_TYPES}
+create {MIXUP_TRANSFORM_INTERPRETER}
    make
 
 feature {ANY}
-   is_comparable: BOOLEAN True
+   type: MIXUP_TRANSFORM_NODE_TYPE_NUMERIC
+      do
+         Result := type_numeric
+      end
 
-feature {MIXUP_TRANSFORM_NODE_TYPES}
-   init
+feature {}
+   make
       do
       end
 
-end -- class MIXUP_TRANSFORM_NODE_TYPE_STRING
+invariant
+   type = type_numeric
+
+end -- class MIXUP_TRANSFORM_VALUE_NUMERIC

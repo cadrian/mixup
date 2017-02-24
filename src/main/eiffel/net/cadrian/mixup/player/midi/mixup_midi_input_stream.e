@@ -757,8 +757,6 @@ feature {}
                keysig := keysig | 0xffffff00 -- sign extension
             end
             if has_error then
-            elseif not keysig.in_range(-7, 7) then
-               error := "Invalid key signature setting: key signature #(1) not between -7 and 7" # &keysig
             else
                mode := read_integer_8(count)
                if has_error then

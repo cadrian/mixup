@@ -524,7 +524,13 @@ feature {}
             end
             end_position := buffer.current_index
             if not is_keyword(image) then
-               create {MIXUP_TRANSFORM_NODE_IMAGE_UNTYPED} Result.make(image, start_position, end_position)
+               inspect
+                  image
+               when "event" then
+                  create {MIXUP_TRANSFORM_NODE_IMAGE_TYPED[REFERENCE[MIXUP_MIDI_CODEC]]} Result.make(image, start_position, end_position, type_event, type_event.ref)
+               else
+                  create {MIXUP_TRANSFORM_NODE_IMAGE_UNTYPED} Result.make(image, start_position, end_position)
+               end
             end
          end
       end
