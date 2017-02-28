@@ -16,7 +16,7 @@ cluster
         default
             assertion(no)
         option
-            debug(yes): FIXED_STRING
+            debug(yes): FIXED_STRING, PARTIALLY_FILLED_STRING
         end
 
 end

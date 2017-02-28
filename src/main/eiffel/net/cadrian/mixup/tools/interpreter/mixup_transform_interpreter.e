@@ -60,9 +60,9 @@ feature {}
       do
          visit(a_node.node(1))
          if error = Void then
-            visit(a_node.node(2))
+            visit(a_node.node(3))
             if error = Void then
-               visit(a_node.node(3))
+               visit(a_node.node(2))
             end
          end
       end
@@ -130,17 +130,52 @@ feature {}
       end
 
    run_output (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      local
+         output_node: MIXUP_TRANSFORM_NODE
+         output_value: MIXUP_TRANSFORM_VALUE_IMPL[STRING]
       do
          check
             expression_stack.is_empty
          end
-         -- TODO
+         output_node := a_node.node(2)
+         visit(output_node)
+         if error = Void then
+            check
+               expression_stack.count = 1
+            end
+            if expression_stack.last.type = type_string then
+               output_value ::= expression_stack.last
+               write_target_midi(output_node, output_value.value)
+            else
+               set_error(output_node, "Expected a string expression")
+            end
+            expression_stack.clear_count
+         end
       ensure
          error = Void implies target_midi /= Void
       end
 
+   write_target_midi (a_node: MIXUP_TRANSFORM_NODE; file: STRING)
+      require
+         error = Void
+      local
+         mid_out: BINARY_FILE_WRITE
+         mid_tgt: MIXUP_MIDI_FILE_WRITE
+      do
+         log.trace.put_line("**** Writing target midi...")
+         create mid_out.connect_to(file)
+         if not mid_out.is_connected then
+            log.error.put_line("Could not write file: #(2)" # file)
+            die_with_code(1)
+         end
+         create mid_tgt.connect_to(mid_out)
+         target_midi.encode_to(mid_tgt)
+         mid_tgt.disconnect
+      end
+
    run_transform (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       do
+         prepare_target_midi
          check
             expression_stack.is_empty
          end
@@ -154,6 +189,26 @@ feature {}
             sequencer.next
          end
          target_midi.end_all_tracks
+         check
+            expression_stack.is_empty
+         end
+      end
+
+   prepare_target_midi
+      local
+         i: INTEGER
+      do
+         create target_midi.make(source_midi.division)
+         from
+            i := 1
+         until
+            i > source_midi.track_count
+         loop
+            target_midi.add_track(create {MIXUP_MIDI_TRACK}.make)
+            i := i + 1
+         end
+      ensure
+         target_midi /= Void
       end
 
    on_event (event: MIXUP_MIDI_CODEC; a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL): MIXUP_MIDI_CODEC
