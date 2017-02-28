@@ -30,22 +30,22 @@ feature {}
 
         "Transformation", {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "Input", "Output", "Transform", "KW end" >> }, Void
+                              {FAST_ARRAY[STRING] << "Input", "Output", "Transform", "KW:end" >> }, Void
                             >> };
 
         "Input",          {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "KW input", "Expression" >> }, Void
+                              {FAST_ARRAY[STRING] << "KW:input", "Expression" >> }, Void
                             >> };
 
         "Output",         {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "KW output", "Expression" >> }, Void
+                              {FAST_ARRAY[STRING] << "KW:output", "Expression" >> }, Void
                             >> };
 
         "Transform",      {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "KW transform", "Instruction*" >> }, Void
+                              {FAST_ARRAY[STRING] << "KW:transform", "Instruction*" >> }, Void
                             >> };
 
         "Instruction*",   {DESCENDING_NON_TERMINAL
@@ -69,23 +69,23 @@ feature {}
 
         "AOCCont",        {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "KW :=", "Expression" >> }, Void;
-                              {FAST_ARRAY[STRING] << "KW (", "Expression*", "KW )" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW::=", "Expression" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:(", "Expression*", "KW:)" >> }, Void;
                             >> };
 
         "Case",          {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "KW case", "Expression", "When*", "Else", "KW end" >> }, Void
+                              {FAST_ARRAY[STRING] << "KW:case", "Expression", "When*", "Else", "KW:end" >> }, Void
                             >> };
 
         "If",            {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "KW if", "Then", "ElseIf*", "Else", "KW end" >> }, Void
+                              {FAST_ARRAY[STRING] << "KW:if", "Then", "ElseIf*", "Else", "KW:end" >> }, Void
                             >> };
 
         "Skip",          {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "KW skip" >> }, Void
+                              {FAST_ARRAY[STRING] << "KW:skip" >> }, Void
                             >> };
 
         "When*",         {DESCENDING_NON_TERMINAL
@@ -96,12 +96,12 @@ feature {}
 
         "When",          {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "KW when", "Expression", "KW then", "Instruction*" >> }, Void
+                              {FAST_ARRAY[STRING] << "KW:when", "Expression", "KW:then", "Instruction*" >> }, Void
                             >> };
 
         "Then",          {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "Expression", "KW then", "Instruction*" >> }, Void
+                              {FAST_ARRAY[STRING] << "Expression", "KW:then", "Instruction*" >> }, Void
                             >> };
 
         "ElseIf*",       {DESCENDING_NON_TERMINAL
@@ -112,20 +112,20 @@ feature {}
 
         "ElseIf",          {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "KW elseif", "Then" >> }, Void
+                              {FAST_ARRAY[STRING] << "KW:elseif", "Then" >> }, Void
                             >> };
 
         "Else",          {DESCENDING_NON_TERMINAL
                             <<
                               epsilon, Void;
-                              {FAST_ARRAY[STRING] << "KW else", "Instruction*" >> }, Void
+                              {FAST_ARRAY[STRING] << "KW:else", "Instruction*" >> }, Void
                             >> };
 
         "Expression*",   {DESCENDING_NON_TERMINAL
                             <<
                               epsilon, agent build_empty_list(?);
                               {FAST_ARRAY[STRING] << "Expression" >> }, agent build_new_list("Expression", ?);
-                              {FAST_ARRAY[STRING] << "Expression", "KW ,", "Expression*" >> }, agent build_continue_list("Expression", 1, ?)
+                              {FAST_ARRAY[STRING] << "Expression", "KW:,", "Expression*" >> }, agent build_continue_list("Expression", 1, ?)
                             >> };
 
         "Expression",    {DESCENDING_NON_TERMINAL
@@ -141,7 +141,7 @@ feature {}
         "BooleanOrR",    {DESCENDING_NON_TERMINAL
                             <<
                               epsilon, Void;
-                              {FAST_ARRAY[STRING] << "KW or", "BooleanOr" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:or", "BooleanOr" >> }, Void;
                             >> };
 
         "BooleanAnd",    {DESCENDING_NON_TERMINAL
@@ -152,7 +152,7 @@ feature {}
         "BooleanAndR",   {DESCENDING_NON_TERMINAL
                             <<
                               epsilon, Void;
-                              {FAST_ARRAY[STRING] << "KW and", "BooleanAnd" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:and", "BooleanAnd" >> }, Void;
                             >> };
 
         "BooleanComp",   {DESCENDING_NON_TERMINAL
@@ -163,12 +163,12 @@ feature {}
         "BooleanCompR",  {DESCENDING_NON_TERMINAL
                             <<
                               epsilon, Void;
-                              {FAST_ARRAY[STRING] << "KW =", "ExpAdd" >> }, Void;
-                              {FAST_ARRAY[STRING] << "KW /=", "ExpAdd" >> }, Void;
-                              {FAST_ARRAY[STRING] << "KW <", "ExpAdd" >> }, Void;
-                              {FAST_ARRAY[STRING] << "KW <=", "ExpAdd" >> }, Void;
-                              {FAST_ARRAY[STRING] << "KW >", "ExpAdd" >> }, Void;
-                              {FAST_ARRAY[STRING] << "KW >=", "ExpAdd" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:=", "ExpAdd" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:/=", "ExpAdd" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:<", "ExpAdd" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:<=", "ExpAdd" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:>", "ExpAdd" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:>=", "ExpAdd" >> }, Void;
                             >> };
 
         "ExpAdd",        {DESCENDING_NON_TERMINAL
@@ -179,8 +179,8 @@ feature {}
         "ExpAddR",       {DESCENDING_NON_TERMINAL
                             <<
                               epsilon, Void;
-                              {FAST_ARRAY[STRING] << "KW +", "ExpAdd" >> }, Void;
-                              {FAST_ARRAY[STRING] << "KW -", "ExpAdd" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:+", "ExpAdd" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:-", "ExpAdd" >> }, Void;
                             >> };
 
         "ExpMult",       {DESCENDING_NON_TERMINAL
@@ -191,8 +191,8 @@ feature {}
         "ExpMultR",      {DESCENDING_NON_TERMINAL
                             <<
                               epsilon, Void;
-                              {FAST_ARRAY[STRING] << "KW *", "ExpMult" >> }, Void;
-                              {FAST_ARRAY[STRING] << "KW /", "ExpMult" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:*", "ExpMult" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:/", "ExpMult" >> }, Void;
                             >> };
 
         "ExpPow",        {DESCENDING_NON_TERMINAL
@@ -203,70 +203,70 @@ feature {}
         "ExpPowR",       {DESCENDING_NON_TERMINAL
                             <<
                               epsilon, Void;
-                              {FAST_ARRAY[STRING] << "KW ^", "ExpPow" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:^", "ExpPow" >> }, Void;
                             >> };
 
         "ExpAtom",       {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "KW value" >> }, Void;
-                              {FAST_ARRAY[STRING] << "KW identifier", "ExpAtomR", "ExpCall" >> }, Void;
-                              {FAST_ARRAY[STRING] << "KW (", "Expression", "KW )" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:value" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:identifier", "ExpAtomR", "ExpCall" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:(", "Expression", "KW:)" >> }, Void;
                             >> };
 
         "ExpCall",       {DESCENDING_NON_TERMINAL
                             <<
                               epsilon, Void;
-                              {FAST_ARRAY[STRING] << "KW (", "Expression*", "KW )" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:(", "Expression*", "KW:)" >> }, Void;
                             >> };
 
         "ExpAtomR",      {DESCENDING_NON_TERMINAL
                             <<
                               epsilon, Void;
-                              {FAST_ARRAY[STRING] << "KW [", "Expression", "KW ]" >> }, Void;
-                              {FAST_ARRAY[STRING] << "KW .", "Addressable" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:[", "Expression", "KW:]" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:.", "Addressable" >> }, Void;
                             >> };
 
         "Addressable",   {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "KW identifier", "ExpAtomR" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:identifier", "ExpAtomR" >> }, Void;
                             >> };
 
         -- Terminals
 
-        "KW value",      create {DESCENDING_TERMINAL}.make(agent parse_value(?), Void);
-        "KW identifier", create {DESCENDING_TERMINAL}.make(agent parse_identifier(?), Void);
+        "KW:value",      create {DESCENDING_TERMINAL}.make(agent parse_value(?), Void);
+        "KW:identifier", create {DESCENDING_TERMINAL}.make(agent parse_identifier(?), Void);
 
-        "KW and",        create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "and"), Void);
-        "KW case",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "case"), Void);
-        "KW ^",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "^"), Void);
-        "KW <=",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "<="), Void);
-        "KW <",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "<"), Void);
-        "KW =",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "="), Void);
-        "KW >=",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, ">="), Void);
-        "KW >",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, ">"), Void);
-        "KW -",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "-"), Void);
-        "KW ,",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, ","), Void);
-        "KW :=",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, ":="), Void);
-        "KW /=",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "/="), Void);
-        "KW /",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "/"), Void);
-        "KW .",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "."), Void);
-        "KW (",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "("), Void);
-        "KW )",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, ")"), Void);
-        "KW [",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "["), Void);
-        "KW ]",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "]"), Void);
-        "KW *",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "*"), Void);
-        "KW +",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "+"), Void);
-        "KW else",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "else"), Void);
-        "KW elseif",     create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "elseif"), Void);
-        "KW end",        create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "end"), Void);
-        "KW if",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "if"), Void);
-        "KW input",      create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "input"), Void);
-        "KW or",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "or"), Void);
-        "KW output",     create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "output"), Void);
-        "KW skip",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "skip"), Void);
-        "KW then",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "then"), Void);
-        "KW transform",  create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "transform"), Void);
-        "KW when",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "when"), Void);
+        "KW:and",        create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "and"), Void);
+        "KW:case",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "case"), Void);
+        "KW:^",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "^"), Void);
+        "KW:<=",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "<="), Void);
+        "KW:<",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "<"), Void);
+        "KW:=",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "="), Void);
+        "KW:>=",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, ">="), Void);
+        "KW:>",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, ">"), Void);
+        "KW:-",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "-"), Void);
+        "KW:,",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, ","), Void);
+        "KW::=",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, ":="), Void);
+        "KW:/=",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "/="), Void);
+        "KW:/",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "/"), Void);
+        "KW:.",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "."), Void);
+        "KW:(",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "("), Void);
+        "KW:)",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, ")"), Void);
+        "KW:[",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "["), Void);
+        "KW:]",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "]"), Void);
+        "KW:*",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "*"), Void);
+        "KW:+",          create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "+"), Void);
+        "KW:else",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "else"), Void);
+        "KW:elseif",     create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "elseif"), Void);
+        "KW:end",        create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "end"), Void);
+        "KW:if",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "if"), Void);
+        "KW:input",      create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "input"), Void);
+        "KW:or",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "or"), Void);
+        "KW:output",     create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "output"), Void);
+        "KW:skip",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "skip"), Void);
+        "KW:then",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "then"), Void);
+        "KW:transform",  create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "transform"), Void);
+        "KW:when",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "when"), Void);
 
       >> }
       end
