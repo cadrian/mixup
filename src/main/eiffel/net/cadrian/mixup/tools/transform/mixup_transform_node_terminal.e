@@ -33,7 +33,7 @@ feature {ANY}
 
    image: MIXUP_TRANSFORM_NODE_IMAGE
 
-   is_valid: BOOLEAN True
+   is_valid, has_position: BOOLEAN True
 
    type: MIXUP_TRANSFORM_TYPE
       do

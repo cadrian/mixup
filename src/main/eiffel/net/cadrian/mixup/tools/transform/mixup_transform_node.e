@@ -23,11 +23,21 @@ feature {ANY}
 
    start_position: INTEGER
       require
-         is_valid
+         has_position
       deferred
+      ensure
+         Result > 0
       end
 
    end_position: INTEGER
+      require
+         has_position
+      deferred
+      ensure
+         Result > 0
+      end
+
+   has_position: BOOLEAN
       require
          is_valid
       deferred
@@ -58,8 +68,8 @@ feature {MIXUP_TRANSFORM_NODE}
       end
 
 invariant
-   start_position > 0
-   end_position >= start_position
+   (is_valid and then has_position) implies start_position > 0
+   (is_valid and then has_position) implies end_position >= start_position
    name /= Void
    not name.is_empty
 

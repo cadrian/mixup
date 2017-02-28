@@ -18,10 +18,14 @@ inherit
    MIXUP_TRANSFORM_NODE
 
 create {MIXUP_TRANSFORM_GRAMMAR}
-   make
+   make, make_empty
 
 feature {ANY}
-   count: INTEGER then nodes.count
+   count: INTEGER
+      do
+         if nodes /= Void then
+            Result := nodes.count
+         end
       end
 
    node (index: INTEGER): MIXUP_TRANSFORM_NODE
@@ -31,16 +35,61 @@ feature {ANY}
          Result := nodes.item(nodes.count - index)
       ensure
          Result /= Void
-         Result.is_valid
       end
 
-   start_position: INTEGER then nodes.first.start_position
+   start_position: INTEGER
+      local
+         i: INTEGER
+      do
+         if nodes /= Void then
+            from
+               i := nodes.upper
+            until
+               Result > 0 or else i < nodes.lower
+            loop
+               if nodes.item(i).has_position then
+                  Result := nodes.item(i).start_position
+               end
+               i := i - 1
+            end
+         end
       end
 
-   end_position: INTEGER then nodes.last.end_position
+   end_position: INTEGER
+      local
+         i: INTEGER
+      do
+         if nodes /= Void then
+            from
+               i := nodes.lower
+            until
+               Result > 0 or else i > nodes.upper
+            loop
+               if nodes.item(i).has_position then
+                  Result := nodes.item(i).end_position
+               end
+               i := i + 1
+            end
+         end
       end
 
-   is_valid: BOOLEAN then not can_add
+   has_position: BOOLEAN
+      local
+         i: INTEGER
+      do
+         if nodes /= Void then
+            from
+               i := nodes.upper
+            until
+               Result or else i < nodes.lower
+            loop
+               Result := nodes.item(i).has_position
+               i := i - 1
+            end
+         end
+      end
+
+   is_valid: BOOLEAN then nodes = Void or else nodes.count = nodes.capacity
       end
 
    type: MIXUP_TRANSFORM_TYPE
@@ -65,7 +114,7 @@ feature {MIXUP_TRANSFORM_GRAMMAR}
          count = old count + 1
       end
 
-   can_add: BOOLEAN then nodes.count < nodes.capacity
+   can_add: BOOLEAN then nodes /= Void and then nodes.count < nodes.capacity
       end
 
 feature {ANY}
@@ -78,10 +127,21 @@ feature {ANY}
       end
 
 feature {}
+   make_empty (a_name: like name)
+      require
+         a_name /= Void
+      do
+         name := a_name
+      ensure
+         name = a_name
+         nodes = Void
+         not has_position
+      end
+
    make (a_name: like name; a_capacity: INTEGER)
       require
          a_name /= Void
-         a_capacity >= 0
+         a_capacity > 0
       do
          name := a_name
          create nodes.with_capacity(a_capacity)
@@ -90,13 +150,15 @@ feature {}
          nodes /= Void
          nodes.capacity = a_capacity
          nodes.is_empty
+         can_add
       end
 
    nodes: FAST_ARRAY[MIXUP_TRANSFORM_NODE]
          -- BEWARE! nodes are kept in reverse order
 
 invariant
-   nodes /= Void
-   nodes.capacity >= 0
+   nodes /= Void implies nodes.capacity > 0
+   nodes = Void implies not has_position
+   can_add xor is_valid
 
 end -- class MIXUP_TRANSFORM_NODE_NON_TERMINAL

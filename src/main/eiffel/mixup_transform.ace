@@ -4,7 +4,7 @@ root
     MIXUP_TRANSFORM: make
 
 default
-    assertion(require)
+    assertion(ensure)
     assertion_flat_check(yes)
     debug(no)
     trace(yes)
@@ -15,6 +15,8 @@ cluster
     standard: "${path_liberty_core}loadpath.se"
         default
             assertion(no)
+        option
+            debug(yes): FIXED_STRING
         end
 
 end

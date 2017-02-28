@@ -35,15 +35,49 @@ feature {ANY}
       end
 
    start_position: INTEGER
+      local
+         i: INTEGER
       do
-         if nodes.is_empty then
-            Result := 0
-         else
-            Result := nodes.first.start_position
+         from
+            i := nodes.upper
+         until
+            Result > 0 or else i < nodes.lower
+         loop
+            if nodes.item(i).has_position then
+               Result := nodes.item(i).start_position
+            end
+            i := i - 1
          end
       end
 
-   end_position: INTEGER then nodes.last.end_position
+   end_position: INTEGER
+      local
+         i: INTEGER
+      do
+         from
+            i := nodes.lower
+         until
+            Result > 0 or else i > nodes.upper
+         loop
+            if nodes.item(i).has_position then
+               Result := nodes.item(i).end_position
+            end
+            i := i + 1
+         end
+      end
+
+   has_position: BOOLEAN
+      local
+         i: INTEGER
+      do
+         from
+            i := nodes.upper
+         until
+            Result or else i < nodes.lower
+         loop
+            Result := nodes.item(i).has_position
+            i := i - 1
+         end
       end
 
    is_valid: BOOLEAN True

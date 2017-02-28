@@ -77,18 +77,20 @@ feature {}
          end
          input_node := a_node.node(2)
          visit(input_node)
-         check
-            expression_stack.count = 1
+         if error = Void then
+            check
+               expression_stack.count = 1
+            end
+            if expression_stack.last.type = type_string then
+               input_value ::= expression_stack.last
+               read_source_midi(input_node, input_value.value)
+            else
+               set_error(input_node, "Expected a string expression")
+            end
+            expression_stack.clear_count
          end
-         if expression_stack.last.type = type_string then
-            input_value ::= expression_stack.last
-            read_source_midi(input_node, input_value.value)
-         else
-            set_error(input_node, "Expected a string expression")
-         end
-         expression_stack.clear_count
       ensure
-         source_midi /= Void
+         error = Void implies source_midi /= Void
       end
 
    read_source_midi (a_node: MIXUP_TRANSFORM_NODE; file: STRING)
@@ -134,7 +136,7 @@ feature {}
          end
          -- TODO
       ensure
-         target_midi /= Void
+         error = Void implies target_midi /= Void
       end
 
    run_transform (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
@@ -498,11 +500,21 @@ feature {}
                first_node.name = kw_value
             end
             value := first_node.image.type.value_of(first_node.image)
+            if value = Void then
+               if first_node.image.type.error /= Void then
+                  set_error(a_node, first_node.image.type.error)
+               else
+                  set_error(a_node, "Bad value: void")
+               end
+            else
+               expression_stack.add_last(value)
+            end
          elseif first_node.name = kw_identifier then
             value := context.reference_at(first_node.image.image)
             if value = Void then
                set_error(a_node, "Unknown identifier: #(1)" # first_node.image.image)
             else
+               expression_stack.add_last(value)
                visit(a_node.node(2))
                if error = Void then
                   visit(a_node.node(3))
@@ -586,6 +598,7 @@ feature {}
          a_error /= Void
          error = Void
       do
+         sedb_breakpoint
          error := "#(1) at #(2)" # a_error # &a_node.start_position
       ensure
          error /= Void

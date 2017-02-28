@@ -318,16 +318,23 @@ feature {}
          i: INTEGER; new_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL; node: MIXUP_TRANSFORM_NODE
       do
          log.trace.put_line("NT: #(1) => #(2)" # node_name # &node_content)
-         create new_node.make(node_name, node_content.count)
-         from
-            i := node_content.lower
-         until
-            i > node_content.upper
-         loop
-            node := stack.last
-            stack.remove_last
-            new_node.add_first(node)
-            i := i + 1
+         if node_content.is_empty then
+            create new_node.make_empty(node_name)
+         else
+            create new_node.make(node_name, node_content.count)
+            from
+               i := node_content.lower
+            until
+               i > node_content.upper
+            loop
+               node := stack.last
+               stack.remove_last
+               new_node.add_first(node)
+               i := i + 1
+            end
+         end
+         check
+            new_node.is_valid
          end
          stack.add_last(new_node)
       end
@@ -337,8 +344,8 @@ feature {}
          image: MIXUP_TRANSFORM_NODE_IMAGE
          new_node: MIXUP_TRANSFORM_NODE_TERMINAL
       do
-         log.trace.put_line("T: #(1)" # node_name)
          image ::= node_image
+         log.trace.put_line("T: #(1)" # node_name)
          create new_node.make(node_name, image)
          stack.add_last(new_node)
       end

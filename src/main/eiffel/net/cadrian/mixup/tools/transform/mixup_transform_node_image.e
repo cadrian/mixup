@@ -54,6 +54,7 @@ feature {}
 invariant
    image /= Void
    not image.is_empty
+   start_position > 0
    end_position = start_position + image.count
    type /= Void implies valid_type(type)
 

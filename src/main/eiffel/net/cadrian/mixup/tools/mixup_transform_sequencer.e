@@ -193,6 +193,7 @@ feature {}
          create sequencer.make(a_input)
          create {FAST_ARRAY[INTEGER]} expression.make(16)
          expression.set_all_with(127)
+         on_event := a_on_event
       ensure
          on_event = a_on_event
       end
