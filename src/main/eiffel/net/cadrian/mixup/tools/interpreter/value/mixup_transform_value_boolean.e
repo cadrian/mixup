@@ -29,6 +29,13 @@ feature {ANY}
          Result := type_boolean
       end
 
+   hash_code: INTEGER
+      do
+         if value then
+            Result := 1
+         end
+      end
+
 feature {}
    make
       do

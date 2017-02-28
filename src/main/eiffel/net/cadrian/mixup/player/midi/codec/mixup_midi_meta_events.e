@@ -43,49 +43,49 @@ feature {ANY}
       require
          a_text /= Void
       do
-         create Result.make(meta_event_text, a_text, "text_event: '" + a_text + "'")
+         create Result.make(meta_event_text, a_text, "text_event")
       end
 
    copyright_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT
       require
          a_text /= Void
       do
-         create Result.make(meta_event_copyright, a_text, "copyright_event: '" + a_text + "'")
+         create Result.make(meta_event_copyright, a_text, "copyright_event")
       end
 
    track_name_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT
       require
          a_text /= Void
       do
-         create Result.make(meta_event_track_name, a_text, "track_name_event: '" + a_text + "'")
+         create Result.make(meta_event_track_name, a_text, "track_name_event")
       end
 
    instrument_name_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT
       require
          a_text /= Void
       do
-         create Result.make(meta_event_instrument_name, a_text, "instrument_name_event: '" + a_text + "'")
+         create Result.make(meta_event_instrument_name, a_text, "instrument_name_event")
       end
 
    lyrics_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT
       require
          a_text /= Void
       do
-         create Result.make(meta_event_lyrics, a_text, "lyrics_event: '" + a_text + "'")
+         create Result.make(meta_event_lyrics, a_text, "lyrics_event")
       end
 
    marker_text_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT
       require
          a_text /= Void
       do
-         create Result.make(meta_event_marker_text, a_text, "marker_text_event: '" + a_text + "'")
+         create Result.make(meta_event_marker_text, a_text, "marker_text_event")
       end
 
    cue_point_event (a_text: ABSTRACT_STRING): MIXUP_MIDI_META_EVENT
       require
          a_text /= Void
       do
-         create Result.make(meta_event_cue_point, a_text, "copyright_event: '" + a_text + "'")
+         create Result.make(meta_event_cue_point, a_text, "copyright_event")
       end
 
    tempo_setting_event_bpm (bpm: INTEGER): MIXUP_MIDI_META_EVENT
@@ -99,7 +99,7 @@ feature {ANY}
          setting.extend(force_character(mpq|>>16))
          setting.extend(force_character(mpq|>> 8))
          setting.extend(force_character(mpq     ))
-         create Result.make(meta_event_tempo_setting, setting, "tempo_setting_event: " + bpm.out + " BPM")
+         create Result.make(meta_event_tempo_setting, setting, "tempo_setting_event")
       end
 
    tempo_setting_event_mpq (mpq: INTEGER): MIXUP_MIDI_META_EVENT
@@ -112,7 +112,7 @@ feature {ANY}
          setting.extend(force_character(mpq|>>>16))
          setting.extend(force_character(mpq|>>> 8))
          setting.extend(force_character(mpq      ))
-         create Result.make(meta_event_tempo_setting, setting, "tempo_setting_event: " + mpq.out + " us/q")
+         create Result.make(meta_event_tempo_setting, setting, "tempo_setting_event")
       end
 
    key_signature_event (keysig, mode: INTEGER): MIXUP_MIDI_META_EVENT
@@ -202,7 +202,7 @@ feature {ANY}
             end
          end
 
-         create Result.make(meta_event_key_signature, setting, "key_signature_event: " + desc)
+         create Result.make(meta_event_key_signature, setting, "key_signature_event")
       end
 
    time_signature_event (numerator, denominator, metronome_ticks, thirtyseconds_per_quarter: INTEGER): MIXUP_MIDI_META_EVENT
@@ -253,7 +253,7 @@ feature {ANY}
                desc.append_string(once " ticks per quarter")
             end
          end
-         create Result.make(meta_event_time_signature, setting, "time_signature_event: " + desc)
+         create Result.make(meta_event_time_signature, setting, "time_signature_event")
       end
 
    valid_denominator (denominator: INTEGER): BOOLEAN

@@ -23,6 +23,33 @@ create {MIXUP_TRANSFORM_INTERPRETER}
 feature {ANY}
    type: MIXUP_TRANSFORM_TYPE_ASSOCIATIVE
 
+   is_equal (other: like Current): BOOLEAN
+      local
+         i: ITERATOR[MIXUP_TRANSFORM_VALUE]
+         lv, rv: MIXUP_TRANSFORM_VALUE
+      do
+         if count = other.count and then type = other.type then
+            from
+               i := new_iterator_on_keys
+               Result := True
+            until
+               not Result or else i.is_off
+            loop
+               if other.has_value(i.item) then
+                  lv := value(i.item)
+                  rv := other.value(i.item)
+                  Result := lv.type = rv.type and then lv.type.eq(lv, rv)
+               end
+               i.next
+            end
+         end
+      end
+
+   hash_code: INTEGER
+      do
+         Result := to_pointer.hash_code
+      end
+
    has_value (key: MIXUP_TRANSFORM_VALUE): BOOLEAN
       require
          key /= Void
@@ -34,7 +61,7 @@ feature {ANY}
       require
          has_value(key)
       do
-         Result := values.item(key)
+         Result := values.at(key)
       end
 
    set_value (v, key: MIXUP_TRANSFORM_VALUE)

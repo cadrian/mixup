@@ -29,6 +29,11 @@ feature {ANY}
          Result := type_event
       end
 
+   hash_code: INTEGER
+      do
+         Result := to_pointer.hash_code
+      end
+
 feature {}
    make
       do

@@ -20,12 +20,6 @@ inherit
          make as make_type
       end
 
-insert
-   LOGGING
-      undefine
-         is_equal
-      end
-
 create {MIXUP_TRANSFORM_TYPES}
    make
 
@@ -34,8 +28,89 @@ feature {ANY}
 
    index_type, value_type: MIXUP_TRANSFORM_TYPE
 
-   field_type (field_name: STRING): MIXUP_TRANSFORM_TYPE
+feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALUE}
+   eq (left, right: MIXUP_TRANSFORM_VALUE): BOOLEAN
+      local
+         l, r: MIXUP_TRANSFORM_VALUE_ASSOCIATIVE
       do
+         l ::= left
+         r ::= right
+         Result := l.is_equal(r)
+      end
+
+   gt (left, right: MIXUP_TRANSFORM_VALUE): BOOLEAN
+      do
+         set_error("internal error: unexpected call")
+      end
+
+   add (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
+      do
+         if right.type = Current then
+            set_error("cannot add associatives")
+         else
+            set_error("cannot add associative and #(1)" # right.type.name)
+         end
+      end
+
+   subtract (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
+      do
+         if right.type = Current then
+            set_error("cannot subtract associatives")
+         else
+            set_error("cannot subtract associative and #(1)" # right.type.name)
+         end
+      end
+
+   multiply (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
+      do
+         if right.type = Current then
+            set_error("cannot multiply associatives")
+         else
+            set_error("cannot multiply associative and #(1)" # right.type.name)
+         end
+      end
+
+   divide (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
+      do
+         if right.type = Current then
+            set_error("cannot divide associatives")
+         else
+            set_error("cannot divide associative and #(1)" # right.type.name)
+         end
+      end
+
+   power (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
+      do
+         if right.type = Current then
+            set_error("cannot take power of associatives")
+         else
+            set_error("cannot take power of associative by #(1)" # right.type.name)
+         end
+      end
+
+   has_field (field_name: STRING): BOOLEAN
+      do
+         check not Result end
+      end
+
+   field (field_name: STRING; target: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
+      do
+         set_error("internal error: unexpected call")
+      end
+
+   value_of (image: MIXUP_TRANSFORM_NODE_IMAGE): MIXUP_TRANSFORM_VALUE
+      local
+         bool: MIXUP_TRANSFORM_NODE_IMAGE_TYPED[BOOLEAN]
+         res: MIXUP_TRANSFORM_VALUE_BOOLEAN
+      do
+         if bool ?:= image then
+            bool ::= image
+            create res.make
+            res.set_value(bool.value)
+            Result := res
+         else
+            set_error("internal error: invalid type")
+         end
       end
 
 feature {MIXUP_TRANSFORM_TYPES}

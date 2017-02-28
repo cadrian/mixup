@@ -70,7 +70,7 @@ feature {}
    run_input (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       local
          input_node: MIXUP_TRANSFORM_NODE
-         input_value: MIXUP_TRANSFORM_VALUE_IMPL[STRING]; input: STRING
+         input_value: MIXUP_TRANSFORM_VALUE_IMPL[STRING]
       do
          check
             expression_stack.is_empty
@@ -296,7 +296,6 @@ feature {}
 
    run_booleancompr (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       local
-         operator: MIXUP_TRANSFORM_NODE_TERMINAL
          left, right: MIXUP_TRANSFORM_VALUE
          res: MIXUP_TRANSFORM_VALUE_BOOLEAN
       do
@@ -351,7 +350,6 @@ feature {}
 
    run_expaddr (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       local
-         operator: MIXUP_TRANSFORM_NODE_TERMINAL
          left, right, res: MIXUP_TRANSFORM_VALUE
       do
          if a_node.count > 0 then
@@ -362,9 +360,9 @@ feature {}
             check
                expression_stack.count >= 2
             end
-            right ::= expression_stack.last
+            right := expression_stack.last
             expression_stack.remove_last
-            left ::= expression_stack.last
+            left := expression_stack.last
             expression_stack.remove_last
             res := add(a_node, left, right, a_node.node(1).name)
             if res = Void then
@@ -402,7 +400,6 @@ feature {}
 
    run_expmultr (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       local
-         operator: MIXUP_TRANSFORM_NODE_TERMINAL
          left, right, res: MIXUP_TRANSFORM_VALUE
       do
          if a_node.count > 0 then
@@ -413,9 +410,9 @@ feature {}
             check
                expression_stack.count >= 2
             end
-            right ::= expression_stack.last
+            right := expression_stack.last
             expression_stack.remove_last
-            left ::= expression_stack.last
+            left := expression_stack.last
             expression_stack.remove_last
             res := mult(a_node, left, right, a_node.node(1).name)
             if res = Void then
@@ -453,7 +450,6 @@ feature {}
 
    run_exppowr (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       local
-         operator: MIXUP_TRANSFORM_NODE_TERMINAL
          left, right, res: MIXUP_TRANSFORM_VALUE
       do
          if a_node.count > 0 then
@@ -464,9 +460,9 @@ feature {}
             check
                expression_stack.count >= 2
             end
-            right ::= expression_stack.last
+            right := expression_stack.last
             expression_stack.remove_last
-            left ::= expression_stack.last
+            left := expression_stack.last
             expression_stack.remove_last
             res := pow(a_node, left, right, a_node.node(1).name)
             if res = Void then

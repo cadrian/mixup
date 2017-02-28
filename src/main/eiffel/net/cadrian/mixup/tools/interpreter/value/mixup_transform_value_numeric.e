@@ -29,6 +29,11 @@ feature {ANY}
          Result := type_numeric
       end
 
+   hash_code: INTEGER
+      do
+         Result := value
+      end
+
 feature {}
    make
       do

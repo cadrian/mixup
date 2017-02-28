@@ -17,6 +17,12 @@ deferred class MIXUP_TRANSFORM_TYPE
 inherit
    HASHABLE
 
+insert
+   MIXUP_TRANSFORM_TYPES
+      redefine
+         is_equal
+      end
+
 feature {ANY}
    name: FIXED_STRING
 
@@ -38,7 +44,7 @@ feature {ANY}
          Result := error_ref.item
       end
 
-feature {MIXUP_TRANSFORM_INTERPRETER}
+feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALUE}
    eq (left, right: MIXUP_TRANSFORM_VALUE): BOOLEAN
       require
          error = Void
@@ -60,7 +66,6 @@ feature {MIXUP_TRANSFORM_INTERPRETER}
       require
          error = Void
          left.type = Current
-         right.type = Current
       deferred
       ensure
          Result /= Void implies Result.type = Current
@@ -71,7 +76,6 @@ feature {MIXUP_TRANSFORM_INTERPRETER}
       require
          error = Void
          left.type = Current
-         right.type = Current
       deferred
       ensure
          Result /= Void implies Result.type = Current
@@ -82,7 +86,6 @@ feature {MIXUP_TRANSFORM_INTERPRETER}
       require
          error = Void
          left.type = Current
-         right.type = Current
       deferred
       ensure
          Result /= Void implies Result.type = Current
@@ -93,7 +96,6 @@ feature {MIXUP_TRANSFORM_INTERPRETER}
       require
          error = Void
          left.type = Current
-         right.type = Current
       deferred
       ensure
          Result /= Void implies Result.type = Current
@@ -104,7 +106,6 @@ feature {MIXUP_TRANSFORM_INTERPRETER}
       require
          error = Void
          left.type = Current
-         right.type = Current
       deferred
       ensure
          Result /= Void implies Result.type = Current

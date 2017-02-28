@@ -22,12 +22,12 @@ create {MIXUP_TRANSFORM_GRAMMAR}
 
 feature {ANY}
    start_position: INTEGER then image.start_position
-      ensure
+      ensure then
          definition: Result = image.start_position
       end
 
    end_position: INTEGER then image.end_position
-      ensure
+      ensure then
          definition: Result = image.end_position
       end
 
