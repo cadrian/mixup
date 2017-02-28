@@ -37,7 +37,7 @@ feature {ANY}
       deferred
       end
 
-   type: MIXUP_TRANSFORM_NODE_TYPE
+   type: MIXUP_TRANSFORM_TYPE
       deferred
       end
 

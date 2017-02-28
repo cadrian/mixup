@@ -35,7 +35,7 @@ feature {ANY}
 
    is_valid: BOOLEAN True
 
-   type: MIXUP_TRANSFORM_NODE_TYPE
+   type: MIXUP_TRANSFORM_TYPE
       do
          if image.type /= Void then
             Result := image.type

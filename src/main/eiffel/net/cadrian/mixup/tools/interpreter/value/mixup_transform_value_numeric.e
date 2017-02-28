@@ -12,21 +12,21 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_TRANSFORM_VALUE_EVENT
+class MIXUP_TRANSFORM_VALUE_NUMERIC
 
 inherit
-   MIXUP_TRANSFORM_VALUE_IMPL[MIXUP_MIDI_CODEC]
+   MIXUP_TRANSFORM_VALUE_IMPL[INTEGER]
 
 insert
-   MIXUP_TRANSFORM_NODE_TYPES
+   MIXUP_TRANSFORM_TYPES
 
-create {MIXUP_TRANSFORM_INTERPRETER}
+create {ANY}
    make
 
 feature {ANY}
-   type: MIXUP_TRANSFORM_NODE_TYPE_EVENT
+   type: MIXUP_TRANSFORM_TYPE_NUMERIC
       do
-         Result := type_event
+         Result := type_numeric
       end
 
 feature {}
@@ -35,6 +35,6 @@ feature {}
       end
 
 invariant
-   type = type_event
+   type = type_numeric
 
-end -- class MIXUP_TRANSFORM_VALUE_EVENT
+end -- class MIXUP_TRANSFORM_VALUE_NUMERIC

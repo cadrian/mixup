@@ -18,9 +18,8 @@ inherit
    MIXUP_TRANSFORM_NODE_VISITOR
 
 insert
-   ARGUMENTS
    LOGGING
-   MIXUP_TRANSFORM_NODE_TYPES
+   MIXUP_TRANSFORM_TYPES
 
 create {MIXUP_TRANSFORM}
    make
@@ -498,7 +497,7 @@ feature {}
             check
                first_node.name = kw_value
             end
-            value := first_node.image.type.value_of(first_node.image.image)
+            value := first_node.image.type.value_of(first_node.image)
          elseif first_node.name = kw_identifier then
             value := context.reference_at(first_node.image.image)
             if value = Void then

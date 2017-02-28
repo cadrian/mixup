@@ -12,9 +12,9 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-deferred class MIXUP_TRANSFORM_NODE_TYPE_IMPL[E_]
+deferred class MIXUP_TRANSFORM_TYPE_IMPL[E_]
 
 inherit
-   MIXUP_TRANSFORM_NODE_TYPE
+   MIXUP_TRANSFORM_TYPE
 
-end -- class MIXUP_TRANSFORM_NODE_TYPE_IMPL
+end -- class MIXUP_TRANSFORM_TYPE_IMPL

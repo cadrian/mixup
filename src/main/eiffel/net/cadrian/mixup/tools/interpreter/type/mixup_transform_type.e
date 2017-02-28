@@ -12,7 +12,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-deferred class MIXUP_TRANSFORM_NODE_TYPE
+deferred class MIXUP_TRANSFORM_TYPE
 
 inherit
    HASHABLE
@@ -33,7 +33,7 @@ feature {ANY}
       end
 
 feature {ANY}
-   error: STRING
+   error: ABSTRACT_STRING
       do
          Result := error_ref.item
       end
@@ -124,16 +124,17 @@ feature {MIXUP_TRANSFORM_INTERPRETER}
          Result = Void implies error /= Void
       end
 
-   value_of (image: STRING): MIXUP_TRANSFORM_VALUE
+   value_of (image: MIXUP_TRANSFORM_NODE_IMAGE): MIXUP_TRANSFORM_VALUE
       require
          error = Void
          image /= Void
+         image.type = Current
       deferred
       ensure
          Result = Void implies error /= Void
       end
 
-feature {MIXUP_TRANSFORM_NODE_TYPES}
+feature {MIXUP_TRANSFORM_TYPES}
    init
       deferred
       end
@@ -157,7 +158,7 @@ feature {}
          error = a_error
       end
 
-   error_ref: REFERENCE[STRING]
+   error_ref: REFERENCE[ABSTRACT_STRING]
       once
          create Result
       end
@@ -165,4 +166,4 @@ feature {}
 invariant
    name /= Void
 
-end -- class MIXUP_TRANSFORM_NODE_TYPE
+end -- class MIXUP_TRANSFORM_TYPE

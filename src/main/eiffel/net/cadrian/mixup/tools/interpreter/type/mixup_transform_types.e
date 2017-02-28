@@ -12,38 +12,38 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-expanded class MIXUP_TRANSFORM_NODE_TYPES
+expanded class MIXUP_TRANSFORM_TYPES
    --
    -- Known inference types
    --
 
 feature {ANY}
-   type_numeric: MIXUP_TRANSFORM_NODE_TYPE_NUMERIC then type_numeric_
+   type_numeric: MIXUP_TRANSFORM_TYPE_NUMERIC then type_numeric_
       ensure
          valid_type(Result)
       end
 
-   type_string: MIXUP_TRANSFORM_NODE_TYPE_STRING then type_string_
+   type_string: MIXUP_TRANSFORM_TYPE_STRING then type_string_
       ensure
          valid_type(Result)
       end
 
-   type_argument: MIXUP_TRANSFORM_NODE_TYPE_STRING then type_argument_
+   type_argument: MIXUP_TRANSFORM_TYPE_STRING then type_argument_
       ensure
          valid_type(Result)
       end
 
-   type_boolean: MIXUP_TRANSFORM_NODE_TYPE_BOOLEAN then type_boolean_
+   type_boolean: MIXUP_TRANSFORM_TYPE_BOOLEAN then type_boolean_
       ensure
          valid_type(Result)
       end
 
-   type_event: MIXUP_TRANSFORM_NODE_TYPE_EVENT then type_event_
+   type_event: MIXUP_TRANSFORM_TYPE_EVENT then type_event_
       ensure
          valid_type(Result)
       end
 
-   type_associative (index, value: MIXUP_TRANSFORM_NODE_TYPE): MIXUP_TRANSFORM_NODE_TYPE_ASSOCIATIVE
+   type_associative (index, value: MIXUP_TRANSFORM_TYPE): MIXUP_TRANSFORM_TYPE_ASSOCIATIVE
       require
          index.is_comparable
          value /= Void
@@ -53,7 +53,7 @@ feature {ANY}
          valid_type(Result)
       end
 
-   valid_type (a_type: MIXUP_TRANSFORM_NODE_TYPE): BOOLEAN
+   valid_type (a_type: MIXUP_TRANSFORM_TYPE): BOOLEAN
       require
          a_type /= Void
       do
@@ -61,37 +61,37 @@ feature {ANY}
       end
 
 feature {}
-   type_numeric_: MIXUP_TRANSFORM_NODE_TYPE_NUMERIC
+   type_numeric_: MIXUP_TRANSFORM_TYPE_NUMERIC
       once
          create Result.make("numeric")
       end
 
-   type_string_: MIXUP_TRANSFORM_NODE_TYPE_STRING
+   type_string_: MIXUP_TRANSFORM_TYPE_STRING
       once
          create Result.make("string")
       end
 
-   type_argument_: MIXUP_TRANSFORM_NODE_TYPE_STRING
+   type_argument_: MIXUP_TRANSFORM_TYPE_STRING
       once
          create Result.make("argument")
       end
 
-   type_boolean_: MIXUP_TRANSFORM_NODE_TYPE_BOOLEAN
+   type_boolean_: MIXUP_TRANSFORM_TYPE_BOOLEAN
       once
          create Result.make("boolean")
       end
 
-   type_event_: MIXUP_TRANSFORM_NODE_TYPE_EVENT
+   type_event_: MIXUP_TRANSFORM_TYPE_EVENT
       once
          create Result.make("event")
       end
 
-   type_associative_ (index, value: MIXUP_TRANSFORM_NODE_TYPE): MIXUP_TRANSFORM_NODE_TYPE_ASSOCIATIVE
+   type_associative_ (index, value: MIXUP_TRANSFORM_TYPE): MIXUP_TRANSFORM_TYPE_ASSOCIATIVE
       require
          index.is_comparable
          value /= Void
       local
-         type: MIXUP_TRANSFORM_NODE_TYPE; i: INTEGER
+         type: MIXUP_TRANSFORM_TYPE; i: INTEGER
       do
          -- there aren't that many (sensible) combinations. For now
          -- I'll just scan the set.
@@ -118,10 +118,10 @@ feature {}
          valid_type(Result)
       end
 
-   types: SET[MIXUP_TRANSFORM_NODE_TYPE]
+   types: SET[MIXUP_TRANSFORM_TYPE]
       once
-         Result := {HASHED_SET[MIXUP_TRANSFORM_NODE_TYPE] << type_numeric_, type_string_, type_argument_, type_boolean_, type_event_ >> }
-         Result.do_all(agent {MIXUP_TRANSFORM_NODE_TYPE}.init)
+         Result := {HASHED_SET[MIXUP_TRANSFORM_TYPE] << type_numeric_, type_string_, type_argument_, type_boolean_, type_event_ >> }
+         Result.do_all(agent {MIXUP_TRANSFORM_TYPE}.init)
       end
 
-end -- class MIXUP_TRANSFORM_NODE_TYPES
+end -- class MIXUP_TRANSFORM_TYPES

@@ -21,14 +21,14 @@ inherit
       end
 
 insert
-   MIXUP_TRANSFORM_NODE_TYPES
+   MIXUP_TRANSFORM_TYPES
       undefine
          out_in_tagged_out_memory
       end
 
 feature {ANY}
    image: STRING
-   type: MIXUP_TRANSFORM_NODE_TYPE
+   type: MIXUP_TRANSFORM_TYPE
    start_position, end_position: INTEGER
 
 feature {}

@@ -12,29 +12,17 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_TRANSFORM_VALUE_NUMERIC
+deferred class MIXUP_TRANSFORM_VALUE
 
 inherit
-   MIXUP_TRANSFORM_VALUE_IMPL[INTEGER]
-
-insert
-   MIXUP_TRANSFORM_NODE_TYPES
-
-create {MIXUP_TRANSFORM_INTERPRETER}
-   make
+   HASHABLE
 
 feature {ANY}
-   type: MIXUP_TRANSFORM_NODE_TYPE_NUMERIC
-      do
-         Result := type_numeric
-      end
-
-feature {}
-   make
-      do
+   type: MIXUP_TRANSFORM_TYPE
+      deferred
       end
 
 invariant
-   type = type_numeric
+   type /= Void
 
-end -- class MIXUP_TRANSFORM_VALUE_NUMERIC
+end -- class MIXUP_TRANSFORM_VALUE

@@ -48,7 +48,7 @@ feature {ANY}
 
    is_valid: BOOLEAN True
 
-   type: MIXUP_TRANSFORM_NODE_TYPE
+   type: MIXUP_TRANSFORM_TYPE
 
    set_type (a_type: like type)
       do

@@ -18,13 +18,13 @@ inherit
    MIXUP_TRANSFORM_VALUE_IMPL[BOOLEAN]
 
 insert
-   MIXUP_TRANSFORM_NODE_TYPES
+   MIXUP_TRANSFORM_TYPES
 
-create {MIXUP_TRANSFORM_INTERPRETER}
+create {ANY}
    make
 
 feature {ANY}
-   type: MIXUP_TRANSFORM_NODE_TYPE_BOOLEAN
+   type: MIXUP_TRANSFORM_TYPE_BOOLEAN
       do
          Result := type_boolean
       end

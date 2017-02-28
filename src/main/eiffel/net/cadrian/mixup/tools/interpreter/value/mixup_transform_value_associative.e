@@ -21,7 +21,7 @@ create {MIXUP_TRANSFORM_INTERPRETER}
    make
 
 feature {ANY}
-   type: MIXUP_TRANSFORM_NODE_TYPE_ASSOCIATIVE
+   type: MIXUP_TRANSFORM_TYPE_ASSOCIATIVE
 
    has_value (key: MIXUP_TRANSFORM_VALUE): BOOLEAN
       require
@@ -61,7 +61,7 @@ feature {}
    make (a_type: like type)
       require
          type /= Void
-         {MIXUP_TRANSFORM_NODE_TYPE_ASSOCIATIVE} ?:= a_type
+         {MIXUP_TRANSFORM_TYPE_ASSOCIATIVE} ?:= a_type
       do
          type := a_type
          create values

@@ -43,7 +43,7 @@ feature {ANY}
    is_valid: BOOLEAN then not can_add
       end
 
-   type: MIXUP_TRANSFORM_NODE_TYPE
+   type: MIXUP_TRANSFORM_TYPE
 
    set_type (a_type: like type)
       do
