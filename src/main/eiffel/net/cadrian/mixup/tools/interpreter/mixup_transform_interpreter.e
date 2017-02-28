@@ -653,13 +653,69 @@ feature {} -- Expression
       end
 
    run_expatomr (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      local
+         first_node: MIXUP_TRANSFORM_NODE_TERMINAL
+         map: MIXUP_TRANSFORM_VALUE_ASSOCIATIVE
+         index: MIXUP_TRANSFORM_VALUE
       do
-         -- TODO
+         inspect a_node.count
+         when 0 then
+         when 4 then
+            first_node ::= a_node.node(1)
+            check
+               first_node.name = kw_open_bracket
+            end
+            if map ?:= expression_stack.last then
+               map ::= expression_stack.last
+               expression_stack.remove_last
+               visit(a_node.node(2))
+               if error = Void then
+                  index := expression_stack.last
+                  expression_stack.remove_last
+                  if map.has_value(index) then
+                     expression_stack.add_last(map.value(index))
+                     visit(a_node.node(4))
+                  else
+                     set_error(a_node.node(2), "no such key")
+                  end
+               end
+            else
+               set_error(a_node, "expected an associative value")
+            end
+         when 2 then
+            first_node ::= a_node.node(1)
+            check
+               first_node.name = kw_dot
+            end
+            visit(a_node.node(2))
+         end
       end
 
    run_addressable (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      local
+         identifier: MIXUP_TRANSFORM_NODE_TERMINAL
+         tgt: MIXUP_TRANSFORM_VALUE
       do
-         -- TODO
+         identifier ::= a_node.node(1)
+         check
+            identifier.name = kw_identifier
+         end
+         if expression_stack.is_empty then
+            -- assign or call
+            -- TODO
+         else
+            -- after a dot
+            tgt := expression_stack.last
+            expression_stack.remove_last
+            if tgt.type.has_field(identifier.image.image) then
+               set_error(a_node, "unknown #(1) field: #(2)" # tgt.type.name # identifier.image.image)
+            else
+               expression_stack.add_last(tgt.type.field(identifier.image.image, tgt))
+            end
+         end
+         if error = Void then
+            visit(a_node.node(2))
+         end
       end
 
 feature {}

@@ -95,6 +95,7 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
          when "velocity", "channel", "pitch", "meta", "value", "fine", "type" then
             Result := True
          else
+            sedb_breakpoint
             check not Result end
          end
       end
