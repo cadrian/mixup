@@ -119,7 +119,7 @@ feature {}
                   source_midi /= Void
                end
                log.info.put_line("MIDI file has #(1) #(2)" # &(source_midi.track_count)
-                                 # (if source_midi.track_count= 1 then "track" else "tracks" end))
+                                 # (if source_midi.track_count = 1 then "track" else "tracks" end))
                mid_src.disconnect
                source_midi.end_all_tracks
                log.trace.put_line("max time: #(1)" # &(source_midi.max_time))
