@@ -134,12 +134,13 @@ feature {MIXUP_MIDI_CONTROLLER_SLIDER}
             set_res_numeric(codec.channel)
          when "pitch" then
          when "meta" then
+            set_res_numeric(knob.msb_code)
          when "value" then
             set_res_numeric(codec.value)
          when "fine" then
             set_res_boolean(knob.is_fine)
          when "type" then
-            set_res_string(knob.name)
+            set_res_string("controller")
          end
       end
 
@@ -152,11 +153,12 @@ feature {MIXUP_MIDI_CONTROLLER_SWITCH}
             set_res_numeric(codec.channel)
          when "pitch" then
          when "meta" then
+            set_res_numeric(knob.code)
          when "value" then
             set_res_numeric(codec.value)
          when "fine" then
          when "type" then
-            set_res_string(knob.name)
+            set_res_string("controller")
          end
       end
 
