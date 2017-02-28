@@ -23,24 +23,9 @@ create {MIXUP_TRANSFORM_TYPES}
 feature {ANY}
    is_comparable: BOOLEAN False
 
-   ref: REFERENCE[MIXUP_MIDI_CODEC]
-
-   set_event (a_event: MIXUP_MIDI_CODEC)
-      do
-         ref.set_item(a_event)
-      ensure
-         event = a_event
-      end
-
-   event: MIXUP_MIDI_CODEC
-         -- contextual event... TODO implement in a context instead
-      then ref.item
-      end
-
 feature {MIXUP_TRANSFORM_TYPES}
    init
       do
-         create ref
       end
 
 feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALUE}
@@ -132,12 +117,7 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
       end
 
    value_of (image: MIXUP_TRANSFORM_NODE_IMAGE): MIXUP_TRANSFORM_VALUE
-      local
-         res: MIXUP_TRANSFORM_VALUE_EVENT
       do
-         create res.make
-         res.set_value(event)
-         Result := res
       end
 
 feature {}

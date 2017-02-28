@@ -174,11 +174,15 @@ feature {}
       end
 
    run_transform (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      local
+         evt: MIXUP_TRANSFORM_VALUE_EVENT
       do
          prepare_target_midi
          check
             expression_stack.is_empty
          end
+         create evt.make
+         context.put(evt, "event")
          create sequencer.make(agent on_event(?, a_node), source_midi)
          from
             sequencer.start
