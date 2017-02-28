@@ -96,7 +96,7 @@ feature {}
 
         "When",          {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "KW when", "Then" >> }, Void
+                              {FAST_ARRAY[STRING] << "KW when", "Expression", "KW then", "Instruction*" >> }, Void
                             >> };
 
         "Then",          {DESCENDING_NON_TERMINAL

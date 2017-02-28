@@ -216,13 +216,21 @@ feature {}
       end
 
    on_event (event: MIXUP_MIDI_CODEC; a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL): MIXUP_MIDI_CODEC
+         -- a_node is the transform node (see `run_transform`)
+      local
+         evt: MIXUP_TRANSFORM_VALUE_EVENT
       do
-         -- TODO
+         evt ::= context.at("event")
+         evt.set_value(event)
+         visit(a_node.node(2))
+         evt ::= context.at("event")
+         Result := evt.value
       end
 
+feature {} -- Instruction
    run_instruction (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       do
-         -- TODO
+         visit(a_node.node(1))
       end
 
    run_assignorcall (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
@@ -237,39 +245,95 @@ feature {}
 
    run_case (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       do
-         -- TODO
+         branch_stack.add_last(False)
+         visit(a_node.node(2))
+         if error = Void then
+            visit(a_node.node(3))
+         end
+         if error = Void and then not branch_stack.last then
+            visit(a_node.node(4))
+         end
+         expression_stack.remove_last
+         if not branch_stack.last then
+            set_error(a_node, "No branch taken")
+         end
+         branch_stack.remove_last
       end
 
    run_if (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       do
-         -- TODO
+         branch_stack.add_last(False)
+         visit(a_node.node(2))
+         if error = Void and then not branch_stack.last then
+            visit(a_node.node(3))
+         end
+         if error = Void and then not branch_stack.last then
+            visit(a_node.node(4))
+         end
+         branch_stack.remove_last
       end
 
    run_skip (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      local
+         evt: MIXUP_TRANSFORM_VALUE_EVENT
       do
-         -- TODO
+         evt ::= context.at("event")
+         evt.set_value(Void)
       end
 
    run_when (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      local
+         exp: MIXUP_TRANSFORM_VALUE
       do
-         -- TODO
+         if not branch_stack.last then
+            visit(a_node.node(2))
+            if error = Void then
+               exp := expression_stack.last
+               expression_stack.remove_last
+               if expression_stack.last.type /= exp.type then
+                  set_error(a_node.node(2), "invalid type: case #(1) vs. #(2)" # expression_stack.last.type.name # exp.type.name)
+               elseif expression_stack.last.type.eq(expression_stack.last, exp) then
+                  visit(a_node.node(4))
+                  branch_stack.put(True, branch_stack.upper)
+               end
+            end
+         end
       end
 
    run_then (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      local
+         exp: MIXUP_TRANSFORM_VALUE_BOOLEAN
       do
-         -- TODO
+         visit(a_node.node(1))
+         if error /= Void then
+            if expression_stack.last.type /= type_boolean then
+               set_error(a_node.node(1), "expected boolean expression")
+            else
+               exp ::= expression_stack.last
+               expression_stack.remove_last
+               if exp.value then
+                  visit(a_node.node(3))
+                  branch_stack.put(True, branch_stack.upper)
+               end
+            end
+         end
       end
 
    run_elseif (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       do
-         -- TODO
+         if not branch_stack.last then
+            visit(a_node.node(2))
+         end
       end
 
    run_else (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       do
-         -- TODO
+         check not branch_stack.last end
+         visit(a_node.node(2))
+         branch_stack.put(True, branch_stack.upper)
       end
 
+feature {} -- Expression
    run_expression (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       do
          visit(a_node.node(1))
@@ -576,6 +640,9 @@ feature {}
                end
             end
          else
+            check
+               first_node.name = kw_open_parenthesis
+            end
             visit(a_node.node(2))
          end
       end
@@ -602,6 +669,7 @@ feature {}
       do
          create_runners
          create expression_stack
+         create branch_stack
          create context
          visit(a_root)
       end
@@ -661,12 +729,14 @@ feature {}
 
    runners: HASHED_DICTIONARY[PROCEDURE[TUPLE[MIXUP_TRANSFORM_NODE_NON_TERMINAL]], FIXED_STRING]
    expression_stack: FAST_ARRAY[MIXUP_TRANSFORM_VALUE]
+   branch_stack: FAST_ARRAY[BOOLEAN]
    sequencer: MIXUP_TRANSFORM_SEQUENCER
    context: HASHED_DICTIONARY[MIXUP_TRANSFORM_VALUE, STRING]
 
    source_midi: MIXUP_MIDI_FILE
    target_midi: MIXUP_MIDI_FILE
 
+feature {} -- keywords
    kw_value: FIXED_STRING once then "KW value".intern end
    kw_identifier: FIXED_STRING once then "KW identifier".intern end
 
@@ -737,5 +807,6 @@ feature {}
 invariant
    runners /= Void
    expression_stack /= Void
+   branch_stack /= Void
 
 end -- class MIXUP_TRANSFORM_INTERPRETER
