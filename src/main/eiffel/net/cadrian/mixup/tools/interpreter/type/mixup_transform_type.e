@@ -112,6 +112,7 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
          Result = Void implies error /= Void
       end
 
+feature {ANY}
    has_field (field_name: STRING): BOOLEAN
       deferred
       end
@@ -119,6 +120,7 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
    field (field_name: STRING; target: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
       require
          error = Void
+         target /= Void
          has_field(field_name)
       deferred
       ensure
@@ -132,6 +134,13 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
          image.type = Current
       deferred
       ensure
+         Result = Void implies error /= Void
+      end
+
+   new_value: MIXUP_TRANSFORM_VALUE
+      deferred
+      ensure
+         Result /= Void implies Result.type = Current
          Result = Void implies error /= Void
       end
 

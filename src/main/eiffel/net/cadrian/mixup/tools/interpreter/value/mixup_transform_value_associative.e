@@ -17,11 +17,16 @@ class MIXUP_TRANSFORM_VALUE_ASSOCIATIVE
 inherit
    MIXUP_TRANSFORM_VALUE
 
-create {MIXUP_TRANSFORM_INTERPRETER}
+create {ANY}
    make
 
 feature {ANY}
    type: MIXUP_TRANSFORM_TYPE_ASSOCIATIVE
+
+   accept (a_visitor: MIXUP_TRANSFORM_VALUE_VISITOR)
+      do
+         a_visitor.visit_value_associative(Current)
+      end
 
    is_equal (other: like Current): BOOLEAN
       local
@@ -87,8 +92,7 @@ feature {ANY}
 feature {}
    make (a_type: like type)
       require
-         type /= Void
-         {MIXUP_TRANSFORM_TYPE_ASSOCIATIVE} ?:= a_type
+         a_type /= Void
       do
          type := a_type
          create values

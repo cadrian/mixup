@@ -1,5 +1,6 @@
 ./
 interpreter/
+interpreter/aoc/
 interpreter/type/
 interpreter/value/
 transform/

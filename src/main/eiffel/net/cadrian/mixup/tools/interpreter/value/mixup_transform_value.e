@@ -22,6 +22,10 @@ feature {ANY}
       deferred
       end
 
+   accept (a_visitor: MIXUP_TRANSFORM_VALUE_VISITOR)
+      deferred
+      end
+
 invariant
    type /= Void
 

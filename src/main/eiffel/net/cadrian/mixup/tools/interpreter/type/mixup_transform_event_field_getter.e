@@ -77,14 +77,17 @@ feature {MIXUP_MIDI_KEY_PRESSURE}
       do
          inspect field
          when "velocity" then
+            sedb_breakpoint
          when "channel" then
             set_res_numeric(codec.channel)
          when "pitch" then
             set_res_numeric(codec.key)
          when "meta" then
+            sedb_breakpoint
          when "value" then
             set_res_numeric(codec.pressure)
          when "fine" then
+            sedb_breakpoint
          when "type" then
             set_res_string("key pressure")
          end
@@ -95,13 +98,17 @@ feature {MIXUP_MIDI_CHANNEL_PRESSURE}
       do
          inspect field
          when "velocity" then
+            sedb_breakpoint
          when "channel" then
             set_res_numeric(codec.channel)
          when "pitch" then
+            sedb_breakpoint
          when "meta" then
+            sedb_breakpoint
          when "value" then
             set_res_numeric(codec.pressure)
          when "fine" then
+            sedb_breakpoint
          when "type" then
             set_res_string("channel pressure")
          end
@@ -112,14 +119,17 @@ feature {MIXUP_MIDI_PITCH_BEND}
       do
          inspect field
          when "velocity" then
+            sedb_breakpoint
          when "channel" then
             set_res_numeric(codec.channel)
          when "pitch" then
             set_res_numeric(codec.pitch)
          when "meta" then
+            sedb_breakpoint
          when "value" then
             set_res_numeric(codec.pitch)
          when "fine" then
+            sedb_breakpoint
          when "type" then
             set_res_string("pitch bend")
          end
@@ -130,9 +140,11 @@ feature {MIXUP_MIDI_CONTROLLER_SLIDER}
       do
          inspect field
          when "velocity" then
+            sedb_breakpoint
          when "channel" then
             set_res_numeric(codec.channel)
          when "pitch" then
+            sedb_breakpoint
          when "meta" then
             set_res_numeric(knob.msb_code)
          when "value" then
@@ -149,14 +161,17 @@ feature {MIXUP_MIDI_CONTROLLER_SWITCH}
       do
          inspect field
          when "velocity" then
+            sedb_breakpoint
          when "channel" then
             set_res_numeric(codec.channel)
          when "pitch" then
+            sedb_breakpoint
          when "meta" then
             set_res_numeric(knob.code)
          when "value" then
             set_res_numeric(codec.value)
          when "fine" then
+            sedb_breakpoint
          when "type" then
             set_res_string("controller")
          end
@@ -173,8 +188,11 @@ feature {MIXUP_MIDI_NOTE_ON}
          when "pitch" then
             set_res_numeric(codec.pitch)
          when "meta" then
+            sedb_breakpoint
          when "value" then
+            sedb_breakpoint
          when "fine" then
+            sedb_breakpoint
          when "type" then
             set_res_string("note on")
          end
@@ -191,8 +209,11 @@ feature {MIXUP_MIDI_NOTE_OFF}
          when "pitch" then
             set_res_numeric(codec.pitch)
          when "meta" then
+            sedb_breakpoint
          when "value" then
+            sedb_breakpoint
          when "fine" then
+            sedb_breakpoint
          when "type" then
             set_res_string("note off")
          end
@@ -203,12 +224,17 @@ feature {MIXUP_MIDI_PROGRAM_CHANGE}
       do
          inspect field
          when "velocity" then
+            sedb_breakpoint
          when "channel" then
+            sedb_breakpoint
          when "pitch" then
+            sedb_breakpoint
          when "meta" then
+            sedb_breakpoint
          when "value" then
             set_res_numeric(codec.patch)
          when "fine" then
+            sedb_breakpoint
          when "type" then
             set_res_string("program change")
          end
@@ -219,12 +245,17 @@ feature {MIXUP_MIDI_META_EVENT}
       do
          inspect field
          when "velocity" then
+            sedb_breakpoint
          when "channel" then
+            sedb_breakpoint
          when "pitch" then
+            sedb_breakpoint
          when "meta" then
+            sedb_breakpoint
          when "value" then
             set_res_string(codec.data)
          when "fine" then
+            sedb_breakpoint
          when "type" then
             set_res_string(codec.name)
          end

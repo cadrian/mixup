@@ -118,6 +118,7 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
          end
       end
 
+feature {ANY}
    has_field (field_name: STRING): BOOLEAN
       do
          check not Result end
@@ -152,6 +153,11 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
          else
             set_error("internal error: invalid type")
          end
+      end
+
+   new_value: MIXUP_TRANSFORM_VALUE
+      do
+         create {MIXUP_TRANSFORM_VALUE_STRING} Result.make
       end
 
 feature {MIXUP_TRANSFORM_TYPES}

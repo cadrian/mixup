@@ -88,6 +88,7 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
          end
       end
 
+feature {ANY}
    has_field (field_name: STRING): BOOLEAN
       do
          inspect
@@ -95,7 +96,6 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
          when "velocity", "channel", "pitch", "meta", "value", "fine", "type" then
             Result := True
          else
-            sedb_breakpoint
             check not Result end
          end
       end
@@ -110,6 +110,7 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
             t ::= target
             Result := field_getter.item(t.value, field_name)
             if Result = Void then
+               sedb_breakpoint
                set_error("unknown field: #(1)" # field_name)
             end
          else
@@ -119,6 +120,12 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
 
    value_of (image: MIXUP_TRANSFORM_NODE_IMAGE): MIXUP_TRANSFORM_VALUE
       do
+         set_error("internal error: invalid type")
+      end
+
+   new_value: MIXUP_TRANSFORM_VALUE
+      do
+         create {MIXUP_TRANSFORM_VALUE_EVENT} Result.make
       end
 
 feature {}

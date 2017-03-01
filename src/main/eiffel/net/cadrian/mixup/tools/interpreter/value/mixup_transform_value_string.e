@@ -24,9 +24,12 @@ create {ANY}
    make
 
 feature {ANY}
-   type: MIXUP_TRANSFORM_TYPE_STRING
+   type: MIXUP_TRANSFORM_TYPE_STRING then type_string
+      end
+
+   accept (a_visitor: MIXUP_TRANSFORM_VALUE_VISITOR)
       do
-         Result := type_string
+         a_visitor.visit_value_string(Current)
       end
 
    hash_code: INTEGER

@@ -88,6 +88,7 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
          end
       end
 
+feature {ANY}
    has_field (field_name: STRING): BOOLEAN
       do
          check not Result end
@@ -99,18 +100,13 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
       end
 
    value_of (image: MIXUP_TRANSFORM_NODE_IMAGE): MIXUP_TRANSFORM_VALUE
-      local
-         bool: MIXUP_TRANSFORM_NODE_IMAGE_TYPED[BOOLEAN]
-         res: MIXUP_TRANSFORM_VALUE_BOOLEAN
       do
-         if bool ?:= image then
-            bool ::= image
-            create res.make
-            res.set_value(bool.value)
-            Result := res
-         else
-            set_error("internal error: invalid type")
-         end
+         set_error("internal error: invalid type")
+      end
+
+   new_value: MIXUP_TRANSFORM_VALUE
+      do
+         create {MIXUP_TRANSFORM_VALUE_ASSOCIATIVE} Result.make(Current)
       end
 
 feature {MIXUP_TRANSFORM_TYPES}

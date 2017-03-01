@@ -12,37 +12,34 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_TRANSFORM_VALUE_NUMERIC
+class MIXUP_TRANSFORM_AOC_FIELD
 
 inherit
-   MIXUP_TRANSFORM_VALUE_IMPL[INTEGER]
+   MIXUP_TRANSFORM_AOC_EXPRESSION
 
-insert
-   MIXUP_TRANSFORM_TYPES
-
-create {ANY}
+create {MIXUP_TRANSFORM_ASSIGN_OR_CALL_RUNNER}
    make
 
-feature {ANY}
-   type: MIXUP_TRANSFORM_TYPE_NUMERIC then type_numeric
-      end
+feature {MIXUP_TRANSFORM_AOC_EXPRESSION_VISITOR}
+   field: STRING
 
-   accept (a_visitor: MIXUP_TRANSFORM_VALUE_VISITOR)
+feature {MIXUP_TRANSFORM_ASSIGN_OR_CALL_RUNNER}
+   accept (visitor: MIXUP_TRANSFORM_AOC_EXPRESSION_VISITOR)
       do
-         a_visitor.visit_value_numeric(Current)
-      end
-
-   hash_code: INTEGER
-      do
-         Result := value
+         visitor.visit_field(Current)
       end
 
 feature {}
-   make
+   make (a_field: like field)
+      require
+         a_field /= Void
       do
+         field := a_field
+      ensure
+         field = a_field
       end
 
 invariant
-   type = type_numeric
+   field /= Void
 
-end -- class MIXUP_TRANSFORM_VALUE_NUMERIC
+end -- class MIXUP_TRANSFORM_AOC_FIELD

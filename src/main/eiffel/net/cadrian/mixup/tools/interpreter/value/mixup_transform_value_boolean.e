@@ -24,9 +24,12 @@ create {ANY}
    make
 
 feature {ANY}
-   type: MIXUP_TRANSFORM_TYPE_BOOLEAN
+   type: MIXUP_TRANSFORM_TYPE_BOOLEAN then type_boolean
+      end
+
+   accept (a_visitor: MIXUP_TRANSFORM_VALUE_VISITOR)
       do
-         Result := type_boolean
+         a_visitor.visit_value_boolean(Current)
       end
 
    hash_code: INTEGER

@@ -30,7 +30,7 @@ feature {}
 
         "Transformation", {DESCENDING_NON_TERMINAL
                             <<
-                              {FAST_ARRAY[STRING] << "Input", "Output", "Transform", "KW:end" >> }, Void
+                              {FAST_ARRAY[STRING] << "Input", "Output", "Init", "Transform", "KW:end" >> }, Void
                             >> };
 
         "Input",          {DESCENDING_NON_TERMINAL
@@ -41,6 +41,12 @@ feature {}
         "Output",         {DESCENDING_NON_TERMINAL
                             <<
                               {FAST_ARRAY[STRING] << "KW:output", "Expression" >> }, Void
+                            >> };
+
+        "Init",           {DESCENDING_NON_TERMINAL
+                            <<
+                              epsilon, Void;
+                              {FAST_ARRAY[STRING] << "KW:init", "Instruction*" >> }, Void
                             >> };
 
         "Transform",      {DESCENDING_NON_TERMINAL
@@ -222,7 +228,7 @@ feature {}
         "ExpAtomR",      {DESCENDING_NON_TERMINAL
                             <<
                               epsilon, Void;
-                              {FAST_ARRAY[STRING] << "KW:[", "Expression", "KW:]" >> }, Void;
+                              {FAST_ARRAY[STRING] << "KW:[", "Expression", "KW:]", "ExpAtomR" >> }, Void;
                               {FAST_ARRAY[STRING] << "KW:.", "Addressable" >> }, Void;
                             >> };
 
@@ -260,6 +266,7 @@ feature {}
         "KW:elseif",     create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "elseif"), Void);
         "KW:end",        create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "end"), Void);
         "KW:if",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "if"), Void);
+        "KW:init",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "init"), Void);
         "KW:input",      create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "input"), Void);
         "KW:or",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "or"), Void);
         "KW:output",     create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "output"), Void);
@@ -277,7 +284,7 @@ feature {}
       do
          inspect
             a_string
-         when "and", "case", "else", "elseif", "end", "if", "input", "or", "output", "skip", "then", "transform", "when" then
+         when "and", "case", "else", "elseif", "end", "if", "init", "input", "or", "output", "skip", "then", "transform", "when" then
             Result := True
          else
             check not Result end

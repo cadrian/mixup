@@ -18,6 +18,11 @@ expanded class MIXUP_TRANSFORM_TYPES
    --
 
 feature {ANY}
+   type_unknown: MIXUP_TRANSFORM_TYPE_UNKNOWN then type_unknown_
+      ensure
+         valid_type(Result)
+      end
+
    type_numeric: MIXUP_TRANSFORM_TYPE_NUMERIC then type_numeric_
       ensure
          valid_type(Result)
@@ -61,6 +66,11 @@ feature {ANY}
       end
 
 feature {}
+   type_unknown_: MIXUP_TRANSFORM_TYPE_UNKNOWN
+      once
+         create Result.make("unknown")
+      end
+
    type_numeric_: MIXUP_TRANSFORM_TYPE_NUMERIC
       once
          create Result.make("numeric")
@@ -120,7 +130,7 @@ feature {}
 
    types: SET[MIXUP_TRANSFORM_TYPE]
       once
-         Result := {HASHED_SET[MIXUP_TRANSFORM_TYPE] << type_numeric_, type_string_, type_argument_, type_boolean_, type_event_ >> }
+         Result := {HASHED_SET[MIXUP_TRANSFORM_TYPE] << type_unknown_, type_numeric_, type_string_, type_argument_, type_boolean_, type_event_ >> }
          Result.do_all(agent {MIXUP_TRANSFORM_TYPE}.init)
       end
 

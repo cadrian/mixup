@@ -12,10 +12,10 @@
 -- You should have received a copy of the GNU General Public License
 -- along with MiXuP.  If not, see <http://www.gnu.org/licenses/>.
 --
-class MIXUP_TRANSFORM_TYPE_BOOLEAN
+class MIXUP_TRANSFORM_TYPE_UNKNOWN
 
 inherit
-   MIXUP_TRANSFORM_TYPE_IMPL[BOOLEAN]
+   MIXUP_TRANSFORM_TYPE
 
 create {MIXUP_TRANSFORM_TYPES}
    make
@@ -30,12 +30,8 @@ feature {MIXUP_TRANSFORM_TYPES}
 
 feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALUE}
    eq (left, right: MIXUP_TRANSFORM_VALUE): BOOLEAN
-      local
-         l, r: MIXUP_TRANSFORM_VALUE_BOOLEAN
       do
-         l ::= left
-         r ::= right
-         Result := l.value = r.value
+         check not Result end
       end
 
    gt (left, right: MIXUP_TRANSFORM_VALUE): BOOLEAN
@@ -45,47 +41,27 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
 
    add (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
       do
-         if right.type = Current then
-            set_error("cannot add booleans")
-         else
-            set_error("cannot add boolean and #(1)" # right.type.name)
-         end
+         set_error("unknown type")
       end
 
    subtract (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
       do
-         if right.type = Current then
-            set_error("cannot subtract booleans")
-         else
-            set_error("cannot subtract boolean and #(1)" # right.type.name)
-         end
+         set_error("unknown type")
       end
 
    multiply (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
       do
-         if right.type = Current then
-            set_error("cannot multiply booleans")
-         else
-            set_error("cannot multiply boolean and #(1)" # right.type.name)
-         end
+         set_error("unknown type")
       end
 
    divide (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
       do
-         if right.type = Current then
-            set_error("cannot divide booleans")
-         else
-            set_error("cannot divide boolean and #(1)" # right.type.name)
-         end
+         set_error("unknown type")
       end
 
    power (left, right: MIXUP_TRANSFORM_VALUE): MIXUP_TRANSFORM_VALUE
       do
-         if right.type = Current then
-            set_error("cannot take power of booleans")
-         else
-            set_error("cannot take power of boolean by #(1)" # right.type.name)
-         end
+         set_error("unknown type")
       end
 
 feature {ANY}
@@ -100,23 +76,13 @@ feature {ANY}
       end
 
    value_of (image: MIXUP_TRANSFORM_NODE_IMAGE): MIXUP_TRANSFORM_VALUE
-      local
-         bool: MIXUP_TRANSFORM_NODE_IMAGE_TYPED[BOOLEAN]
-         res: MIXUP_TRANSFORM_VALUE_BOOLEAN
       do
-         if bool ?:= image then
-            bool ::= image
-            create res.make
-            res.set_value(bool.value)
-            Result := res
-         else
-            set_error("internal error: invalid type")
-         end
+         set_error("internal error: invalid type")
       end
 
    new_value: MIXUP_TRANSFORM_VALUE
       do
-         create {MIXUP_TRANSFORM_VALUE_BOOLEAN} Result.make
+         set_error("internal error: cannot create unknown values")
       end
 
-end -- class MIXUP_TRANSFORM_TYPE_BOOLEAN
+end -- class MIXUP_TRANSFORM_TYPE_UNKNOWN

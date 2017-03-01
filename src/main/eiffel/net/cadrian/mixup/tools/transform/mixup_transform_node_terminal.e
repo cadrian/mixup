@@ -17,6 +17,9 @@ class MIXUP_TRANSFORM_NODE_TERMINAL
 inherit
    MIXUP_TRANSFORM_NODE
 
+insert
+   LOGGING
+
 create {MIXUP_TRANSFORM_GRAMMAR}
    make
 
@@ -55,7 +58,9 @@ feature {ANY}
          v: MIXUP_TRANSFORM_NODE_VISITOR
       do
          v ::= visitor
+         log.trace.put_line(">> T:" + name)
          v.visit_terminal(Current)
+         log.trace.put_line("<< T:" + name)
       end
 
 feature {}

@@ -62,7 +62,10 @@ feature {}
          if error = Void then
             visit(a_node.node(3))
             if error = Void then
-               visit(a_node.node(2))
+               visit(a_node.node(4))
+               if error = Void then
+                  visit(a_node.node(2))
+               end
             end
          end
       end
@@ -173,6 +176,13 @@ feature {}
          mid_tgt.disconnect
       end
 
+   run_init (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      do
+         if a_node.count = 2 then
+            visit(a_node.node(2))
+         end
+      end
+
    run_transform (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       local
          evt: MIXUP_TRANSFORM_VALUE_EVENT
@@ -229,21 +239,90 @@ feature {}
 
 feature {} -- Instruction
    run_instruction (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      require
+         error= Void
+         expression_stack.is_empty
       do
          visit(a_node.node(1))
+      ensure
+         error = Void implies expression_stack.is_empty
       end
 
    run_assignorcall (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      require
+         expression_stack.is_empty
+      local
+         ar: like aoc_runner
       do
-         -- TODO
+         check
+            aoc_runner = Void
+         end
+         visit(a_node.node(2))
+         if error = Void then
+            check
+               aoc_runner /= Void
+            end
+            ar := aoc_runner
+            visit(a_node.node(1))
+            if error = Void then
+               check
+                  ar = aoc_runner
+               end
+               ar.run
+               aoc_runner := Void
+            end
+         end
+      ensure
+         error = Void implies expression_stack.is_empty
       end
 
    run_aoccont (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      require
+         error = Void
+         expression_stack.is_empty
+      local
+         first_node: MIXUP_TRANSFORM_NODE_TERMINAL
+         assign_runner: MIXUP_TRANSFORM_ASSIGN_RUNNER
+         exp_count: INTEGER
+         call_runner: MIXUP_TRANSFORM_CALL_RUNNER
       do
-         -- TODO
+         inspect a_node.count
+         when 2 then
+            first_node ::= a_node.node(1)
+            check
+               first_node.name = kw_assign
+            end
+            visit(a_node.node(2))
+            if error = Void then
+               create assign_runner.make(context, expression_stack.last)
+               expression_stack.remove_last
+               aoc_runner := assign_runner
+            end
+         when 3 then
+            first_node ::= a_node.node(1)
+            check
+               first_node.name = kw_open_parenthesis
+            end
+            exp_count := expression_stack.count
+            visit(a_node.node(2))
+            if error = Void then
+               from
+                  create call_runner.make(expression_stack.count - exp_count)
+               until
+                  expression_stack.count = exp_count
+               loop
+                  call_runner.add_first(expression_stack.last)
+                  expression_stack.remove_last
+               end
+               aoc_runner := call_runner
+            end
+         end
       end
 
    run_case (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      require
+         error = Void
+         expression_stack.is_empty
       do
          branch_stack.add_last(False)
          visit(a_node.node(2))
@@ -251,16 +330,21 @@ feature {} -- Instruction
             visit(a_node.node(3))
          end
          if error = Void and then not branch_stack.last then
+            expression_stack.remove_last
             visit(a_node.node(4))
          end
-         expression_stack.remove_last
-         if not branch_stack.last then
+         if error = Void and then not branch_stack.last then
             set_error(a_node, "No branch taken")
          end
          branch_stack.remove_last
+      ensure
+         error = Void implies expression_stack.is_empty
       end
 
    run_if (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      require
+         error = Void
+         expression_stack.is_empty
       do
          branch_stack.add_last(False)
          visit(a_node.node(2))
@@ -271,14 +355,21 @@ feature {} -- Instruction
             visit(a_node.node(4))
          end
          branch_stack.remove_last
+      ensure
+         error = Void implies expression_stack.is_empty
       end
 
    run_skip (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      require
+         error = Void
+         expression_stack.is_empty
       local
          evt: MIXUP_TRANSFORM_VALUE_EVENT
       do
          evt ::= context.at("event")
          evt.set_value(Void)
+      ensure
+         error = Void implies expression_stack.is_empty
       end
 
    run_when (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
@@ -293,6 +384,7 @@ feature {} -- Instruction
                if expression_stack.last.type /= exp.type then
                   set_error(a_node.node(2), "invalid type: case #(1) vs. #(2)" # expression_stack.last.type.name # exp.type.name)
                elseif expression_stack.last.type.eq(expression_stack.last, exp) then
+                  expression_stack.remove_last
                   visit(a_node.node(4))
                   branch_stack.put(True, branch_stack.upper)
                end
@@ -301,11 +393,14 @@ feature {} -- Instruction
       end
 
    run_then (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      require
+         error = Void
+         expression_stack.is_empty
       local
          exp: MIXUP_TRANSFORM_VALUE_BOOLEAN
       do
          visit(a_node.node(1))
-         if error /= Void then
+         if error = Void then
             if expression_stack.last.type /= type_boolean then
                set_error(a_node.node(1), "expected boolean expression")
             else
@@ -317,6 +412,8 @@ feature {} -- Instruction
                end
             end
          end
+      ensure
+         error = Void implies expression_stack.is_empty
       end
 
    run_elseif (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
@@ -327,10 +424,17 @@ feature {} -- Instruction
       end
 
    run_else (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      require
+         error = Void
+         expression_stack.is_empty
       do
          check not branch_stack.last end
-         visit(a_node.node(2))
-         branch_stack.put(True, branch_stack.upper)
+         if a_node.count = 2 then
+            visit(a_node.node(2))
+            branch_stack.put(True, branch_stack.upper)
+         end
+      ensure
+         error = Void implies expression_stack.is_empty
       end
 
 feature {} -- Expression
@@ -657,9 +761,19 @@ feature {} -- Expression
          first_node: MIXUP_TRANSFORM_NODE_TERMINAL
          map: MIXUP_TRANSFORM_VALUE_ASSOCIATIVE
          index: MIXUP_TRANSFORM_VALUE
+         ar: like aoc_runner
       do
-         inspect a_node.count
+         ar := aoc_runner
+         aoc_runner := Void
+         inspect
+            a_node.count
          when 0 then
+         when 2 then
+            first_node ::= a_node.node(1)
+            check
+               first_node.name = kw_dot
+            end
+            visit(a_node.node(2))
          when 4 then
             first_node ::= a_node.node(1)
             check
@@ -672,50 +786,76 @@ feature {} -- Expression
                if error = Void then
                   index := expression_stack.last
                   expression_stack.remove_last
+                  if ar /= Void then
+                     ar.set_index(map, index)
+                  end
                   if map.has_value(index) then
                      expression_stack.add_last(map.value(index))
                      visit(a_node.node(4))
-                  else
+                  elseif ar = Void then
                      set_error(a_node.node(2), "no such key")
                   end
+               end
+            elseif ar /= Void then
+               visit(a_node.node(2))
+               if error = Void then
+                  -- TODO: certainly buggy here. We must correctly
+                  -- dissociate the evaluation on stack case vs. the
+                  -- aoc runner case.
+                  index := expression_stack.last
+                  expression_stack.remove_last
+                  ar.set_index(expression_stack.last, index)
+                  expression_stack.remove_last
+                  -- TODO: what to add to the expression stack?
+                  visit(a_node.node(4))
                end
             else
                set_error(a_node, "expected an associative value")
             end
-         when 2 then
-            first_node ::= a_node.node(1)
-            check
-               first_node.name = kw_dot
-            end
-            visit(a_node.node(2))
          end
+         aoc_runner := ar
       end
 
    run_addressable (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       local
          identifier: MIXUP_TRANSFORM_NODE_TERMINAL
          tgt: MIXUP_TRANSFORM_VALUE
+         ar: like aoc_runner
       do
+         ar := aoc_runner
+         aoc_runner := Void
          identifier ::= a_node.node(1)
          check
             identifier.name = kw_identifier
          end
          if expression_stack.is_empty then
             -- assign or call
-            -- TODO
+            check
+               ar /= Void
+            end
+            tgt := context.reference_at(identifier.image.image)
+            create {MIXUP_TRANSFORM_VALUE_UNKNOWN} tgt.make(tgt, identifier.image.image)
+            ar.set_target(tgt)
+            expression_stack.add_last(tgt)
          else
             -- after a dot
             tgt := expression_stack.last
             expression_stack.remove_last
             if tgt.type.has_field(identifier.image.image) then
-               set_error(a_node, "unknown #(1) field: #(2)" # tgt.type.name # identifier.image.image)
-            else
                expression_stack.add_last(tgt.type.field(identifier.image.image, tgt))
+               if ar /= Void then
+                  ar.set_field(identifier.image.image)
+               end
+            else
+               set_error(a_node, "unknown #(1) field: #(2)" # tgt.type.name # identifier.image.image)
             end
          end
          if error = Void then
+            check not expression_stack.is_empty end
+            aoc_runner := ar
             visit(a_node.node(2))
          end
+         aoc_runner := ar
       end
 
 feature {}
@@ -736,6 +876,7 @@ feature {}
          runners.put(agent run_transformation(?), nt_transformation)
          runners.put(agent run_input(?), nt_input)
          runners.put(agent run_output(?), nt_output)
+         runners.put(agent run_init(?), nt_init)
          runners.put(agent run_transform(?), nt_transform)
          runners.put(agent run_instruction(?), nt_instruction)
          runners.put(agent run_assignorcall(?), nt_assignorcall)
@@ -788,49 +929,52 @@ feature {}
    branch_stack: FAST_ARRAY[BOOLEAN]
    sequencer: MIXUP_TRANSFORM_SEQUENCER
    context: HASHED_DICTIONARY[MIXUP_TRANSFORM_VALUE, STRING]
+   aoc_runner: MIXUP_TRANSFORM_ASSIGN_OR_CALL_RUNNER
 
    source_midi: MIXUP_MIDI_FILE
    target_midi: MIXUP_MIDI_FILE
 
 feature {} -- keywords
-   kw_value: FIXED_STRING once then "KW value".intern end
-   kw_identifier: FIXED_STRING once then "KW identifier".intern end
+   kw_value: FIXED_STRING once then "KW:value".intern end
+   kw_identifier: FIXED_STRING once then "KW:identifier".intern end
 
-   kw_and: FIXED_STRING once then "KW and".intern end
-   kw_case: FIXED_STRING once then "KW case".intern end
-   kw_power: FIXED_STRING once then "KW ^".intern end
-   kw_less_or_equal: FIXED_STRING once then "KW <=".intern end
-   kw_less_than: FIXED_STRING once then "KW <".intern end
-   kw_equal: FIXED_STRING once then "KW =".intern end
-   kw_greater_or_equal: FIXED_STRING once then "KW >=".intern end
-   kw_greater_than: FIXED_STRING once then "KW >".intern end
-   kw_minus: FIXED_STRING once then "KW -".intern end
-   kw_coma: FIXED_STRING once then "KW ,".intern end
-   kw_assign: FIXED_STRING once then "KW :=".intern end
-   kw_not_equal: FIXED_STRING once then "KW /=".intern end
-   kw_divide: FIXED_STRING once then "KW /".intern end
-   kw_dot: FIXED_STRING once then "KW .".intern end
-   kw_open_parenthesis: FIXED_STRING once then "KW (".intern end
-   kw_close_parenthesis: FIXED_STRING once then "KW )".intern end
-   kw_open_bracket: FIXED_STRING once then "KW [".intern end
-   kw_close_bracket: FIXED_STRING once then "KW ]".intern end
-   kw_times: FIXED_STRING once then "KW *".intern end
-   kw_plus: FIXED_STRING once then "KW +".intern end
-   kw_else: FIXED_STRING once then "KW else".intern end
-   kw_elseif: FIXED_STRING once then "KW elseif".intern end
-   kw_end: FIXED_STRING once then "KW end".intern end
-   kw_if: FIXED_STRING once then "KW if".intern end
-   kw_input: FIXED_STRING once then "KW input".intern end
-   kw_or: FIXED_STRING once then "KW or".intern end
-   kw_output: FIXED_STRING once then "KW output".intern end
-   kw_skip: FIXED_STRING once then "KW skip".intern end
-   kw_then: FIXED_STRING once then "KW then".intern end
-   kw_transform: FIXED_STRING once then "KW transform".intern end
-   kw_when: FIXED_STRING once then "KW when".intern end
+   kw_and: FIXED_STRING once then "KW:and".intern end
+   kw_case: FIXED_STRING once then "KW:case".intern end
+   kw_power: FIXED_STRING once then "KW:^".intern end
+   kw_less_or_equal: FIXED_STRING once then "KW:<=".intern end
+   kw_less_than: FIXED_STRING once then "KW:<".intern end
+   kw_equal: FIXED_STRING once then "KW:=".intern end
+   kw_greater_or_equal: FIXED_STRING once then "KW:>=".intern end
+   kw_greater_than: FIXED_STRING once then "KW:>".intern end
+   kw_minus: FIXED_STRING once then "KW:-".intern end
+   kw_coma: FIXED_STRING once then "KW:,".intern end
+   kw_assign: FIXED_STRING once then "KW::=".intern end
+   kw_not_equal: FIXED_STRING once then "KW:/=".intern end
+   kw_divide: FIXED_STRING once then "KW:/".intern end
+   kw_dot: FIXED_STRING once then "KW:.".intern end
+   kw_open_parenthesis: FIXED_STRING once then "KW:(".intern end
+   kw_close_parenthesis: FIXED_STRING once then "KW:)".intern end
+   kw_open_bracket: FIXED_STRING once then "KW:[".intern end
+   kw_close_bracket: FIXED_STRING once then "KW:]".intern end
+   kw_times: FIXED_STRING once then "KW:*".intern end
+   kw_plus: FIXED_STRING once then "KW:+".intern end
+   kw_else: FIXED_STRING once then "KW:else".intern end
+   kw_elseif: FIXED_STRING once then "KW:elseif".intern end
+   kw_end: FIXED_STRING once then "KW:end".intern end
+   kw_if: FIXED_STRING once then "KW:if".intern end
+   kw_init: FIXED_STRING once then "KW:init".intern end
+   kw_input: FIXED_STRING once then "KW:input".intern end
+   kw_or: FIXED_STRING once then "KW:or".intern end
+   kw_output: FIXED_STRING once then "KW:output".intern end
+   kw_skip: FIXED_STRING once then "KW:skip".intern end
+   kw_then: FIXED_STRING once then "KW:then".intern end
+   kw_transform: FIXED_STRING once then "KW:transform".intern end
+   kw_when: FIXED_STRING once then "KW:when".intern end
 
    nt_transformation: FIXED_STRING once then "Transformation".intern end
    nt_input: FIXED_STRING once then "Input".intern end
    nt_output: FIXED_STRING once then "Output".intern end
+   nt_init: FIXED_STRING once then "Init".intern end
    nt_transform: FIXED_STRING once then "Transform".intern end
    nt_instruction: FIXED_STRING once then "Instruction".intern end
    nt_assignorcall: FIXED_STRING once then "AssignOrCall".intern end

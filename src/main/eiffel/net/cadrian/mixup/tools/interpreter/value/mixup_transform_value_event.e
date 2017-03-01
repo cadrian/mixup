@@ -24,9 +24,12 @@ create {ANY}
    make
 
 feature {ANY}
-   type: MIXUP_TRANSFORM_TYPE_EVENT
+   type: MIXUP_TRANSFORM_TYPE_EVENT then type_event
+      end
+
+   accept (a_visitor: MIXUP_TRANSFORM_VALUE_VISITOR)
       do
-         Result := type_event
+         a_visitor.visit_value_event(Current)
       end
 
    hash_code: INTEGER
