@@ -41,7 +41,6 @@ feature {MIXUP_TRANSFORM_AOC_INDEX}
       do
          if expected_type /= type_unknown then
             expected_type := type_associative(a_index.index.type, expected_type)
-            -- TODO check type using a_index.map
          end
       end
 

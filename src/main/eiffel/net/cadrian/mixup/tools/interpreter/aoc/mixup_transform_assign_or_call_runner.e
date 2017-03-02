@@ -19,6 +19,8 @@ feature {MIXUP_TRANSFORM_INTERPRETER}
 
    set_target (a_target: MIXUP_TRANSFORM_VALUE)
       require
+         is_new
+         error = Void
          a_target /= Void
       do
          expression_string.add_last(create {MIXUP_TRANSFORM_AOC_TARGET}.make(a_target))
@@ -26,21 +28,27 @@ feature {MIXUP_TRANSFORM_INTERPRETER}
 
    set_field (a_field: STRING)
       require
+         not is_new
+         error = Void
          a_field /= Void
       do
          expression_string.add_last(create {MIXUP_TRANSFORM_AOC_FIELD}.make(a_field))
       end
 
-   set_index (a_map, a_index: MIXUP_TRANSFORM_VALUE)
+   set_index (a_index: MIXUP_TRANSFORM_VALUE)
       require
-         a_map /= Void
+         not is_new
+         error = Void
          a_index /= Void
       do
-         expression_string.add_last(create {MIXUP_TRANSFORM_AOC_INDEX}.make(a_map, a_index))
+         expression_string.add_last(create {MIXUP_TRANSFORM_AOC_INDEX}.make(a_index))
       end
 
    run
       deferred
+      end
+
+   is_new: BOOLEAN then expression_string.is_empty
       end
 
 feature {}

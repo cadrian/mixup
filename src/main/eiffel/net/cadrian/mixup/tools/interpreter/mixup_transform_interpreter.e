@@ -735,6 +735,7 @@ feature {} -- Expression
          elseif first_node.name = kw_identifier then
             value := context.reference_at(first_node.image.image)
             if value = Void then
+               -- TODO maybe a function call?
                set_error(a_node, "Unknown identifier: #(1)" # first_node.image.image)
             else
                expression_stack.add_last(value)
@@ -764,7 +765,6 @@ feature {} -- Expression
          ar: like aoc_runner
       do
          ar := aoc_runner
-         aoc_runner := Void
          inspect
             a_node.count
          when 0 then
@@ -779,41 +779,40 @@ feature {} -- Expression
             check
                first_node.name = kw_open_bracket
             end
-            if map ?:= expression_stack.last then
+            if ar /= Void then
+               check
+                  ar.error = Void
+               end
+               aoc_runner := Void
+               visit(a_node.node(2))
+               aoc_runner := ar
+               if error = Void then
+                  index := expression_stack.last
+                  expression_stack.remove_last
+                  ar.set_index(index)
+                  visit(a_node.node(4))
+               end
+            elseif map ?:= expression_stack.last then
                map ::= expression_stack.last
                expression_stack.remove_last
                visit(a_node.node(2))
                if error = Void then
                   index := expression_stack.last
                   expression_stack.remove_last
-                  if ar /= Void then
-                     ar.set_index(map, index)
-                  end
                   if map.has_value(index) then
                      expression_stack.add_last(map.value(index))
                      visit(a_node.node(4))
-                  elseif ar = Void then
+                  else
                      set_error(a_node.node(2), "no such key")
                   end
-               end
-            elseif ar /= Void then
-               visit(a_node.node(2))
-               if error = Void then
-                  -- TODO: certainly buggy here. We must correctly
-                  -- dissociate the evaluation on stack case vs. the
-                  -- aoc runner case.
-                  index := expression_stack.last
-                  expression_stack.remove_last
-                  ar.set_index(expression_stack.last, index)
-                  expression_stack.remove_last
-                  -- TODO: what to add to the expression stack?
-                  visit(a_node.node(4))
                end
             else
                set_error(a_node, "expected an associative value")
             end
          end
-         aoc_runner := ar
+      ensure
+         aoc_runner = old aoc_runner
+         aoc_runner /= Void implies (expression_stack.count = old expression_stack.count)
       end
 
    run_addressable (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
@@ -823,39 +822,42 @@ feature {} -- Expression
          ar: like aoc_runner
       do
          ar := aoc_runner
-         aoc_runner := Void
          identifier ::= a_node.node(1)
          check
             identifier.name = kw_identifier
          end
-         if expression_stack.is_empty then
-            -- assign or call
+         if ar /= Void then
             check
-               ar /= Void
+               ar.error = Void
             end
-            tgt := context.reference_at(identifier.image.image)
-            create {MIXUP_TRANSFORM_VALUE_UNKNOWN} tgt.make(tgt, identifier.image.image)
-            ar.set_target(tgt)
-            expression_stack.add_last(tgt)
+            if ar.is_new then
+               -- assign or call
+               tgt := context.reference_at(identifier.image.image)
+               create {MIXUP_TRANSFORM_VALUE_UNKNOWN} tgt.make(tgt, identifier.image.image)
+               ar.set_target(tgt)
+            else
+               -- after a dot
+               ar.set_field(identifier.image.image)
+            end
          else
-            -- after a dot
+            -- after a dot, no aoc runner
             tgt := expression_stack.last
             expression_stack.remove_last
             if tgt.type.has_field(identifier.image.image) then
                expression_stack.add_last(tgt.type.field(identifier.image.image, tgt))
-               if ar /= Void then
-                  ar.set_field(identifier.image.image)
-               end
             else
                set_error(a_node, "unknown #(1) field: #(2)" # tgt.type.name # identifier.image.image)
             end
          end
          if error = Void then
-            check not expression_stack.is_empty end
-            aoc_runner := ar
+            check
+               ar = Void implies not expression_stack.is_empty
+            end
             visit(a_node.node(2))
          end
-         aoc_runner := ar
+      ensure
+         aoc_runner = old aoc_runner
+         aoc_runner /= Void implies (expression_stack.count = old expression_stack.count)
       end
 
 feature {}

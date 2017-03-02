@@ -21,7 +21,6 @@ create {MIXUP_TRANSFORM_ASSIGN_OR_CALL_RUNNER}
    make
 
 feature {MIXUP_TRANSFORM_AOC_EXPRESSION_VISITOR}
-   map: MIXUP_TRANSFORM_VALUE
    index: MIXUP_TRANSFORM_VALUE
 
 feature {MIXUP_TRANSFORM_ASSIGN_OR_CALL_RUNNER}
@@ -31,20 +30,16 @@ feature {MIXUP_TRANSFORM_ASSIGN_OR_CALL_RUNNER}
       end
 
 feature {}
-   make (a_map: like map; a_index: like index)
+   make (a_index: like index)
       require
-         a_map /= Void
          a_index /= Void
       do
-         map := a_map
          index := a_index
       ensure
-         map = a_map
          index = a_index
       end
 
 invariant
-   map /= Void
    index /= Void
 
 end -- class MIXUP_TRANSFORM_AOC_INDEX
