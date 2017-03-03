@@ -215,7 +215,7 @@ feature {}
         "ExpAtom",       {DESCENDING_NON_TERMINAL
                             <<
                               {FAST_ARRAY[STRING] << "KW:value" >> }, Void;
-                              {FAST_ARRAY[STRING] << "KW:identifier", "ExpAtomR", "ExpCall" >> }, Void;
+                              {FAST_ARRAY[STRING] << "Addressable", "ExpCall" >> }, Void;
                               {FAST_ARRAY[STRING] << "KW:(", "Expression", "KW:)" >> }, Void;
                             >> };
 

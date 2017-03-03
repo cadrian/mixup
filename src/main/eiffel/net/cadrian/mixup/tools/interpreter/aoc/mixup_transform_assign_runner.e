@@ -64,7 +64,7 @@ feature {MIXUP_TRANSFORM_INTERPRETER}
       end
 
 feature {}
-   make (a_context: DICTIONARY[MIXUP_TRANSFORM_VALUE, STRING]; a_value: like value)
+   make (a_context: like context; a_value: like value)
       require
          a_context /= Void
          a_value /= Void

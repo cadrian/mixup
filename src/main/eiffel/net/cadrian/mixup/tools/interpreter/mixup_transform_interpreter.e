@@ -269,6 +269,9 @@ feature {} -- Instruction
                   ar = aoc_runner
                end
                ar.run
+               if ar.error /= Void then
+                  set_error(a_node, ar.error)
+               end
                aoc_runner := Void
             end
          end
@@ -283,10 +286,9 @@ feature {} -- Instruction
       local
          first_node: MIXUP_TRANSFORM_NODE_TERMINAL
          assign_runner: MIXUP_TRANSFORM_ASSIGN_RUNNER
-         exp_count: INTEGER
-         call_runner: MIXUP_TRANSFORM_CALL_RUNNER
       do
-         inspect a_node.count
+         inspect
+            a_node.count
          when 2 then
             first_node ::= a_node.node(1)
             check
@@ -299,24 +301,10 @@ feature {} -- Instruction
                aoc_runner := assign_runner
             end
          when 3 then
-            first_node ::= a_node.node(1)
-            check
-               first_node.name = kw_open_parenthesis
-            end
-            exp_count := expression_stack.count
-            visit(a_node.node(2))
-            if error = Void then
-               from
-                  create call_runner.make(expression_stack.count - exp_count)
-               until
-                  expression_stack.count = exp_count
-               loop
-                  call_runner.add_first(expression_stack.last)
-                  expression_stack.remove_last
-               end
-               aoc_runner := call_runner
-            end
+            run_call_site(a_node)
          end
+      ensure
+         error = Void implies aoc_runner /= Void
       end
 
    run_case (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
@@ -716,9 +704,12 @@ feature {} -- Expression
       local
          value: MIXUP_TRANSFORM_VALUE
          first_node: MIXUP_TRANSFORM_NODE_TERMINAL
+         old_ar, ar: like aoc_runner
       do
-         first_node ::= a_node.node(1)
-         if a_node.count = 1 then
+         inspect
+            a_node.count
+         when 1 then
+            first_node ::= a_node.node(1)
             check
                first_node.name = kw_value
             end
@@ -732,19 +723,29 @@ feature {} -- Expression
             else
                expression_stack.add_last(value)
             end
-         elseif first_node.name = kw_identifier then
-            value := context.reference_at(first_node.image.image)
-            if value = Void then
-               -- TODO maybe a function call?
-               set_error(a_node, "Unknown identifier: #(1)" # first_node.image.image)
-            else
-               expression_stack.add_last(value)
-               visit(a_node.node(2))
+         when 2 then
+            old_ar := aoc_runner
+            aoc_runner := Void
+            visit(a_node.node(2))
+            if error = Void then
+               check
+                  aoc_runner /= Void
+               end
+               ar := aoc_runner
+               visit(a_node.node(1))
+               check
+                  aoc_runner = ar
+               end
                if error = Void then
-                  visit(a_node.node(3))
+                  ar.run
+                  if ar.error /= Void then
+                     set_error(a_node, ar.error)
+                  end
                end
             end
-         else
+            aoc_runner := old_ar
+         when 3 then
+            first_node ::= a_node.node(1)
             check
                first_node.name = kw_open_parenthesis
             end
@@ -753,8 +754,53 @@ feature {} -- Expression
       end
 
    run_expcall (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      local
+         entity_runner: MIXUP_TRANSFORM_ENTITY_RUNNER
       do
-         -- TODO
+         inspect
+            a_node.count
+         when 0 then
+            create entity_runner.make(context, agent push_expression(?))
+            aoc_runner := entity_runner
+         when 3 then
+            run_call_site(a_node)
+         end
+      ensure
+         error = Void implies aoc_runner /= Void
+      end
+
+   push_expression (a_expression: MIXUP_TRANSFORM_VALUE)
+      require
+         a_expression /= Void
+         a_expression.type /= type_unknown
+      do
+         expression_stack.add_last(a_expression)
+      end
+
+   run_call_site (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      require
+         a_node.count = 3
+         a_node.node(1).name = kw_open_parenthesis
+         a_node.node(3).name = kw_close_parenthesis
+      local
+         call_runner: MIXUP_TRANSFORM_CALL_RUNNER
+         exp_count: INTEGER
+      do
+         exp_count := expression_stack.count
+         visit(a_node.node(2))
+         if error = Void then
+            from
+               create call_runner.make(expression_stack.count - exp_count)
+            until
+               expression_stack.count = exp_count
+            loop
+               call_runner.add_first(expression_stack.last)
+               expression_stack.remove_last
+            end
+            aoc_runner := call_runner
+         end
+      ensure
+         error = Void implies aoc_runner /= Void
       end
 
    run_expatomr (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
