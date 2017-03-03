@@ -15,12 +15,15 @@ Instruction*   ::=
 Instruction    ::= AssignOrCall
                 |  Case
                 |  If
+                |  Loop
                 |  Skip
 
 AssignOrCall   ::= Addressable AOCCont
 
 AOCCont        ::= ":=" Expression
                 |  "(" Expression* ")"
+
+Loop           := "from" Instruction* "until" Expression "loop" Instruction* "end"
 
 Case           ::= "case" Expression When* Else "end"
 

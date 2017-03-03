@@ -347,6 +347,42 @@ feature {} -- Instruction
          error = Void implies expression_stack.is_empty
       end
 
+   run_loop (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      require
+         error = Void
+         expression_stack.is_empty
+      do
+         from
+            visit(a_node.node(2))
+         until
+            run_until(a_node.node(4))
+         loop
+            visit(a_node.node(6))
+         end
+      ensure
+         error = Void implies expression_stack.is_empty
+      end
+
+   run_until (a_node: MIXUP_TRANSFORM_NODE): BOOLEAN
+      local
+         exp: MIXUP_TRANSFORM_VALUE_BOOLEAN
+      do
+         if error /= Void then
+            Result := True
+         else
+            visit(a_node)
+            if error /= Void then
+               Result := True
+            elseif expression_stack.last.type = type_boolean then
+               exp ::= expression_stack.last
+               expression_stack.remove_last
+               Result := exp.value
+            else
+               error := "invalid type: expected boolean instead of #(1)" # expression_stack.last.type.name
+            end
+         end
+      end
+
    run_skip (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
       require
          error = Void
@@ -941,6 +977,7 @@ feature {}
          runners.put(agent run_aoccont(?), nt_aoccont)
          runners.put(agent run_case(?), nt_case)
          runners.put(agent run_if(?), nt_if)
+         runners.put(agent run_loop(?), nt_loop)
          runners.put(agent run_skip(?), nt_skip)
          runners.put(agent run_when(?), nt_when)
          runners.put(agent run_then(?), nt_then)
@@ -1028,6 +1065,9 @@ feature {} -- keywords
    kw_then: FIXED_STRING once then "KW:then".intern end
    kw_transform: FIXED_STRING once then "KW:transform".intern end
    kw_when: FIXED_STRING once then "KW:when".intern end
+   kw_from: FIXED_STRING once then "KW:from".intern end
+   kw_until: FIXED_STRING once then "KW:until".intern end
+   kw_loop: FIXED_STRING once then "KW:loop".intern end
 
    nt_transformation: FIXED_STRING once then "Transformation".intern end
    nt_input: FIXED_STRING once then "Input".intern end
@@ -1039,6 +1079,7 @@ feature {} -- keywords
    nt_aoccont: FIXED_STRING once then "AOCCont".intern end
    nt_case: FIXED_STRING once then "Case".intern end
    nt_if: FIXED_STRING once then "If".intern end
+   nt_loop: FIXED_STRING once then "Loop".intern end
    nt_skip: FIXED_STRING once then "Skip".intern end
    nt_when: FIXED_STRING once then "When".intern end
    nt_then: FIXED_STRING once then "Then".intern end

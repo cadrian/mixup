@@ -65,6 +65,7 @@ feature {}
                               {FAST_ARRAY[STRING] << "AssignOrCall" >> }, Void;
                               {FAST_ARRAY[STRING] << "Case" >> }, Void;
                               {FAST_ARRAY[STRING] << "If" >> }, Void;
+                              {FAST_ARRAY[STRING] << "Loop" >> }, Void;
                               {FAST_ARRAY[STRING] << "Skip" >> }, Void
                             >> };
 
@@ -77,6 +78,11 @@ feature {}
                             <<
                               {FAST_ARRAY[STRING] << "KW::=", "Expression" >> }, Void;
                               {FAST_ARRAY[STRING] << "KW:(", "Expression*", "KW:)" >> }, Void;
+                            >> };
+
+        "Loop",          {DESCENDING_NON_TERMINAL
+                            <<
+                              {FAST_ARRAY[STRING] << "KW:from", "Instruction*", "KW:until", "Expression", "KW:loop", "Instruction*", "KW:end" >> }, Void
                             >> };
 
         "Case",          {DESCENDING_NON_TERMINAL
@@ -265,14 +271,17 @@ feature {}
         "KW:else",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "else"), Void);
         "KW:elseif",     create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "elseif"), Void);
         "KW:end",        create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "end"), Void);
+        "KW:from",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "from"), Void);
         "KW:if",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "if"), Void);
         "KW:init",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "init"), Void);
         "KW:input",      create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "input"), Void);
+        "KW:loop",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "loop"), Void);
         "KW:or",         create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "or"), Void);
         "KW:output",     create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "output"), Void);
         "KW:skip",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "skip"), Void);
         "KW:then",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "then"), Void);
         "KW:transform",  create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "transform"), Void);
+        "KW:until",      create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "until"), Void);
         "KW:when",       create {DESCENDING_TERMINAL}.make(agent parse_keyword(?, "when"), Void);
 
       >> }
@@ -284,7 +293,7 @@ feature {}
       do
          inspect
             a_string
-         when "and", "case", "else", "elseif", "end", "if", "init", "input", "or", "output", "skip", "then", "transform", "when" then
+         when "and", "case", "else", "elseif", "end", "from", "if", "init", "input", "loop", "or", "output", "skip", "then", "transform", "until", "when" then
             Result := True
          else
             check not Result end
