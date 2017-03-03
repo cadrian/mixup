@@ -450,19 +450,21 @@ feature {} -- Expression
                expression_stack.count >= 1
             end
             visit(a_node.node(2))
-            check
-               expression_stack.count >= 2
-            end
-            if expression_stack.last.type /= type_boolean or else expression_stack.item(expression_stack.upper-1).type /= type_boolean then
-               set_error(a_node, "Expected boolean")
-            else
-               right ::= expression_stack.last
-               expression_stack.remove_last
-               left ::= expression_stack.last
-               expression_stack.remove_last
-               create res.make
-               res.set_value(left.value or right.value)
-               expression_stack.add_last(res)
+            if error = Void then
+               check
+                  expression_stack.count >= 2
+               end
+               if expression_stack.last.type /= type_boolean or else expression_stack.item(expression_stack.upper-1).type /= type_boolean then
+                  set_error(a_node, "Expected boolean")
+               else
+                  right ::= expression_stack.last
+                  expression_stack.remove_last
+                  left ::= expression_stack.last
+                  expression_stack.remove_last
+                  create res.make
+                  res.set_value(left.value or right.value)
+                  expression_stack.add_last(res)
+               end
             end
          end
       end
@@ -484,19 +486,21 @@ feature {} -- Expression
                expression_stack.count >= 1
             end
             visit(a_node.node(2))
-            check
-               expression_stack.count >= 2
-            end
-            if expression_stack.last.type /= type_boolean or else expression_stack.item(expression_stack.upper-1).type /= type_boolean then
-               set_error(a_node, "Expected boolean")
-            else
-               right ::= expression_stack.last
-               expression_stack.remove_last
-               left ::= expression_stack.last
-               expression_stack.remove_last
-               create res.make
-               res.set_value(left.value and right.value)
-               expression_stack.add_last(res)
+            if error = Void then
+               check
+                  expression_stack.count >= 2
+               end
+               if expression_stack.last.type /= type_boolean or else expression_stack.item(expression_stack.upper-1).type /= type_boolean then
+                  set_error(a_node, "Expected boolean")
+               else
+                  right ::= expression_stack.last
+                  expression_stack.remove_last
+                  left ::= expression_stack.last
+                  expression_stack.remove_last
+                  create res.make
+                  res.set_value(left.value and right.value)
+                  expression_stack.add_last(res)
+               end
             end
          end
       end
@@ -519,16 +523,18 @@ feature {} -- Expression
                expression_stack.count >= 1
             end
             visit(a_node.node(2))
-            check
-               expression_stack.count >= 2
+            if error = Void then
+               check
+                  expression_stack.count >= 2
+               end
+               right := expression_stack.last
+               expression_stack.remove_last
+               left := expression_stack.last
+               expression_stack.remove_last
+               create res.make
+               res.set_value(compare(a_node, left, right, a_node.node(1).name))
+               expression_stack.add_last(res)
             end
-            right := expression_stack.last
-            expression_stack.remove_last
-            left := expression_stack.last
-            expression_stack.remove_last
-            create res.make
-            res.set_value(compare(a_node, left, right, a_node.node(1).name))
-            expression_stack.add_last(res)
          end
       end
 
@@ -572,18 +578,20 @@ feature {} -- Expression
                expression_stack.count >= 1
             end
             visit(a_node.node(2))
-            check
-               expression_stack.count >= 2
-            end
-            right := expression_stack.last
-            expression_stack.remove_last
-            left := expression_stack.last
-            expression_stack.remove_last
-            res := add(a_node, left, right, a_node.node(1).name)
-            if res = Void then
-               set_error(a_node, "Invalid expression")
-            else
-               expression_stack.add_last(res)
+            if error = Void then
+               check
+                  expression_stack.count >= 2
+               end
+               right := expression_stack.last
+               expression_stack.remove_last
+               left := expression_stack.last
+               expression_stack.remove_last
+               res := add(a_node, left, right, a_node.node(1).name)
+               if res = Void then
+                  set_error(a_node, "Invalid expression")
+               else
+                  expression_stack.add_last(res)
+               end
             end
          end
       end
@@ -622,18 +630,20 @@ feature {} -- Expression
                expression_stack.count >= 1
             end
             visit(a_node.node(2))
-            check
-               expression_stack.count >= 2
-            end
-            right := expression_stack.last
-            expression_stack.remove_last
-            left := expression_stack.last
-            expression_stack.remove_last
-            res := mult(a_node, left, right, a_node.node(1).name)
-            if res = Void then
-               set_error(a_node, "Invalid expression")
-            else
-               expression_stack.add_last(res)
+            if error = Void then
+               check
+                  expression_stack.count >= 2
+               end
+               right := expression_stack.last
+               expression_stack.remove_last
+               left := expression_stack.last
+               expression_stack.remove_last
+               res := mult(a_node, left, right, a_node.node(1).name)
+               if res = Void then
+                  set_error(a_node, "Invalid expression")
+               else
+                  expression_stack.add_last(res)
+               end
             end
          end
       end

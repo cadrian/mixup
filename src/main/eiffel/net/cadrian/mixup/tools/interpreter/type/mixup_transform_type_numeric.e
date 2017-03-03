@@ -17,6 +17,12 @@ class MIXUP_TRANSFORM_TYPE_NUMERIC
 inherit
    MIXUP_TRANSFORM_TYPE_IMPL[INTEGER]
 
+insert
+   LOGGING
+      undefine
+         is_equal
+      end
+
 create {MIXUP_TRANSFORM_TYPES}
    make
 
@@ -84,13 +90,9 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
          if right.type = Current then
             l ::= left
             r ::= right
-            if r.value /= 0 then
-               create res.make
-               res.set_value(l.value * r.value)
-               Result := res
-            else
-               set_error("divide by zero")
-            end
+            create res.make
+            res.set_value(l.value * r.value)
+            Result := res
          else
             set_error("cannot multiply numeric and #(1)" # right.type.name)
          end
@@ -103,9 +105,13 @@ feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALU
          if right.type = Current then
             l ::= left
             r ::= right
-            create res.make
-            res.set_value(l.value // r.value)
-            Result := res
+            if r.value /= 0 then
+               create res.make
+               res.set_value(l.value // r.value)
+               Result := res
+            else
+               set_error("divide by zero")
+            end
          else
             set_error("cannot divide numeric and #(1)" # right.type.name)
          end
