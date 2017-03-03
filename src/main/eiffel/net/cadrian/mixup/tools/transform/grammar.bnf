@@ -1,0 +1,100 @@
+Transformation ::= Input Output Init Transform "end"
+
+Input          ::= "input" Expression
+
+Output         ::= "output" Expression
+
+Init           ::=
+                |  "init" Instruction*
+
+Transform      ::= "transform" Instruction*
+
+Instruction*   ::=
+                |  Instruction, Instruction*
+
+Instruction    ::= AssignOrCall
+                |  Case
+                |  If
+                |  Skip
+
+AssignOrCall   ::= Addressable AOCCont
+
+AOCCont        ::= ":=" Expression
+                |  "(" Expression* ")"
+
+Case           ::= "case" Expression When* Else "end"
+
+If             ::= "if" Then ElseIf* Else "end"
+
+Skip           ::= "skip"
+
+When*          ::=
+                |  When When*
+
+When           ::= "when" Then
+
+Then           ::= Expression "then" Instruction*
+
+ElseIf*        ::=
+                |  ElseIf ElseIf*
+
+ElseIf         ::= "elseif" Then
+
+Else           ::=
+                |  "else" Instruction*
+
+Expression*    ::=
+                |  Expression
+                |  Expression "," Expression*
+
+Expression     ::= BooleanOr
+
+BooleanOr      ::= BooleanAnd BooleanOrR
+
+BooleanOrR     ::=
+                |  "or" BooleanOr
+
+BooleanAnd     ::= BooleanComp BooleanAndR
+
+BooleanAndR    ::=
+                |  "and" BooleanAnd
+
+BooleanComp    ::= ExpAdd BooleanCompR
+
+BooleanCompR   ::=
+                |  "=" ExpAdd
+                |  "/=" ExpAdd
+                |  "<" ExpAdd
+                |  "<=" ExpAdd
+                |  ">" ExpAdd
+                |  ">=" ExpAdd
+
+ExpAdd         ::= ExpMult ExpAddR
+
+ExpAddR        ::=
+                |  "+" ExpAdd
+                |  "-" ExpAdd
+
+ExpMult        ::= ExpPow ExpMultR
+
+ExpMultR       ::=
+                |  "*" ExpMult
+                |  "/" ExpMult
+
+ExpPow         ::= ExpAtom ExpPowR
+
+ExpPowR        ::=
+                |  "^" ExpPow
+
+ExpAtom        ::= <value>
+                |  Addressable ExpCall
+                |  "(" Expression ")"
+
+ExpCall        ::=
+                |  "(" Expression* ")"
+
+ExpAtomR       ::=
+                |  "[" Expression "]" ExpAtomR
+                |  "." Addressable
+
+Addressable    ::= <identifier> ExpAtomR
