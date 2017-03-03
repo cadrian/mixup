@@ -301,7 +301,7 @@ feature {} -- Instruction
                aoc_runner := assign_runner
             end
          when 3 then
-            run_call_site(a_node)
+            run_call_site(a_node, Void)
          end
       ensure
          error = Void implies aoc_runner /= Void
@@ -763,7 +763,7 @@ feature {} -- Expression
             create entity_runner.make(context, agent push_expression(?))
             aoc_runner := entity_runner
          when 3 then
-            run_call_site(a_node)
+            run_call_site(a_node, agent push_expression(?))
          end
       ensure
          error = Void implies aoc_runner /= Void
@@ -777,7 +777,7 @@ feature {} -- Expression
          expression_stack.add_last(a_expression)
       end
 
-   run_call_site (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+   run_call_site (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL; on_result: PROCEDURE[TUPLE[MIXUP_TRANSFORM_VALUE]])
       require
          a_node.count = 3
          a_node.node(1).name = kw_open_parenthesis
@@ -790,7 +790,7 @@ feature {} -- Expression
          visit(a_node.node(2))
          if error = Void then
             from
-               create call_runner.make(expression_stack.count - exp_count)
+               create call_runner.make(context, expression_stack.count - exp_count, on_result)
             until
                expression_stack.count = exp_count
             loop
