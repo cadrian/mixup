@@ -22,7 +22,7 @@ insert
    MIXUP_TRANSFORM_TYPES
 
 create {MIXUP_TRANSFORM}
-   make
+   run
 
 feature {ANY}
    error: ABSTRACT_STRING
@@ -187,6 +187,7 @@ feature {}
       local
          evt: MIXUP_TRANSFORM_VALUE_EVENT
       do
+         log.trace.put_line("**** Running transformation...")
          prepare_target_midi
          check
             expression_stack.is_empty
@@ -953,7 +954,7 @@ feature {} -- Expression
       end
 
 feature {}
-   make (a_root: MIXUP_TRANSFORM_NODE)
+   run (a_root: MIXUP_TRANSFORM_NODE)
       require
          a_root /= Void
       do

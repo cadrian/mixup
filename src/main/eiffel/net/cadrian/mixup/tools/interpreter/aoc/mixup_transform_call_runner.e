@@ -93,105 +93,23 @@ feature {MIXUP_TRANSFORM_AOC_TARGET}
    visit_target (a_target: MIXUP_TRANSFORM_AOC_TARGET)
       local
          u: MIXUP_TRANSFORM_VALUE_UNKNOWN
+         calls: MIXUP_TRANSFORM_CALLS
+         f: TUPLE[MIXUP_TRANSFORM_VALUE, ABSTRACT_STRING]
       do
          check
             error = Void
             a_target.target.type = type_unknown
          end
          u ::= a_target.target
-         inspect
-            u.name
-         when "note_on" then
-            run_note_on
-         when "note_off" then
-            run_note_off
+         if on_result = Void then
+            error := calls.call_procedure(u.name, Void, arguments)
          else
-            if on_result = Void then
-               error := "unknown procedure: #(1)" # u.name
+            f := calls.call_function(u.name, Void, arguments)
+            if f.second /= Void then
+               error := f.second
             else
-               error := "unknown function: #(1)" # u.name
+               result_value := f.first
             end
-         end
-      end
-
-feature {}
-   run_note_on
-         -- note_on(channel, pitch, velocity)
-      local
-         channel, pitch, velocity: MIXUP_TRANSFORM_VALUE_NUMERIC
-         event: MIXUP_TRANSFORM_VALUE_EVENT
-         note_on: MIXUP_MIDI_NOTE_ON
-      do
-         if count /= 3 then
-            error := "invalid argument number: expect 3 arguments"
-         else
-            channel := arg_numeric(1)
-            if error = Void then
-               pitch := arg_numeric(2)
-               if error = Void then
-                  velocity := arg_numeric(3)
-                  if error = Void then
-                     if not channel.value.in_range(0, 15) then
-                        error := "invalid channel: #(1)" # &channel.value
-                     elseif pitch.value < 0 then
-                        error := "invalid pitch: #(1)" # &pitch.value
-                     elseif velocity.value < 0 then
-                        error := "invalid velocity: #(1)" # &velocity.value
-                     else
-                        create note_on.make(channel.value, pitch.value, velocity.value)
-                        create event.make
-                        event.set_value(note_on)
-                        result_value := event
-                     end
-                  end
-               end
-            end
-         end
-      end
-
-   run_note_off
-         -- note_off(channel, pitch, velocity)
-      local
-         channel, pitch, velocity: MIXUP_TRANSFORM_VALUE_NUMERIC
-         event: MIXUP_TRANSFORM_VALUE_EVENT
-         note_off: MIXUP_MIDI_NOTE_OFF
-      do
-         if count /= 3 then
-            error := "invalid argument number: expect 3 arguments"
-         else
-            channel := arg_numeric(1)
-            if error = Void then
-               pitch := arg_numeric(2)
-               if error = Void then
-                  velocity := arg_numeric(3)
-                  if error = Void then
-                     if not channel.value.in_range(0, 15) then
-                        error := "invalid channel: #(1)" # &channel.value
-                     elseif pitch.value < 0 then
-                        error := "invalid pitch: #(1)" # &pitch.value
-                     elseif velocity.value < 0 then
-                        error := "invalid velocity: #(1)" # &velocity.value
-                     else
-                        create note_off.make(channel.value, pitch.value, velocity.value)
-                        create event.make
-                        event.set_value(note_off)
-                        result_value := event
-                     end
-                  end
-               end
-            end
-         end
-      end
-
-   arg_numeric (i: INTEGER): MIXUP_TRANSFORM_VALUE_NUMERIC
-      local
-         v: MIXUP_TRANSFORM_VALUE
-      do
-         v := item(i)
-         if v.type = type_numeric then
-            Result ::= v
-         else
-            error := "invalid argument #(1): expected numeric" # &i
          end
       end
 

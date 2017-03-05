@@ -36,16 +36,21 @@ feature {}
             log.error.put_line("Extra arguments may be expected by the transform file")
             die_with_code(1)
          end
-         root := eval(read_mxt(argument(1)))
 
-         create interpreter.make(root)
+         log.info.put_line("Parsing mixup transform file...")
+         root := parse(read_mxt(argument(1)))
+
+         log.info.put_line("Running mixup transform file...")
+         create interpreter.run(root)
          if interpreter.error /= Void then
             log.error.put_line(interpreter.error)
             die_with_code(1)
          end
+
+         log.info.put_line("Done.")
       end
 
-   eval (parser_buffer: MINI_PARSER_BUFFER): MIXUP_TRANSFORM_NODE
+   parse (parser_buffer: MINI_PARSER_BUFFER): MIXUP_TRANSFORM_NODE
       local
          err: PARSE_ERROR
       do

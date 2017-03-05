@@ -25,7 +25,76 @@ feature {ANY}
 
 feature {MIXUP_TRANSFORM_TYPES}
    init
+      local
+         calls: MIXUP_TRANSFORM_CALLS
       do
+         calls.register_function("note_on",
+                                 Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_numeric, type_numeric, type_numeric >>}, Current,
+                                 agent new_note_on(?))
+         calls.register_function("note_off",
+                                 Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_numeric, type_numeric, type_numeric >>}, Current,
+                                 agent new_note_off(?))
+      end
+
+feature {}
+   new_note_on (context: MIXUP_TRANSFORM_CALL_CONTEXT): TUPLE[MIXUP_TRANSFORM_VALUE, ABSTRACT_STRING]
+         -- note_on(channel, pitch, velocity)
+      require
+         context.argument_count = 3
+         context.argument_is_numeric(1)
+         context.argument_is_numeric(2)
+         context.argument_is_numeric(3)
+      local
+         channel, pitch, velocity: INTEGER
+         event: MIXUP_TRANSFORM_VALUE_EVENT
+         note_on: MIXUP_MIDI_NOTE_ON
+         err: ABSTRACT_STRING
+      do
+         channel := context.argument_numeric(1)
+         pitch := context.argument_numeric(2)
+         velocity := context.argument_numeric(3)
+         if not channel.in_range(0, 15) then
+            err := "invalid channel: #(1)" # &channel
+         elseif pitch < 0 then
+            err := "invalid pitch: #(1)" # &pitch
+         elseif velocity < 0 then
+            err := "invalid velocity: #(1)" # &velocity
+         else
+            create note_on.make(channel, pitch, velocity)
+            create event.make
+            event.set_value(note_on)
+         end
+         Result := [event, err]
+      end
+
+   new_note_off (context: MIXUP_TRANSFORM_CALL_CONTEXT): TUPLE[MIXUP_TRANSFORM_VALUE, ABSTRACT_STRING]
+         -- note_off(channel, pitch, velocity)
+      require
+         context.argument_count = 3
+         context.argument_is_numeric(1)
+         context.argument_is_numeric(2)
+         context.argument_is_numeric(3)
+      local
+         channel, pitch, velocity: INTEGER
+         event: MIXUP_TRANSFORM_VALUE_EVENT
+         note_off: MIXUP_MIDI_NOTE_OFF
+         err: ABSTRACT_STRING
+      do
+         channel := context.argument_numeric(1)
+         pitch := context.argument_numeric(2)
+         velocity := context.argument_numeric(3)
+         if not channel.in_range(0, 15) then
+            err := "invalid channel: #(1)" # &channel
+         elseif pitch < 0 then
+            err := "invalid pitch: #(1)" # &pitch
+         elseif velocity < 0 then
+            err := "invalid velocity: #(1)" # &velocity
+         else
+            create note_off.make(channel, pitch, velocity)
+            create event.make
+            event.set_value(note_off)
+         end
+         Result := [event, err]
       end
 
 feature {MIXUP_TRANSFORM_INTERPRETER, MIXUP_TRANSFORM_TYPE, MIXUP_TRANSFORM_VALUE}
