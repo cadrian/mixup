@@ -4,6 +4,9 @@ input
 output
     $2
 
+def weighted_velocity(event, x)
+    result := (event.velocity * x[event.channel]) / 127
+
 init
     from
         i := 0
@@ -17,11 +20,9 @@ init
 transform
     case event.type
     when "note on" then
-        v := (event.velocity * x[event.channel]) / 127
-        event := note_on(event.channel, event.pitch, v)
+        event := note_on(event.channel, event.pitch, weighted_velocity(event, x))
     when "note off" then
-        v := (event.velocity * x[event.channel]) / 127
-        event := note_off(event.channel, event.pitch, v)
+        event := note_off(event.channel, event.pitch, weighted_velocity(event, x))
     when "controller" then
         if event.meta = 11 then
             v := event.value

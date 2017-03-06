@@ -1,11 +1,22 @@
-Transformation ::= Input Output Init Transform "end"
+Transformation ::= Input Output Def* Init Transform "end"
 
 Input          ::= "input" Expression
 
 Output         ::= "output" Expression
 
+Def*           ::=
+                |  Def Def*
+
+Def            ::= "def" <identifier> "(" Argument* ")" Instruction*
+
 Init           ::=
                 |  "init" Instruction*
+
+Argument*      ::=
+                |  Argument
+                |  Argument "," Argument*
+
+Argument       ::= <identifier>
 
 Transform      ::= "transform" Instruction*
 

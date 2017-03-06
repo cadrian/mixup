@@ -14,7 +14,18 @@
 --
 deferred class MIXUP_TRANSFORM_CALL
 
+insert
+   MIXUP_TRANSFORM_TYPES
+
 feature {MIXUP_TRANSFORM_CALLS}
+   item (a_target: MIXUP_TRANSFORM_VALUE; a_arguments: TRAVERSABLE[MIXUP_TRANSFORM_VALUE]): TUPLE[MIXUP_TRANSFORM_VALUE, ABSTRACT_STRING]
+      deferred
+      end
+
+   call (a_target: MIXUP_TRANSFORM_VALUE; a_arguments: TRAVERSABLE[MIXUP_TRANSFORM_VALUE]): ABSTRACT_STRING
+      deferred
+      end
+
    check_arguments (t: MIXUP_TRANSFORM_VALUE; a: TRAVERSABLE[MIXUP_TRANSFORM_VALUE]): ABSTRACT_STRING
       local
          i: INTEGER; err: ABSTRACT_STRING
@@ -37,6 +48,8 @@ feature {MIXUP_TRANSFORM_CALLS}
                loop
                   if a.item(i) = Void then
                      err := "argument ##(1) is Void" # &(i - a.lower + 1)
+                  elseif arguments.item(arguments.lower + i - a.lower) = type_unknown then
+                     -- OK
                   elseif a.item(i).type /= arguments.item(arguments.lower + i - a.lower) then
                      err := "invalid argument ##(1) type: got #(2) but expected #(3)" # &(i - a.lower + 1)
                             # a.item(i).type.name # arguments.item(arguments.lower + i - a.lower).name

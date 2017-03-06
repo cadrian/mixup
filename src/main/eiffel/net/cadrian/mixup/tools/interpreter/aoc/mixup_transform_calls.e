@@ -58,6 +58,18 @@ feature {ANY}
          p.add(create {MIXUP_TRANSFORM_PROCEDURE}.make(name, target, arguments, procedure), name)
       end
 
+   register_def (name: STRING; def: MIXUP_TRANSFORM_DEF): ABSTRACT_STRING
+      require
+         name /= Void
+         def /= Void
+      do
+         if calls_no_target.has(name) then
+            Result := "Function or procedure already exists: #(1)" # name
+         else
+            calls_no_target.add(def, name)
+         end
+      end
+
 feature {MIXUP_TRANSFORM_CALL_RUNNER}
    call_function (name: STRING; target: MIXUP_TRANSFORM_VALUE; arguments: TRAVERSABLE[MIXUP_TRANSFORM_VALUE]): TUPLE[MIXUP_TRANSFORM_VALUE, ABSTRACT_STRING]
       require
@@ -66,7 +78,6 @@ feature {MIXUP_TRANSFORM_CALL_RUNNER}
       local
          f: like calls_no_target
          c: MIXUP_TRANSFORM_CALL
-         fn: MIXUP_TRANSFORM_FUNCTION
          err: ABSTRACT_STRING
          v: MIXUP_TRANSFORM_VALUE
       do
@@ -83,13 +94,10 @@ feature {MIXUP_TRANSFORM_CALL_RUNNER}
             c := f.reference_at(name)
             if c = Void then
                err := "unknown function: #(1)" # name
-            elseif not fn ?:= c then
-               err := "#(1) is a procedure, not a function" # name
             else
-               fn ::= c
-               err := fn.check_arguments(target, arguments)
+               err := c.check_arguments(target, arguments)
                if err = Void then
-                  Result := fn.item(target, arguments)
+                  Result := c.item(target, arguments)
                end
             end
          end
@@ -112,7 +120,6 @@ feature {MIXUP_TRANSFORM_CALL_RUNNER}
       local
          p: like calls_no_target
          c: MIXUP_TRANSFORM_CALL
-         pc: MIXUP_TRANSFORM_PROCEDURE
       do
          if target = Void then
             p := calls_no_target
@@ -127,13 +134,10 @@ feature {MIXUP_TRANSFORM_CALL_RUNNER}
             c := p.reference_at(name)
             if c = Void then
                Result := "unknown procedure: #(1)" # name
-            elseif not pc ?:= c then
-               Result := "#(1) is a function, not a procedure" # name
             else
-               pc ::= c
-               Result := pc.check_arguments(target, arguments)
+               Result := c.check_arguments(target, arguments)
                if Result = Void then
-                  Result := pc.call(target, arguments)
+                  Result := c.call(target, arguments)
                end
             end
          end

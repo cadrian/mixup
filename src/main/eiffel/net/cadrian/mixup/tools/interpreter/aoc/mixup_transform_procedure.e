@@ -21,6 +21,13 @@ create {MIXUP_TRANSFORM_CALLS}
    make
 
 feature {MIXUP_TRANSFORM_CALLS}
+   item (a_target: MIXUP_TRANSFORM_VALUE; a_arguments: TRAVERSABLE[MIXUP_TRANSFORM_VALUE]): TUPLE[MIXUP_TRANSFORM_VALUE, ABSTRACT_STRING]
+      local
+         v: MIXUP_TRANSFORM_VALUE
+      do
+         Result := [v, "not a function"]
+      end
+
    call (a_target: MIXUP_TRANSFORM_VALUE; a_arguments: TRAVERSABLE[MIXUP_TRANSFORM_VALUE]): ABSTRACT_STRING
       local
          a: FAST_ARRAY[MIXUP_TRANSFORM_VALUE]

@@ -20,6 +20,7 @@ inherit
 insert
    LOGGING
    MIXUP_TRANSFORM_TYPES
+   MIXUP_TRANSFORM_GRAMMAR_CONSTANTS
 
 create {MIXUP_TRANSFORM}
    run
@@ -64,7 +65,10 @@ feature {}
             if error = Void then
                visit(a_node.node(4))
                if error = Void then
-                  visit(a_node.node(2))
+                  visit(a_node.node(5))
+                  if error = Void then
+                     visit(a_node.node(2))
+                  end
                end
             end
          end
@@ -174,6 +178,39 @@ feature {}
          create mid_tgt.connect_to(mid_out)
          target_midi.encode_to(mid_tgt)
          mid_tgt.disconnect
+      end
+
+   run_def (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
+      local
+         def: MIXUP_TRANSFORM_DEF
+         calls: MIXUP_TRANSFORM_CALLS
+         err: ABSTRACT_STRING
+      do
+         create def.make(a_node, context, agent call_def(?, ?))
+         err := calls.register_def(def.name, def)
+         if err /= Void then
+            set_error(a_node, err)
+         end
+      end
+
+   call_def (a_node: MIXUP_TRANSFORM_NODE; a_context: like context)
+      require
+         a_node /= Void
+         a_context /= Void
+      local
+         old_context: like context
+         old_expression_stack: like expression_stack
+      do
+         old_context := context
+         context := a_context
+         old_expression_stack := expression_stack
+         create expression_stack
+         visit(a_node)
+         check
+            expression_stack.is_empty
+         end
+         context := old_context
+         expression_stack := old_expression_stack
       end
 
    run_init (a_node: MIXUP_TRANSFORM_NODE_NON_TERMINAL)
@@ -968,39 +1005,40 @@ feature {}
    create_runners
       do
          create runners
-         runners.put(agent run_transformation(?), nt_transformation)
-         runners.put(agent run_input(?), nt_input)
-         runners.put(agent run_output(?), nt_output)
-         runners.put(agent run_init(?), nt_init)
-         runners.put(agent run_transform(?), nt_transform)
-         runners.put(agent run_instruction(?), nt_instruction)
-         runners.put(agent run_assignorcall(?), nt_assignorcall)
+         runners.put(agent run_addressable(?), nt_addressable)
          runners.put(agent run_aoccont(?), nt_aoccont)
-         runners.put(agent run_case(?), nt_case)
-         runners.put(agent run_if(?), nt_if)
-         runners.put(agent run_loop(?), nt_loop)
-         runners.put(agent run_skip(?), nt_skip)
-         runners.put(agent run_when(?), nt_when)
-         runners.put(agent run_then(?), nt_then)
-         runners.put(agent run_elseif(?), nt_elseif)
-         runners.put(agent run_else(?), nt_else)
-         runners.put(agent run_expression(?), nt_expression)
-         runners.put(agent run_booleanor(?), nt_booleanor)
-         runners.put(agent run_booleanorr(?), nt_booleanorr)
+         runners.put(agent run_assignorcall(?), nt_assignorcall)
          runners.put(agent run_booleanand(?), nt_booleanand)
          runners.put(agent run_booleanandr(?), nt_booleanandr)
          runners.put(agent run_booleancomp(?), nt_booleancomp)
          runners.put(agent run_booleancompr(?), nt_booleancompr)
+         runners.put(agent run_booleanor(?), nt_booleanor)
+         runners.put(agent run_booleanorr(?), nt_booleanorr)
+         runners.put(agent run_case(?), nt_case)
+         runners.put(agent run_def(?), nt_def)
+         runners.put(agent run_elseif(?), nt_elseif)
+         runners.put(agent run_else(?), nt_else)
          runners.put(agent run_expadd(?), nt_expadd)
          runners.put(agent run_expaddr(?), nt_expaddr)
+         runners.put(agent run_expatom(?), nt_expatom)
+         runners.put(agent run_expatomr(?), nt_expatomr)
+         runners.put(agent run_expcall(?), nt_expcall)
          runners.put(agent run_expmult(?), nt_expmult)
          runners.put(agent run_expmultr(?), nt_expmultr)
          runners.put(agent run_exppow(?), nt_exppow)
          runners.put(agent run_exppowr(?), nt_exppowr)
-         runners.put(agent run_expatom(?), nt_expatom)
-         runners.put(agent run_expcall(?), nt_expcall)
-         runners.put(agent run_expatomr(?), nt_expatomr)
-         runners.put(agent run_addressable(?), nt_addressable)
+         runners.put(agent run_expression(?), nt_expression)
+         runners.put(agent run_if(?), nt_if)
+         runners.put(agent run_init(?), nt_init)
+         runners.put(agent run_input(?), nt_input)
+         runners.put(agent run_instruction(?), nt_instruction)
+         runners.put(agent run_loop(?), nt_loop)
+         runners.put(agent run_output(?), nt_output)
+         runners.put(agent run_skip(?), nt_skip)
+         runners.put(agent run_then(?), nt_then)
+         runners.put(agent run_transformation(?), nt_transformation)
+         runners.put(agent run_transform(?), nt_transform)
+         runners.put(agent run_when(?), nt_when)
       end
 
    visit (a_node: MIXUP_TRANSFORM_NODE)
@@ -1029,80 +1067,6 @@ feature {}
 
    source_midi: MIXUP_MIDI_FILE
    target_midi: MIXUP_MIDI_FILE
-
-feature {} -- keywords
-   kw_value: FIXED_STRING once then "KW:value".intern end
-   kw_identifier: FIXED_STRING once then "KW:identifier".intern end
-
-   kw_and: FIXED_STRING once then "KW:and".intern end
-   kw_case: FIXED_STRING once then "KW:case".intern end
-   kw_power: FIXED_STRING once then "KW:^".intern end
-   kw_less_or_equal: FIXED_STRING once then "KW:<=".intern end
-   kw_less_than: FIXED_STRING once then "KW:<".intern end
-   kw_equal: FIXED_STRING once then "KW:=".intern end
-   kw_greater_or_equal: FIXED_STRING once then "KW:>=".intern end
-   kw_greater_than: FIXED_STRING once then "KW:>".intern end
-   kw_minus: FIXED_STRING once then "KW:-".intern end
-   kw_coma: FIXED_STRING once then "KW:,".intern end
-   kw_assign: FIXED_STRING once then "KW::=".intern end
-   kw_not_equal: FIXED_STRING once then "KW:/=".intern end
-   kw_divide: FIXED_STRING once then "KW:/".intern end
-   kw_dot: FIXED_STRING once then "KW:.".intern end
-   kw_open_parenthesis: FIXED_STRING once then "KW:(".intern end
-   kw_close_parenthesis: FIXED_STRING once then "KW:)".intern end
-   kw_open_bracket: FIXED_STRING once then "KW:[".intern end
-   kw_close_bracket: FIXED_STRING once then "KW:]".intern end
-   kw_times: FIXED_STRING once then "KW:*".intern end
-   kw_plus: FIXED_STRING once then "KW:+".intern end
-   kw_else: FIXED_STRING once then "KW:else".intern end
-   kw_elseif: FIXED_STRING once then "KW:elseif".intern end
-   kw_end: FIXED_STRING once then "KW:end".intern end
-   kw_if: FIXED_STRING once then "KW:if".intern end
-   kw_init: FIXED_STRING once then "KW:init".intern end
-   kw_input: FIXED_STRING once then "KW:input".intern end
-   kw_or: FIXED_STRING once then "KW:or".intern end
-   kw_output: FIXED_STRING once then "KW:output".intern end
-   kw_skip: FIXED_STRING once then "KW:skip".intern end
-   kw_then: FIXED_STRING once then "KW:then".intern end
-   kw_transform: FIXED_STRING once then "KW:transform".intern end
-   kw_when: FIXED_STRING once then "KW:when".intern end
-   kw_from: FIXED_STRING once then "KW:from".intern end
-   kw_until: FIXED_STRING once then "KW:until".intern end
-   kw_loop: FIXED_STRING once then "KW:loop".intern end
-
-   nt_transformation: FIXED_STRING once then "Transformation".intern end
-   nt_input: FIXED_STRING once then "Input".intern end
-   nt_output: FIXED_STRING once then "Output".intern end
-   nt_init: FIXED_STRING once then "Init".intern end
-   nt_transform: FIXED_STRING once then "Transform".intern end
-   nt_instruction: FIXED_STRING once then "Instruction".intern end
-   nt_assignorcall: FIXED_STRING once then "AssignOrCall".intern end
-   nt_aoccont: FIXED_STRING once then "AOCCont".intern end
-   nt_case: FIXED_STRING once then "Case".intern end
-   nt_if: FIXED_STRING once then "If".intern end
-   nt_loop: FIXED_STRING once then "Loop".intern end
-   nt_skip: FIXED_STRING once then "Skip".intern end
-   nt_when: FIXED_STRING once then "When".intern end
-   nt_then: FIXED_STRING once then "Then".intern end
-   nt_elseif: FIXED_STRING once then "ElseIf".intern end
-   nt_else: FIXED_STRING once then "Else".intern end
-   nt_expression: FIXED_STRING once then "Expression".intern end
-   nt_booleanor: FIXED_STRING once then "BooleanOr".intern end
-   nt_booleanorr: FIXED_STRING once then "BooleanOrR".intern end
-   nt_booleanand: FIXED_STRING once then "BooleanAnd".intern end
-   nt_booleanandr: FIXED_STRING once then "BooleanAndR".intern end
-   nt_booleancomp: FIXED_STRING once then "BooleanComp".intern end
-   nt_booleancompr: FIXED_STRING once then "BooleanCompR".intern end
-   nt_expadd: FIXED_STRING once then "ExpAdd".intern end
-   nt_expaddr: FIXED_STRING once then "ExpAddR".intern end
-   nt_expmult: FIXED_STRING once then "ExpMult".intern end
-   nt_expmultr: FIXED_STRING once then "ExpMultR".intern end
-   nt_exppow: FIXED_STRING once then "ExpPow".intern end
-   nt_exppowr: FIXED_STRING once then "ExpPowR".intern end
-   nt_expatom: FIXED_STRING once then "ExpAtom".intern end
-   nt_expcall: FIXED_STRING once then "ExpCall".intern end
-   nt_expatomr: FIXED_STRING once then "ExpAtomR".intern end
-   nt_addressable: FIXED_STRING once then "Addressable".intern end
 
 invariant
    runners /= Void

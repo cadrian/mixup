@@ -35,6 +35,11 @@ feature {MIXUP_TRANSFORM_CALLS}
          Result := function.item([create {MIXUP_TRANSFORM_CALL_CONTEXT}.make(a_target, a_arguments)])
       end
 
+   call (a_target: MIXUP_TRANSFORM_VALUE; a_arguments: TRAVERSABLE[MIXUP_TRANSFORM_VALUE]): ABSTRACT_STRING
+      do
+         Result := "not a procedure"
+      end
+
 feature {}
    make (a_name: like name; a_target: like target; a_arguments: like arguments; a_return: like return; a_function: like function)
       require
