@@ -34,6 +34,12 @@ feature {MIXUP_TRANSFORM_TYPES}
          calls.register_function("note_off",
                                  Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_numeric, type_numeric, type_numeric >>}, Current,
                                  agent new_note_off(?))
+         calls.register_function("utf_to_iso",
+                                 Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_string >>}, type_string,
+                                 agent utf_to_iso(?))
+         calls.register_function("text_event",
+                                 Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_string >>}, Current,
+                                 agent new_text_event(?))
       end
 
 feature {}
@@ -94,6 +100,47 @@ feature {}
             create event.make
             event.set_value(note_off)
          end
+         Result := [event, err]
+      end
+
+   utf_to_iso (context: MIXUP_TRANSFORM_CALL_CONTEXT): TUPLE[MIXUP_TRANSFORM_VALUE, ABSTRACT_STRING]
+         -- note_off(channel, pitch, velocity)
+      require
+         context.argument_count = 1
+         context.argument_is_string(1)
+      local
+         utf, iso: STRING
+         conv: MIXUP_STRING_CONVERSION
+         str: MIXUP_TRANSFORM_VALUE_STRING
+         err: ABSTRACT_STRING
+      do
+         utf := context.argument_string(1)
+         iso := conv.utf8_to_iso(utf, conv.Format_iso_8859_15)
+         if iso = Void then
+            err := "invalid UTF-8 string"
+         else
+            create str.make
+            str.set_value(iso)
+         end
+         Result := [str, err]
+      end
+
+   new_text_event (context: MIXUP_TRANSFORM_CALL_CONTEXT): TUPLE[MIXUP_TRANSFORM_VALUE, ABSTRACT_STRING]
+         -- text_event(channel, pitch, text)
+      require
+         context.argument_count = 1
+         context.argument_is_string(1)
+      local
+         text: STRING
+         event: MIXUP_TRANSFORM_VALUE_EVENT
+         text_event: MIXUP_MIDI_META_EVENT
+         err: ABSTRACT_STRING
+         e: MIXUP_MIDI_META_EVENTS
+      do
+         text := context.argument_string(1)
+         text_event := e.text_event(text)
+         create event.make
+         event.set_value(text_event)
          Result := [event, err]
       end
 
