@@ -17,73 +17,82 @@ expanded class MIXUP_STRING_CONVERSION
    -- Should be in Liberty Eiffel...
    --
 
+insert
+   MEMORY
+      -- we need to pause GC during iconv because we access STRING
+      -- internals via pointers
+
 feature {ANY}
-   Format_iso_8859_1: POINTER
+   Format_iso_8859_1: FIXED_STRING
       once
-         Result := (once "ISO_8859-1").to_external
+         Result := ("ISO_8859-1").intern
       end
 
-   Format_iso_8859_15: POINTER
+   Format_iso_8859_15: FIXED_STRING
       once
-         Result := (once "ISO_8859-15").to_external
+         Result := (once "ISO_8859-15").intern
       end
 
-   Format_utf_8: POINTER
+   Format_utf_8: FIXED_STRING
          -- Is it really useful?
       once
-         Result := (once "UTF-8").to_external
-      end
-
-   format (desc: STRING): POINTER
-      require
-         desc /= Void
-      local
-         d: STRING
-      do
-         d := once ""
-         d.copy(desc)
-         d.to_upper
-         inspect
-            d
-         when "ISO-8869-1" then
-            Result := Format_iso_8859_1
-         when "ISO-8869-15" then
-            Result := Format_iso_8859_15
-         when "UTF8", "UTF_8", "UTF-8" then
-            Result := Format_utf_8
-         else
-            -- unknown
-         end
+         Result := (once "UTF-8").intern
       end
 
 feature {ANY}
-   utf8_to_iso (utf8: STRING; to_format: POINTER): STRING
+   utf8_to_iso (utf8: STRING; to_format: FIXED_STRING): STRING
       require
          utf8 /= Void
          to_format = Format_iso_8859_1 or else to_format = Format_iso_8859_15
       local
-         res: POINTER
+         res: POINTER; gc: BOOLEAN
       do
-         res := convert_chars(Format_utf_8, to_format, utf8.to_external, utf8.count)
+         gc := collecting
+         if gc then
+            collection_off
+         end
+         res := convert_chars(format_ptr(Format_utf_8, Option_none), format_ptr(to_format, Option_translit), utf8.to_external, utf8.count)
          if res.is_not_null then
             create Result.from_external(res)
          end
+         if gc then
+            collection_on
+         end
       end
 
-   iso_to_utf8 (string: STRING; from_format: POINTER): STRING
+   iso_to_utf8 (string: STRING; from_format: FIXED_STRING): STRING
       require
          string /= Void
          from_format = Format_iso_8859_1 or else from_format = Format_iso_8859_15
       local
-         res: POINTER
+         res: POINTER; gc: BOOLEAN
       do
-         res := convert_chars(from_format, Format_utf_8, string.to_external, string.count)
+         gc := collecting
+         if gc then
+            collection_off
+         end
+         res := convert_chars(format_ptr(from_format, Option_none), format_ptr(Format_utf_8, Option_none), string.to_external, string.count)
          if res.is_not_null then
             create Result.from_external(res)
+         end
+         if gc then
+            collection_on
          end
       end
 
 feature {}
+   Option_none: STRING ""
+   Option_translit: STRING "//TRANSLIT"
+   Option_ignore: STRING "//IGNORE"
+
+   format_ptr (format, options: ABSTRACT_STRING): POINTER
+      local
+         fmt: STRING
+      do
+         create fmt.make_from_string("#(1)#(2)" # format # options)
+         Result := fmt.to_external
+      end
+
    convert_chars (source_format, target_format, source_data: POINTER; source_length: INTEGER): POINTER
       external "plug_in"
       alias "{
