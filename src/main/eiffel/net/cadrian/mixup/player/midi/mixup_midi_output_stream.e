@@ -21,13 +21,24 @@ insert
    MIXUP_MIDI_STREAM_CONSTANTS
 
 feature {ANY}
-   start (tracks_count: INTEGER_16; division: INTEGER_16)
+   start (type: INTEGER_8; tracks_count: INTEGER_16; division: INTEGER_16)
       require
+         type.in_range(0, 2)
+         tracks_count > 0
+         division > 0
          is_connected
       do
          put_integer_32(header_magic)
          put_integer_32(header_size)
-         put_integer_16(header_type)
+         inspect
+            type
+         when 0 then
+            put_integer_16(header_type_0)
+         when 1 then
+            put_integer_16(header_type_1)
+         when 2 then
+            put_integer_16(header_type_2)
+         end
          put_integer_16(tracks_count)
          put_integer_16(division)
       end

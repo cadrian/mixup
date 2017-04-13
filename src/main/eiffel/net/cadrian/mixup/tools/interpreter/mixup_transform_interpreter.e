@@ -125,7 +125,8 @@ feature {}
                check
                   source_midi /= Void
                end
-               log.info.put_line("MIDI file has #(1) #(2)" # &(source_midi.track_count)
+               log.info.put_line("MIDI file (type #(1)) has #(2) #(3)"
+                                 # &(source_midi.type) # &(source_midi.track_count)
                                  # (if source_midi.track_count = 1 then "track" else "tracks" end))
                mid_src.disconnect
                source_midi.end_all_tracks
@@ -250,7 +251,7 @@ feature {}
       local
          i: INTEGER
       do
-         create target_midi.make(source_midi.division)
+         create target_midi.make(source_midi.type, source_midi.division)
          from
             i := 1
          until

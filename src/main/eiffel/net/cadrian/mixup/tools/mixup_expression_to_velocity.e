@@ -97,7 +97,7 @@ feature {}
       local
          i: INTEGER
       do
-         create target_midi.make(source_midi.division)
+         create target_midi.make(source_midi.type, source_midi.division)
          from
             i := 1
          until

@@ -24,6 +24,9 @@ feature {ANY}
    division: INTEGER_16
          -- ticks per quarter
 
+   type: INTEGER_8
+         -- MIDI type: 0, 1, or 2
+
    set_division (a_division: like division)
       require
          a_division > 0
@@ -57,7 +60,7 @@ feature {ANY}
                                                if t.can_encode then i + 1 else i end
                                             end (?, ?),
                                             0)
-         a_stream.start(tracks_count.to_integer_16, division)
+         a_stream.start(type, tracks_count.to_integer_16, division)
          tracks.for_each(agent (t: MIXUP_MIDI_TRACK)
                          do
                             if t.can_encode then
@@ -114,8 +117,9 @@ feature {ANY}
       end
 
 feature {}
-   make (a_division: like division)
+   make (a_type: like type; a_division: like division)
       require
+         a_type.in_range(0, 2)
          a_division > 0
       do
          set_division(a_division)

@@ -51,8 +51,8 @@ feature {ANY}
             else
                type := read_integer_16(Void)
                if has_error then
-               elseif type /= header_type then
-                  error := "Invalid midi file: unknown header type"
+               elseif type /= header_type_0 and then type /= header_type_1 and then type /= header_type_2 then
+                  error := "Invalid midi file: unknown header type #(1)" # &type
                else
                   tracks_count := read_integer_16(Void)
                   if has_error then
@@ -64,7 +64,7 @@ feature {ANY}
                      elseif division <= 0 then
                         error := "Invalid midi file: bad division: #(1)" # hex(division)
                      else
-                        create decoded.make(division.to_integer_16)
+                        create decoded.make(type.to_integer_8, division.to_integer_16)
                         from
                            tracknum := 1
                         until

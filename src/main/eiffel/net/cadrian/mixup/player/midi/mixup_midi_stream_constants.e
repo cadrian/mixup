@@ -17,7 +17,9 @@ deferred class MIXUP_MIDI_STREAM_CONSTANTS
 feature {}
    header_magic: INTEGER is 0x4d546864 -- "MThd"
    header_size: INTEGER is 6
-   header_type: INTEGER_16 is 1
+   header_type_0: INTEGER_16 is 0
+   header_type_1: INTEGER_16 is 1
+   header_type_2: INTEGER_16 is 2
 
    track_magic: INTEGER is 0x4d54726b -- "MTrk"
 
