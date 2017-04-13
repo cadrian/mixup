@@ -185,10 +185,8 @@ feature {}
          utf := context.argument_string(1)
          iso := conv.utf8_to_iso(utf, conv.Format_iso_8859_15)
          if iso = Void then
-            io.put_line("#(1) => **ERROR**" # utf)
             err := "invalid UTF-8 string or impossible to convert to ISO-8815-15"
          else
-            io.put_line("#(1) => #(2)" # utf # iso)
             create str.make
             str.set_value(iso)
          end
