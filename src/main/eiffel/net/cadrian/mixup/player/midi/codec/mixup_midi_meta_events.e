@@ -85,7 +85,7 @@ feature {ANY}
       require
          a_text /= Void
       do
-         create Result.make(meta_event_cue_point, a_text, "copyright_event")
+         create Result.make(meta_event_cue_point, a_text, "cue_point_event")
       end
 
    tempo_setting_event_bpm (bpm: INTEGER): MIXUP_MIDI_META_EVENT
