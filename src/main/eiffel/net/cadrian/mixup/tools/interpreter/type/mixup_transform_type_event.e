@@ -27,6 +27,7 @@ feature {MIXUP_TRANSFORM_TYPES}
    init
       local
          calls: MIXUP_TRANSFORM_CALLS
+         e: MIXUP_MIDI_META_EVENTS
       do
          calls.register_function("note_on",
                                  Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_numeric, type_numeric, type_numeric >>}, Current,
@@ -34,12 +35,24 @@ feature {MIXUP_TRANSFORM_TYPES}
          calls.register_function("note_off",
                                  Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_numeric, type_numeric, type_numeric >>}, Current,
                                  agent new_note_off(?))
-         calls.register_function("utf_to_iso",
-                                 Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_string >>}, type_string,
-                                 agent utf_to_iso(?))
          calls.register_function("text_event",
                                  Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_string >>}, Current,
-                                 agent new_text_event(?))
+                                 agent new_meta_text_event(agent e.text_event(?), ?))
+         calls.register_function("copyright_event",
+                                 Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_string >>}, Current,
+                                 agent new_meta_text_event(agent e.copyright_event(?), ?))
+         calls.register_function("track_name_event",
+                                 Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_string >>}, Current,
+                                 agent new_meta_text_event(agent e.track_name_event(?), ?))
+         calls.register_function("instrument_name_event",
+                                 Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_string >>}, Current,
+                                 agent new_meta_text_event(agent e.instrument_name_event(?), ?))
+         calls.register_function("lyrics_event",
+                                 Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_string >>}, Current,
+                                 agent new_meta_text_event(agent e.lyrics_event(?), ?))
+         calls.register_function("marker_text_event",
+                                 Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_string >>}, Current,
+                                 agent new_meta_text_event(agent e.marker_text_event(?), ?))
       end
 
 feature {}
@@ -103,29 +116,7 @@ feature {}
          Result := [event, err]
       end
 
-   utf_to_iso (context: MIXUP_TRANSFORM_CALL_CONTEXT): TUPLE[MIXUP_TRANSFORM_VALUE, ABSTRACT_STRING]
-         -- note_off(channel, pitch, velocity)
-      require
-         context.argument_count = 1
-         context.argument_is_string(1)
-      local
-         utf, iso: STRING
-         conv: MIXUP_STRING_CONVERSION
-         str: MIXUP_TRANSFORM_VALUE_STRING
-         err: ABSTRACT_STRING
-      do
-         utf := context.argument_string(1)
-         iso := conv.utf8_to_iso(utf, conv.Format_iso_8859_15)
-         if iso = Void then
-            err := "invalid UTF-8 string"
-         else
-            create str.make
-            str.set_value(iso)
-         end
-         Result := [str, err]
-      end
-
-   new_text_event (context: MIXUP_TRANSFORM_CALL_CONTEXT): TUPLE[MIXUP_TRANSFORM_VALUE, ABSTRACT_STRING]
+   new_meta_text_event (meta_factory: FUNCTION[TUPLE[ABSTRACT_STRING], MIXUP_MIDI_META_EVENT]; context: MIXUP_TRANSFORM_CALL_CONTEXT): TUPLE[MIXUP_TRANSFORM_VALUE, ABSTRACT_STRING]
          -- text_event(channel, pitch, text)
       require
          context.argument_count = 1
@@ -133,14 +124,13 @@ feature {}
       local
          text: STRING
          event: MIXUP_TRANSFORM_VALUE_EVENT
-         text_event: MIXUP_MIDI_META_EVENT
+         meta_event: MIXUP_MIDI_META_EVENT
          err: ABSTRACT_STRING
-         e: MIXUP_MIDI_META_EVENTS
       do
          text := context.argument_string(1)
-         text_event := e.text_event(text)
+         meta_event := meta_factory.item([text])
          create event.make
-         event.set_value(text_event)
+         event.set_value(meta_event)
          Result := [event, err]
       end
 

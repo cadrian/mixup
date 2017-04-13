@@ -996,6 +996,7 @@ feature {}
       require
          a_root /= Void
       do
+         init_types
          create_runners
          create expression_stack
          create branch_stack

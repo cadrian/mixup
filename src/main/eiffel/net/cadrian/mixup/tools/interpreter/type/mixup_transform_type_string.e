@@ -162,7 +162,37 @@ feature {ANY}
 
 feature {MIXUP_TRANSFORM_TYPES}
    init
+      local
+         calls: MIXUP_TRANSFORM_CALLS
       do
+         calls.register_function("utf_to_iso",
+                                 Void, {FAST_ARRAY[MIXUP_TRANSFORM_TYPE] << type_string >>}, type_string,
+                                 agent utf_to_iso(?))
+      end
+
+feature {}
+   utf_to_iso (context: MIXUP_TRANSFORM_CALL_CONTEXT): TUPLE[MIXUP_TRANSFORM_VALUE, ABSTRACT_STRING]
+         -- utf_to_iso(text)
+      require
+         context.argument_count = 1
+         context.argument_is_string(1)
+      local
+         utf, iso: STRING
+         conv: MIXUP_STRING_CONVERSION
+         str: MIXUP_TRANSFORM_VALUE_STRING
+         err: ABSTRACT_STRING
+      do
+         utf := context.argument_string(1)
+         iso := conv.utf8_to_iso(utf, conv.Format_iso_8859_15)
+         if iso = Void then
+            io.put_line("#(1) => **ERROR**" # utf)
+            err := "invalid UTF-8 string or impossible to convert to ISO-8815-15"
+         else
+            io.put_line("#(1) => #(2)" # utf # iso)
+            create str.make
+            str.set_value(iso)
+         end
+         Result := [str, err]
       end
 
 end -- class MIXUP_TRANSFORM_TYPE_STRING

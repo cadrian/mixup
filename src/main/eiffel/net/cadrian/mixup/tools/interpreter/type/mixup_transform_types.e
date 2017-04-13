@@ -131,7 +131,11 @@ feature {}
    types: SET[MIXUP_TRANSFORM_TYPE]
       once
          Result := {HASHED_SET[MIXUP_TRANSFORM_TYPE] << type_unknown_, type_numeric_, type_string_, type_argument_, type_boolean_, type_event_ >> }
-         Result.do_all(agent {MIXUP_TRANSFORM_TYPE}.init)
+      end
+
+   init_types
+      once
+         types.do_all(agent {MIXUP_TRANSFORM_TYPE}.init)
       end
 
 end -- class MIXUP_TRANSFORM_TYPES
