@@ -122,9 +122,11 @@ feature {}
          a_type.in_range(0, 2)
          a_division > 0
       do
+         type := a_type
          set_division(a_division)
          create tracks.make(0)
       ensure
+         type = a_type
          division = a_division
       end
 
