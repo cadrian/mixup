@@ -146,7 +146,7 @@ feature {MIXUP_MIDI_CONTROLLER_SLIDER}
          when "pitch" then
             sedb_breakpoint
          when "meta" then
-            set_res_numeric(knob.msb_code)
+            set_res_numeric(knob.coarse_code)
          when "value" then
             set_res_numeric(codec.value)
          when "fine" then

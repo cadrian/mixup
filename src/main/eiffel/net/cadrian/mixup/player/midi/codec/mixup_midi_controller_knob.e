@@ -29,7 +29,7 @@ feature {ANY}
       deferred
       end
 
-   encode_to (message_code: INTEGER_32; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM)
+   encode_to (channel: INTEGER_32; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM)
       require
          valid_value(value)
          stream.is_connected
@@ -41,6 +41,8 @@ feature {ANY}
       ensure
          Result /= Void
       end
+
+   event_type: INTEGER_32
 
 feature {MIXUP_MIDI_CONTROLLER}
    accept (visitor: MIXUP_MIDI_CODEC_VISITOR; codec: MIXUP_MIDI_CONTROLLER)

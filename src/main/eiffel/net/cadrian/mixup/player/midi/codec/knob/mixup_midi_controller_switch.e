@@ -17,6 +17,12 @@ class MIXUP_MIDI_CONTROLLER_SWITCH
 inherit
    MIXUP_MIDI_CONTROLLER_KNOB
 
+insert
+   MIXUP_MIDI_EVENT_TYPES
+      undefine
+         out_in_tagged_out_memory
+      end
+
 create {ANY}
    make
 
@@ -42,11 +48,14 @@ feature {ANY}
          Result := value.in_range(0, 127)
       end
 
-   encode_to (message_code: INTEGER_32; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM)
+   encode_to (channel: INTEGER_32; value: INTEGER; stream: MIXUP_MIDI_OUTPUT_STREAM)
+      local
+         message_code: INTEGER_32
       do
          debug
             log.trace.put_line(name | once "=" | &value)
          end
+         message_code := event_controller | channel
          stream.put_byte(message_code)
          stream.put_byte(code)
          stream.put_byte(value)
@@ -58,6 +67,7 @@ feature {}
          a_name /= Void
       do
          code := cod
+         event_type := event_controller
          name := a_name.intern
       ensure
          code = cod

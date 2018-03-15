@@ -105,14 +105,14 @@ feature {MIXUP_MIDI_CONTROLLER_SLIDER}
       local
          value: INTEGER
       do
-         if knob.msb_code = 11 then
+         if knob.coarse_code = 11 then
             value := codec.value
-            if knob.lsb_code = 43 then
+            if knob.fine_code = 43 then
                -- no need for the "fine" part (the velocity scale is not fine anyway)
                value := value |>>> 7
             else
                check
-                  knob.lsb_code = 0
+                  knob.fine_code = 0
                end
             end
             check

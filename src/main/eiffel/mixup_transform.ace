@@ -1,4 +1,4 @@
-system "transform"
+system "mxt"
 
 root
     MIXUP_TRANSFORM: make

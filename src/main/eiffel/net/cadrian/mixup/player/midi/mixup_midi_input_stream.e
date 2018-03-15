@@ -37,7 +37,7 @@ feature {ANY}
       require
          decoded = Void
       local
-         magic, size, type, tracks_count, division, tracknum, tail: INTEGER_32, tail_ok: BOOLEAN
+         magic, size, type, tracks_count, division, tracknum, tail: INTEGER_32; tail_ok: BOOLEAN
       do
          magic := read_integer_32(Void)
          if has_error then
@@ -290,6 +290,7 @@ feature {}
       local
          knob: MIXUP_MIDI_CONTROLLER_KNOB
          knob_number, knob_value: INTEGER_32
+         fine: BOOLEAN
       do
          knob_number := read_integer_8(count)
          if has_error then
@@ -310,76 +311,91 @@ feature {}
                when 32 then
                   knob := read_fine(channel, count, fine_bank_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
                when 1 then
                   knob := modulation_wheel_controller
                when 33 then
                   knob := read_fine(channel, count, fine_modulation_wheel_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
                when 2 then
                   knob := breath_controller
                when 34 then
                   knob := read_fine(channel, count, fine_breath_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
                when 4 then
                   knob := foot_controller
                when 36 then
                   knob := read_fine(channel, count, fine_foot_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
                when 5 then
                   knob := portamento_time_controller
                when 37 then
                   knob := read_fine(channel, count, fine_portamento_time_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
                when 7 then
                   knob := channel_volume_controller
                when 39 then
                   knob := read_fine(channel, count, fine_channel_volume_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
                when 8 then
                   knob := balance_controller
                when 40 then
                   knob := read_fine(channel, count, fine_balance_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
                when 10 then
                   knob := pan_controller
                when 42 then
                   knob := read_fine(channel, count, fine_pan_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
                when 11 then
                   knob := expression_controller
                when 43 then
                   knob := read_fine(channel, count, fine_expression_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
                when 12 then
                   knob := effect_1_controller
                when 44 then
                   knob := read_fine(channel, count, fine_effect_1_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
                when 13 then
                   knob := effect_2_controller
                when 45 then
                   knob := read_fine(channel, count, fine_effect_2_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
                when 16 then
                   knob := general_purpose_1_controller
                when 48 then
                   knob := read_fine(channel, count, fine_general_purpose_1_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
                when 17 then
                   knob := general_purpose_2_controller
                when 49 then
                   knob := read_fine(channel, count, fine_general_purpose_2_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
                when 18 then
                   knob := general_purpose_3_controller
                when 50 then
                   knob := read_fine(channel, count, fine_general_purpose_3_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
                when 19 then
                   knob := general_purpose_4_controller
                when 51 then
                   knob := read_fine(channel, count, fine_general_purpose_4_controller)
                   knob_value := read_fine_value(count, knob_value)
+                  fine := True
 
                -- switches
                when 64 then
@@ -400,6 +416,7 @@ feature {}
          end
 
          if not has_error then
+            log.trace.put_line("Read knob: #(1)#(2) with value #(3)" # knob.name # (if fine then " (fine)" else "" end) # hex(knob_value))
             create Result.make(channel, knob, knob_value)
          end
       ensure
@@ -419,16 +436,10 @@ feature {}
          else
             byte := read_integer_8(count)
             if has_error then
-            elseif byte /= event_controller | channel then
-               error := "Invalid fine message byte: #(1) /= #(2)" # hex(byte) # hex(event_controller | channel)
+            elseif byte /= knob.event_type | channel then
+               error := "Invalid fine message byte: #(1) /= #(2)" # hex(byte) # hex(knob.event_type | channel)
             else
-               byte := read_integer_8(count)
-               if has_error then
-               elseif byte /= knob.msb_code then
-                  error := "Invalid fine message MSB: #(1) /= #(2)" # hex(byte) # hex(knob.msb_code)
-               else
-                  Result := knob
-               end
+               Result := knob
             end
          end
       ensure

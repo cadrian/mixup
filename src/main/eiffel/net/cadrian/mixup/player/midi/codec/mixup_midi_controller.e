@@ -20,6 +20,12 @@ inherit
          encode_to
       end
 
+insert
+   MIXUP_MIDI_EVENT_TYPES
+      undefine
+         out_in_tagged_out_memory
+      end
+
 create {ANY}
    make
 
@@ -39,7 +45,7 @@ feature {ANY}
       end
 
    event_type: INTEGER_32
-      once
+      do
          Result := event_controller
       end
 
@@ -52,14 +58,11 @@ feature {ANY}
       end
 
    encode_to (stream: MIXUP_MIDI_OUTPUT_STREAM; context: MIXUP_MIDI_ENCODE_CONTEXT)
-      local
-         code: INTEGER_32
       do
          debug
             log.trace.put_string(once "channel " | &channel | once ": controller ")
          end
-         code := event_type | channel
-         knob.encode_to(code, value, stream)
+         knob.encode_to(channel, value, stream)
       end
 
 feature {}
